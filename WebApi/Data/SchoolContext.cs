@@ -1,7 +1,4 @@
-﻿using System.Reflection;
-using SummerBorn.Core.Entity.School;
-
-namespace SummerBorn.Infrastructure.Data;
+﻿namespace SummerBornInfo.Data;
 
 public class SchoolContext(DbContextOptions<SchoolContext> options) : DbContext(options)
 {

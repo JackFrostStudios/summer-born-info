@@ -1,5 +1,6 @@
 ﻿using SummerBorn.Core.Entity;
 using SummerBorn.Core.Entity.Establishment;
+using SummerBorn.Core.Entity.School;
 using SummerBorn.Infrastructure.Data;
 
 namespace SummerBorn.Infrastructure.Test.DatabaseSetup;

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SummerBorn.Core.Entity;
+using SummerBorn.Core.Entity.School;
 using SummerBorn.Infrastructure.Test.DatabaseSetup;
 
 namespace SummerBorn.Infrastructure.Test.GenericRepository;

@@ -1,6 +1,4 @@
-﻿
-
-namespace SummerBorn.Core.Entity;
+﻿namespace SummerBorn.Core.Entity.School;
 
 public class School : IEntity
 {

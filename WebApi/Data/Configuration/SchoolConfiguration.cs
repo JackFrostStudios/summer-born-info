@@ -1,6 +1,6 @@
-﻿using SummerBorn.Core.Entity.School;
+﻿using SummerBornInfo.Domain.School;
 
-namespace SummerBorn.Infrastructure.Configuration;
+namespace SummerBornInfo.Data.Configuration;
 
 public class SchoolConfiguration : IEntityTypeConfiguration<School>
 {
