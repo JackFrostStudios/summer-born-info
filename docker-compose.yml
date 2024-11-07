@@ -3,7 +3,7 @@ services:
     image: ${DOCKER_REGISTRY-}webapi
     build:
       context: .
-      dockerfile: WebApi/Dockerfile
+      dockerfile: SummerBornInfo.Web/Dockerfile
     depends_on:
       db:
         condition: service_healthy
