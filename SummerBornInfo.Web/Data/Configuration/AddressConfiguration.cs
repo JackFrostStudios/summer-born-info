@@ -1,6 +1,4 @@
-﻿using SummerBornInfo.Web.Domain.School;
-
-namespace SummerBornInfo.Web.Data.Configuration;
+﻿namespace SummerBornInfo.Web.Data.Configuration;
 
 public class AddressConfiguration : IEntityTypeConfiguration<Address>
 {

@@ -14,6 +14,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+if (app.Environment.IsProduction())
+{
+    app.UseDefaultExceptionHandler();
+}
 app.UseFastEndpoints();
 app.UseSwaggerGen();
 

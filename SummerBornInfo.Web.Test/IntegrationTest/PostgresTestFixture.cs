@@ -1,7 +1,7 @@
 ﻿namespace SummerBornInfo.Web.Test.IntegrationTest;
 public class PostgresTestFixture : AppFixture<Program>
 {
-    public SeededData SeededData { get; private set; } = null!;
+    public static SeededData SeededData { get; private set; } = null!;
     private PostgreSqlContainer _postgreSqlContainer = null!;
     
     protected override async Task PreSetupAsync()

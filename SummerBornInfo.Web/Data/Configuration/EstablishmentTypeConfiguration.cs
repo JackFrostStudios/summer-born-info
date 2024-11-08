@@ -1,6 +1,4 @@
-﻿using SummerBornInfo.Web.Domain;
-
-namespace SummerBornInfo.Web.Data.Configuration;
+﻿namespace SummerBornInfo.Web.Data.Configuration;
 
 public class EstablishmentTypeConfiguration : IEntityTypeConfiguration<EstablishmentType>
 {

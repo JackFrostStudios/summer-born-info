@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Web.Features.EstablishmentGroupCommands.Create;
+﻿namespace SummerBornInfo.Web.Features.LocalAuthorityCommands.Create;
 
 internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Response, Mapper>
 {
@@ -7,17 +7,17 @@ internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Respon
     public override void Configure()
     {
         AllowAnonymous();
-        Post("establishment-group");
+        Post("local-authority");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken c)
     {
-        var group = Map.ToEntity(req);
+        var localAuthority = Map.ToEntity(req);
 
-        context.Add(group);
+        context.Add(localAuthority);
         await context.SaveChangesAsync(c);
 
-        var resp = Map.FromEntity(group);
+        var resp = Map.FromEntity(localAuthority);
 
         await SendAsync(response: resp, cancellation: c);
     }

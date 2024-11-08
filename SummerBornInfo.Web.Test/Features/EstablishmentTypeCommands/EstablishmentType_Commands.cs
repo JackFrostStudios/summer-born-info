@@ -1,27 +1,27 @@
-﻿using Create = SummerBornInfo.Web.Features.EstablishmentStatusCommands.Create;
+﻿using Create = SummerBornInfo.Web.Features.EstablishmentTypeCommands.Create;
 
-namespace SummerBornInfo.Web.Test.Features.EstablishmentStatusCommands;
-public class EstablishmentStatus_Commands(PostgresTestFixture App) : BaseIntegrationTest
+namespace SummerBornInfo.Web.Test.Features.EstablishmentTypeCommands;
+public class EstablishmentType_Commands(PostgresTestFixture App) : BaseIntegrationTest
 {
     [Fact]
-    public async Task ValidRequest_Create_SavesStatusSuccessfully()
+    public async Task ValidRequest_Create_SavesTypeSuccessfully()
     {
         var (rsp, res) = await App.Client.POSTAsync<Create.Endpoint, Create.Request, Create.Response>(new()
         {
-            Code = 200,
+            Code = 300,
             Name = "Test"
         });
         rsp.StatusCode.Should().Be(HttpStatusCode.OK);
         res.Id.Should().NotBeEmpty();
-        res.Code.Should().Be(200);
+        res.Code.Should().Be(300);
         res.Name.Should().Be("Test");
 
         using var scope = App.Services.CreateScope();
         await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var savedGroup = await dbContext.EstablishmentStatus.AsNoTracking().SingleAsync(g => g.Id == res.Id);
+        var savedGroup = await dbContext.EstablishmentType.AsNoTracking().SingleAsync(g => g.Id == res.Id);
         savedGroup.Should().NotBeNull();
         savedGroup.Id.Should().Be(res.Id);
-        savedGroup.Code.Should().Be(200);
+        savedGroup.Code.Should().Be(300);
         savedGroup.Name.Should().Be("Test");
     }
 

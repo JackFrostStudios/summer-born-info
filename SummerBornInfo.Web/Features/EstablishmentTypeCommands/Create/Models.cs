@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Web.Features.EstablishmentGroupCommands.Create;
+﻿namespace SummerBornInfo.Web.Features.EstablishmentTypeCommands.Create;
 
 internal sealed class Request
 {
@@ -11,11 +11,11 @@ internal sealed class Request
         {
             RuleFor(x => x.Code)
                 .NotEmpty()
-                .WithMessage("Establishment Group Code is required");
+                .WithMessage("Establishment Type Code is required");
 
             RuleFor(x => x.Name)
                 .NotEmpty()
-                .WithMessage("Establishment Group Name is required");
+                .WithMessage("Establishment Type Name is required");
         }
     }
 }

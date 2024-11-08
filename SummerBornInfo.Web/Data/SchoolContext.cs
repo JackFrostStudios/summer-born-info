@@ -1,7 +1,4 @@
-﻿using SummerBornInfo.Web.Domain;
-using SummerBornInfo.Web.Domain.School;
-
-namespace SummerBornInfo.Web.Data;
+﻿namespace SummerBornInfo.Web.Data;
 
 public class SchoolContext(DbContextOptions<SchoolContext> options) : DbContext(options)
 {

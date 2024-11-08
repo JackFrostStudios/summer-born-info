@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Web.Features.EstablishmentGroupCommands.Create;
+﻿namespace SummerBornInfo.Web.Features.PhaseOfEducationCommands.Create;
 
 internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Response, Mapper>
 {
@@ -7,17 +7,17 @@ internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Respon
     public override void Configure()
     {
         AllowAnonymous();
-        Post("establishment-group");
+        Post("phase-of-education");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken c)
     {
-        var group = Map.ToEntity(req);
+        var phase = Map.ToEntity(req);
 
-        context.Add(group);
+        context.Add(phase);
         await context.SaveChangesAsync(c);
 
-        var resp = Map.FromEntity(group);
+        var resp = Map.FromEntity(phase);
 
         await SendAsync(response: resp, cancellation: c);
     }

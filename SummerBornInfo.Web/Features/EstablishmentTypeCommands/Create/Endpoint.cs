@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Web.Features.EstablishmentGroupCommands.Create;
+﻿namespace SummerBornInfo.Web.Features.EstablishmentTypeCommands.Create;
 
 internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Response, Mapper>
 {
@@ -7,17 +7,17 @@ internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Respon
     public override void Configure()
     {
         AllowAnonymous();
-        Post("establishment-group");
+        Post("establishment-type");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken c)
     {
-        var group = Map.ToEntity(req);
+        var type = Map.ToEntity(req);
 
-        context.Add(group);
+        context.Add(type);
         await context.SaveChangesAsync(c);
 
-        var resp = Map.FromEntity(group);
+        var resp = Map.FromEntity(type);
 
         await SendAsync(response: resp, cancellation: c);
     }

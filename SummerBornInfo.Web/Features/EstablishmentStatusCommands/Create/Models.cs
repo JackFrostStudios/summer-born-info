@@ -20,7 +20,7 @@ internal sealed class Request
     }
 }
 
-internal record Response
+internal sealed class Response
 {
     public required Guid Id { get; init; }
     public required int Code { get; init; }
