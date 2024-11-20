@@ -1,7 +1,7 @@
 ﻿using Create = SummerBornInfo.Web.Features.LocalAuthorityCommands.Create;
 
 namespace SummerBornInfo.Web.Test.Features.LocalAuthorityCommands;
-public class LocalAuthority_Commands(PostgresTestFixture App) : BaseIntegrationTest
+public class LocalAuthority_Create(PostgresTestFixture App) : BaseIntegrationTest
 {
     [Fact]
     public async Task ValidRequest_Create_SavesAuthoritySuccessfully()

@@ -1,7 +1,7 @@
 ﻿using Create = SummerBornInfo.Web.Features.EstablishmentGroupCommands.Create;
 
 namespace SummerBornInfo.Web.Test.Features.EstablishmentGroupCommands;
-public class EstablishmentGroup_Commands(PostgresTestFixture App) : BaseIntegrationTest
+public class EstablishmentGroup_Create(PostgresTestFixture App) : BaseIntegrationTest
 {
     [Fact]
     public async Task ValidRequest_Create_SavesGroupSuccessfully()

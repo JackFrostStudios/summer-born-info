@@ -1,7 +1,7 @@
 ﻿using Create = SummerBornInfo.Web.Features.SchoolCommands.Create;
 
 namespace SummerBornInfo.Web.Test.Features.SchoolCommands;
-public class School_Commands(PostgresTestFixture App) : BaseIntegrationTest
+public class School_Create(PostgresTestFixture App) : BaseIntegrationTest
 {
     [Fact]
     public async Task ValidRequest_Create_SavesAuthoritySuccessfully()
