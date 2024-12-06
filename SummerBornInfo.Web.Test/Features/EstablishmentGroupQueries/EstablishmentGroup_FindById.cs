@@ -1,12 +1,11 @@
-﻿using Get = SummerBornInfo.Web.Features.EstablishmentGroupQueries.Get;
-
+﻿using FindById = SummerBornInfo.Web.Features.EstablishmentGroupQueries.FindById;
 namespace SummerBornInfo.Web.Test.Features.EstablishmentGroupQueries;
-public class EstablishmentGroup_Get(PostgresTestFixture App) : BaseIntegrationTest
+public class EstablishmentGroup_FindById(PostgresTestFixture App) : BaseIntegrationTest
 {
     [Fact]
-    public async Task ValidRequest_Get_ReturnsTheGroup()
+    public async Task ValidRequest_FindById_ReturnsTheGroup()
     {
-        var (rsp, res) = await App.Client.GETAsync<Get.Endpoint, Get.Request, Get.Response>(new()
+        var (rsp, res) = await App.Client.GETAsync<FindById.Endpoint, FindById.Request, FindById.Response>(new()
         {
             Id = PostgresTestFixture.SeededData.EstablishmentGroup.Id
         });
@@ -17,9 +16,9 @@ public class EstablishmentGroup_Get(PostgresTestFixture App) : BaseIntegrationTe
     }
 
     [Fact]
-    public async Task WrongId_Get_ReturnsNotFound()
+    public async Task WrongId_FindById_ReturnsNotFound()
     {
-        var rsp = await App.Client.GETAsync<Get.Endpoint, Get.Request>(new()
+        var rsp = await App.Client.GETAsync<FindById.Endpoint, FindById.Request>(new()
         {
             Id = Guid.NewGuid()
         });
@@ -27,9 +26,9 @@ public class EstablishmentGroup_Get(PostgresTestFixture App) : BaseIntegrationTe
     }
 
     [Fact]
-    public async Task InvalidRequest_Get_ReturnsErrors()
+    public async Task InvalidRequest_FindById_ReturnsErrors()
     {
-        var (rsp, res) = await App.Client.GETAsync<Get.Endpoint, Get.Request, ErrorResponse>(new()
+        var (rsp, res) = await App.Client.GETAsync<FindById.Endpoint, FindById.Request, ErrorResponse>(new()
         {
             Id = Guid.Empty
         });

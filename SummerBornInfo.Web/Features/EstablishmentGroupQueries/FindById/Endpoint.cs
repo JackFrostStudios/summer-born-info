@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Web.Features.EstablishmentGroupQueries.Get;
+﻿namespace SummerBornInfo.Web.Features.EstablishmentGroupQueries.FindById;
 
 internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Response, Mapper>
 {
