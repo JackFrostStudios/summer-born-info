@@ -19,7 +19,7 @@ public class School_Create(PostgresTestFixture App) : BaseIntegrationTest
                 AddressThree = "Address Three",
                 Town = "Town",
                 County = "County",
-                PostCode = "PostCode",
+                PostCode = "Post Code",
             },
             OpenDate = new DateOnly(2022, 10, 21),
             CloseDate = new DateOnly(2025, 10, 21),
@@ -34,9 +34,26 @@ public class School_Create(PostgresTestFixture App) : BaseIntegrationTest
 
         using var scope = App.Services.CreateScope();
         await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var savedGroup = await dbContext.School.AsNoTracking().SingleAsync(g => g.Id == res.Id);
-        savedGroup.Should().NotBeNull();
-        savedGroup.Id.Should().Be(res.Id);
+        var saveSchool = await dbContext.School.AsNoTracking().SingleAsync(g => g.Id == res.Id);
+        saveSchool.Should().NotBeNull();
+        saveSchool.Id.Should().Be(res.Id);
+        saveSchool.URN.Should().Be(1000);
+        saveSchool.UKPRN.Should().Be(2000);
+        saveSchool.Name.Should().Be("New School");
+        saveSchool.Address.Should().NotBeNull();
+        saveSchool.Address.Street.Should().Be("Street One");
+        saveSchool.Address.Locality.Should().Be("Locality");
+        saveSchool.Address.AddressThree.Should().Be("Address Three");
+        saveSchool.Address.Town.Should().Be("Town");
+        saveSchool.Address.County.Should().Be("County");
+        saveSchool.Address.PostCode.Should().Be("Post Code");
+        saveSchool.OpenDate.Should().Be(new DateOnly(2022, 10, 21));
+        saveSchool.CloseDate.Should().Be(new DateOnly(2025, 10, 21));
+        saveSchool.PhaseOfEducation.Id.Should().Be(PostgresTestFixture.SeededData.PhaseOfEducation.Id);
+        saveSchool.LocalAuthority.Id.Should().Be(PostgresTestFixture.SeededData.LocalAuthority.Id);
+        saveSchool.EstablishmentType.Id.Should().Be(PostgresTestFixture.SeededData.EstablishmentType.Id);
+        saveSchool.EstablishmentGroup.Id.Should().Be(PostgresTestFixture.SeededData.EstablishmentGroup.Id);
+        saveSchool.EstablishmentStatus.Id.Should().Be(PostgresTestFixture.SeededData.EstablishmentStatus.Id);
     }
 
     [Fact]
