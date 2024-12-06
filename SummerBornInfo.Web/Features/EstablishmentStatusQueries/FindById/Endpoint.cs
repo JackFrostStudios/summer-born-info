@@ -12,7 +12,7 @@ internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Respon
 
     public override async Task HandleAsync(Request request, CancellationToken cancellation)
     {
-        var status = await context.EstablishmentStatus.AsNoTracking().FirstOrDefaultAsync(eg => eg.Id == request.Id, cancellationToken: cancellation);
+        var status = await context.EstablishmentStatus.AsNoTracking().FirstOrDefaultAsync(es => es.Id == request.Id, cancellationToken: cancellation);
         if (status == null)
         {
             await SendNotFoundAsync(cancellation);
