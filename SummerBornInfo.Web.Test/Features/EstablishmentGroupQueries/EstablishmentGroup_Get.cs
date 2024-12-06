@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Get = SummerBornInfo.Web.Features.EstablishmentGroupQueries.Get;
+﻿using Get = SummerBornInfo.Web.Features.EstablishmentGroupQueries.Get;
 
 namespace SummerBornInfo.Web.Test.Features.EstablishmentGroupQueries;
 public class EstablishmentGroup_Get(PostgresTestFixture App) : BaseIntegrationTest

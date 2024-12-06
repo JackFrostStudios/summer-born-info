@@ -3,7 +3,7 @@ public class PostgresTestFixture : AppFixture<Program>
 {
     public static SeededData SeededData { get; private set; } = null!;
     private PostgreSqlContainer _postgreSqlContainer = null!;
-    
+
     protected override async Task PreSetupAsync()
     {
         _postgreSqlContainer = new PostgreSqlBuilder()

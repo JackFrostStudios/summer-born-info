@@ -2,12 +2,12 @@
 
 public class SchoolContext(DbContextOptions<SchoolContext> options) : DbContext(options)
 {
-    public DbSet<EstablishmentGroup> EstablishmentGroup { get; set; }
-    public DbSet<EstablishmentStatus> EstablishmentStatus { get; set; }
-    public DbSet<EstablishmentType> EstablishmentType { get; set; }
-    public DbSet<LocalAuthority> LocalAuthority { get; set; }
-    public DbSet<PhaseOfEducation> PhaseOfEducation { get; set; }
-    public DbSet<School> School { get; set; }
+    public DbSet<EstablishmentGroup> EstablishmentGroup => Set<EstablishmentGroup>();
+    public DbSet<EstablishmentStatus> EstablishmentStatus => Set<EstablishmentStatus>();
+    public DbSet<EstablishmentType> EstablishmentType => Set<EstablishmentType>();
+    public DbSet<LocalAuthority> LocalAuthority => Set<LocalAuthority>();
+    public DbSet<PhaseOfEducation> PhaseOfEducation => Set<PhaseOfEducation>();
+    public DbSet<School> School => Set<School>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

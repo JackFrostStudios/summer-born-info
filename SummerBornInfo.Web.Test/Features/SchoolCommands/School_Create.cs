@@ -61,16 +61,16 @@ public class School_Create(PostgresTestFixture App) : BaseIntegrationTest
         res.Errors.Count.Should().Be(11);
         res.Errors.Keys.Should()
             .Equal(
-            "urn", 
-            "ukprn", 
-            "establishmentNumber", 
-            "name", 
-            "address", 
-            "openDate", 
-            "phaseOfEducationId", 
-            "localAuthorityId", 
-            "establishmentTypeId", 
-            "establishmentGroupId", 
+            "urn",
+            "ukprn",
+            "establishmentNumber",
+            "name",
+            "address",
+            "openDate",
+            "phaseOfEducationId",
+            "localAuthorityId",
+            "establishmentTypeId",
+            "establishmentGroupId",
             "establishmentStatusId"
             );
         res.Errors["phaseOfEducationId"].Should().Equal("Phase of Education Id is required");
