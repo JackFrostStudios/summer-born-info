@@ -45,5 +45,6 @@ public class SeededData
 
         schoolContext.Add(School);
         schoolContext.SaveChanges();
+        schoolContext.ChangeTracker.Clear();
     }
 }
