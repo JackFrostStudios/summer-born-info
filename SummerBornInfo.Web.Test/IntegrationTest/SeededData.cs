@@ -18,7 +18,7 @@ public class SeededData
         EstablishmentGroup = new EstablishmentGroup { Code = 30000, Name = "Establishment Group" };
         EstablishmentStatus = new EstablishmentStatus { Code = 40000, Name = "Open" };
         EstablishmentType = new EstablishmentType { Code = 50000, Name = "Community School" };
-        var address = new Address { Street = "Str", Locality = "loc", AddressThree = "addr3", Town = "twn", County = "Coun", PostCode = "PT12CD" };
+        var address = new SchoolAddress { Street = "Str", Locality = "loc", AddressThree = "addr3", Town = "twn", County = "Coun", PostCode = "PT12CD" };
 
         schoolContext.Add(PhaseOfEducation);
         schoolContext.Add(LocalAuthority);

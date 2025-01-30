@@ -1,8 +1,8 @@
 ﻿namespace SummerBornInfo.Web.Data.Configuration;
 
-internal class AddressConfiguration : IEntityTypeConfiguration<Address>
+internal class AddressConfiguration : IEntityTypeConfiguration<SchoolAddress>
 {
-    public void Configure(EntityTypeBuilder<Address> builder)
+    public void Configure(EntityTypeBuilder<SchoolAddress> builder)
     {
         builder.ToTable("school");
 
