@@ -1,6 +1,6 @@
 ﻿namespace SummerBornInfo.Web.Data.Configuration;
 
-public class AddressConfiguration : IEntityTypeConfiguration<Address>
+internal class AddressConfiguration : IEntityTypeConfiguration<Address>
 {
     public void Configure(EntityTypeBuilder<Address> builder)
     {

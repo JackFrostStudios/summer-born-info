@@ -1,6 +1,6 @@
 ﻿namespace SummerBornInfo.Web.Data.Configuration;
 
-public class PhaseOfEducationConfiguration : IEntityTypeConfiguration<PhaseOfEducation>
+internal class PhaseOfEducationConfiguration : IEntityTypeConfiguration<PhaseOfEducation>
 {
     public void Configure(EntityTypeBuilder<PhaseOfEducation> builder)
     {

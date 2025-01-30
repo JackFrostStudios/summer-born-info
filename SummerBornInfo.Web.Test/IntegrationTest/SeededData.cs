@@ -1,12 +1,12 @@
 ﻿namespace SummerBornInfo.Web.Test.IntegrationTest;
 public class SeededData
 {
-    public readonly PhaseOfEducation PhaseOfEducation;
-    public readonly LocalAuthority LocalAuthority;
-    public readonly EstablishmentGroup EstablishmentGroup;
-    public readonly EstablishmentStatus EstablishmentStatus;
-    public readonly EstablishmentType EstablishmentType;
-    public readonly School School;
+    public PhaseOfEducation PhaseOfEducation { get; private init; }
+    public LocalAuthority LocalAuthority { get; private init; }
+    public EstablishmentGroup EstablishmentGroup { get; private init; }
+    public EstablishmentStatus EstablishmentStatus { get; private init; }
+    public EstablishmentType EstablishmentType { get; private init; }
+    public School School { get; private init; }
     private readonly SchoolContext schoolContext;
 
     public SeededData(SchoolContext SchoolContext)

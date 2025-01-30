@@ -1,6 +1,6 @@
 ﻿namespace SummerBornInfo.Web.Data.Configuration;
 
-public class EstablishmentGroupConfiguration : IEntityTypeConfiguration<EstablishmentGroup>
+internal class EstablishmentGroupConfiguration : IEntityTypeConfiguration<EstablishmentGroup>
 {
     public void Configure(EntityTypeBuilder<EstablishmentGroup> builder)
     {

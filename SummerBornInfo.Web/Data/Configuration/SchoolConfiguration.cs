@@ -1,6 +1,6 @@
 ﻿namespace SummerBornInfo.Web.Data.Configuration;
 
-public class SchoolConfiguration : IEntityTypeConfiguration<School>
+internal class SchoolConfiguration : IEntityTypeConfiguration<School>
 {
     public void Configure(EntityTypeBuilder<School> builder)
     {
