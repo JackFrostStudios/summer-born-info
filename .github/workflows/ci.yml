@@ -23,16 +23,16 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal "./summer-born-info.sln" --logger trx --collect:"Code Coverage;Format=cobertura"
     - name: Combine Coverage Reports
-        uses: danielpalme/ReportGenerator-GitHub-Action@v5.4.3
-        with:
-          reports: "**/*.cobertura.xml"
-          targetdir: "${{ github.workspace }}"
-          reporttypes: "Cobertura"
-          verbosity: "Info"
-          title: "Code Coverage"
-          tag: "${{ github.run_number }}_${{ github.run_id }}"
-          customSettings: ""
-          toolpath: "reportgeneratortool"
+      uses: danielpalme/ReportGenerator-GitHub-Action@v5.4.3
+      with:
+        reports: "**/*.cobertura.xml"
+        targetdir: "${{ github.workspace }}"
+        reporttypes: "Cobertura"
+        verbosity: "Info"
+        title: "Code Coverage"
+        tag: "${{ github.run_number }}_${{ github.run_id }}"
+        customSettings: ""
+        toolpath: "reportgeneratortool"
       - name: Upload Combined Coverage XML
         uses: actions/upload-artifact@v4
         with:
