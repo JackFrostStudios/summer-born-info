@@ -25,7 +25,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore "./summer-born-info.sln"
     - name: Test
-      run: dotnet test --no-build --verbosity normal "./summer-born-info.sln" --logger trx --collect:"Code Coverage;Format=cobertura"
+      run: dotnet test --no-build --verbosity normal "./summer-born-info.sln" --logger trx --collect:"XPlat code coverage"
     - name: Combine Coverage Reports
       uses: danielpalme/ReportGenerator-GitHub-Action@v5.4.3
       with:
