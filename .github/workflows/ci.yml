@@ -4,7 +4,7 @@ name: CI
 on:
   push:
     branches: [ "feature/build-improvements" ]
-  pull-request:
+  pull_request:
     branches: [ "main" ]
 
 jobs:
