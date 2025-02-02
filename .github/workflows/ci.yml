@@ -27,7 +27,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal "./summer-born-info.sln" --logger trx --collect:"XPlat code coverage"
     - name: Combine Coverage Reports
-      uses: danielpalme/ReportGenerator-GitHub-Action@v5.4.3
+      uses: danielpalme/ReportGenerator-GitHub-Action@c38c522d4b391c1b0da979cbb2e902c0a252a7dc #v5.4.3
       with:
         reports: "**/*.cobertura.xml"
         targetdir: "${{ github.workspace }}"
@@ -45,7 +45,7 @@ jobs:
         path: ${{ github.workspace }}/Cobertura.xml
         retention-days: 5
     - name: Publish Code Coverage Report
-      uses: irongut/CodeCoverageSummary@v1.3.0
+      uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95 #v1.3.0
       if: always()
       with:
         filename: "Cobertura.xml"
@@ -58,7 +58,7 @@ jobs:
         output: both
         thresholds: "80 90"
     - name: Add Coverage PR Comment
-      uses: marocchino/sticky-pull-request-comment@v2
+      uses: marocchino/sticky-pull-request-comment@52423e01640425a022ef5fd42c6fb5f633a02728 #v2.9.1
       if: github.event_name == 'pull_request'
       with:
         recreate: true
@@ -71,7 +71,7 @@ jobs:
         path: ${{ github.workspace }}/**/TestResults/**/*
         retention-days: 5   
     - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v2.18.0
+      uses: EnricoMi/publish-unit-test-result-action@170bf24d20d201b842d7a52403b73ed297e6645b #v2.18.0
       if: always()
       with:
         trx_files: "${{ github.workspace }}/**/*.trx"
