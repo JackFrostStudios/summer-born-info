@@ -18,7 +18,7 @@ public class EstablishmentStatus_Create(PostgresTestFixture App) : BaseIntegrati
 
         using var scope = App.Services.CreateScope();
         await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var savedGroup = await dbContext.EstablishmentStatus.AsNoTracking().SingleAsync(g => g.Id == res.Id);
+        var savedGroup = await dbContext.EstablishmentStatus.AsNoTracking().SingleAsync(g => g.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
         savedGroup.Should().NotBeNull();
         savedGroup.Id.Should().Be(res.Id);
         savedGroup.Code.Should().Be(200);

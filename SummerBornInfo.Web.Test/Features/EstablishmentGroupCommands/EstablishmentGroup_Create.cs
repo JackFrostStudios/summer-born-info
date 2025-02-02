@@ -18,7 +18,7 @@ public class EstablishmentGroup_Create(PostgresTestFixture App) : BaseIntegratio
 
         using var scope = App.Services.CreateScope();
         await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var savedGroup = await dbContext.EstablishmentGroup.AsNoTracking().SingleAsync(g => g.Id == res.Id);
+        var savedGroup = await dbContext.EstablishmentGroup.AsNoTracking().SingleAsync(g => g.Id == res.Id, TestContext.Current.CancellationToken);
         savedGroup.Should().NotBeNull();
         savedGroup.Id.Should().Be(res.Id);
         savedGroup.Code.Should().Be(100);

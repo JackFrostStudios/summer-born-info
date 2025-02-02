@@ -34,7 +34,7 @@ public class School_Create(PostgresTestFixture App) : BaseIntegrationTest
 
         using var scope = App.Services.CreateScope();
         await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var saveSchool = await dbContext.School.AsNoTracking().SingleAsync(g => g.Id == res.Id);
+        var saveSchool = await dbContext.School.AsNoTracking().SingleAsync(g => g.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
         saveSchool.Should().NotBeNull();
         saveSchool.Id.Should().Be(res.Id);
         saveSchool.URN.Should().Be(1000);
