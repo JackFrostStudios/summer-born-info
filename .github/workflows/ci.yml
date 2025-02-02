@@ -3,7 +3,7 @@ name: CI
 
 on:
   push:
-    branches: [ "feature/build-improvements" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
