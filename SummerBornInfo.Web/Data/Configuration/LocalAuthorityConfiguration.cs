@@ -1,6 +1,6 @@
 ﻿namespace SummerBornInfo.Web.Data.Configuration;
 
-public class LocalAuthorityConfiguration : IEntityTypeConfiguration<LocalAuthority>
+internal class LocalAuthorityConfiguration : IEntityTypeConfiguration<LocalAuthority>
 {
     public void Configure(EntityTypeBuilder<LocalAuthority> builder)
     {

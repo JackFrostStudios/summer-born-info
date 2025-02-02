@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Web.Domain.School;
+﻿namespace SummerBornInfo.Web.Domain;
 
 public class School
 {
@@ -7,7 +7,7 @@ public class School
     public required int UKPRN { get; init; }
     public required int EstablishmentNumber { get; init; }
     public required string Name { get; init; }
-    public required Address Address { get; init; }
+    public required SchoolAddress Address { get; init; }
     public required DateOnly OpenDate { get; init; }
     public DateOnly CloseDate { get; init; }
     public required PhaseOfEducation PhaseOfEducation { get; init; }

@@ -1,6 +1,6 @@
 ﻿namespace SummerBornInfo.Web.Data.Configuration;
 
-public class SchoolConfiguration : IEntityTypeConfiguration<School>
+internal class SchoolConfiguration : IEntityTypeConfiguration<School>
 {
     public void Configure(EntityTypeBuilder<School> builder)
     {
@@ -34,7 +34,7 @@ public class SchoolConfiguration : IEntityTypeConfiguration<School>
         builder
             .HasOne(s => s.Address)
             .WithOne()
-            .HasForeignKey<Address>(a => a.SchoolId)
+            .HasForeignKey<SchoolAddress>(a => a.SchoolId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder

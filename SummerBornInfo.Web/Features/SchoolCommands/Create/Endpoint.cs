@@ -71,7 +71,7 @@ internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Respon
 
         ThrowIfAnyErrors();
 
-        var address = new Address
+        var address = new SchoolAddress
         {
             Street = r.Address.Street,
             Locality = r.Address.Locality,

@@ -24,9 +24,9 @@ public class PostgresTestFixture : AppFixture<Program>
         SeededData = new SeededData(dbContext);
     }
 
-    protected override void ConfigureApp(IWebHostBuilder b)
+    protected override void ConfigureApp(IWebHostBuilder a)
     {
-        b.ConfigureTestServices(services =>
+        a.ConfigureTestServices(services =>
         {
             var descriptor = services.SingleOrDefault(s => s.ServiceType == typeof(DbContextOptions<SchoolContext>));
             if (descriptor is not null) services.Remove(descriptor);

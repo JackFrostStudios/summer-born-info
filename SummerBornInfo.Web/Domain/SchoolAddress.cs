@@ -1,6 +1,6 @@
-﻿namespace SummerBornInfo.Web.Domain.School;
+﻿namespace SummerBornInfo.Web.Domain;
 
-public class Address
+public class SchoolAddress
 {
     public Guid SchoolId { get; set; }
     public string? Street { get; init; }
