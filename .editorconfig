@@ -18,13 +18,6 @@ csharp_style_expression_bodied_accessors = true:silent
 csharp_style_expression_bodied_lambdas = true:silent
 csharp_style_expression_bodied_local_functions = false:silent
 csharp_indent_labels = one_less_than_current
-dotnet_diagnostic.CA1515.severity = none
-
-# CA1849: Call async methods when in an async method
-dotnet_diagnostic.CA1849.severity = none
-
-# CA2007: Consider calling ConfigureAwait on the awaited task
-dotnet_diagnostic.CA2007.severity = none
 
 [*.{cs,vb}]
 #### Naming styles ####
