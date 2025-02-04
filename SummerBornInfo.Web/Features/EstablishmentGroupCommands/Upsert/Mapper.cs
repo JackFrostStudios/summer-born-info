@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Web.Features.EstablishmentGroupCommands.Create;
+﻿namespace SummerBornInfo.Web.Features.EstablishmentGroupCommands.Upsert;
 
 internal sealed class Mapper : Mapper<Request, Response, EstablishmentGroup>
 {
