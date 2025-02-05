@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Web.Features.SchoolCommands.Create;
+﻿namespace SummerBornInfo.Web.Features.SchoolCommands.Upsert;
 
 internal sealed class Request
 {
