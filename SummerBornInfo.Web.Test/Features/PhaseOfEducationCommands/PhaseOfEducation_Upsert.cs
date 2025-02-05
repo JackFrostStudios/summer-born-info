@@ -6,14 +6,15 @@ public class PhaseOfEducation_Upsert(PostgresTestFixture App) : BaseIntegrationT
     [Fact]
     public async Task ValidRequest_Upsert_SavesPhaseSuccessfully()
     {
+        var code = PostgresTestFixture.SeededData.NextSeedNumber();
         var (rsp, res) = await App.Client.POSTAsync<Create.Endpoint, Create.Request, Create.Response>(new()
         {
-            Code = 500,
+            Code = code,
             Name = "Test"
         });
         rsp.StatusCode.Should().Be(HttpStatusCode.OK);
         res.Id.Should().NotBeEmpty();
-        res.Code.Should().Be(500);
+        res.Code.Should().Be(code);
         res.Name.Should().Be("Test");
 
         using var scope = App.Services.CreateScope();
@@ -21,28 +22,29 @@ public class PhaseOfEducation_Upsert(PostgresTestFixture App) : BaseIntegrationT
         var savedPhase = await dbContext.PhaseOfEducation.AsNoTracking().SingleAsync(p => p.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
         savedPhase.Should().NotBeNull();
         savedPhase.Id.Should().Be(res.Id);
-        savedPhase.Code.Should().Be(500);
+        savedPhase.Code.Should().Be(code);
         savedPhase.Name.Should().Be("Test");
     }
 
     [Fact]
     public async Task ExistingPhaseByCode_Upsert_UpdatesPhaseSuccessfully()
     {
+        var code = PostgresTestFixture.SeededData.NextSeedNumber();
         using var seedingScope = App.Services.CreateScope();
         await using var seedingContext = seedingScope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var seededPhase = new PhaseOfEducation { Code = 600, Name = "Original Phase" };
+        var seededPhase = new PhaseOfEducation { Code = code, Name = "Original Phase" };
         seedingContext.Add(seededPhase);
         await seedingContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var (rsp, res) = await App.Client.POSTAsync<Create.Endpoint, Create.Request, Create.Response>(new()
         {
-            Code = 600,
+            Code = code,
             Name = "Updated Phase"
         });
         rsp.StatusCode.Should().Be(HttpStatusCode.OK);
         res.Id.Should().NotBeEmpty();
         res.Id.Should().Be(seededPhase.Id);
-        res.Code.Should().Be(600);
+        res.Code.Should().Be(code);
         res.Name.Should().Be("Updated Phase");
 
         using var scope = App.Services.CreateScope();
@@ -50,7 +52,7 @@ public class PhaseOfEducation_Upsert(PostgresTestFixture App) : BaseIntegrationT
         var savedPhase = await dbContext.PhaseOfEducation.AsNoTracking().SingleAsync(p => p.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
         savedPhase.Should().NotBeNull();
         savedPhase.Id.Should().Be(res.Id);
-        savedPhase.Code.Should().Be(600);
+        savedPhase.Code.Should().Be(code);
         savedPhase.Name.Should().Be("Updated Phase");
     }
 

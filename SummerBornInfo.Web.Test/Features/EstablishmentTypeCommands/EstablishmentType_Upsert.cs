@@ -6,14 +6,15 @@ public class EstablishmentType_Upsert(PostgresTestFixture App) : BaseIntegration
     [Fact]
     public async Task ValidRequest_Upsert_SavesTypeSuccessfully()
     {
+        var code = PostgresTestFixture.SeededData.NextSeedNumber();
         var (rsp, res) = await App.Client.POSTAsync<Create.Endpoint, Create.Request, Create.Response>(new()
         {
-            Code = 300,
+            Code = code,
             Name = "Test"
         });
         rsp.StatusCode.Should().Be(HttpStatusCode.OK);
         res.Id.Should().NotBeEmpty();
-        res.Code.Should().Be(300);
+        res.Code.Should().Be(code);
         res.Name.Should().Be("Test");
 
         using var scope = App.Services.CreateScope();
@@ -21,28 +22,29 @@ public class EstablishmentType_Upsert(PostgresTestFixture App) : BaseIntegration
         var savedType = await dbContext.EstablishmentType.AsNoTracking().SingleAsync(et => et.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
         savedType.Should().NotBeNull();
         savedType.Id.Should().Be(res.Id);
-        savedType.Code.Should().Be(300);
+        savedType.Code.Should().Be(code);
         savedType.Name.Should().Be("Test");
     }
 
     [Fact]
     public async Task ExistingTypeByCode_Upsert_SavesTypeSuccessfully()
     {
+        var code = PostgresTestFixture.SeededData.NextSeedNumber();
         using var seedingScope = App.Services.CreateScope();
         await using var seedingContext = seedingScope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var seededType = new EstablishmentType{ Code = 400, Name = "Original Type" };
+        var seededType = new EstablishmentType{ Code = code, Name = "Original Type" };
         seedingContext.Add(seededType);
         await seedingContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var (rsp, res) = await App.Client.POSTAsync<Create.Endpoint, Create.Request, Create.Response>(new()
         {
-            Code = 400,
+            Code = code,
             Name = "Updated Type"
         });
         rsp.StatusCode.Should().Be(HttpStatusCode.OK);
         res.Id.Should().NotBeEmpty();
         res.Id.Should().Be(seededType.Id);
-        res.Code.Should().Be(400);
+        res.Code.Should().Be(code);
         res.Name.Should().Be("Updated Type");
 
         using var scope = App.Services.CreateScope();
@@ -50,7 +52,7 @@ public class EstablishmentType_Upsert(PostgresTestFixture App) : BaseIntegration
         var savedType = await dbContext.EstablishmentType.AsNoTracking().SingleAsync(et => et.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
         savedType.Should().NotBeNull();
         savedType.Id.Should().Be(res.Id);
-        savedType.Code.Should().Be(400);
+        savedType.Code.Should().Be(code);
         savedType.Name.Should().Be("Updated Type");
     }
 

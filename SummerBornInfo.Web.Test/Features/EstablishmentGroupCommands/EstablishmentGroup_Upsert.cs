@@ -7,14 +7,15 @@ public class EstablishmentGroup_Upsert(PostgresTestFixture App) : BaseIntegratio
     [Fact]
     public async Task ValidRequest_Upsert_SavesGroupSuccessfully()
     {
+        var code = PostgresTestFixture.SeededData.NextSeedNumber();
         var (rsp, res) = await App.Client.POSTAsync<Endpoint, Upsert.Request, Upsert.Response>(new()
         {
-            Code = 100,
+            Code = code,
             Name = "Test"
         });
         rsp.StatusCode.Should().Be(HttpStatusCode.OK);
         res.Id.Should().NotBeEmpty();
-        res.Code.Should().Be(100);
+        res.Code.Should().Be(code);
         res.Name.Should().Be("Test");
 
         using var scope = App.Services.CreateScope();
@@ -22,28 +23,29 @@ public class EstablishmentGroup_Upsert(PostgresTestFixture App) : BaseIntegratio
         var savedGroup = await dbContext.EstablishmentGroup.AsNoTracking().SingleAsync(g => g.Id == res.Id, TestContext.Current.CancellationToken);
         savedGroup.Should().NotBeNull();
         savedGroup.Id.Should().Be(res.Id);
-        savedGroup.Code.Should().Be(100);
+        savedGroup.Code.Should().Be(code);
         savedGroup.Name.Should().Be("Test");
     }
 
     [Fact]
     public async Task ExistingGroupByCode_Upsert_UpdatesGroupSuccessfully()
     {
+        var code = PostgresTestFixture.SeededData.NextSeedNumber();
         using var seedingScope = App.Services.CreateScope();
         await using var seedingContext = seedingScope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var seededGroup = new EstablishmentGroup { Code = 200, Name = "Original Group" };
+        var seededGroup = new EstablishmentGroup { Code = code, Name = "Original Group" };
         seedingContext.Add(seededGroup);
         await seedingContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var (rsp, res) = await App.Client.POSTAsync<Endpoint, Upsert.Request, Upsert.Response>(new()
         {
-            Code = 200,
+            Code = code,
             Name = "Updated Group"
         });
         rsp.StatusCode.Should().Be(HttpStatusCode.OK);
         res.Id.Should().NotBeEmpty();
         res.Id.Should().Be(seededGroup.Id);
-        res.Code.Should().Be(200);
+        res.Code.Should().Be(code);
         res.Name.Should().Be("Updated Group");
 
         using var scope = App.Services.CreateScope();
@@ -51,7 +53,7 @@ public class EstablishmentGroup_Upsert(PostgresTestFixture App) : BaseIntegratio
         var savedGroup = await dbContext.EstablishmentGroup.AsNoTracking().SingleAsync(g => g.Id == res.Id, TestContext.Current.CancellationToken);
         savedGroup.Should().NotBeNull();
         savedGroup.Id.Should().Be(res.Id);
-        savedGroup.Code.Should().Be(200);
+        savedGroup.Code.Should().Be(code);
         savedGroup.Name.Should().Be("Updated Group");
     }
 

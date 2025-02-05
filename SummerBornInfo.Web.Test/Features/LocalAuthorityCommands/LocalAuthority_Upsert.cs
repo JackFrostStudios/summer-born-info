@@ -6,14 +6,15 @@ public class LocalAuthority_Upsert(PostgresTestFixture App) : BaseIntegrationTes
     [Fact]
     public async Task ValidRequest_Upsert_SavesAuthoritySuccessfully()
     {
+        var code = PostgresTestFixture.SeededData.NextSeedNumber();
         var (rsp, res) = await App.Client.POSTAsync<Create.Endpoint, Create.Request, Create.Response>(new()
         {
-            Code = 400,
+            Code = code,
             Name = "Test"
         });
         rsp.StatusCode.Should().Be(HttpStatusCode.OK);
         res.Id.Should().NotBeEmpty();
-        res.Code.Should().Be(400);
+        res.Code.Should().Be(code);
         res.Name.Should().Be("Test");
 
         using var scope = App.Services.CreateScope();
@@ -21,28 +22,29 @@ public class LocalAuthority_Upsert(PostgresTestFixture App) : BaseIntegrationTes
         var savedAuthority = await dbContext.LocalAuthority.AsNoTracking().SingleAsync(a => a.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
         savedAuthority.Should().NotBeNull();
         savedAuthority.Id.Should().Be(res.Id);
-        savedAuthority.Code.Should().Be(400);
+        savedAuthority.Code.Should().Be(code);
         savedAuthority.Name.Should().Be("Test");
     }
 
     [Fact]
     public async Task ExistingAuthorityByCode_Upsert_SavesAuthoritySuccessfully()
     {
+        var code = PostgresTestFixture.SeededData.NextSeedNumber();
         using var seedingScope = App.Services.CreateScope();
         await using var seedingContext = seedingScope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var seededAuthority = new LocalAuthority { Code = 500, Name = "Original Authority" };
+        var seededAuthority = new LocalAuthority { Code = code, Name = "Original Authority" };
         seedingContext.Add(seededAuthority);
         await seedingContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var (rsp, res) = await App.Client.POSTAsync<Create.Endpoint, Create.Request, Create.Response>(new()
         {
-            Code = 500,
+            Code = code,
             Name = "Updated Authority"
         });
         rsp.StatusCode.Should().Be(HttpStatusCode.OK);
         res.Id.Should().NotBeEmpty();
         res.Id.Should().Be(seededAuthority.Id);
-        res.Code.Should().Be(500);
+        res.Code.Should().Be(code);
         res.Name.Should().Be("Updated Authority");
 
         using var scope = App.Services.CreateScope();
@@ -50,7 +52,7 @@ public class LocalAuthority_Upsert(PostgresTestFixture App) : BaseIntegrationTes
         var savedAuthority = await dbContext.LocalAuthority.AsNoTracking().SingleAsync(a => a.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
         savedAuthority.Should().NotBeNull();
         savedAuthority.Id.Should().Be(res.Id);
-        savedAuthority.Code.Should().Be(500);
+        savedAuthority.Code.Should().Be(code);
         savedAuthority.Name.Should().Be("Updated Authority");
     }
 
