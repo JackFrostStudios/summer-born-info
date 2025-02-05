@@ -18,11 +18,11 @@ public class EstablishmentStatus_Upsert(PostgresTestFixture App) : BaseIntegrati
 
         using var scope = App.Services.CreateScope();
         await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var savedGroup = await dbContext.EstablishmentStatus.AsNoTracking().SingleAsync(g => g.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
-        savedGroup.Should().NotBeNull();
-        savedGroup.Id.Should().Be(res.Id);
-        savedGroup.Code.Should().Be(200);
-        savedGroup.Name.Should().Be("Test");
+        var savedStatus = await dbContext.EstablishmentStatus.AsNoTracking().SingleAsync(s => s.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
+        savedStatus.Should().NotBeNull();
+        savedStatus.Id.Should().Be(res.Id);
+        savedStatus.Code.Should().Be(200);
+        savedStatus.Name.Should().Be("Test");
     }
 
     [Fact]
@@ -47,11 +47,11 @@ public class EstablishmentStatus_Upsert(PostgresTestFixture App) : BaseIntegrati
 
         using var scope = App.Services.CreateScope();
         await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var savedGroup = await dbContext.EstablishmentStatus.AsNoTracking().SingleAsync(g => g.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
-        savedGroup.Should().NotBeNull();
-        savedGroup.Id.Should().Be(res.Id);
-        savedGroup.Code.Should().Be(300);
-        savedGroup.Name.Should().Be("Updated Status");
+        var savedStatus = await dbContext.EstablishmentStatus.AsNoTracking().SingleAsync(s => s.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
+        savedStatus.Should().NotBeNull();
+        savedStatus.Id.Should().Be(res.Id);
+        savedStatus.Code.Should().Be(300);
+        savedStatus.Name.Should().Be("Updated Status");
     }
 
     [Fact]

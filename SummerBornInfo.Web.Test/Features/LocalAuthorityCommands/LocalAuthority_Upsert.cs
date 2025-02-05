@@ -18,11 +18,11 @@ public class LocalAuthority_Upsert(PostgresTestFixture App) : BaseIntegrationTes
 
         using var scope = App.Services.CreateScope();
         await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var savedGroup = await dbContext.LocalAuthority.AsNoTracking().SingleAsync(a => a.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
-        savedGroup.Should().NotBeNull();
-        savedGroup.Id.Should().Be(res.Id);
-        savedGroup.Code.Should().Be(400);
-        savedGroup.Name.Should().Be("Test");
+        var savedAuthority = await dbContext.LocalAuthority.AsNoTracking().SingleAsync(a => a.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
+        savedAuthority.Should().NotBeNull();
+        savedAuthority.Id.Should().Be(res.Id);
+        savedAuthority.Code.Should().Be(400);
+        savedAuthority.Name.Should().Be("Test");
     }
 
     [Fact]
@@ -47,11 +47,11 @@ public class LocalAuthority_Upsert(PostgresTestFixture App) : BaseIntegrationTes
 
         using var scope = App.Services.CreateScope();
         await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var savedGroup = await dbContext.LocalAuthority.AsNoTracking().SingleAsync(a => a.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
-        savedGroup.Should().NotBeNull();
-        savedGroup.Id.Should().Be(res.Id);
-        savedGroup.Code.Should().Be(500);
-        savedGroup.Name.Should().Be("Updated Authority");
+        var savedAuthority = await dbContext.LocalAuthority.AsNoTracking().SingleAsync(a => a.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
+        savedAuthority.Should().NotBeNull();
+        savedAuthority.Id.Should().Be(res.Id);
+        savedAuthority.Code.Should().Be(500);
+        savedAuthority.Name.Should().Be("Updated Authority");
     }
 
     [Fact]

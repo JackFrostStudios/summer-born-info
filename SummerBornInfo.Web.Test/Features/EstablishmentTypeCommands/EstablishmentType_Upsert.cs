@@ -18,11 +18,11 @@ public class EstablishmentType_Upsert(PostgresTestFixture App) : BaseIntegration
 
         using var scope = App.Services.CreateScope();
         await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var savedGroup = await dbContext.EstablishmentType.AsNoTracking().SingleAsync(et => et.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
-        savedGroup.Should().NotBeNull();
-        savedGroup.Id.Should().Be(res.Id);
-        savedGroup.Code.Should().Be(300);
-        savedGroup.Name.Should().Be("Test");
+        var savedType = await dbContext.EstablishmentType.AsNoTracking().SingleAsync(et => et.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
+        savedType.Should().NotBeNull();
+        savedType.Id.Should().Be(res.Id);
+        savedType.Code.Should().Be(300);
+        savedType.Name.Should().Be("Test");
     }
 
     [Fact]
@@ -47,11 +47,11 @@ public class EstablishmentType_Upsert(PostgresTestFixture App) : BaseIntegration
 
         using var scope = App.Services.CreateScope();
         await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var savedGroup = await dbContext.EstablishmentType.AsNoTracking().SingleAsync(et => et.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
-        savedGroup.Should().NotBeNull();
-        savedGroup.Id.Should().Be(res.Id);
-        savedGroup.Code.Should().Be(400);
-        savedGroup.Name.Should().Be("Updated Type");
+        var savedType = await dbContext.EstablishmentType.AsNoTracking().SingleAsync(et => et.Id == res.Id, cancellationToken: TestContext.Current.CancellationToken);
+        savedType.Should().NotBeNull();
+        savedType.Id.Should().Be(res.Id);
+        savedType.Code.Should().Be(400);
+        savedType.Name.Should().Be("Updated Type");
     }
 
     [Fact]
