@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Web.Features.LocalAuthorityCommands.Create;
+﻿namespace SummerBornInfo.Web.Features.LocalAuthorityCommands.Upsert;
 
 internal sealed class Mapper : Mapper<Request, Response, LocalAuthority>
 {

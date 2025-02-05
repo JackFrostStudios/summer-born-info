@@ -1,6 +1,7 @@
 ﻿namespace SummerBornInfo.Web.Test.IntegrationTest;
 public class SeededData
 {
+    private int CodeSeed {  get; set; }
     public PhaseOfEducation PhaseOfEducation { get; private init; }
     public LocalAuthority LocalAuthority { get; private init; }
     public EstablishmentGroup EstablishmentGroup { get; private init; }
@@ -13,11 +14,11 @@ public class SeededData
     {
         schoolContext = SchoolContext;
 
-        PhaseOfEducation = new PhaseOfEducation { Code = 10000, Name = "Primary" };
-        LocalAuthority = new LocalAuthority { Code = 20000, Name = "Authority" };
-        EstablishmentGroup = new EstablishmentGroup { Code = 30000, Name = "Establishment Group" };
-        EstablishmentStatus = new EstablishmentStatus { Code = 40000, Name = "Open" };
-        EstablishmentType = new EstablishmentType { Code = 50000, Name = "Community School" };
+        PhaseOfEducation = new PhaseOfEducation { Code = NextSeedNumber(), Name = "Primary" };
+        LocalAuthority = new LocalAuthority { Code = NextSeedNumber(), Name = "Authority" };
+        EstablishmentGroup = new EstablishmentGroup { Code = NextSeedNumber(), Name = "Establishment Group" };
+        EstablishmentStatus = new EstablishmentStatus { Code = NextSeedNumber(), Name = "Open" };
+        EstablishmentType = new EstablishmentType { Code = NextSeedNumber(), Name = "Community School" };
         var address = new SchoolAddress { Street = "Str", Locality = "loc", AddressThree = "addr3", Town = "twn", County = "Coun", PostCode = "PT12CD" };
 
         schoolContext.Add(PhaseOfEducation);
@@ -32,19 +33,21 @@ public class SeededData
             Address = address,
             CloseDate = new DateOnly(2024, 10, 21),
             EstablishmentGroup = EstablishmentGroup,
-            EstablishmentNumber = 60000,
+            EstablishmentNumber = NextSeedNumber(),
             EstablishmentStatus = EstablishmentStatus,
             EstablishmentType = EstablishmentType,
             LocalAuthority = LocalAuthority,
             Name = "Local Primary School",
             OpenDate = new DateOnly(2023, 10, 21),
             PhaseOfEducation = PhaseOfEducation,
-            UKPRN = 70000,
-            URN = 80000
+            UKPRN = NextSeedNumber(),
+            URN = NextSeedNumber()
         };
 
         schoolContext.Add(School);
         schoolContext.SaveChanges();
         schoolContext.ChangeTracker.Clear();
     }
+
+    public int NextSeedNumber() => ++CodeSeed;
 }

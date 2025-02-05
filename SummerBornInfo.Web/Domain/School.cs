@@ -6,14 +6,14 @@ public class School
     public required int URN { get; init; }
     public required int UKPRN { get; init; }
     public required int EstablishmentNumber { get; init; }
-    public required string Name { get; init; }
-    public required SchoolAddress Address { get; init; }
-    public required DateOnly OpenDate { get; init; }
-    public DateOnly CloseDate { get; init; }
-    public required PhaseOfEducation PhaseOfEducation { get; init; }
-    public required LocalAuthority LocalAuthority { get; init; }
-    public required EstablishmentType EstablishmentType { get; init; }
-    public required EstablishmentGroup EstablishmentGroup { get; init; }
-    public required EstablishmentStatus EstablishmentStatus { get; init; }
+    public required string Name { get; set; }
+    public required SchoolAddress Address { get; set; }
+    public required DateOnly OpenDate { get; set; }
+    public DateOnly CloseDate { get; set; }
+    public required PhaseOfEducation PhaseOfEducation { get; set; }
+    public required LocalAuthority LocalAuthority { get; set; }
+    public required EstablishmentType EstablishmentType { get; set; }
+    public required EstablishmentGroup EstablishmentGroup { get; set; }
+    public required EstablishmentStatus EstablishmentStatus { get; set; }
     public uint Version { get; init; }
 }
