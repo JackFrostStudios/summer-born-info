@@ -31,7 +31,7 @@ public class EstablishmentStatus_Upsert(PostgresTestFixture App) : BaseIntegrati
         using var seedingScope = App.Services.CreateScope();
         await using var seedingContext = seedingScope.ServiceProvider.GetRequiredService<SchoolContext>();
         var seededStatus = new EstablishmentStatus { Code = 300, Name = "Original Status" };
-        var x = seedingContext.Add(seededStatus);
+        seedingContext.Add(seededStatus);
         await seedingContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var (rsp, res) = await App.Client.POSTAsync<Create.Endpoint, Create.Request, Create.Response>(new()

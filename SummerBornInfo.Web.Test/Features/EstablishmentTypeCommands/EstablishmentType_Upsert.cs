@@ -31,7 +31,7 @@ public class EstablishmentType_Upsert(PostgresTestFixture App) : BaseIntegration
         using var seedingScope = App.Services.CreateScope();
         await using var seedingContext = seedingScope.ServiceProvider.GetRequiredService<SchoolContext>();
         var seededType = new EstablishmentType{ Code = 400, Name = "Original Type" };
-        var x = seedingContext.Add(seededType);
+        seedingContext.Add(seededType);
         await seedingContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var (rsp, res) = await App.Client.POSTAsync<Create.Endpoint, Create.Request, Create.Response>(new()
