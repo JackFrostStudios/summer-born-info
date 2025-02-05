@@ -31,7 +31,8 @@ public class EstablishmentGroup_Upsert(PostgresTestFixture App) : BaseIntegratio
     {
         using var seedingScope = App.Services.CreateScope();
         await using var seedingContext = seedingScope.ServiceProvider.GetRequiredService<SchoolContext>();
-        seedingContext.Add<EstablishmentGroup>(new EstablishmentGroup { Code = 200, Name = "Original Group" });
+        var seededGroup = new EstablishmentGroup { Code = 200, Name = "Original Group" };
+        seedingContext.Add(seededGroup);
         await seedingContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var (rsp, res) = await App.Client.POSTAsync<Endpoint, Upsert.Request, Upsert.Response>(new()
@@ -41,6 +42,7 @@ public class EstablishmentGroup_Upsert(PostgresTestFixture App) : BaseIntegratio
         });
         rsp.StatusCode.Should().Be(HttpStatusCode.OK);
         res.Id.Should().NotBeEmpty();
+        res.Id.Should().Be(seededGroup.Id);
         res.Code.Should().Be(200);
         res.Name.Should().Be("Updated Group");
 
