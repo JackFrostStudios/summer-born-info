@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Web.Features.PhaseOfEducationCommands.Create;
+﻿namespace SummerBornInfo.Web.Features.PhaseOfEducationCommands.Upsert;
 
 internal sealed class Mapper : Mapper<Request, Response, PhaseOfEducation>
 {
