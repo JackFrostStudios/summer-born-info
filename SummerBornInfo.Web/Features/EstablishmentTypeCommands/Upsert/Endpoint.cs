@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Web.Features.EstablishmentTypeCommands.Create;
+﻿namespace SummerBornInfo.Web.Features.EstablishmentTypeCommands.Upsert;
 
 internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Response, Mapper>
 {
@@ -12,9 +12,17 @@ internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Respon
 
     public override async Task HandleAsync(Request req, CancellationToken c)
     {
-        var type = Map.ToEntity(req);
-
-        context.Add(type);
+        var type = await context.EstablishmentType.FirstOrDefaultAsync(et => et.Code == req.Code, c);
+        if (type != null)
+        {
+            type.Name = req.Name;
+        }
+        else
+        {
+            type = Map.ToEntity(req);
+            context.Add(type);
+        }
+        
         await context.SaveChangesAsync(c);
 
         var resp = Map.FromEntity(type);
