@@ -18,7 +18,10 @@ if (app.Environment.IsProduction())
 {
     app.UseDefaultExceptionHandler();
 }
-app.UseFastEndpoints();
+app.UseFastEndpoints(c =>
+{
+    c.Endpoints.RoutePrefix = "api";
+});
 app.UseSwaggerGen();
 
 app.Run();
