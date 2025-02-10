@@ -6,6 +6,9 @@ builder.Services.SwaggerDocument();
 
 var app = builder.Build();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
