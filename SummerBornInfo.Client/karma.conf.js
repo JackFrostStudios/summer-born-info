@@ -1,4 +1,4 @@
-﻿module.exports = function (config) {
+module.exports = function (config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
@@ -26,7 +26,8 @@
       subdir: '.',
       reporters: [
         { type: 'html' },
-        { type: 'text-summary' }
+        { type: 'text-summary' },
+        { type: 'cobertura' }
       ]
     },
     reporters: ['progress', 'kjhtml'],
