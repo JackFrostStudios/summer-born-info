@@ -32,7 +32,7 @@ jobs:
     - name: Combine Coverage Reports
       uses: danielpalme/ReportGenerator-GitHub-Action@c38c522d4b391c1b0da979cbb2e902c0a252a7dc #v5.4.3
       with:
-        reports: "**/*.cobertura.xml"
+        reports: "**/*.cobertura.xml;**/cobertura-coverage.xml"
         targetdir: "${{ github.workspace }}"
         reporttypes: "Cobertura"
         verbosity: "Info"
