@@ -23,7 +23,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     trxReporter: {
-      outputFile: 'SummerBornInfo.Client.trx',
+      outputFile: './TestResults/SummerBornInfo.Client.trx',
       shortTestName: false
     },
     coverageReporter: {
