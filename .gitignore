@@ -430,3 +430,6 @@ FodyWeavers.xsd
 **/.DS_Store
 **/Thumbs.db
 
+# TRX Test Results
+**/*.trx
+

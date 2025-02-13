@@ -7,7 +7,8 @@ module.exports = function (config) {
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage'),
-      require('@angular-devkit/build-angular/plugins/karma')
+      require('@angular-devkit/build-angular/plugins/karma'),
+      require('karma-trx-reporter')
     ],
     client: {
       jasmine: {
@@ -20,6 +21,10 @@ module.exports = function (config) {
     },
     jasmineHtmlReporter: {
       suppressAll: true // removes the duplicated traces
+    },
+    trxReporter: {
+      outputFile: 'SummerBornInfo.Client.trx',
+      shortTestName: false
     },
     coverageReporter: {
       dir: require('path').join(__dirname, './coverage/'),
