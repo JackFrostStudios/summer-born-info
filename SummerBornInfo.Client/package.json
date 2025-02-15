@@ -31,7 +31,6 @@
     "@angular/compiler-cli": "^19.1.0",
     "@types/jasmine": "~5.1.0",
     "angular-eslint": "19.1.0",
-    "esbuild": "^0.25.0",
     "eslint": "^9.20.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.3",
@@ -46,5 +45,8 @@
     "prettier-eslint": "^16.3.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "8.23.0"
+  },
+  "overrides": {
+    "esbuild": ">=0.25.0"
   }
 }
