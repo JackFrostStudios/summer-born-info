@@ -9,7 +9,7 @@ import { ImportFileValidatorService } from '../validation/import-file-validator.
   providedIn: 'root',
 })
 export class ImportFileParsingService {
-  constructor(private readonly importFileValidatorService: ImportFileValidatorService) { }
+  constructor(private readonly importFileValidatorService: ImportFileValidatorService) {}
 
   parseImportFile(file: File) {
     return new Promise<ImportFileResult>((resolve, error) => {
