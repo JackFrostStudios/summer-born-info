@@ -15,38 +15,44 @@ export class ImportFileResultBuilder {
   private phasesOfEducation: Record<string, CreatePhaseOfEducationRequest> = {};
   private schools: ImportSchool[] = [];
 
-  public AddLocalAuthority(localAuthority: CreateLocalAuthorityRequest) {
+  public AddLocalAuthority(localAuthority: CreateLocalAuthorityRequest): ImportFileResultBuilder {
     if (this.localAuthorities[localAuthority.code] === undefined) {
       this.localAuthorities[localAuthority.code] = localAuthority;
     }
+    return this;
   }
 
-  public AddEstablishmentType(establishmentType: CreateEstablishmentTypeRequest) {
+  public AddEstablishmentType(establishmentType: CreateEstablishmentTypeRequest): ImportFileResultBuilder {
     if (this.establishmentTypes[establishmentType.code] === undefined) {
       this.establishmentTypes[establishmentType.code] = establishmentType;
     }
+    return this;
   }
 
-  public AddEstablishmentGroup(establishmentGroup: CreateEstablishmentGroupRequest) {
+  public AddEstablishmentGroup(establishmentGroup: CreateEstablishmentGroupRequest): ImportFileResultBuilder {
     if (this.establishmentGroups[establishmentGroup.code] === undefined) {
       this.establishmentGroups[establishmentGroup.code] = establishmentGroup;
     }
+    return this;
   }
 
-  public AddEstablishmentStatus(establishmentStatus: CreateEstablishmentStatusRequest) {
+  public AddEstablishmentStatus(establishmentStatus: CreateEstablishmentStatusRequest): ImportFileResultBuilder {
     if (this.establishmentStatuses[establishmentStatus.code] === undefined) {
       this.establishmentStatuses[establishmentStatus.code] = establishmentStatus;
     }
+    return this;
   }
 
-  public AddPhaseOfEducation(phaseOfEducation: CreatePhaseOfEducationRequest) {
+  public AddPhaseOfEducation(phaseOfEducation: CreatePhaseOfEducationRequest): ImportFileResultBuilder {
     if (this.phasesOfEducation[phaseOfEducation.code] === undefined) {
       this.phasesOfEducation[phaseOfEducation.code] = phaseOfEducation;
     }
+    return this;
   }
 
-  public AddSchool(school: ImportSchool) {
+  public AddSchool(school: ImportSchool): ImportFileResultBuilder {
     this.schools.push(school);
+    return this;
   }
 
   public GetResults(): ImportFileResult {

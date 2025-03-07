@@ -13,9 +13,11 @@ describe('ImportFileResultBuilder', () => {
     importFileResultBuilder = new ImportFileResultBuilder();
   });
 
-  it('AddLocalAuthority should add a local authority to the result', () => {
+  it('AddLocalAuthority should add a local authority to the result and return the builder', () => {
     const localAuthority: CreateLocalAuthorityRequest = { code: 'LA1', name: 'Local Authority 1' };
-    importFileResultBuilder.AddLocalAuthority(localAuthority);
+    const returnedBuilder = importFileResultBuilder.AddLocalAuthority(localAuthority);
+
+    expect(returnedBuilder).toBe(importFileResultBuilder);
 
     const results = importFileResultBuilder.GetResults();
     expect(results.localAuthorities).toHaveSize(1);
@@ -25,16 +27,17 @@ describe('ImportFileResultBuilder', () => {
 
   it('AddLocalAuthority should not add a duplicate local authority', () => {
     const localAuthority: CreateLocalAuthorityRequest = { code: 'LA1', name: 'Local Authority 1' };
-    importFileResultBuilder.AddLocalAuthority(localAuthority);
-    importFileResultBuilder.AddLocalAuthority(localAuthority);
+    importFileResultBuilder.AddLocalAuthority(localAuthority).AddLocalAuthority(localAuthority);
 
     const results = importFileResultBuilder.GetResults();
     expect(results.localAuthorities).toHaveSize(1);
   });
 
-  it('AddEstablishmentType should add an establishment type to the result', () => {
+  it('AddEstablishmentType should add an establishment type to the result and return the builder', () => {
     const establishmentType: CreateEstablishmentTypeRequest = { code: 'ET1', name: 'Establishment Type 1' };
-    importFileResultBuilder.AddEstablishmentType(establishmentType);
+    const returnedBuilder = importFileResultBuilder.AddEstablishmentType(establishmentType);
+
+    expect(returnedBuilder).toBe(importFileResultBuilder);
 
     const results = importFileResultBuilder.GetResults();
     expect(results.establishmentTypes).toHaveSize(1);
@@ -44,16 +47,17 @@ describe('ImportFileResultBuilder', () => {
 
   it('AddEstablishmentType should not add a duplicate establishment type', () => {
     const establishmentType: CreateEstablishmentTypeRequest = { code: 'ET1', name: 'Establishment Type 1' };
-    importFileResultBuilder.AddEstablishmentType(establishmentType);
-    importFileResultBuilder.AddEstablishmentType(establishmentType);
+    importFileResultBuilder.AddEstablishmentType(establishmentType).AddEstablishmentType(establishmentType);
 
     const results = importFileResultBuilder.GetResults();
     expect(results.establishmentTypes).toHaveSize(1);
   });
 
-  it('AddEstablishmentGroup should add an establishment group to the list', () => {
+  it('AddEstablishmentGroup should add an establishment group to the list and return the builder', () => {
     const establishmentGroup: CreateEstablishmentGroupRequest = { code: 'EG1', name: 'Establishment Group 1' };
-    importFileResultBuilder.AddEstablishmentGroup(establishmentGroup);
+    const returnedBuilder = importFileResultBuilder.AddEstablishmentGroup(establishmentGroup);
+
+    expect(returnedBuilder).toBe(importFileResultBuilder);
 
     const results = importFileResultBuilder.GetResults();
     expect(results.establishmentGroups).toHaveSize(1);
@@ -63,16 +67,17 @@ describe('ImportFileResultBuilder', () => {
 
   it('AddEstablishmentGroup should not add a duplicate establishment group', () => {
     const establishmentGroup: CreateEstablishmentGroupRequest = { code: 'EG1', name: 'Establishment Group 1' };
-    importFileResultBuilder.AddEstablishmentGroup(establishmentGroup);
-    importFileResultBuilder.AddEstablishmentGroup(establishmentGroup);
+    importFileResultBuilder.AddEstablishmentGroup(establishmentGroup).AddEstablishmentGroup(establishmentGroup);
 
     const results = importFileResultBuilder.GetResults();
     expect(results.establishmentGroups).toHaveSize(1);
   });
 
-  it('AddEstablishmentStatus should add an establishment status to the list', () => {
+  it('AddEstablishmentStatus should add an establishment status to the list and return the builder', () => {
     const establishmentStatus: CreateEstablishmentStatusRequest = { code: 'ES1', name: 'Establishment Status 1' };
-    importFileResultBuilder.AddEstablishmentStatus(establishmentStatus);
+    const returnedBuilder = importFileResultBuilder.AddEstablishmentStatus(establishmentStatus);
+
+    expect(returnedBuilder).toBe(importFileResultBuilder);
 
     const results = importFileResultBuilder.GetResults();
     expect(results.establishmentStatuses).toHaveSize(1);
@@ -82,16 +87,17 @@ describe('ImportFileResultBuilder', () => {
 
   it('AddEstablishmentStatus should not add a duplicate establishment status', () => {
     const establishmentStatus: CreateEstablishmentStatusRequest = { code: 'ES1', name: 'Establishment Status 1' };
-    importFileResultBuilder.AddEstablishmentStatus(establishmentStatus);
-    importFileResultBuilder.AddEstablishmentStatus(establishmentStatus);
+    importFileResultBuilder.AddEstablishmentStatus(establishmentStatus).AddEstablishmentStatus(establishmentStatus);
 
     const results = importFileResultBuilder.GetResults();
     expect(results.establishmentStatuses).toHaveSize(1);
   });
 
-  it('AddPhaseOfEducation should add a phase of education to the result', () => {
+  it('AddPhaseOfEducation should add a phase of education to the result and return the builder', () => {
     const phaseOfEducation: CreatePhaseOfEducationRequest = { code: 'PE1', name: 'Phase of Education 1' };
-    importFileResultBuilder.AddPhaseOfEducation(phaseOfEducation);
+    const returnedBuilder = importFileResultBuilder.AddPhaseOfEducation(phaseOfEducation);
+
+    expect(returnedBuilder).toBe(importFileResultBuilder);
 
     const results = importFileResultBuilder.GetResults();
     expect(results.phasesOfEducation).toHaveSize(1);
@@ -101,23 +107,24 @@ describe('ImportFileResultBuilder', () => {
 
   it('AddPhaseOfEducation not add a duplicate phase of education', () => {
     const phaseOfEducation: CreatePhaseOfEducationRequest = { code: 'PE1', name: 'Phase of Education 1' };
-    importFileResultBuilder.AddPhaseOfEducation(phaseOfEducation);
-    importFileResultBuilder.AddPhaseOfEducation(phaseOfEducation);
+    importFileResultBuilder.AddPhaseOfEducation(phaseOfEducation).AddPhaseOfEducation(phaseOfEducation);
 
     const results = importFileResultBuilder.GetResults();
     expect(results.phasesOfEducation).toHaveSize(1);
   });
 
-  it('AddSchool should add a school to the list', () => {
+  it('AddSchool should add a school to the list and return the builder', () => {
     const school = getTestImportSchool();
-    importFileResultBuilder.AddSchool(school);
+    const returnedBuilder = importFileResultBuilder.AddSchool(school);
+
+    expect(returnedBuilder).toBe(importFileResultBuilder);
 
     const results = importFileResultBuilder.GetResults();
     expect(results.schools).toHaveSize(1);
     expect(results.schools[0]).toEqual(school);
   });
 
-  it('GetResults should return all added data', () => {
+  it('GetResults should include all added data in the result and return the builder', () => {
     const localAuthority: CreateLocalAuthorityRequest = { code: 'LA1', name: 'Local Authority 1' };
     const establishmentType: CreateEstablishmentTypeRequest = { code: 'ET1', name: 'Establishment Type 1' };
     const establishmentGroup: CreateEstablishmentGroupRequest = { code: 'EG1', name: 'Establishment Group 1' };
@@ -125,12 +132,15 @@ describe('ImportFileResultBuilder', () => {
     const phaseOfEducation: CreatePhaseOfEducationRequest = { code: 'PE1', name: 'Phase of Education 1' };
     const school = getTestImportSchool();
 
-    importFileResultBuilder.AddLocalAuthority(localAuthority);
-    importFileResultBuilder.AddEstablishmentType(establishmentType);
-    importFileResultBuilder.AddEstablishmentGroup(establishmentGroup);
-    importFileResultBuilder.AddEstablishmentStatus(establishmentStatus);
-    importFileResultBuilder.AddPhaseOfEducation(phaseOfEducation);
-    importFileResultBuilder.AddSchool(school);
+    const returnedBuilder = importFileResultBuilder
+      .AddLocalAuthority(localAuthority)
+      .AddEstablishmentType(establishmentType)
+      .AddEstablishmentGroup(establishmentGroup)
+      .AddEstablishmentStatus(establishmentStatus)
+      .AddPhaseOfEducation(phaseOfEducation)
+      .AddSchool(school);
+
+    expect(returnedBuilder).toBe(importFileResultBuilder);
 
     const results = importFileResultBuilder.GetResults();
     expect(results.localAuthorities).toHaveSize(1);
