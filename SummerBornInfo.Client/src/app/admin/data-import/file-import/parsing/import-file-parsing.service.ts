@@ -3,11 +3,14 @@ import { parse } from 'papaparse';
 import { ImportFileCsvRow } from '../import-file-csv-row.model';
 import { ImportFileResultBuilder } from './import-file-result-builder';
 import { ImportFileResult } from './import-file-result.model';
+import { ImportFileValidatorService } from '../validation/import-file-validator.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ImportFileParsingService {
+  constructor(private readonly importFileValidatorService: ImportFileValidatorService) { }
+
   parseImportFile(file: File) {
     return new Promise<ImportFileResult>((resolve, error) => {
       const result = new ImportFileResultBuilder();
@@ -19,8 +22,16 @@ export class ImportFileParsingService {
           if (fileResult.errors && fileResult.errors.length > 0) {
             error(fileResult.errors);
           }
-          fileResult.data.forEach(record => {
-            //TODO: Validate record before processing & include errors in result.
+          fileResult.data.forEach((record, i) => {
+            const validationErrors = this.importFileValidatorService.validateRow(record);
+            if (validationErrors.length > 0) {
+              result.AddError({
+                rowNumber: i + 1,
+                errors: validationErrors,
+              });
+
+              return;
+            }
             result
               .AddLocalAuthority({
                 code: record['LA (code)'],

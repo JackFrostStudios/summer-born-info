@@ -3,6 +3,14 @@ import { TestBed } from '@angular/core/testing';
 import { ImportFileParsingService } from './import-file-parsing.service';
 import { DataRow, getDataRow, getHeaderRow } from '../import-csv-file.test';
 import { ImportFileResult } from './import-file-result.model';
+import { ParseError } from 'papaparse';
+
+const laCode = '01';
+const typeCode = '02';
+const typeCode2 = '20';
+const groupCode = '03';
+const statusCode = '04';
+const phaseCode = '05';
 
 describe('ImportFileParsingService', () => {
   let service: ImportFileParsingService;
@@ -14,6 +22,34 @@ describe('ImportFileParsingService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  describe('Given an invalid CSV file', () => {
+    let inputFile: File;
+    beforeEach(() => {
+      const data = '"delimiter" error"';
+      const blob = new Blob([data], { type: 'text/csv' });
+      inputFile = new File([blob], 'import.csv', { type: 'text/csv' });
+    });
+    describe('When the file is parsed', () => {
+      let result: ImportFileResult;
+      let errors: ParseError[];
+      beforeEach(async () => {
+        try {
+          result = await service.parseImportFile(inputFile);
+        } catch (e) {
+          errors = e as ParseError[];
+        }
+      });
+
+      it('Then the error is thrown', () => {
+        expect(result).toBeUndefined();
+        expect(errors).toBeDefined();
+        expect(errors).toHaveSize(2);
+        expect(errors[0].type).toBe('Quotes');
+        expect(errors[1].type).toBe('Delimiter');
+      });
+    });
   });
 
   describe('Given an import file with a single record', () => {
@@ -52,31 +88,31 @@ describe('ImportFileParsingService', () => {
 
       it('Then the result contains the establishment group', () => {
         expect(result.establishmentGroups.length).toBe(1);
-        expect(result.establishmentGroups[0].code).toBe('groupCode');
+        expect(result.establishmentGroups[0].code).toBe(groupCode);
         expect(result.establishmentGroups[0].name).toBe('groupName');
       });
 
       it('Then the result contains the establishment status', () => {
         expect(result.establishmentStatuses.length).toBe(1);
-        expect(result.establishmentStatuses[0].code).toBe('statusCode');
+        expect(result.establishmentStatuses[0].code).toBe(statusCode);
         expect(result.establishmentStatuses[0].name).toBe('statusName');
       });
 
       it('Then the result contains the establishment type', () => {
         expect(result.establishmentTypes.length).toBe(1);
-        expect(result.establishmentTypes[0].code).toBe('typeCode');
+        expect(result.establishmentTypes[0].code).toBe(typeCode);
         expect(result.establishmentTypes[0].name).toBe('typeName');
       });
 
       it('Then the result contains the local authority', () => {
         expect(result.localAuthorities.length).toBe(1);
-        expect(result.localAuthorities[0].code).toBe('laCode');
+        expect(result.localAuthorities[0].code).toBe(laCode);
         expect(result.localAuthorities[0].name).toBe('laName');
       });
 
       it('Then the result contains the phase of education', () => {
         expect(result.phasesOfEducation.length).toBe(1);
-        expect(result.phasesOfEducation[0].code).toBe('phaseCode');
+        expect(result.phasesOfEducation[0].code).toBe(phaseCode);
         expect(result.phasesOfEducation[0].name).toBe('phaseName');
       });
     });
@@ -120,31 +156,31 @@ describe('ImportFileParsingService', () => {
 
       it('Then the result contains the establishment group', () => {
         expect(result.establishmentGroups.length).toBe(1);
-        expect(result.establishmentGroups[0].code).toBe('groupCode');
+        expect(result.establishmentGroups[0].code).toBe(groupCode);
         expect(result.establishmentGroups[0].name).toBe('groupName');
       });
 
       it('Then the result contains the establishment status', () => {
         expect(result.establishmentStatuses.length).toBe(1);
-        expect(result.establishmentStatuses[0].code).toBe('statusCode');
+        expect(result.establishmentStatuses[0].code).toBe(statusCode);
         expect(result.establishmentStatuses[0].name).toBe('statusName');
       });
 
       it('Then the result contains the establishment type', () => {
         expect(result.establishmentTypes.length).toBe(1);
-        expect(result.establishmentTypes[0].code).toBe('typeCode');
+        expect(result.establishmentTypes[0].code).toBe(typeCode);
         expect(result.establishmentTypes[0].name).toBe('typeName');
       });
 
       it('Then the result contains the local authority', () => {
         expect(result.localAuthorities.length).toBe(1);
-        expect(result.localAuthorities[0].code).toBe('laCode');
+        expect(result.localAuthorities[0].code).toBe(laCode);
         expect(result.localAuthorities[0].name).toBe('laName');
       });
 
       it('Then the result contains the phase of education', () => {
         expect(result.phasesOfEducation.length).toBe(1);
-        expect(result.phasesOfEducation[0].code).toBe('phaseCode');
+        expect(result.phasesOfEducation[0].code).toBe(phaseCode);
         expect(result.phasesOfEducation[0].name).toBe('phaseName');
       });
     });
@@ -215,7 +251,7 @@ describe('ImportFileParsingService', () => {
       dataRow.ukprn = '20';
       dataRow.establishmentName = 'establishmentName2';
       dataRow.establishmentNumber = '30';
-      dataRow.typeCode += '2';
+      dataRow.typeCode = typeCode2;
       dataRow.typeName += '2';
       data += getDataRow(dataRow);
       const blob = new Blob([data], { type: 'text/csv' });
@@ -248,11 +284,11 @@ describe('ImportFileParsingService', () => {
 
       it('Then the result contains one establishment type', () => {
         expect(result.establishmentTypes.length).toBe(2);
-        expect(result.establishmentTypes.find(s => s.code === 'typeCode'))
-          .withContext('Establishment type with code "typeCode" should be in results.')
+        expect(result.establishmentTypes.find(s => s.code === typeCode))
+          .withContext(`Establishment type with code "${typeCode}" should be in results.`)
           .toBeDefined();
-        expect(result.establishmentTypes.find(s => s.code === 'typeCode2'))
-          .withContext('Establishment type with code "typeCode2" should be in results.')
+        expect(result.establishmentTypes.find(s => s.code === typeCode2))
+          .withContext(`Establishment type with code "${typeCode2}" should be in results.`)
           .toBeDefined();
       });
 
@@ -265,19 +301,54 @@ describe('ImportFileParsingService', () => {
       });
     });
   });
+
+  describe('Given an import file with a single record with invalid data', () => {
+    let inputFile: File;
+    beforeEach(() => {
+      let data = '';
+      const dataRow = getCsvRow();
+      dataRow.ukprn = 'invalidukprn';
+      data += getHeaderRow();
+      data += getDataRow(dataRow);
+      const blob = new Blob([data], { type: 'text/csv' });
+      inputFile = new File([blob], 'import.csv', { type: 'text/csv' });
+    });
+
+    describe('When the file is imported', () => {
+      let result: ImportFileResult;
+      beforeEach(async () => {
+        result = await service.parseImportFile(inputFile);
+      });
+
+      it('Then the result contains no import data', () => {
+        expect(result.schools.length).toBe(0);
+        expect(result.establishmentGroups.length).toBe(0);
+        expect(result.establishmentStatuses.length).toBe(0);
+        expect(result.establishmentTypes.length).toBe(0);
+        expect(result.localAuthorities.length).toBe(0);
+        expect(result.phasesOfEducation.length).toBe(0);
+      });
+
+      it('Then the result contains the error details', () => {
+        expect(result.errors.length).toBe(1);
+        expect(result.errors[0].rowNumber).toBe(1);
+        expect(result.errors[0].errors).toEqual(['UKPRN "invalidukprn" must be an integer number.']);
+      });
+    });
+  });
 });
 
 const getCsvRow = (): DataRow => {
   return {
-    laCode: 'laCode',
+    laCode: laCode,
     laName: 'laName',
-    typeCode: 'typeCode',
+    typeCode: typeCode,
     typeName: 'typeName',
-    groupCode: 'groupCode',
+    groupCode: groupCode,
     groupName: 'groupName',
-    statusCode: 'statusCode',
+    statusCode: statusCode,
     statusName: 'statusName',
-    phaseCode: 'phaseCode',
+    phaseCode: phaseCode,
     phaseName: 'phaseName',
     urn: '1',
     ukprn: '2',
