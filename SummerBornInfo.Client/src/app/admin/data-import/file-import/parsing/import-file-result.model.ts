@@ -4,6 +4,7 @@ import { CreateEstablishmentTypeRequest } from '../../../../entities/establishme
 import { CreateLocalAuthorityRequest } from '../../../../entities/local-authority/local-authority.model';
 import { CreatePhaseOfEducationRequest } from '../../../../entities/phase-of-education/phase-of-education.model';
 import { CreateSchoolRequest } from '../../../../entities/school/school.model';
+import { ImportFileError } from './import-file-error.model';
 
 export interface ImportFileResult {
   localAuthorities: CreateLocalAuthorityRequest[];
@@ -12,4 +13,5 @@ export interface ImportFileResult {
   establishmentStatuses: CreateEstablishmentStatusRequest[];
   phasesOfEducation: CreatePhaseOfEducationRequest[];
   schools: CreateSchoolRequest[];
+  errors: ImportFileError[];
 }

@@ -4,6 +4,7 @@ import { CreateEstablishmentTypeRequest } from '../../../../entities/establishme
 import { CreateLocalAuthorityRequest } from '../../../../entities/local-authority/local-authority.model';
 import { CreatePhaseOfEducationRequest } from '../../../../entities/phase-of-education/phase-of-education.model';
 import { getTestImportSchool } from '../../../../entities/school/school.model.test';
+import { ImportFileError } from './import-file-error.model';
 import { ImportFileResultBuilder } from './import-file-result-builder';
 
 describe('ImportFileResultBuilder', () => {
@@ -124,6 +125,20 @@ describe('ImportFileResultBuilder', () => {
     expect(results.schools[0]).toEqual(school);
   });
 
+  it('AddError should add a error to the list and return the builder', () => {
+    const error: ImportFileError = {
+      rowNumber: 1,
+      errors: ['Error Importing'],
+    };
+    const returnedBuilder = importFileResultBuilder.AddError(error);
+
+    expect(returnedBuilder).toBe(importFileResultBuilder);
+
+    const results = importFileResultBuilder.GetResults();
+    expect(results.errors).toHaveSize(1);
+    expect(results.errors[0]).toEqual(error);
+  });
+
   it('GetResults should include all added data in the result and return the builder', () => {
     const localAuthority: CreateLocalAuthorityRequest = { code: 'LA1', name: 'Local Authority 1' };
     const establishmentType: CreateEstablishmentTypeRequest = { code: 'ET1', name: 'Establishment Type 1' };
@@ -131,6 +146,10 @@ describe('ImportFileResultBuilder', () => {
     const establishmentStatus: CreateEstablishmentStatusRequest = { code: 'ES1', name: 'Establishment Status 1' };
     const phaseOfEducation: CreatePhaseOfEducationRequest = { code: 'PE1', name: 'Phase of Education 1' };
     const school = getTestImportSchool();
+    const error: ImportFileError = {
+      rowNumber: 1,
+      errors: ['Error Importing'],
+    };
 
     const returnedBuilder = importFileResultBuilder
       .AddLocalAuthority(localAuthority)
@@ -138,7 +157,8 @@ describe('ImportFileResultBuilder', () => {
       .AddEstablishmentGroup(establishmentGroup)
       .AddEstablishmentStatus(establishmentStatus)
       .AddPhaseOfEducation(phaseOfEducation)
-      .AddSchool(school);
+      .AddSchool(school)
+      .AddError(error);
 
     expect(returnedBuilder).toBe(importFileResultBuilder);
 
@@ -149,5 +169,6 @@ describe('ImportFileResultBuilder', () => {
     expect(results.establishmentStatuses).toHaveSize(1);
     expect(results.phasesOfEducation).toHaveSize(1);
     expect(results.schools).toHaveSize(1);
+    expect(results.errors).toHaveSize(1);
   });
 });

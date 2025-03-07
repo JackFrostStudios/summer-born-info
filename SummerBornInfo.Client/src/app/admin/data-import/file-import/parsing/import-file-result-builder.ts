@@ -5,6 +5,7 @@ import { CreateEstablishmentTypeRequest } from '../../../../entities/establishme
 import { CreateLocalAuthorityRequest } from '../../../../entities/local-authority/local-authority.model';
 import { CreatePhaseOfEducationRequest } from '../../../../entities/phase-of-education/phase-of-education.model';
 import { ImportSchool } from '../../../../entities/school/school.model';
+import { ImportFileError } from './import-file-error.model';
 import { ImportFileResult } from './import-file-result.model';
 
 export class ImportFileResultBuilder {
@@ -14,6 +15,7 @@ export class ImportFileResultBuilder {
   private establishmentStatuses: Record<string, CreateEstablishmentStatusRequest> = {};
   private phasesOfEducation: Record<string, CreatePhaseOfEducationRequest> = {};
   private schools: ImportSchool[] = [];
+  private errors: ImportFileError[] = [];
 
   public AddLocalAuthority(localAuthority: CreateLocalAuthorityRequest): ImportFileResultBuilder {
     if (this.localAuthorities[localAuthority.code] === undefined) {
@@ -55,6 +57,11 @@ export class ImportFileResultBuilder {
     return this;
   }
 
+  public AddError(error: ImportFileError) {
+    this.errors.push(error);
+    return this;
+  }
+
   public GetResults(): ImportFileResult {
     return {
       localAuthorities: Object.values(this.localAuthorities),
@@ -63,6 +70,7 @@ export class ImportFileResultBuilder {
       establishmentStatuses: Object.values(this.establishmentStatuses),
       phasesOfEducation: Object.values(this.phasesOfEducation),
       schools: [...this.schools],
+      errors: this.errors,
     };
   }
 }
