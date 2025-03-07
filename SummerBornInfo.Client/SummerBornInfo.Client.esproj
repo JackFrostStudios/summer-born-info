@@ -9,7 +9,11 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\SummerBornInfo.Client\browser\</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="coverage\**" />
     <None Remove="dist\**" />
+    <None Remove="TestResults\**" />
+    <TypeScriptConfiguration Remove="coverage\**" />
     <TypeScriptConfiguration Remove="dist\**" />
+    <TypeScriptConfiguration Remove="TestResults\**" />
   </ItemGroup>
 </Project>
