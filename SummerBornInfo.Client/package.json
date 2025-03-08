@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "test:ci": "npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage=true --reporters=trx",
+    "test:ci": "npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage=true --reporters=trx,progress",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix"
   },
