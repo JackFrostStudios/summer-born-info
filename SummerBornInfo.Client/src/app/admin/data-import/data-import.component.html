@@ -1,1 +1,4 @@
 <input type="file" (change)="fileSelected($event)" />
+<p *ngIf="fileProcessedSuccessfully">File processed successfully.</p>
+<p *ngIf="fileProcessedWithErrors">File processed with errors.</p>
+<p *ngIf="unexpectedError">We ran into an unexpected error processing the file.</p>

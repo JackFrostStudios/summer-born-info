@@ -40,7 +40,7 @@ export interface DataRow {
 }
 
 export const getDataRow = (data: DataRow) => {
-  const headers =
+  const row =
     `"${data.laCode}","${data.laName}",` +
     `"${data.typeCode}","${data.typeName}",` +
     `"${data.groupCode}","${data.groupName}",` +
@@ -52,5 +52,57 @@ export const getDataRow = (data: DataRow) => {
     `"${data.street}","${data.locality}",` +
     `"${data.addressThree}","${data.town}",` +
     `"${data.county}","${data.postcode}"\r\n`;
-  return headers;
+  return row;
+};
+
+export const getValidRowData = (): DataRow => {
+  return {
+    laCode: '01',
+    laName: 'laName',
+    typeCode: '02',
+    typeName: 'typeName',
+    groupCode: '03',
+    groupName: 'groupName',
+    statusCode: '04',
+    statusName: 'statusName',
+    phaseCode: '05',
+    phaseName: 'phaseName',
+    urn: '1',
+    ukprn: '2',
+    establishmentName: 'establishmentName',
+    establishmentNumber: '3',
+    openDate: '2020-03-30T12:00:00',
+    closeDate: '2021-03-30T12:00:00',
+    street: 'street',
+    locality: 'locality',
+    addressThree: 'addressThree',
+    town: 'town',
+    county: 'county',
+    postcode: 'postcode',
+  };
+};
+
+export const getValidCsvFile = () => {
+  const dataRow = getValidRowData();
+  return getCsvFile([dataRow]);
+};
+
+export const getCsvFileWithValidationErrors = () => {
+  const dataRow = getValidRowData();
+  dataRow.ukprn = 'invalidukprn';
+  return getCsvFile([dataRow]);
+};
+
+export const getInvalidCsvFile = () => {
+  const data = '"delimiter" error"';
+  const blob = new Blob([data], { type: 'text/csv' });
+  return new File([blob], 'import.csv', { type: 'text/csv' });
+};
+
+export const getCsvFile = (rows: DataRow[]) => {
+  let data = '';
+  data += getHeaderRow();
+  data += rows.map(r => getDataRow(r)).join('');
+  const blob = new Blob([data], { type: 'text/csv' });
+  return new File([blob], 'import.csv', { type: 'text/csv' });
 };

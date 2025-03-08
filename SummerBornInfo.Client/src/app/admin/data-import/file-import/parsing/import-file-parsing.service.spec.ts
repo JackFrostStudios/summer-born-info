@@ -1,16 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ImportFileParsingService } from './import-file-parsing.service';
-import { DataRow, getDataRow, getHeaderRow } from '@test-helpers';
-import { ImportFileResult } from './import-file-result.model';
+import { getCsvFile, getInvalidCsvFile, getValidCsvFile, getValidRowData } from '@test-helpers';
 import { ParseError } from 'papaparse';
-
-const laCode = '01';
-const typeCode = '02';
-const typeCode2 = '20';
-const groupCode = '03';
-const statusCode = '04';
-const phaseCode = '05';
+import { ImportFileParsingService } from './import-file-parsing.service';
+import { ImportFileResult } from './import-file-result.model';
 
 describe('ImportFileParsingService', () => {
   let service: ImportFileParsingService;
@@ -27,10 +20,9 @@ describe('ImportFileParsingService', () => {
   describe('Given an invalid CSV file', () => {
     let inputFile: File;
     beforeEach(() => {
-      const data = '"delimiter" error"';
-      const blob = new Blob([data], { type: 'text/csv' });
-      inputFile = new File([blob], 'import.csv', { type: 'text/csv' });
+      inputFile = getInvalidCsvFile();
     });
+
     describe('When the file is parsed', () => {
       let result: ImportFileResult;
       let errors: ParseError[];
@@ -55,12 +47,7 @@ describe('ImportFileParsingService', () => {
   describe('Given an import file with a single record', () => {
     let inputFile: File;
     beforeEach(() => {
-      let data = '';
-      const dataRow = getCsvRow();
-      data += getHeaderRow();
-      data += getDataRow(dataRow);
-      const blob = new Blob([data], { type: 'text/csv' });
-      inputFile = new File([blob], 'import.csv', { type: 'text/csv' });
+      inputFile = getValidCsvFile();
     });
 
     describe('When the file is imported', () => {
@@ -88,31 +75,31 @@ describe('ImportFileParsingService', () => {
 
       it('Then the result contains the establishment group', () => {
         expect(result.establishmentGroups.length).toBe(1);
-        expect(result.establishmentGroups[0].code).toBe(groupCode);
+        expect(result.establishmentGroups[0].code).toBe('03');
         expect(result.establishmentGroups[0].name).toBe('groupName');
       });
 
       it('Then the result contains the establishment status', () => {
         expect(result.establishmentStatuses.length).toBe(1);
-        expect(result.establishmentStatuses[0].code).toBe(statusCode);
+        expect(result.establishmentStatuses[0].code).toBe('04');
         expect(result.establishmentStatuses[0].name).toBe('statusName');
       });
 
       it('Then the result contains the establishment type', () => {
         expect(result.establishmentTypes.length).toBe(1);
-        expect(result.establishmentTypes[0].code).toBe(typeCode);
+        expect(result.establishmentTypes[0].code).toBe('02');
         expect(result.establishmentTypes[0].name).toBe('typeName');
       });
 
       it('Then the result contains the local authority', () => {
         expect(result.localAuthorities.length).toBe(1);
-        expect(result.localAuthorities[0].code).toBe(laCode);
+        expect(result.localAuthorities[0].code).toBe('01');
         expect(result.localAuthorities[0].name).toBe('laName');
       });
 
       it('Then the result contains the phase of education', () => {
         expect(result.phasesOfEducation.length).toBe(1);
-        expect(result.phasesOfEducation[0].code).toBe(phaseCode);
+        expect(result.phasesOfEducation[0].code).toBe('05');
         expect(result.phasesOfEducation[0].name).toBe('phaseName');
       });
     });
@@ -121,14 +108,10 @@ describe('ImportFileParsingService', () => {
   describe('Given an import file with a single record without closed or open dates', () => {
     let inputFile: File;
     beforeEach(() => {
-      let data = '';
-      const dataRow = getCsvRow();
+      const dataRow = getValidRowData();
       dataRow.openDate = '';
       dataRow.closeDate = '';
-      data += getHeaderRow();
-      data += getDataRow(dataRow);
-      const blob = new Blob([data], { type: 'text/csv' });
-      inputFile = new File([blob], 'import.csv', { type: 'text/csv' });
+      inputFile = getCsvFile([dataRow]);
     });
 
     describe('When the file is imported', () => {
@@ -156,31 +139,31 @@ describe('ImportFileParsingService', () => {
 
       it('Then the result contains the establishment group', () => {
         expect(result.establishmentGroups.length).toBe(1);
-        expect(result.establishmentGroups[0].code).toBe(groupCode);
+        expect(result.establishmentGroups[0].code).toBe('03');
         expect(result.establishmentGroups[0].name).toBe('groupName');
       });
 
       it('Then the result contains the establishment status', () => {
         expect(result.establishmentStatuses.length).toBe(1);
-        expect(result.establishmentStatuses[0].code).toBe(statusCode);
+        expect(result.establishmentStatuses[0].code).toBe('04');
         expect(result.establishmentStatuses[0].name).toBe('statusName');
       });
 
       it('Then the result contains the establishment type', () => {
         expect(result.establishmentTypes.length).toBe(1);
-        expect(result.establishmentTypes[0].code).toBe(typeCode);
+        expect(result.establishmentTypes[0].code).toBe('02');
         expect(result.establishmentTypes[0].name).toBe('typeName');
       });
 
       it('Then the result contains the local authority', () => {
         expect(result.localAuthorities.length).toBe(1);
-        expect(result.localAuthorities[0].code).toBe(laCode);
+        expect(result.localAuthorities[0].code).toBe('01');
         expect(result.localAuthorities[0].name).toBe('laName');
       });
 
       it('Then the result contains the phase of education', () => {
         expect(result.phasesOfEducation.length).toBe(1);
-        expect(result.phasesOfEducation[0].code).toBe(phaseCode);
+        expect(result.phasesOfEducation[0].code).toBe('05');
         expect(result.phasesOfEducation[0].name).toBe('phaseName');
       });
     });
@@ -189,17 +172,13 @@ describe('ImportFileParsingService', () => {
   describe('Given an import file with multiple records with the same lookup codes', () => {
     let inputFile: File;
     beforeEach(() => {
-      let data = '';
-      const dataRow = getCsvRow();
-      data += getHeaderRow();
-      data += getDataRow(dataRow);
-      dataRow.urn = '10';
-      dataRow.ukprn = '20';
-      dataRow.establishmentName = 'establishmentName2';
-      dataRow.establishmentNumber = '30';
-      data += getDataRow(dataRow);
-      const blob = new Blob([data], { type: 'text/csv' });
-      inputFile = new File([blob], 'import.csv', { type: 'text/csv' });
+      const dataRowOne = getValidRowData();
+      const dataRowTwo = getValidRowData();
+      dataRowTwo.urn = '10';
+      dataRowTwo.ukprn = '20';
+      dataRowTwo.establishmentName = 'establishmentName2';
+      dataRowTwo.establishmentNumber = '30';
+      inputFile = getCsvFile([dataRowOne, dataRowTwo]);
     });
 
     describe('When the file is imported', () => {
@@ -243,19 +222,15 @@ describe('ImportFileParsingService', () => {
   describe('Given an import file with multiple records with different establishment types', () => {
     let inputFile: File;
     beforeEach(() => {
-      let data = '';
-      const dataRow = getCsvRow();
-      data += getHeaderRow();
-      data += getDataRow(dataRow);
-      dataRow.urn = '10';
-      dataRow.ukprn = '20';
-      dataRow.establishmentName = 'establishmentName2';
-      dataRow.establishmentNumber = '30';
-      dataRow.typeCode = typeCode2;
-      dataRow.typeName += '2';
-      data += getDataRow(dataRow);
-      const blob = new Blob([data], { type: 'text/csv' });
-      inputFile = new File([blob], 'import.csv', { type: 'text/csv' });
+      const dataRowOne = getValidRowData();
+      const dataRowTwo = getValidRowData();
+      dataRowTwo.urn = '10';
+      dataRowTwo.ukprn = '20';
+      dataRowTwo.establishmentName = 'establishmentName2';
+      dataRowTwo.establishmentNumber = '30';
+      dataRowTwo.typeCode = '20';
+      dataRowTwo.typeName += '2';
+      inputFile = getCsvFile([dataRowOne, dataRowTwo]);
     });
 
     describe('When the file is imported', () => {
@@ -284,11 +259,11 @@ describe('ImportFileParsingService', () => {
 
       it('Then the result contains one establishment type', () => {
         expect(result.establishmentTypes.length).toBe(2);
-        expect(result.establishmentTypes.find(s => s.code === typeCode))
-          .withContext(`Establishment type with code "${typeCode}" should be in results.`)
+        expect(result.establishmentTypes.find(s => s.code === '02'))
+          .withContext('Establishment type with code "02" should be in results.')
           .toBeDefined();
-        expect(result.establishmentTypes.find(s => s.code === typeCode2))
-          .withContext(`Establishment type with code "${typeCode2}" should be in results.`)
+        expect(result.establishmentTypes.find(s => s.code === '20'))
+          .withContext('Establishment type with code "20" should be in results.')
           .toBeDefined();
       });
 
@@ -305,13 +280,9 @@ describe('ImportFileParsingService', () => {
   describe('Given an import file with a single record with invalid data', () => {
     let inputFile: File;
     beforeEach(() => {
-      let data = '';
-      const dataRow = getCsvRow();
+      const dataRow = getValidRowData();
       dataRow.ukprn = 'invalidukprn';
-      data += getHeaderRow();
-      data += getDataRow(dataRow);
-      const blob = new Blob([data], { type: 'text/csv' });
-      inputFile = new File([blob], 'import.csv', { type: 'text/csv' });
+      inputFile = getCsvFile([dataRow]);
     });
 
     describe('When the file is imported', () => {
@@ -337,30 +308,3 @@ describe('ImportFileParsingService', () => {
     });
   });
 });
-
-const getCsvRow = (): DataRow => {
-  return {
-    laCode: laCode,
-    laName: 'laName',
-    typeCode: typeCode,
-    typeName: 'typeName',
-    groupCode: groupCode,
-    groupName: 'groupName',
-    statusCode: statusCode,
-    statusName: 'statusName',
-    phaseCode: phaseCode,
-    phaseName: 'phaseName',
-    urn: '1',
-    ukprn: '2',
-    establishmentName: 'establishmentName',
-    establishmentNumber: '3',
-    openDate: '2020-03-30T12:00:00',
-    closeDate: '2021-03-30T12:00:00',
-    street: 'street',
-    locality: 'locality',
-    addressThree: 'addressThree',
-    town: 'town',
-    county: 'county',
-    postcode: 'postcode',
-  };
-};
