@@ -3,7 +3,7 @@ import { CreateEstablishmentStatusRequest } from '../../../../entities/establish
 import { CreateEstablishmentTypeRequest } from '../../../../entities/establishment-type/establishment-type.model';
 import { CreateLocalAuthorityRequest } from '../../../../entities/local-authority/local-authority.model';
 import { CreatePhaseOfEducationRequest } from '../../../../entities/phase-of-education/phase-of-education.model';
-import { getTestImportSchool } from '../../../../entities/school/school.model.test';
+import { getTestImportSchool } from '../../../../../test-helpers/school.model.test';
 import { ImportFileError } from './import-file-error.model';
 import { ImportFileResultBuilder } from './import-file-result-builder';
 
