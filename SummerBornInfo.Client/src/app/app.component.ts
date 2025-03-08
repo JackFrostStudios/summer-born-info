@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DataImportComponent } from './admin/data-import/data-import.component';
+import { DataImportComponent } from '@admin';
 
 @Component({
   selector: 'sb-root',

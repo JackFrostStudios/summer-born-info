@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ImportFileParsingService } from './import-file-parsing.service';
-import { DataRow, getDataRow, getHeaderRow } from '../../../../../test-helpers/import-csv-file.test';
+import { DataRow, getDataRow, getHeaderRow } from '@test-helpers';
 import { ImportFileResult } from './import-file-result.model';
 import { ParseError } from 'papaparse';
 
