@@ -1,9 +1,11 @@
-import { CreateEstablishmentGroupRequest } from '../../../../entities/establishment-group/establishment-group.model';
-import { CreateEstablishmentStatusRequest } from '../../../../entities/establishment-status/establishment-status.model';
-import { CreateEstablishmentTypeRequest } from '../../../../entities/establishment-type/establishment-type.model';
-import { CreateLocalAuthorityRequest } from '../../../../entities/local-authority/local-authority.model';
-import { CreatePhaseOfEducationRequest } from '../../../../entities/phase-of-education/phase-of-education.model';
-import { getTestImportSchool } from '../../../../../test-helpers/school.model.test';
+import {
+  CreateEstablishmentGroupRequest,
+  CreateEstablishmentStatusRequest,
+  CreateEstablishmentTypeRequest,
+  CreateLocalAuthorityRequest,
+  CreatePhaseOfEducationRequest,
+} from '@entities';
+import { getTestImportSchool } from '@test-helpers';
 import { ImportFileError } from './import-file-error.model';
 import { ImportFileResultBuilder } from './import-file-result-builder';
 

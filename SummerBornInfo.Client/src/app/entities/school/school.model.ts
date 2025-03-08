@@ -1,9 +1,11 @@
-import { EstablishmentGroup } from '../establishment-group/establishment-group.model';
-import { EstablishmentStatus } from '../establishment-status/establishment-status.model';
-import { EstablishmentType } from '../establishment-type/establishment-type.model';
-import { LocalAuthority } from '../local-authority/local-authority.model';
-import { PhaseOfEducation } from '../phase-of-education/phase-of-education.model';
-import { Address } from './address.model';
+import {
+  Address,
+  EstablishmentGroup,
+  EstablishmentStatus,
+  EstablishmentType,
+  LocalAuthority,
+  PhaseOfEducation,
+} from '@entities';
 
 interface SchoolBase {
   urn: number;

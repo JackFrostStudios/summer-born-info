@@ -4,8 +4,8 @@ import {
   CreateEstablishmentTypeRequest,
   CreateLocalAuthorityRequest,
   CreatePhaseOfEducationRequest,
+  CreateSchoolRequest,
 } from '@entities';
-import { CreateSchoolRequest } from '@entities/school/school.model';
 import { ImportFileError } from './import-file-error.model';
 
 export interface ImportFileResult {

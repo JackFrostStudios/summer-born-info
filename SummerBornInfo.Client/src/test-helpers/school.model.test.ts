@@ -1,4 +1,4 @@
-import { ImportSchool } from '../app/entities/school/school.model';
+import { ImportSchool } from '@entities';
 
 export const getTestImportSchool = (): ImportSchool => {
   return {
