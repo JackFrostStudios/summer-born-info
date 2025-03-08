@@ -38,6 +38,7 @@ export class DataImportComponent {
   private processResult(result: ImportFileResult) {
     if (result.errors.length > 0) {
       this.fileProcessedWithErrors = true;
+      console.error(result.errors);
       return;
     }
 
