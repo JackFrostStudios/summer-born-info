@@ -66,8 +66,8 @@ export class ImportFileParsingService {
                   postCode: record.PostCode,
                 },
                 establishmentNumber: this.parseOptionalString(record.EstablishmentNumber),
-                openDate: record.OpenDate !== '' ? new Date(record.OpenDate) : null,
-                closeDate: record.CloseDate !== '' ? new Date(record.CloseDate) : null,
+                openDate: this.parseOptionalDate(record.OpenDate),
+                closeDate: this.parseOptionalDate(record.CloseDate),
                 localAuthorityCode: record['LA (code)'],
                 establishmentTypeCode: record['TypeOfEstablishment (code)'],
                 establishmentGroupCode: record['EstablishmentTypeGroup (code)'],
@@ -90,5 +90,10 @@ export class ImportFileParsingService {
   private parseOptionalInt(value: string) {
     if (value === '') return null;
     return Number.parseInt(value);
+  }
+
+  private parseOptionalDate(value: string) {
+    if (value === '') return null;
+    return new Date(value);
   }
 }
