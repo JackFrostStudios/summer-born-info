@@ -5,9 +5,10 @@ import { ImportFileCsvRow } from '../import-file-csv-row.model';
   providedIn: 'root',
 })
 export class ImportFileValidatorService {
-  private integerFields = ['URN', 'UKPRN', 'EstablishmentNumber'];
+  private integerFields = ['URN', 'UKPRN'];
 
   private codeFields = [
+    'EstablishmentNumber',
     'LA (code)',
     'TypeOfEstablishment (code)',
     'EstablishmentTypeGroup (code)',
@@ -17,14 +18,7 @@ export class ImportFileValidatorService {
 
   private requireFields = [
     'URN',
-    'UKPRN',
-    'EstablishmentNumber',
     'EstablishmentName',
-    'Street',
-    'Locality',
-    'Address3',
-    'Town',
-    'County (name)',
     'PostCode',
     'LA (code)',
     'LA (name)',
@@ -64,10 +58,10 @@ export class ImportFileValidatorService {
   }
 
   private isInteger(value: string) {
-    return /^\+?[1-9]\d*$/.test(value);
+    return value === '' || /^\+?[1-9]\d*$/.test(value);
   }
 
   private isValidCode(value: string) {
-    return /^\+?[0-9]\d*$/.test(value);
+    return value === '' || /^\+?[0-9]\d*$/.test(value);
   }
 }

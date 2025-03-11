@@ -1,8 +1,8 @@
 export interface Address {
-  street: string;
-  locality: string;
-  addressThree: string;
-  town: string;
-  county: string;
+  street: string | null;
+  locality: string | null;
+  addressThree: string | null;
+  town: string | null;
+  county: string | null;
   postCode: string;
 }
