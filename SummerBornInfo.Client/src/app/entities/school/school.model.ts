@@ -9,8 +9,8 @@ import {
 
 interface SchoolBase {
   urn: number;
-  ukprn: number;
-  establishmentNumber: number;
+  ukprn: number | null;
+  establishmentNumber: string | null;
   name: string;
   address: Address;
   openDate: Date | null;

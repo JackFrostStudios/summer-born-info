@@ -28,7 +28,7 @@ describe('ImportFileValidatorService', () => {
   });
 
   describe('Given the required integer values for a CSV row', () => {
-    ['URN', 'UKPRN', 'EstablishmentNumber'].forEach(field => {
+    ['URN'].forEach(field => {
       describe(`When a row where ${field} is missing is validated`, () => {
         let result: string[];
         beforeEach(() => {
@@ -37,8 +37,51 @@ describe('ImportFileValidatorService', () => {
           result = service.validateRow(row);
         });
 
-        it(`Then a "required ${field}" and "${field} must be an integer number" error messages are returned`, () => {
-          expect(result).toEqual([`${field} is required.`, `${field} "" must be an integer number.`]);
+        it(`Then a "required ${field}" error message is returned`, () => {
+          expect(result).toEqual([`${field} is required.`]);
+        });
+      });
+
+      describe(`When a row where ${field} is not a number is validated`, () => {
+        let result: string[];
+        beforeEach(() => {
+          const row = getRow();
+          (row as unknown as Record<string, string>)[field] = 'abcdef';
+          result = service.validateRow(row);
+        });
+
+        it(`Then a "${field} must be an integer number" error message should be returned`, () => {
+          expect(result).toEqual([`${field} "abcdef" must be an integer number.`]);
+        });
+      });
+
+      describe(`When a row where ${field} is not an integer is validated`, () => {
+        let result: string[];
+        beforeEach(() => {
+          const row = getRow();
+          (row as unknown as Record<string, string>)[field] = '1.2';
+          result = service.validateRow(row);
+        });
+
+        it(`Then a "${field} must be an integer number" message should be returned`, () => {
+          expect(result).toEqual([`${field} "1.2" must be an integer number.`]);
+        });
+      });
+    });
+  });
+
+  describe('Given the optional integer values for a CSV row', () => {
+    ['UKPRN'].forEach(field => {
+      describe(`When a row where ${field} is missing is validated`, () => {
+        let result: string[];
+        beforeEach(() => {
+          const row = getRow();
+          (row as unknown as Record<string, string>)[field] = '';
+          result = service.validateRow(row);
+        });
+
+        it(`Then no error messages are returned`, () => {
+          expect(result).toEqual([]);
         });
       });
 
@@ -86,12 +129,12 @@ describe('ImportFileValidatorService', () => {
           result = service.validateRow(row);
         });
 
-        it(`Then a "required ${field}" and "${field} must be a valid code" error messages are returned`, () => {
-          expect(result).toEqual([`${field} is required.`, `${field} "" must be a valid code.`]);
+        it(`Then a "required ${field}" error message is returned`, () => {
+          expect(result).toEqual([`${field} is required.`]);
         });
       });
 
-      describe(`When a row where ${field} is not a number is validated`, () => {
+      describe(`When a row where ${field} is not a code is validated`, () => {
         let result: string[];
         beforeEach(() => {
           const row = getRow();
@@ -103,17 +146,34 @@ describe('ImportFileValidatorService', () => {
           expect(result).toEqual([`${field} "abcdef" must be a valid code.`]);
         });
       });
+    });
+  });
 
-      describe(`When a row where ${field} is not an integer is validated`, () => {
+  describe('Given the optional code values for a CSV row', () => {
+    ['EstablishmentNumber'].forEach(field => {
+      describe(`When a row where ${field} is missing is validated`, () => {
         let result: string[];
         beforeEach(() => {
           const row = getRow();
-          (row as unknown as Record<string, string>)[field] = '1.2';
+          (row as unknown as Record<string, string>)[field] = '';
           result = service.validateRow(row);
         });
 
-        it(`Then a "${field} must be a valid code" message should be returned`, () => {
-          expect(result).toEqual([`${field} "1.2" must be a valid code.`]);
+        it(`Then no error message is returned`, () => {
+          expect(result).toEqual([]);
+        });
+      });
+
+      describe(`When a row where ${field} is not a code is validated`, () => {
+        let result: string[];
+        beforeEach(() => {
+          const row = getRow();
+          (row as unknown as Record<string, string>)[field] = 'abcdef';
+          result = service.validateRow(row);
+        });
+
+        it(`Then a "${field} must be a valid code" error message should be returned`, () => {
+          expect(result).toEqual([`${field} "abcdef" must be a valid code.`]);
         });
       });
     });
@@ -122,11 +182,6 @@ describe('ImportFileValidatorService', () => {
   describe('Given the required string values for a CSV row', () => {
     [
       'EstablishmentName',
-      'Street',
-      'Locality',
-      'Address3',
-      'Town',
-      'County (name)',
       'PostCode',
       'LA (name)',
       'TypeOfEstablishment (name)',

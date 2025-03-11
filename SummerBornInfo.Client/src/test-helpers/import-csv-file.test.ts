@@ -70,7 +70,7 @@ export const getValidRowData = (): DataRow => {
     urn: '1',
     ukprn: '2',
     establishmentName: 'establishmentName',
-    establishmentNumber: '3',
+    establishmentNumber: '03',
     openDate: '2020-03-30T12:00:00',
     closeDate: '2021-03-30T12:00:00',
     street: 'street',

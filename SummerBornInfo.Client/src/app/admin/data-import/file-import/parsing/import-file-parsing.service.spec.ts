@@ -62,7 +62,7 @@ describe('ImportFileParsingService', () => {
         expect(schoolResult.urn).toBe(1);
         expect(schoolResult.ukprn).toBe(2);
         expect(schoolResult.name).toBe('establishmentName');
-        expect(schoolResult.establishmentNumber).toBe(3);
+        expect(schoolResult.establishmentNumber).toBe('03');
         expect(schoolResult.openDate).toEqual(new Date('2020-03-30T12:00:00'));
         expect(schoolResult.closeDate).toEqual(new Date('2021-03-30T12:00:00'));
         expect(schoolResult.address.street).toBe('street');
@@ -126,7 +126,7 @@ describe('ImportFileParsingService', () => {
         expect(schoolResult.urn).toBe(1);
         expect(schoolResult.ukprn).toBe(2);
         expect(schoolResult.name).toBe('establishmentName');
-        expect(schoolResult.establishmentNumber).toBe(3);
+        expect(schoolResult.establishmentNumber).toBe('03');
         expect(schoolResult.openDate).toBeNull();
         expect(schoolResult.closeDate).toBeNull();
         expect(schoolResult.address.street).toBe('street');
@@ -134,6 +134,77 @@ describe('ImportFileParsingService', () => {
         expect(schoolResult.address.addressThree).toBe('addressThree');
         expect(schoolResult.address.town).toBe('town');
         expect(schoolResult.address.county).toBe('county');
+        expect(schoolResult.address.postCode).toBe('postcode');
+      });
+
+      it('Then the result contains the establishment group', () => {
+        expect(result.establishmentGroups.length).toBe(1);
+        expect(result.establishmentGroups[0].code).toBe('03');
+        expect(result.establishmentGroups[0].name).toBe('groupName');
+      });
+
+      it('Then the result contains the establishment status', () => {
+        expect(result.establishmentStatuses.length).toBe(1);
+        expect(result.establishmentStatuses[0].code).toBe('04');
+        expect(result.establishmentStatuses[0].name).toBe('statusName');
+      });
+
+      it('Then the result contains the establishment type', () => {
+        expect(result.establishmentTypes.length).toBe(1);
+        expect(result.establishmentTypes[0].code).toBe('02');
+        expect(result.establishmentTypes[0].name).toBe('typeName');
+      });
+
+      it('Then the result contains the local authority', () => {
+        expect(result.localAuthorities.length).toBe(1);
+        expect(result.localAuthorities[0].code).toBe('01');
+        expect(result.localAuthorities[0].name).toBe('laName');
+      });
+
+      it('Then the result contains the phase of education', () => {
+        expect(result.phasesOfEducation.length).toBe(1);
+        expect(result.phasesOfEducation[0].code).toBe('05');
+        expect(result.phasesOfEducation[0].name).toBe('phaseName');
+      });
+    });
+  });
+
+  describe('Given an import file with a single record without any optional fields', () => {
+    let inputFile: File;
+    beforeEach(() => {
+      const dataRow = getValidRowData();
+      dataRow.openDate = '';
+      dataRow.closeDate = '';
+      dataRow.ukprn = '';
+      dataRow.establishmentNumber = '';
+      dataRow.street = '';
+      dataRow.locality = '';
+      dataRow.addressThree = '';
+      dataRow.town = '';
+      dataRow.county = '';
+      inputFile = getCsvFile([dataRow]);
+    });
+
+    describe('When the file is imported', () => {
+      let result: ImportFileResult;
+      beforeEach(async () => {
+        result = await service.parseImportFile(inputFile);
+      });
+
+      it('Then the result contains the school data with the optional values to null', () => {
+        expect(result.schools.length).toBe(1);
+        const schoolResult = result.schools[0];
+        expect(schoolResult.urn).toBe(1);
+        expect(schoolResult.ukprn).toBeNull();
+        expect(schoolResult.name).toBe('establishmentName');
+        expect(schoolResult.establishmentNumber).toBeNull();
+        expect(schoolResult.openDate).toBeNull();
+        expect(schoolResult.closeDate).toBeNull();
+        expect(schoolResult.address.street).toBeNull();
+        expect(schoolResult.address.locality).toBeNull();
+        expect(schoolResult.address.addressThree).toBeNull();
+        expect(schoolResult.address.town).toBeNull();
+        expect(schoolResult.address.county).toBeNull();
         expect(schoolResult.address.postCode).toBe('postcode');
       });
 

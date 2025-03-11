@@ -4,7 +4,7 @@ export const getTestImportSchool = (): ImportSchool => {
   return {
     urn: 1,
     ukprn: 2,
-    establishmentNumber: 3,
+    establishmentNumber: '03',
     name: 'Mock School',
     address: {
       street: 'Street One',

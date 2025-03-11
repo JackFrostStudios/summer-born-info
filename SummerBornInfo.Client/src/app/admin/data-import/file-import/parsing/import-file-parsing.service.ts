@@ -55,17 +55,17 @@ export class ImportFileParsingService {
               })
               .AddSchool({
                 urn: Number.parseInt(record.URN),
-                ukprn: Number.parseInt(record.UKPRN),
+                ukprn: this.parseOptionalInt(record.UKPRN),
                 name: record.EstablishmentName,
                 address: {
-                  street: record.Street,
-                  locality: record.Locality,
-                  addressThree: record.Address3,
-                  town: record.Town,
-                  county: record['County (name)'],
+                  street: this.parseOptionalString(record.Street),
+                  locality: this.parseOptionalString(record.Locality),
+                  addressThree: this.parseOptionalString(record.Address3),
+                  town: this.parseOptionalString(record.Town),
+                  county: this.parseOptionalString(record['County (name)']),
                   postCode: record.PostCode,
                 },
-                establishmentNumber: Number.parseInt(record.EstablishmentNumber),
+                establishmentNumber: this.parseOptionalString(record.EstablishmentNumber),
                 openDate: record.OpenDate !== '' ? new Date(record.OpenDate) : null,
                 closeDate: record.CloseDate !== '' ? new Date(record.CloseDate) : null,
                 localAuthorityCode: record['LA (code)'],
@@ -80,5 +80,15 @@ export class ImportFileParsingService {
         },
       });
     });
+  }
+
+  private parseOptionalString(value: string) {
+    if (value === '') return null;
+    return value;
+  }
+
+  private parseOptionalInt(value: string) {
+    if (value === '') return null;
+    return Number.parseInt(value);
   }
 }
