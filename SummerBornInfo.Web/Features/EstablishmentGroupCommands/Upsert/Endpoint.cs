@@ -13,14 +13,16 @@ internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Respon
     public override async Task HandleAsync(Request req, CancellationToken c)
     {
         var group = await context.EstablishmentGroup.FirstOrDefaultAsync(eg => eg.Code == req.Code, c);
-        if (group != null) {
+        if (group != null)
+        {
             group.Name = req.Name;
-        } else
+        }
+        else
         {
             group = Map.ToEntity(req);
             context.Add(group);
         }
-        
+
         await context.SaveChangesAsync(c);
 
         var resp = Map.FromEntity(group);

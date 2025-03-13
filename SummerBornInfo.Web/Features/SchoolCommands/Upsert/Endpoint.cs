@@ -1,9 +1,4 @@
-﻿using SummerBornInfo.Web.Domain;
-using System.Net;
-using System.Xml.Linq;
-using static FastEndpoints.Ep;
-
-namespace SummerBornInfo.Web.Features.SchoolCommands.Upsert;
+﻿namespace SummerBornInfo.Web.Features.SchoolCommands.Upsert;
 
 internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Response, Mapper>
 {
@@ -21,7 +16,8 @@ internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Respon
         if (school != null)
         {
             school = await UpdateExistingSchool(school, req, c);
-        } else
+        }
+        else
         {
             school = await MapToEntity(req, c);
             context.Add(school);
@@ -33,7 +29,7 @@ internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Respon
 
         await SendAsync(response: resp, cancellation: c);
     }
-    
+
     private async Task<PhaseOfEducation?> GetPhaseOfEducation(Request r, CancellationToken c)
     {
         var phaseOfEducation = await context
@@ -122,7 +118,7 @@ internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Respon
         var establishmentGroup = await GetEstablishmentGroup(r, c);
         var establishmentStatus = await GetEstablishmentStatus(r, c);
         ThrowIfAnyErrors();
-        
+
         return new School
         {
             URN = r.URN,
@@ -160,7 +156,7 @@ internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Respon
         var establishmentGroup = await GetEstablishmentGroup(r, c);
         var establishmentStatus = await GetEstablishmentStatus(r, c);
         ThrowIfAnyErrors();
-        
+
         if (school != null)
         {
             school.Name = r.Name;
@@ -172,7 +168,7 @@ internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Respon
             school.EstablishmentType = establishmentType!;
             school.EstablishmentGroup = establishmentGroup!;
             school.EstablishmentStatus = establishmentStatus!;
-            
+
         }
         return school!;
 

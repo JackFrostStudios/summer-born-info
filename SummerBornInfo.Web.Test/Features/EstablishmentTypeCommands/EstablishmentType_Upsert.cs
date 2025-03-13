@@ -6,7 +6,7 @@ public class EstablishmentType_Upsert(PostgresTestFixture App) : BaseIntegration
     [Fact]
     public async Task ValidRequest_Upsert_SavesTypeSuccessfully()
     {
-        var code = PostgresTestFixture.SeededData.NextSeedNumber();
+        var code = PostgresTestFixture.SeededData.NextSeedCode();
         var (rsp, res) = await App.Client.POSTAsync<Create.Endpoint, Create.Request, Create.Response>(new()
         {
             Code = code,
@@ -29,10 +29,10 @@ public class EstablishmentType_Upsert(PostgresTestFixture App) : BaseIntegration
     [Fact]
     public async Task ExistingTypeByCode_Upsert_SavesTypeSuccessfully()
     {
-        var code = PostgresTestFixture.SeededData.NextSeedNumber();
+        var code = PostgresTestFixture.SeededData.NextSeedCode();
         using var seedingScope = App.Services.CreateScope();
         await using var seedingContext = seedingScope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var seededType = new EstablishmentType{ Code = code, Name = "Original Type" };
+        var seededType = new EstablishmentType { Code = code, Name = "Original Type" };
         seedingContext.Add(seededType);
         await seedingContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
@@ -61,7 +61,7 @@ public class EstablishmentType_Upsert(PostgresTestFixture App) : BaseIntegration
     {
         var (rsp, res) = await App.Client.POSTAsync<Create.Endpoint, Create.Request, ErrorResponse>(new()
         {
-            Code = 0,
+            Code = "",
             Name = "",
         });
         rsp.StatusCode.Should().Be(HttpStatusCode.BadRequest);

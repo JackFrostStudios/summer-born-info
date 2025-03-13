@@ -7,7 +7,7 @@ public class EstablishmentGroup_Upsert(PostgresTestFixture App) : BaseIntegratio
     [Fact]
     public async Task ValidRequest_Upsert_SavesGroupSuccessfully()
     {
-        var code = PostgresTestFixture.SeededData.NextSeedNumber();
+        var code = PostgresTestFixture.SeededData.NextSeedCode();
         var (rsp, res) = await App.Client.POSTAsync<Endpoint, Upsert.Request, Upsert.Response>(new()
         {
             Code = code,
@@ -30,7 +30,7 @@ public class EstablishmentGroup_Upsert(PostgresTestFixture App) : BaseIntegratio
     [Fact]
     public async Task ExistingGroupByCode_Upsert_UpdatesGroupSuccessfully()
     {
-        var code = PostgresTestFixture.SeededData.NextSeedNumber();
+        var code = PostgresTestFixture.SeededData.NextSeedCode();
         using var seedingScope = App.Services.CreateScope();
         await using var seedingContext = seedingScope.ServiceProvider.GetRequiredService<SchoolContext>();
         var seededGroup = new EstablishmentGroup { Code = code, Name = "Original Group" };
@@ -62,7 +62,7 @@ public class EstablishmentGroup_Upsert(PostgresTestFixture App) : BaseIntegratio
     {
         var (rsp, res) = await App.Client.POSTAsync<Endpoint, Upsert.Request, ErrorResponse>(new()
         {
-            Code = 0,
+            Code = "",
             Name = "",
         });
         rsp.StatusCode.Should().Be(HttpStatusCode.BadRequest);

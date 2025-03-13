@@ -43,7 +43,7 @@ internal sealed class Response
     internal sealed class CodeNameEntityResponse
     {
         public required Guid Id { get; init; }
-        public required int Code { get; init; }
+        public required string Code { get; init; }
         public required string Name { get; init; }
     }
 }

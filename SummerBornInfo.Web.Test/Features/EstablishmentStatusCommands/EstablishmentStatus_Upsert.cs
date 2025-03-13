@@ -6,7 +6,7 @@ public class EstablishmentStatus_Upsert(PostgresTestFixture App) : BaseIntegrati
     [Fact]
     public async Task ValidRequest_Upsert_SavesStatusSuccessfully()
     {
-        var code = PostgresTestFixture.SeededData.NextSeedNumber();
+        var code = PostgresTestFixture.SeededData.NextSeedCode();
         var (rsp, res) = await App.Client.POSTAsync<Create.Endpoint, Create.Request, Create.Response>(new()
         {
             Code = code,
@@ -29,7 +29,7 @@ public class EstablishmentStatus_Upsert(PostgresTestFixture App) : BaseIntegrati
     [Fact]
     public async Task ExistingStatusByCode_Upsert_UpdatesStatusSuccessfully()
     {
-        var code = PostgresTestFixture.SeededData.NextSeedNumber();
+        var code = PostgresTestFixture.SeededData.NextSeedCode();
         using var seedingScope = App.Services.CreateScope();
         await using var seedingContext = seedingScope.ServiceProvider.GetRequiredService<SchoolContext>();
         var seededStatus = new EstablishmentStatus { Code = code, Name = "Original Status" };
@@ -61,7 +61,7 @@ public class EstablishmentStatus_Upsert(PostgresTestFixture App) : BaseIntegrati
     {
         var (rsp, res) = await App.Client.POSTAsync<Create.Endpoint, Create.Request, ErrorResponse>(new()
         {
-            Code = 0,
+            Code = "",
             Name = "",
         });
         rsp.StatusCode.Should().Be(HttpStatusCode.BadRequest);

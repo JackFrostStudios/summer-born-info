@@ -110,15 +110,15 @@ public class School_Upsert(PostgresTestFixture App) : BaseIntegrationTest
 
         using var seedingScope = App.Services.CreateScope();
         await using var seedingContext = seedingScope.ServiceProvider.GetRequiredService<SchoolContext>();
-        var seededPhase = new PhaseOfEducation() { Code = PostgresTestFixture.SeededData.NextSeedNumber(), Name = "Phase" };
+        var seededPhase = new PhaseOfEducation() { Code = PostgresTestFixture.SeededData.NextSeedCode(), Name = "Phase" };
         seedingContext.Add(seededPhase);
-        var seededAuthority = new LocalAuthority() { Code = PostgresTestFixture.SeededData.NextSeedNumber(), Name = "Authority" };
+        var seededAuthority = new LocalAuthority() { Code = PostgresTestFixture.SeededData.NextSeedCode(), Name = "Authority" };
         seedingContext.Add(seededAuthority);
-        var seededType = new EstablishmentType() { Code = PostgresTestFixture.SeededData.NextSeedNumber(), Name = "Type" };
+        var seededType = new EstablishmentType() { Code = PostgresTestFixture.SeededData.NextSeedCode(), Name = "Type" };
         seedingContext.Add(seededType);
-        var seededGroup = new EstablishmentGroup() { Code = PostgresTestFixture.SeededData.NextSeedNumber(), Name = "Group" };
+        var seededGroup = new EstablishmentGroup() { Code = PostgresTestFixture.SeededData.NextSeedCode(), Name = "Group" };
         seedingContext.Add(seededGroup);
-        var seededStatus = new EstablishmentStatus() { Code = PostgresTestFixture.SeededData.NextSeedNumber(), Name = "Status" };
+        var seededStatus = new EstablishmentStatus() { Code = PostgresTestFixture.SeededData.NextSeedCode(), Name = "Status" };
         seedingContext.Add(seededStatus);
         await seedingContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 

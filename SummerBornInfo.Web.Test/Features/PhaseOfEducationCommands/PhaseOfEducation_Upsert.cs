@@ -6,7 +6,7 @@ public class PhaseOfEducation_Upsert(PostgresTestFixture App) : BaseIntegrationT
     [Fact]
     public async Task ValidRequest_Upsert_SavesPhaseSuccessfully()
     {
-        var code = PostgresTestFixture.SeededData.NextSeedNumber();
+        var code = PostgresTestFixture.SeededData.NextSeedCode();
         var (rsp, res) = await App.Client.POSTAsync<Create.Endpoint, Create.Request, Create.Response>(new()
         {
             Code = code,
@@ -29,7 +29,7 @@ public class PhaseOfEducation_Upsert(PostgresTestFixture App) : BaseIntegrationT
     [Fact]
     public async Task ExistingPhaseByCode_Upsert_UpdatesPhaseSuccessfully()
     {
-        var code = PostgresTestFixture.SeededData.NextSeedNumber();
+        var code = PostgresTestFixture.SeededData.NextSeedCode();
         using var seedingScope = App.Services.CreateScope();
         await using var seedingContext = seedingScope.ServiceProvider.GetRequiredService<SchoolContext>();
         var seededPhase = new PhaseOfEducation { Code = code, Name = "Original Phase" };
@@ -61,7 +61,7 @@ public class PhaseOfEducation_Upsert(PostgresTestFixture App) : BaseIntegrationT
     {
         var (rsp, res) = await App.Client.POSTAsync<Create.Endpoint, Create.Request, ErrorResponse>(new()
         {
-            Code = 0,
+            Code = "",
             Name = "",
         });
         rsp.StatusCode.Should().Be(HttpStatusCode.BadRequest);

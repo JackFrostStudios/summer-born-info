@@ -22,7 +22,7 @@ internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Respon
             type = Map.ToEntity(req);
             context.Add(type);
         }
-        
+
         await context.SaveChangesAsync(c);
 
         var resp = Map.FromEntity(type);

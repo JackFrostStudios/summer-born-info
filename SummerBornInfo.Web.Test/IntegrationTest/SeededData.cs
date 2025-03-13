@@ -1,7 +1,10 @@
-﻿namespace SummerBornInfo.Web.Test.IntegrationTest;
+﻿using System.Globalization;
+
+namespace SummerBornInfo.Web.Test.IntegrationTest;
 public class SeededData
 {
-    private int CodeSeed {  get; set; }
+    private int NumericSeed { get; set; }
+    private int CodeSeed { get; set; }
     public PhaseOfEducation PhaseOfEducation { get; private init; }
     public LocalAuthority LocalAuthority { get; private init; }
     public EstablishmentGroup EstablishmentGroup { get; private init; }
@@ -14,11 +17,11 @@ public class SeededData
     {
         schoolContext = SchoolContext;
 
-        PhaseOfEducation = new PhaseOfEducation { Code = NextSeedNumber(), Name = "Primary" };
-        LocalAuthority = new LocalAuthority { Code = NextSeedNumber(), Name = "Authority" };
-        EstablishmentGroup = new EstablishmentGroup { Code = NextSeedNumber(), Name = "Establishment Group" };
-        EstablishmentStatus = new EstablishmentStatus { Code = NextSeedNumber(), Name = "Open" };
-        EstablishmentType = new EstablishmentType { Code = NextSeedNumber(), Name = "Community School" };
+        PhaseOfEducation = new PhaseOfEducation { Code = NextSeedCode(), Name = "Primary" };
+        LocalAuthority = new LocalAuthority { Code = NextSeedCode(), Name = "Authority" };
+        EstablishmentGroup = new EstablishmentGroup { Code = NextSeedCode(), Name = "Establishment Group" };
+        EstablishmentStatus = new EstablishmentStatus { Code = NextSeedCode(), Name = "Open" };
+        EstablishmentType = new EstablishmentType { Code = NextSeedCode(), Name = "Community School" };
         var address = new SchoolAddress { Street = "Str", Locality = "loc", AddressThree = "addr3", Town = "twn", County = "Coun", PostCode = "PT12CD" };
 
         schoolContext.Add(PhaseOfEducation);
@@ -49,5 +52,9 @@ public class SeededData
         schoolContext.ChangeTracker.Clear();
     }
 
-    public int NextSeedNumber() => ++CodeSeed;
+    public int NextSeedNumber() => ++NumericSeed;
+    public string NextSeedCode()
+    {
+        return (++CodeSeed).ToString(CultureInfo.InvariantCulture);
+    }
 }

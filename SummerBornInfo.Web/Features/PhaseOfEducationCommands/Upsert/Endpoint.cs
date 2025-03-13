@@ -22,7 +22,7 @@ internal sealed class Endpoint(SchoolContext context) : Endpoint<Request, Respon
             phase = Map.ToEntity(req);
             context.Add(phase);
         }
-        
+
         await context.SaveChangesAsync(c);
 
         var resp = Map.FromEntity(phase);
