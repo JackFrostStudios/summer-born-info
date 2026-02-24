@@ -40,8 +40,8 @@ public class SchoolsIntegrationTests : IClassFixture<CustomWebApplicationFactory
         );
 
         // Act
-        var response = await _client.PostAsJsonAsync("/api/schools", command);
-        var content = await response.Content.ReadFromJsonAsync<CreateSchoolResponse>();
+        var response = await _client.PostAsJsonAsync("/api/schools", command, TestContext.Current.CancellationToken);
+        var content = await response.Content.ReadFromJsonAsync<CreateSchoolResponse>(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -56,8 +56,8 @@ public class SchoolsIntegrationTests : IClassFixture<CustomWebApplicationFactory
         await SeedTestDataAsync();
 
         // Act
-        var response = await _client.GetAsync("/api/schools");
-        var content = await response.Content.ReadFromJsonAsync<List<SchoolDto>>();
+        var response = await _client.GetAsync("/api/schools", TestContext.Current.CancellationToken);
+        var content = await response.Content.ReadFromJsonAsync<List<SchoolDto>>(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -72,8 +72,8 @@ public class SchoolsIntegrationTests : IClassFixture<CustomWebApplicationFactory
         var school = await SeedTestDataAsync();
 
         // Act
-        var response = await _client.GetAsync($"/api/schools/{school.Id}");
-        var content = await response.Content.ReadFromJsonAsync<School>();
+        var response = await _client.GetAsync($"/api/schools/{school.Id}", TestContext.Current.CancellationToken);
+        var content = await response.Content.ReadFromJsonAsync<School>(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -86,7 +86,7 @@ public class SchoolsIntegrationTests : IClassFixture<CustomWebApplicationFactory
     public async Task GetSchoolById_ReturnsNotFound_WhenSchoolDoesNotExist()
     {
         // Act
-        var response = await _client.GetAsync("/api/schools/99999");
+        var response = await _client.GetAsync("/api/schools/99999", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -103,7 +103,7 @@ public class SchoolsIntegrationTests : IClassFixture<CustomWebApplicationFactory
         };
 
         // Act
-        var response = await _client.PostAsJsonAsync("/api/schools", invalidCommand);
+        var response = await _client.PostAsJsonAsync("/api/schools", invalidCommand, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -131,7 +131,7 @@ public class SchoolsIntegrationTests : IClassFixture<CustomWebApplicationFactory
         };
 
         db.Schools.Add(school);
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         return school;
     }
@@ -148,7 +148,7 @@ public class SchoolsIntegrationTests : IClassFixture<CustomWebApplicationFactory
         if (testSchools.Any())
         {
             db.Schools.RemoveRange(testSchools);
-            await db.SaveChangesAsync();
+            await db.SaveChangesAsync(TestContext.Current.CancellationToken);
         }
     }
 }

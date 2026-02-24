@@ -28,10 +28,10 @@ public class InfrastructureTests
 
         // Act
         context.Schools.Add(school);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Assert
-        var retrievedSchool = await context.Schools.FirstOrDefaultAsync(s => s.Id == 1);
+        var retrievedSchool = await context.Schools.FirstOrDefaultAsync(s => s.Id == 1, TestContext.Current.CancellationToken);
         Assert.NotNull(retrievedSchool);
         Assert.Equal("Test School", retrievedSchool!.Name);
         Assert.Equal("TEST123", retrievedSchool.URN);
@@ -58,10 +58,10 @@ public class InfrastructureTests
             Name = "School 2",
             URN = "SCH002"
         });
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Act
-        var count = await context.Schools.CountAsync();
+        var count = await context.Schools.CountAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, count);

@@ -48,7 +48,7 @@ public class CreateSchoolCommandHandlerTests
         Assert.NotNull(result);
         Assert.Equal(1, result.Id);
 
-        var savedSchool = await context.Schools.FirstOrDefaultAsync(s => s.Id == 1);
+        var savedSchool = await context.Schools.FirstOrDefaultAsync(s => s.Id == 1, TestContext.Current.CancellationToken);
         Assert.NotNull(savedSchool);
         Assert.Equal("Test School", savedSchool!.Name);
         Assert.Equal("TEST123", savedSchool.URN);
