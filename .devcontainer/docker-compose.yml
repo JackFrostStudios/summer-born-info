@@ -8,6 +8,9 @@ services:
 
     volumes:
       - ../..:/workspaces:cached
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
 
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
