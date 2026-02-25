@@ -26,7 +26,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
         await _postgresContainer.StartAsync();
     }
 
-    public new async Task DisposeAsync()
+    public new async ValueTask DisposeAsync()
     {
         await _postgresContainer.DisposeAsync();
     }
