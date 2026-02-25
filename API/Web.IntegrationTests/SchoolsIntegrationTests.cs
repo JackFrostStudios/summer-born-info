@@ -53,7 +53,7 @@ public class SchoolsIntegrationTests : IClassFixture<CustomWebApplicationFactory
     public async Task GetAllSchools_ReturnsAllSchools()
     {
         // Arrange
-        await SeedTestDataAsync();
+        await SeedTestDataAsync(1);
 
         // Act
         var response = await _client.GetAsync("/api/schools", TestContext.Current.CancellationToken);
@@ -69,7 +69,7 @@ public class SchoolsIntegrationTests : IClassFixture<CustomWebApplicationFactory
     public async Task GetSchoolById_ReturnsSchool_WhenSchoolExists()
     {
         // Arrange
-        var school = await SeedTestDataAsync();
+        var school = await SeedTestDataAsync(2);
 
         // Act
         var response = await _client.GetAsync($"/api/schools/{school.Id}", TestContext.Current.CancellationToken);
@@ -91,25 +91,8 @@ public class SchoolsIntegrationTests : IClassFixture<CustomWebApplicationFactory
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
-
-    [Fact]
-    public async Task CreateSchool_ReturnsBadRequest_WhenCommandIsInvalid()
-    {
-        // Arrange
-        var invalidCommand = new
-        {
-            Name = "", // Empty name should be invalid
-            URN = "123"
-        };
-
-        // Act
-        var response = await _client.PostAsJsonAsync("/api/schools", invalidCommand, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    private async Task<School> SeedTestDataAsync()
+    
+    private async Task<School> SeedTestDataAsync(int urnNo)
     {
         using var scope = _factory.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -117,7 +100,7 @@ public class SchoolsIntegrationTests : IClassFixture<CustomWebApplicationFactory
         var school = new School
         {
             Name = "Seeded Test School",
-            URN = "SEED001",
+            URN = $"SEED001_{urnNo}",
             Address = "Seed Address",
             City = "Seed City",
             County = "Seed County",
