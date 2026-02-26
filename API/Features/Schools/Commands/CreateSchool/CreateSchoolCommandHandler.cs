@@ -1,11 +1,10 @@
 using Domain.Entities;
 using Infrastructure.Persistence;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Features.Schools.Commands.CreateSchool;
 
-public class CreateSchoolCommandHandler : IRequestHandler<CreateSchoolCommand, CreateSchoolResponse>
+public class CreateSchoolCommandHandler
 {
     private readonly ApplicationDbContext _context;
 
@@ -14,7 +13,7 @@ public class CreateSchoolCommandHandler : IRequestHandler<CreateSchoolCommand, C
         _context = context;
     }
 
-    public async Task<CreateSchoolResponse> Handle(CreateSchoolCommand request, CancellationToken cancellationToken)
+    public async Task<CreateSchoolResponse> ExecuteAsync(CreateSchoolCommand request, CancellationToken cancellationToken)
     {
         // Check if URN already exists
         var existingSchool = await _context.Schools

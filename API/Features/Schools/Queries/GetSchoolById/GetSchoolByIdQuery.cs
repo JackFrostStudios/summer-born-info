@@ -1,9 +1,8 @@
 using Domain.Entities;
-using MediatR;
 
 namespace Features.Schools.Queries.GetSchoolById;
 
-public record GetSchoolByIdQuery(int Id) : IRequest<SchoolDto?>;
+public record GetSchoolByIdQuery(int Id);
 
 public record SchoolDto(
     int Id,

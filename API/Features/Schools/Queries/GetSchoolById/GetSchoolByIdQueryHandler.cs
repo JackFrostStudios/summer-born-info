@@ -1,11 +1,10 @@
 using Domain.Entities;
 using Infrastructure.Persistence;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Features.Schools.Queries.GetSchoolById;
 
-public class GetSchoolByIdQueryHandler : IRequestHandler<GetSchoolByIdQuery, SchoolDto?>
+public class GetSchoolByIdQueryHandler
 {
     private readonly ApplicationDbContext _context;
 
@@ -14,7 +13,7 @@ public class GetSchoolByIdQueryHandler : IRequestHandler<GetSchoolByIdQuery, Sch
         _context = context;
     }
 
-    public async Task<SchoolDto?> Handle(GetSchoolByIdQuery request, CancellationToken cancellationToken)
+    public async Task<SchoolDto?> ExecuteAsync(GetSchoolByIdQuery request, CancellationToken cancellationToken)
     {
         var school = await _context.Schools
             .AsNoTracking()

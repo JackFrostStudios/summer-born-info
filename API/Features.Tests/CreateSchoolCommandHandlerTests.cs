@@ -1,8 +1,6 @@
 using Domain.Entities;
 using Features.Schools.Commands.CreateSchool;
-using Features.Schools.Queries.GetSchoolById;
 using Infrastructure.Persistence;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -42,7 +40,7 @@ public class CreateSchoolCommandHandlerTests
         );
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.ExecuteAsync(command, CancellationToken.None);
 
         // Assert
         Assert.NotNull(result);
@@ -76,10 +74,10 @@ public class CreateSchoolCommandHandlerTests
         );
 
         // Act
-        await handler.Handle(command1, CancellationToken.None);
+        await handler.ExecuteAsync(command1, CancellationToken.None);
 
         // Assert
         await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-            await handler.Handle(command2, CancellationToken.None));
+            await handler.ExecuteAsync(command2, CancellationToken.None));
     }
 }

@@ -3,7 +3,6 @@ using Features.Schools.Commands.CreateSchool;
 using Features.Schools.Queries.GetAllSchools;
 using Features.Schools.Queries.GetSchoolById;
 using Infrastructure.Persistence;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,8 +15,10 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// Register MediatR
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateSchoolCommand).Assembly));
+// Register handlers
+builder.Services.AddScoped<CreateSchoolCommandHandler>();
+builder.Services.AddScoped<GetAllSchoolsQueryHandler>();
+builder.Services.AddScoped<GetSchoolByIdQueryHandler>();
 
 var app = builder.Build();
 
@@ -43,21 +44,21 @@ app.UseHttpsRedirection();
 // Schools API endpoints
 var schools = app.MapGroup("/api/schools");
 
-schools.MapPost("/", async (CreateSchoolCommand command, IMediator mediator) =>
+schools.MapPost("/", async (CreateSchoolCommand command, CreateSchoolCommandHandler handler) =>
 {
-    var result = await mediator.Send(command);
+    var result = await handler.ExecuteAsync(command, CancellationToken.None);
     return Results.Created($"/api/schools/{result.Id}", result);
 });
 
-schools.MapGet("/", async (IMediator mediator) =>
+schools.MapGet("/", async (GetAllSchoolsQueryHandler handler) =>
 {
-    var schools = await mediator.Send(new GetAllSchoolsQuery());
+    var schools = await handler.ExecuteAsync(new GetAllSchoolsQuery(), CancellationToken.None);
     return Results.Ok(schools);
 });
 
-schools.MapGet("/{id:int}", async (int id, IMediator mediator) =>
+schools.MapGet("/{id:int}", async (int id, GetSchoolByIdQueryHandler handler) =>
 {
-    var school = await mediator.Send(new GetSchoolByIdQuery(id));
+    var school = await handler.ExecuteAsync(new GetSchoolByIdQuery(id), CancellationToken.None);
     return school is not null ? Results.Ok(school) : Results.NotFound();
 });
 

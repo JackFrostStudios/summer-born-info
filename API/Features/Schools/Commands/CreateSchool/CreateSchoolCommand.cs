@@ -1,5 +1,4 @@
 using Domain.Entities;
-using MediatR;
 
 namespace Features.Schools.Commands.CreateSchool;
 
@@ -15,6 +14,6 @@ public record CreateSchoolCommand(
     SchoolType Type,
     int? Capacity,
     int? PupilsEnrolled
-) : IRequest<CreateSchoolResponse>;
+);
 
 public record CreateSchoolResponse(int Id);

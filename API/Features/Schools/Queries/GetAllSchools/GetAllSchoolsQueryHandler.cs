@@ -1,11 +1,10 @@
 using Domain.Entities;
 using Infrastructure.Persistence;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Features.Schools.Queries.GetAllSchools;
 
-public class GetAllSchoolsQueryHandler : IRequestHandler<GetAllSchoolsQuery, List<SchoolDto>>
+public class GetAllSchoolsQueryHandler
 {
     private readonly ApplicationDbContext _context;
 
@@ -14,7 +13,7 @@ public class GetAllSchoolsQueryHandler : IRequestHandler<GetAllSchoolsQuery, Lis
         _context = context;
     }
 
-    public async Task<List<SchoolDto>> Handle(GetAllSchoolsQuery request, CancellationToken cancellationToken)
+    public async Task<List<SchoolDto>> ExecuteAsync(GetAllSchoolsQuery request, CancellationToken cancellationToken)
     {
         var schools = await _context.Schools
             .AsNoTracking()

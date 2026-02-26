@@ -1,9 +1,8 @@
 using Domain.Entities;
-using MediatR;
 
 namespace Features.Schools.Queries.GetAllSchools;
 
-public record GetAllSchoolsQuery() : IRequest<List<SchoolDto>>;
+public record GetAllSchoolsQuery();
 
 public record SchoolDto(
     int Id,
