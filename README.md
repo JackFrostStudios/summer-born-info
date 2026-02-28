@@ -27,7 +27,7 @@ The platform aims to:
 This project follows a clean architecture pattern with the following layers:
 
 - **Domain**: Contains business entities and domain logic
-- **Features**: Implements use cases and application logic
+- **Features**: Implements use cases and application logic, also contains the Minimal endpoint registration for each feature. 
 - **Infrastructure**: Handles data persistence and external dependencies
 - **Web**: Contains API controllers and application entry point
 
