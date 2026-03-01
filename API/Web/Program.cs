@@ -1,7 +1,6 @@
 using Domain.Entities;
-using Features.Schools.Commands.CreateSchool;
+using Features.Schools.Import;
 using Features.Schools.Queries.GetAllSchools;
-using Features.Schools.Queries.GetSchoolById;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,9 +15,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 // Register handlers
-builder.Services.AddScoped<CreateSchoolCommandHandler>();
+builder.Services.AddScoped<ImportSchoolsCommandHandler>();
 builder.Services.AddScoped<GetAllSchoolsQueryHandler>();
-builder.Services.AddScoped<GetSchoolByIdQueryHandler>();
 
 var app = builder.Build();
 
@@ -44,22 +42,24 @@ app.UseHttpsRedirection();
 // Schools API endpoints
 var schools = app.MapGroup("/api/schools");
 
-schools.MapPost("/", async (CreateSchoolCommand command, CreateSchoolCommandHandler handler) =>
+schools.MapPost("/import", async (IFormFile csvFile, ImportSchoolsCommandHandler handler) =>
 {
+    if (csvFile == null || csvFile.Length == 0)
+    {
+        return Results.BadRequest("CSV file is required");
+    }
+
+    var stream = csvFile.OpenReadStream();
+    var command = new ImportSchoolsCommand(stream, csvFile.FileName);
     var result = await handler.ExecuteAsync(command, CancellationToken.None);
-    return Results.Created($"/api/schools/{result.Id}", result);
+    return Results.Ok(result);
 });
 
-schools.MapGet("/", async (GetAllSchoolsQueryHandler handler) =>
+schools.MapGet("/", async (GetAllSchoolsQueryHandler handler, Guid? cursor, int? pageSize) =>
 {
-    var schools = await handler.ExecuteAsync(new GetAllSchoolsQuery(), CancellationToken.None);
-    return Results.Ok(schools);
-});
-
-schools.MapGet("/{id:int}", async (int id, GetSchoolByIdQueryHandler handler) =>
-{
-    var school = await handler.ExecuteAsync(new GetSchoolByIdQuery(id), CancellationToken.None);
-    return school is not null ? Results.Ok(school) : Results.NotFound();
+    var query = new GetAllSchoolsQuery(cursor, pageSize ?? 100);
+    var (schools, nextCursor) = await handler.ExecuteAsync(query, CancellationToken.None);
+    return Results.Ok(new { schools, nextCursor });
 });
 
 app.Run();

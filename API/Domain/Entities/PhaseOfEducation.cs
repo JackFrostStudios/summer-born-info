@@ -1,0 +1,9 @@
+namespace Domain.Entities;
+
+public class PhaseOfEducation
+{
+    public Guid Id { get; set; }
+    public required string Code { get; set; }
+    public required string Name { get; set; }
+    public uint Version { get; set; }
+}

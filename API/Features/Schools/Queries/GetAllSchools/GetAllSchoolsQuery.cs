@@ -2,19 +2,63 @@ using Domain.Entities;
 
 namespace Features.Schools.Queries.GetAllSchools;
 
-public record GetAllSchoolsQuery();
+public record GetAllSchoolsQuery(
+    Guid? Cursor = null,
+    int PageSize = 100
+);
 
 public record SchoolDto(
-    int Id,
+    Guid Id,
+    int URN,
+    int? UKPRN,
+    int EstablishmentNumber,
     string Name,
-    string URN,
-    string? Address,
-    string? City,
+    SchoolAddressDto Address,
+    DateOnly? OpenDate,
+    DateOnly? CloseDate,
+    PhaseOfEducationDto PhaseOfEducation,
+    LocalAuthorityDto LocalAuthority,
+    EstablishmentTypeDto EstablishmentType,
+    EstablishmentGroupDto EstablishmentGroup,
+    EstablishmentStatusDto EstablishmentStatus
+);
+
+public record SchoolAddressDto(
+    Guid SchoolId,
+    string? Street,
+    string? Locality,
+    string? AddressThree,
+    string Town,
     string? County,
-    string? Postcode,
-    string? PhoneNumber,
-    string? Website,
-    SchoolType Type,
-    int? Capacity,
-    int? PupilsEnrolled
+    string PostCode
+);
+
+public record PhaseOfEducationDto(
+    Guid Id,
+    string Code,
+    string Name
+);
+
+public record LocalAuthorityDto(
+    Guid Id,
+    string Code,
+    string Name
+);
+
+public record EstablishmentTypeDto(
+    Guid Id,
+    string Code,
+    string Name
+);
+
+public record EstablishmentGroupDto(
+    Guid Id,
+    string Code,
+    string Name
+);
+
+public record EstablishmentStatusDto(
+    Guid Id,
+    string Code,
+    string Name
 );

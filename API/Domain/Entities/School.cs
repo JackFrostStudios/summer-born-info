@@ -2,28 +2,23 @@ namespace Domain.Entities;
 
 public class School
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
+    public required int URN { get; set; }
+    public int? UKPRN { get; set; }
+    public required int EstablishmentNumber { get; set; }
     public required string Name { get; set; }
-    public required string URN { get; set; } // Unique Reference Number (UK school identifier)
-    public string? Address { get; set; }
-    public string? City { get; set; }
-    public string? County { get; set; }
-    public string? Postcode { get; set; }
-    public string? PhoneNumber { get; set; }
-    public string? Website { get; set; }
-    public SchoolType Type { get; set; }
-    public int? Capacity { get; set; }
-    public int? PupilsEnrolled { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; set; }
-}
-
-public enum SchoolType
-{
-    Primary = 1,
-    Secondary = 2,
-    Academy = 3,
-    Independent = 4,
-    Special = 5,
-    Other = 6
+    public required SchoolAddress Address { get; set; }
+    public DateOnly? OpenDate { get; set; }
+    public DateOnly? CloseDate { get; set; }
+    public required Guid PhaseOfEducationId { get; set; }
+    public required PhaseOfEducation PhaseOfEducation { get; set; }
+    public required Guid LocalAuthorityId { get; set; }
+    public required LocalAuthority LocalAuthority { get; set; }
+    public required Guid EstablishmentTypeId { get; set; }
+    public required EstablishmentType EstablishmentType { get; set; }
+    public required Guid EstablishmentGroupId { get; set; }
+    public required EstablishmentGroup EstablishmentGroup { get; set; }
+    public required Guid EstablishmentStatusId { get; set; }
+    public required EstablishmentStatus EstablishmentStatus { get; set; }
+    public uint Version { get; set; }
 }
