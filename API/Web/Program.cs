@@ -1,8 +1,4 @@
-using Domain.Entities;
-using Features.Schools.Import;
-using Features.Schools.Queries.GetAllSchools;
-using Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

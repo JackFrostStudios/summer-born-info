@@ -1,4 +1,4 @@
-namespace Domain.Entities;
+namespace SummerBornInfo.Domain.Entities;
 
 public class School
 {

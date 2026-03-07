@@ -1,8 +1,4 @@
-using Domain.Entities;
-using Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-
-namespace Features.Schools.Import;
+namespace SummerBornInfo.Features.Schools.Import;
 
 public class ImportSchoolsCommandHandler
 {

@@ -1,7 +1,4 @@
-using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-
-namespace Infrastructure.Persistence;
+namespace SummerBornInfo.Infrastructure.Persistence;
 
 public class ApplicationDbContext : DbContext
 {

@@ -1,6 +1,4 @@
-using Domain.Entities;
-
-namespace Features.Schools.Queries.GetAllSchools;
+namespace SummerBornInfo.Features.Schools.Queries.GetAllSchools;
 
 public record GetAllSchoolsQuery(
     Guid? Cursor = null,

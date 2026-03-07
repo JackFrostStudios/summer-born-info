@@ -1,34 +1,11 @@
-using System.Net.Http.Headers;
-using Infrastructure.Persistence;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Testcontainers.PostgreSql;
-using Xunit;
-
-namespace Web.IntegrationTests;
+namespace SummerBornInfo.Web.Tests;
 
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _postgresContainer;
-
-    public CustomWebApplicationFactory()
+    private readonly IntegrationTestDatabaseInstanceFixture integrationTestDatabaseInstanceFixture;
+    public CustomWebApplicationFactory(IntegrationTestDatabaseServerFixture testDatabaseServerFixture)
     {
-        _postgresContainer = new PostgreSqlBuilder()
-            .WithImage("postgres:17")
-            .WithPassword("postgres")
-            .Build();
-    }
-
-    public async ValueTask InitializeAsync()
-    {
-        await _postgresContainer.StartAsync();
-    }
-
-    public new async ValueTask DisposeAsync()
-    {
-        await _postgresContainer.DisposeAsync();
+        integrationTestDatabaseInstanceFixture = new IntegrationTestDatabaseInstanceFixture(testDatabaseServerFixture);
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -46,14 +23,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
             // Add DbContext with TestContainers connection string
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseNpgsql(_postgresContainer.GetConnectionString());
+                options.UseNpgsql(integrationTestDatabaseInstanceFixture.DatabaseConnectionString);
             });
-
-            // Ensure database is created
-            var sp = services.BuildServiceProvider();
-            using var scope = sp.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            db.Database.EnsureCreated();
         });
     }
 
@@ -61,5 +32,15 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
     {
         client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
+    }
+
+    public async ValueTask InitializeAsync()
+    {
+        await integrationTestDatabaseInstanceFixture.InitializeAsync();
+    }
+    public override async ValueTask DisposeAsync()
+    {
+        await integrationTestDatabaseInstanceFixture.DisposeAsync();
+        await base.DisposeAsync();
     }
 }

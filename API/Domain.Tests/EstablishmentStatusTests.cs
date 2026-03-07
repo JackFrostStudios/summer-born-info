@@ -1,7 +1,4 @@
-using Domain.Entities;
-using Xunit;
-
-namespace Domain.Tests;
+namespace SummerBornInfo.Domain.Tests;
 
 public class EstablishmentStatusTests
 {

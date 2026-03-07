@@ -1,8 +1,4 @@
-using Domain.Entities;
-using Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-
-namespace Features.Schools.Queries.GetAllSchools;
+namespace SummerBornInfo.Features.Schools.Queries.GetAllSchools;
 
 public class GetAllSchoolsQueryHandler
 {

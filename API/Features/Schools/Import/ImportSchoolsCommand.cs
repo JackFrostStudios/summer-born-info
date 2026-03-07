@@ -1,6 +1,4 @@
-using Domain.Entities;
-
-namespace Features.Schools.Import;
+namespace SummerBornInfo.Features.Schools.Import;
 
 public record ImportSchoolsCommand(Stream CsvStream, string FileName);
 
