@@ -1,4 +1,4 @@
-namespace SummerBornInfo.Domain.Tests;
+namespace SummerBornInfo.Domain.Tests.Entities;
 
 public class SchoolTests
 {
