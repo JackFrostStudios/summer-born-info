@@ -12,13 +12,7 @@ public class GetAllSchoolsQueryHandler
     public async Task<(List<SchoolDto> Schools, Guid? NextCursor)> ExecuteAsync(GetAllSchoolsQuery request, CancellationToken cancellationToken)
     {
         IQueryable<School> query = _context.Schools
-            .AsNoTracking()
-            .Include(s => s.Address)
-            .Include(s => s.PhaseOfEducation)
-            .Include(s => s.LocalAuthority)
-            .Include(s => s.EstablishmentType)
-            .Include(s => s.EstablishmentGroup)
-            .Include(s => s.EstablishmentStatus);
+            .AsNoTracking();
 
         // Apply cursor-based pagination
         if (request.Cursor.HasValue)
