@@ -1,12 +1,7 @@
 namespace SummerBornInfo.Infrastructure.Persistence;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
-    {
-    }
-
     public DbSet<School> Schools => Set<School>();
     public DbSet<SchoolAddress> SchoolAddresses => Set<SchoolAddress>();
     public DbSet<LocalAuthority> LocalAuthorities => Set<LocalAuthority>();
