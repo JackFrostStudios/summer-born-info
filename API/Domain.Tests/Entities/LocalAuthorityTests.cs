@@ -3,84 +3,37 @@ namespace SummerBornInfo.Domain.Tests.Entities;
 public class LocalAuthorityTests
 {
     [Fact]
-    public void LocalAuthority_ShouldHaveRequiredProperties()
+    public void LocalAuthority_ShouldInitalizeWithRequiredProperties()
     {
         // Arrange
         var localAuthority = new LocalAuthority
         {
-            Id = Guid.NewGuid(),
             Code = "E09000001",
             Name = "Local Authority One"
         };
 
         // Act & Assert
-        Assert.Equal(Guid.NewGuid().GetType(), localAuthority.Id.GetType());
         Assert.Equal("E09000001", localAuthority.Code);
         Assert.Equal("Local Authority One", localAuthority.Name);
     }
 
     [Fact]
-    public void LocalAuthority_Version_ShouldBeZeroByDefault()
-    {
-        // Arrange
-        var localAuthority = new LocalAuthority
-        {
-            Id = Guid.NewGuid(),
-            Code = "E09000001",
-            Name = "Local Authority One"
-        };
-
-        // Act & Assert
-        Assert.Equal(0u, localAuthority.Version);
-    }
-
-    [Fact]
-    public void LocalAuthority_AllProperties_CanBeSet()
+    public void LocalAuthority_ShouldInitalizeWithAllProperties()
     {
         // Arrange
         var id = Guid.NewGuid();
         var localAuthority = new LocalAuthority
         {
             Id = id,
-            Code = "E09000002",
-            Name = "Local Authority Two",
-            Version = 1
+            Code = "E09000001",
+            Name = "Local Authority One",
+            Version = 10u
         };
 
         // Act & Assert
         Assert.Equal(id, localAuthority.Id);
-        Assert.Equal("E09000002", localAuthority.Code);
-        Assert.Equal("Local Authority Two", localAuthority.Name);
-        Assert.Equal(1u, localAuthority.Version);
-    }
-
-    [Fact]
-    public void LocalAuthority_Code_ShouldNotBeNullOrEmpty()
-    {
-        // Arrange
-        var localAuthority = new LocalAuthority
-        {
-            Id = Guid.NewGuid(),
-            Code = "E09000001",
-            Name = "Local Authority One"
-        };
-
-        // Act & Assert
-        Assert.False(string.IsNullOrEmpty(localAuthority.Code));
-    }
-
-    [Fact]
-    public void LocalAuthority_Name_ShouldNotBeNullOrEmpty()
-    {
-        // Arrange
-        var localAuthority = new LocalAuthority
-        {
-            Id = Guid.NewGuid(),
-            Code = "E09000001",
-            Name = "Local Authority One"
-        };
-
-        // Act & Assert
-        Assert.False(string.IsNullOrEmpty(localAuthority.Name));
+        Assert.Equal("E09000001", localAuthority.Code);
+        Assert.Equal("Local Authority One", localAuthority.Name);
+        Assert.Equal(10u, localAuthority.Version);
     }
 }

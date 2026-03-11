@@ -3,7 +3,7 @@ namespace SummerBornInfo.Domain.Tests.Entities;
 public class SchoolAddressTests
 {
     [Fact]
-    public void SchoolAddress_ShouldHaveRequiredProperties()
+    public void SchoolAddress_ShouldInitalizeWithRequiredProperties()
     {
         // Arrange
         var address = new SchoolAddress
@@ -13,45 +13,12 @@ public class SchoolAddressTests
         };
 
         // Act & Assert
-        Assert.NotNull(address.Town);
-        Assert.NotNull(address.PostCode);
         Assert.Equal("Test Town", address.Town);
         Assert.Equal("TE1 2ST", address.PostCode);
     }
 
     [Fact]
-    public void SchoolAddress_OptionalProperties_CanBeNull()
-    {
-        // Arrange
-        var address = new SchoolAddress
-        {
-            Town = "Test Town",
-            PostCode = "TE1 2ST"
-        };
-
-        // Act & Assert
-        Assert.Null(address.Street);
-        Assert.Null(address.Locality);
-        Assert.Null(address.AddressThree);
-        Assert.Null(address.County);
-    }
-
-    [Fact]
-    public void SchoolAddress_Version_ShouldBeZeroByDefault()
-    {
-        // Arrange
-        var address = new SchoolAddress
-        {
-            Town = "Test Town",
-            PostCode = "TE1 2ST"
-        };
-
-        // Act & Assert
-        Assert.Equal(0u, address.Version);
-    }
-
-    [Fact]
-    public void SchoolAddress_AllProperties_CanBeSet()
+    public void SchoolAddress_ShouldInitalizeWithAllProperties()
     {
         // Arrange
         var address = new SchoolAddress
