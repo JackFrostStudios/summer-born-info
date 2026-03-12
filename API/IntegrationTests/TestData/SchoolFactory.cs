@@ -10,7 +10,7 @@ public static class SchoolFactory
         .RuleFor(s => s.OpenDate, f => f.Date.PastDateOnly().OrNull(f, .1f))
         .RuleFor(s => s.Name, f => f.Company.CompanyName())
         .RuleFor(s => s.UKPRN, f => f.Random.Int(0).OrNull(f, .05f))
-        .RuleFor(s => s.URN, f => URN++)
+        .RuleFor(s => s.URN, f => Interlocked.Increment(ref URN))
         .RuleFor(s => s.Address, f => SchoolAddressFactory.GetSchoolAddress());
     public static School GetSchool()
     {
