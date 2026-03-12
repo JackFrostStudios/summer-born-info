@@ -1,12 +1,8 @@
 namespace SummerBornInfo.Web.Tests;
 
-public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
+public class CustomWebApplicationFactory(IntegrationTestDatabaseServerFixture testDatabaseServerFixture) : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly IntegrationTestDatabaseInstanceFixture integrationTestDatabaseInstanceFixture;
-    public CustomWebApplicationFactory(IntegrationTestDatabaseServerFixture testDatabaseServerFixture)
-    {
-        integrationTestDatabaseInstanceFixture = new IntegrationTestDatabaseInstanceFixture(testDatabaseServerFixture);
-    }
+    private readonly IntegrationTestDatabaseInstanceFixture integrationTestDatabaseInstanceFixture = new IntegrationTestDatabaseInstanceFixture(testDatabaseServerFixture);
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {

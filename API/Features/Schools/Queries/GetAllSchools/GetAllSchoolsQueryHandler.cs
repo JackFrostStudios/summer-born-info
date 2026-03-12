@@ -1,20 +1,14 @@
 namespace SummerBornInfo.Features.Schools.Queries.GetAllSchools;
 
-public class GetAllSchoolsQueryHandler
+public class GetAllSchoolsQueryHandler(ApplicationDbContext context)
 {
-    private readonly ApplicationDbContext _context;
-
-    public GetAllSchoolsQueryHandler(ApplicationDbContext context)
-    {
-        _context = context;
-    }
+    private readonly ApplicationDbContext _context = context;
 
     public async Task<(List<SchoolDto> Schools, Guid? NextCursor)> ExecuteAsync(GetAllSchoolsQuery request, CancellationToken cancellationToken)
     {
         IQueryable<School> query = _context.Schools
             .AsNoTracking();
 
-        // Apply cursor-based pagination
         if (request.Cursor.HasValue)
         {
             query = query.Where(s => s.Id > request.Cursor.Value);
@@ -28,31 +22,9 @@ public class GetAllSchoolsQueryHandler
             .ToListAsync(cancellationToken);
 
         var hasMore = schools.Count > request.PageSize;
-        var schoolsToReturn = hasMore ? schools.Take(request.PageSize).ToList() : schools;
+        var schoolsToReturn = hasMore ? [.. schools.Take(request.PageSize)] : schools;
 
-        var schoolDtos = schoolsToReturn.Select(s => new SchoolDto(
-            s.Id,
-            s.URN,
-            s.UKPRN,
-            s.EstablishmentNumber,
-            s.Name,
-            new SchoolAddressDto(
-                s.Address.SchoolId,
-                s.Address.Street,
-                s.Address.Locality,
-                s.Address.AddressThree,
-                s.Address.Town,
-                s.Address.County,
-                s.Address.PostCode
-            ),
-            s.OpenDate,
-            s.CloseDate,
-            new PhaseOfEducationDto(s.PhaseOfEducation.Id, s.PhaseOfEducation.Code, s.PhaseOfEducation.Name),
-            new LocalAuthorityDto(s.LocalAuthority.Id, s.LocalAuthority.Code, s.LocalAuthority.Name),
-            new EstablishmentTypeDto(s.EstablishmentType.Id, s.EstablishmentType.Code, s.EstablishmentType.Name),
-            new EstablishmentGroupDto(s.EstablishmentGroup.Id, s.EstablishmentGroup.Code, s.EstablishmentGroup.Name),
-            new EstablishmentStatusDto(s.EstablishmentStatus.Id, s.EstablishmentStatus.Code, s.EstablishmentStatus.Name)
-        )).ToList();
+        var schoolDtos = schoolsToReturn.Select(s => SchoolDto.FromEntity(s)).ToList();
 
         Guid? nextCursor = null;
         if (hasMore)

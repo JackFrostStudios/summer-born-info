@@ -1,13 +1,8 @@
 namespace SummerBornInfo.Features.Schools.Import;
 
-public class ImportSchoolsCommandHandler
+public class ImportSchoolsCommandHandler(ApplicationDbContext context)
 {
-    private readonly ApplicationDbContext _context;
-
-    public ImportSchoolsCommandHandler(ApplicationDbContext context)
-    {
-        _context = context;
-    }
+    private readonly ApplicationDbContext _context = context;
 
     public async Task<ImportSchoolsResponse> ExecuteAsync(ImportSchoolsCommand command, CancellationToken cancellationToken)
     {
