@@ -1,39 +1,38 @@
-﻿namespace SummerBornInfo.Infrastructure.Persistence.Configuration
+﻿namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
+
+internal class AddressConfiguration : IEntityTypeConfiguration<SchoolAddress>
 {
-    internal class AddressConfiguration : IEntityTypeConfiguration<SchoolAddress>
+    public void Configure(EntityTypeBuilder<SchoolAddress> builder)
     {
-        public void Configure(EntityTypeBuilder<SchoolAddress> builder)
-        {
-            builder.ToTable("school");
+        builder.ToTable("school");
 
-            builder.HasKey(a => a.SchoolId);
-            builder.Property(a => a.SchoolId)
-                .HasColumnName("Id")
-                .IsRequired();
+        builder.HasKey(a => a.SchoolId);
+        builder.Property(a => a.SchoolId)
+            .HasColumnName("Id")
+            .IsRequired();
 
-            builder.Property(a => a.Street)
-                .HasMaxLength(300);
+        builder.Property(a => a.Street)
+            .HasMaxLength(300);
 
-            builder.Property(a => a.Locality)
-                .HasMaxLength(300);
+        builder.Property(a => a.Locality)
+            .HasMaxLength(300);
 
-            builder.Property(a => a.AddressThree)
-                .HasMaxLength(300);
+        builder.Property(a => a.AddressThree)
+            .HasMaxLength(300);
 
-            builder.Property(a => a.Town)
-                .HasMaxLength(300)
-                .IsRequired();
+        builder.Property(a => a.Town)
+            .HasMaxLength(300)
+            .IsRequired();
 
-            builder.Property(a => a.County)
-                .HasMaxLength(300);
+        builder.Property(a => a.County)
+            .HasMaxLength(300);
 
-            builder.Property(a => a.PostCode)
-                .HasMaxLength(30)
-                .IsRequired();
+        builder.Property(a => a.PostCode)
+            .HasMaxLength(30)
+            .IsRequired();
 
 
-            builder.Property(a => a.Version)
-                .IsRowVersion();
-        }
+        builder.Property(a => a.Version)
+            .IsRowVersion();
     }
 }
