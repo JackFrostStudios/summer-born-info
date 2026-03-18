@@ -1,12 +1,16 @@
 ﻿namespace SummerBornInfo.TestFramework;
 
-public abstract class IntegrationTestBase(IntegrationTestDatabaseServerFixture testDatabaseServerFixture) : IAsyncLifetime
+public abstract class IntegrationTestBase(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IAsyncLifetime
 {
     private readonly IntegrationTestDatabaseInstanceFixture integrationTestDatabaseInstanceFixture = new(testDatabaseServerFixture);
     protected ApplicationDbContext CreateDbContext()
     {
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-        optionsBuilder.UseNpgsql(integrationTestDatabaseInstanceFixture.DatabaseConnectionString);
+        optionsBuilder
+            .UseNpgsql(integrationTestDatabaseInstanceFixture.DatabaseConnectionString);
+
+        TestEntityFrameworkLoggingConfiguration.AddLoggingToDbContextOptions(optionsBuilder, testOutputHelper);
+
         return new ApplicationDbContext(optionsBuilder.Options);
     }
     public virtual async ValueTask InitializeAsync()

@@ -1,6 +1,6 @@
 namespace SummerBornInfo.Features.Schools.Queries.GetAllSchools;
 
-public class GetAllSchoolsQueryHandler(ApplicationDbContext context)
+public sealed class GetAllSchoolsQueryHandler(ApplicationDbContext context)
 {
     private readonly ApplicationDbContext _context = context;
 

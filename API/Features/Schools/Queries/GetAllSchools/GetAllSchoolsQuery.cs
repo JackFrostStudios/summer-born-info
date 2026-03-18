@@ -40,7 +40,6 @@ public record SchoolDto
 };
 public record SchoolAddressDto
 {
-    public required Guid SchoolId { get; init; }
     public required string? Street { get; init; }
     public required string? Locality { get; init; }
     public required string? AddressThree { get; init; }
@@ -49,7 +48,6 @@ public record SchoolAddressDto
     public required string PostCode { get; init; }
     public static SchoolAddressDto FromEntity(SchoolAddress schoolAddress) => new()
     {
-        SchoolId = schoolAddress.SchoolId,
         Street = schoolAddress.Street,
         Locality = schoolAddress.Locality,
         AddressThree = schoolAddress.AddressThree,

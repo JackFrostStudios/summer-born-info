@@ -1,8 +1,8 @@
 namespace SummerBornInfo.Domain.Entities;
 
-public class EstablishmentStatus
+public sealed class EstablishmentStatus
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; } = Guid.CreateVersion7();
     public required string Code { get; set; }
     public required string Name { get; set; }
     public uint Version { get; set; }

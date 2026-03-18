@@ -1,18 +1,12 @@
 namespace SummerBornInfo.Features.Schools.Import;
 
-public class ImportSchoolsCommandHandler(ApplicationDbContext context)
+public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context)
 {
     private readonly ApplicationDbContext _context = context;
 
     public async Task<ImportSchoolsResponse> ExecuteAsync(ImportSchoolsCommand command, CancellationToken cancellationToken)
     {
-        var csvStream = command.CsvStream;
-
-        if (csvStream == null)
-        {
-            throw new ArgumentException("CSV stream is required");
-        }
-
+        var csvStream = command.CsvStream ?? throw new ArgumentException("CSV stream is required");
         using var reader = new StreamReader(csvStream);
         using var csv = new CsvHelper.CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture);
 
@@ -124,7 +118,6 @@ public class ImportSchoolsCommandHandler(ApplicationDbContext context)
                         Name = record.EstablishmentName?.ToString() ?? "",
                         Address = new SchoolAddress
                         {
-                            SchoolId = Guid.NewGuid(),
                             Street = record.Street?.ToString(),
                             Locality = record.Locality?.ToString(),
                             AddressThree = record.Address3?.ToString(),
@@ -135,15 +128,10 @@ public class ImportSchoolsCommandHandler(ApplicationDbContext context)
                         },
                         OpenDate = openDate,
                         CloseDate = closeDate,
-                        PhaseOfEducationId = phaseOfEducation.Id,
                         PhaseOfEducation = phaseOfEducation,
-                        LocalAuthorityId = localAuthority.Id,
                         LocalAuthority = localAuthority,
-                        EstablishmentTypeId = establishmentType.Id,
                         EstablishmentType = establishmentType,
-                        EstablishmentGroupId = establishmentGroup.Id,
                         EstablishmentGroup = establishmentGroup,
-                        EstablishmentStatusId = establishmentStatus.Id,
                         EstablishmentStatus = establishmentStatus,
                         Version = 0
                     };
@@ -159,15 +147,10 @@ public class ImportSchoolsCommandHandler(ApplicationDbContext context)
                     existingSchool.EstablishmentNumber = establishmentNumber;
                     existingSchool.OpenDate = openDate;
                     existingSchool.CloseDate = closeDate;
-                    existingSchool.PhaseOfEducationId = phaseOfEducation.Id;
                     existingSchool.PhaseOfEducation = phaseOfEducation;
-                    existingSchool.LocalAuthorityId = localAuthority.Id;
                     existingSchool.LocalAuthority = localAuthority;
-                    existingSchool.EstablishmentTypeId = establishmentType.Id;
                     existingSchool.EstablishmentType = establishmentType;
-                    existingSchool.EstablishmentGroupId = establishmentGroup.Id;
                     existingSchool.EstablishmentGroup = establishmentGroup;
-                    existingSchool.EstablishmentStatusId = establishmentStatus.Id;
                     existingSchool.EstablishmentStatus = establishmentStatus;
 
                     // Update address

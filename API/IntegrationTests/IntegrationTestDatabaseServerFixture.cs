@@ -8,8 +8,8 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
         _postgreSqlContainer = new PostgreSqlBuilder("postgres:alpine")
             .WithUsername("test")
             .WithPassword("test")
-            .WithName("integration_tests_postgresql_db")
-            .WithPortBinding(5431, 5432)
+            .WithName($"integration_tests_postgresql_db_{Guid.NewGuid()}")
+            .WithPortBinding(5432, true)
             .Build();
     }
 

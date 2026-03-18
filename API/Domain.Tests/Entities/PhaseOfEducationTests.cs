@@ -1,6 +1,6 @@
 namespace SummerBornInfo.Domain.Tests.Entities;
 
-public class PhaseOfEducationTests
+public sealed class PhaseOfEducationTests
 {
     [Fact]
     public void PhaseOfEducation_ShouldInitalizeWithRequiredProperties()
@@ -15,6 +15,20 @@ public class PhaseOfEducationTests
         // Act & Assert
         Assert.Equal("PRI", phase.Code);
         Assert.Equal("Primary", phase.Name);
+    }
+
+    [Fact]
+    public void PhaseOfEducation_ShouldGenerateId()
+    {
+        // Arrange
+        var phase = new PhaseOfEducation
+        {
+            Code = "PRI",
+            Name = "Primary"
+        };
+
+        // Act & Assert
+        Assert.NotEqual(Guid.Empty, phase.Id);
     }
 
     [Fact]

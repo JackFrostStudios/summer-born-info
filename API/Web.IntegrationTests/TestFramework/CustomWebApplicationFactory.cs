@@ -1,8 +1,6 @@
-using SummerBornInfo.TestFramework;
+namespace SummerBornInfo.Web.Tests.TestFramework;
 
-namespace SummerBornInfo.Web.Tests;
-
-public class CustomWebApplicationFactory(IntegrationTestDatabaseServerFixture testDatabaseServerFixture) : WebApplicationFactory<Program>, IAsyncLifetime
+public sealed class CustomWebApplicationFactory(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly IntegrationTestDatabaseInstanceFixture integrationTestDatabaseInstanceFixture = new(testDatabaseServerFixture);
 
@@ -19,10 +17,15 @@ public class CustomWebApplicationFactory(IntegrationTestDatabaseServerFixture te
             }
 
             // Add DbContext with TestContainers connection string
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(optionsBuilder =>
             {
-                options.UseNpgsql(integrationTestDatabaseInstanceFixture.DatabaseConnectionString);
+                optionsBuilder.UseNpgsql(integrationTestDatabaseInstanceFixture.DatabaseConnectionString);
+                TestEntityFrameworkLoggingConfiguration.AddLoggingToDbContextOptions(optionsBuilder, testOutputHelper);
             });
+        });
+
+        builder.ConfigureLogging(logging => {
+            logging.AddProvider(new XUnitLoggerProvider(testOutputHelper));
         });
     }
 

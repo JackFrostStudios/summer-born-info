@@ -6,10 +6,10 @@ internal class AddressConfiguration : IEntityTypeConfiguration<SchoolAddress>
     {
         builder.ToTable("school");
 
-        builder.HasKey(a => a.SchoolId);
-        builder.Property(a => a.SchoolId)
-            .HasColumnName("Id")
+        
+        builder.Property<Guid>("Id")
             .IsRequired();
+        builder.HasKey("Id");
 
         builder.Property(a => a.Street)
             .HasMaxLength(300);

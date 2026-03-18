@@ -1,6 +1,6 @@
 namespace SummerBornInfo.Domain.Tests.Entities;
 
-public class EstablishmentGroupTests
+public sealed class EstablishmentGroupTests
 {
     [Fact]
     public void EstablishmentGroup_ShouldInitalizeWithRequiredProperties()
@@ -15,6 +15,20 @@ public class EstablishmentGroupTests
         // Act & Assert
         Assert.Equal("SCH", establishmentGroup.Code);
         Assert.Equal("School", establishmentGroup.Name);
+    }
+
+    [Fact]
+    public void EstablishmentGroup_ShouldGenerateId()
+    {
+        // Arrange
+        var establishmentGroup = new EstablishmentGroup
+        {
+            Code = "SCH",
+            Name = "School"
+        };
+
+        // Act & Assert
+        Assert.NotEqual(Guid.Empty, establishmentGroup.Id);
     }
 
     [Fact]

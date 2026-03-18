@@ -1,6 +1,6 @@
 namespace SummerBornInfo.Domain.Tests.Entities;
 
-public class SchoolAddressTests
+public sealed class SchoolAddressTests
 {
     [Fact]
     public void SchoolAddress_ShouldInitalizeWithRequiredProperties()

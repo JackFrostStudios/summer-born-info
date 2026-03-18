@@ -26,7 +26,7 @@ internal class SchoolConfiguration : IEntityTypeConfiguration<School>
         builder
             .HasOne(s => s.Address)
             .WithOne()
-            .HasForeignKey<SchoolAddress>(a => a.SchoolId)
+            .HasForeignKey<SchoolAddress>("Id")
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
 
