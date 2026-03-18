@@ -1,6 +1,6 @@
 ﻿namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
 
-internal class PhaseOfEducationConfiguration : IEntityTypeConfiguration<PhaseOfEducation>
+internal sealed class PhaseOfEducationConfiguration : IEntityTypeConfiguration<PhaseOfEducation>
 {
     public void Configure(EntityTypeBuilder<PhaseOfEducation> builder)
     {

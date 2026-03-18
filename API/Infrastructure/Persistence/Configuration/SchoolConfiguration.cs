@@ -1,6 +1,6 @@
 ﻿namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
 
-internal class SchoolConfiguration : IEntityTypeConfiguration<School>
+internal sealed class SchoolConfiguration : IEntityTypeConfiguration<School>
 {
     public void Configure(EntityTypeBuilder<School> builder)
     {

@@ -1,6 +1,6 @@
 ﻿namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
 
-internal class LocalAuthorityConfiguration : IEntityTypeConfiguration<LocalAuthority>
+internal sealed class LocalAuthorityConfiguration : IEntityTypeConfiguration<LocalAuthority>
 {
     public void Configure(EntityTypeBuilder<LocalAuthority> builder)
     {

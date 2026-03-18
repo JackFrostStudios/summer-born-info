@@ -1,6 +1,6 @@
 ﻿namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
 
-internal class EstablishmentStatusConfiguration : IEntityTypeConfiguration<EstablishmentStatus>
+internal sealed class EstablishmentStatusConfiguration : IEntityTypeConfiguration<EstablishmentStatus>
 {
     public void Configure(EntityTypeBuilder<EstablishmentStatus> builder)
     {
