@@ -40,14 +40,12 @@ public sealed class LocalAuthorityTests
         {
             Id = id,
             Code = "E09000001",
-            Name = "Local Authority One",
-            Version = 10u
+            Name = "Local Authority One"
         };
 
         // Act & Assert
         Assert.Equal(id, localAuthority.Id);
         Assert.Equal("E09000001", localAuthority.Code);
         Assert.Equal("Local Authority One", localAuthority.Name);
-        Assert.Equal(10u, localAuthority.Version);
     }
 }

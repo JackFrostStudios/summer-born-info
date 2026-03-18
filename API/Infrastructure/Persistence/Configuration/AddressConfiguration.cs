@@ -31,8 +31,7 @@ internal class AddressConfiguration : IEntityTypeConfiguration<SchoolAddress>
             .HasMaxLength(30)
             .IsRequired();
 
-
-        builder.Property(a => a.Version)
+        builder.Property<uint>("Version")
             .IsRowVersion();
     }
 }

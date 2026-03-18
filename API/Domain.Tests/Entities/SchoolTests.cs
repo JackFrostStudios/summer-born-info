@@ -94,8 +94,7 @@ public sealed class SchoolTests
             LocalAuthority = localAuthority,
             EstablishmentType = establishmentType,
             EstablishmentGroup = establishmentGroup,
-            EstablishmentStatus = establishmentStatus,
-            Version = 10u
+            EstablishmentStatus = establishmentStatus
         };
 
         // Act & Assert 
@@ -112,7 +111,5 @@ public sealed class SchoolTests
         Assert.Equal(establishmentType, school.EstablishmentType);
         Assert.Equal(establishmentGroup, school.EstablishmentGroup);
         Assert.Equal(establishmentStatus, school.EstablishmentStatus);
-
-        Assert.Equal(10u, school.Version);
     }
 }

@@ -15,5 +15,4 @@ public sealed class School
     public required EstablishmentType EstablishmentType { get; set; }
     public required EstablishmentGroup EstablishmentGroup { get; set; }
     public required EstablishmentStatus EstablishmentStatus { get; set; }
-    public uint Version { get; set; }
 }

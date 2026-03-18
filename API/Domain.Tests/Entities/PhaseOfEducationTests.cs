@@ -40,14 +40,12 @@ public sealed class PhaseOfEducationTests
         {
             Id = id,
             Code = "PRI",
-            Name = "Primary",
-            Version = 10u
+            Name = "Primary"
         };
 
         // Act & Assert
         Assert.Equal(id, phase.Id);
         Assert.Equal("PRI", phase.Code);
         Assert.Equal("Primary", phase.Name);
-        Assert.Equal(10u, phase.Version);
     }
 }

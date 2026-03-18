@@ -21,7 +21,7 @@ internal class EstablishmentGroupConfiguration : IEntityTypeConfiguration<Establ
             .HasMaxLength(300)
             .IsRequired();
 
-        builder.Property(eg => eg.Version)
+        builder.Property<uint>("Version")
             .IsRowVersion();
     }
 }

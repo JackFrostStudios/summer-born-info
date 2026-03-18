@@ -123,8 +123,7 @@ public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context)
                             AddressThree = record.Address3?.ToString(),
                             Town = record.Town?.ToString() ?? "",
                             County = record["County (name)"]?.ToString(),
-                            PostCode = record.Postcode?.ToString() ?? "",
-                            Version = 0
+                            PostCode = record.Postcode?.ToString() ?? ""
                         },
                         OpenDate = openDate,
                         CloseDate = closeDate,
@@ -132,8 +131,7 @@ public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context)
                         LocalAuthority = localAuthority,
                         EstablishmentType = establishmentType,
                         EstablishmentGroup = establishmentGroup,
-                        EstablishmentStatus = establishmentStatus,
-                        Version = 0
+                        EstablishmentStatus = establishmentStatus
                     };
 
                     _context.Schools.Add(school);
@@ -202,8 +200,7 @@ public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context)
         {
             Id = Guid.NewGuid(),
             Code = code,
-            Name = name,
-            Version = 0
+            Name = name
         };
 
         _context.LocalAuthorities.Add(localAuthority);
@@ -227,8 +224,7 @@ public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context)
         {
             Id = Guid.NewGuid(),
             Code = code,
-            Name = name,
-            Version = 0
+            Name = name
         };
 
         _context.PhasesOfEducation.Add(phase);
@@ -252,8 +248,7 @@ public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context)
         {
             Id = Guid.NewGuid(),
             Code = code,
-            Name = name,
-            Version = 0
+            Name = name
         };
 
         _context.EstablishmentTypes.Add(type);
@@ -277,8 +272,7 @@ public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context)
         {
             Id = Guid.NewGuid(),
             Code = code,
-            Name = name,
-            Version = 0
+            Name = name
         };
 
         _context.EstablishmentGroups.Add(group);
@@ -302,8 +296,7 @@ public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context)
         {
             Id = Guid.NewGuid(),
             Code = code,
-            Name = name,
-            Version = 0
+            Name = name
         };
 
         _context.EstablishmentStatuses.Add(status);

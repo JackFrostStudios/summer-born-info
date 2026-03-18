@@ -40,14 +40,12 @@ public sealed class EstablishmentTypeTests
         {
             Id = id,
             Code = "AC",
-            Name = "Academy",
-            Version = 10u
+            Name = "Academy"
         };
 
         // Act & Assert
         Assert.Equal(id, establishmentType.Id);
         Assert.Equal("AC", establishmentType.Code);
         Assert.Equal("Academy", establishmentType.Name);
-        Assert.Equal(10u, establishmentType.Version);
     }
 }

@@ -21,7 +21,7 @@ internal class LocalAuthorityConfiguration : IEntityTypeConfiguration<LocalAutho
             .HasMaxLength(300)
             .IsRequired();
 
-        builder.Property(la => la.Version)
+        builder.Property<uint>("Version")
             .IsRowVersion();
     }
 }

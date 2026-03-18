@@ -20,7 +20,7 @@ internal class SchoolConfiguration : IEntityTypeConfiguration<School>
             .HasMaxLength(300)
             .IsRequired();
 
-        builder.Property(s => s.Version)
+        builder.Property<uint>("Version")
             .IsRowVersion();
 
         builder

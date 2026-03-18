@@ -28,8 +28,7 @@ public sealed class SchoolAddressTests
             AddressThree = "Test Building",
             Town = "Test Town",
             County = "Test County",
-            PostCode = "TE1 2ST",
-            Version = 1
+            PostCode = "TE1 2ST"
         };
 
         // Act & Assert
@@ -39,6 +38,5 @@ public sealed class SchoolAddressTests
         Assert.Equal("Test Town", address.Town);
         Assert.Equal("Test County", address.County);
         Assert.Equal("TE1 2ST", address.PostCode);
-        Assert.Equal(1u, address.Version);
     }
 }

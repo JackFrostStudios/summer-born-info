@@ -21,7 +21,7 @@ internal class PhaseOfEducationConfiguration : IEntityTypeConfiguration<PhaseOfE
             .HasMaxLength(300)
             .IsRequired();
 
-        builder.Property(p => p.Version)
+        builder.Property<uint>("Version")
             .IsRowVersion();
 
     }
