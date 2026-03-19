@@ -18,13 +18,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\SummerBornInfo.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="TestData\ExampleImportFile.csv">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SummerBornInfo.Domain\SummerBornInfo.Domain.csproj" />
+    <ProjectReference Include="..\SummerBornInfo.Infrastructure\SummerBornInfo.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

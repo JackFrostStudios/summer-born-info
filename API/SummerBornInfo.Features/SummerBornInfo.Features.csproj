@@ -8,12 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="CsvHelper" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\SummerBornInfo.Domain.csproj" />
+    <ProjectReference Include="..\SummerBornInfo.Domain\SummerBornInfo.Domain.csproj" />
+    <ProjectReference Include="..\SummerBornInfo.Infrastructure\SummerBornInfo.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

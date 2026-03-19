@@ -3,23 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.3.11520.95
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Domain", "Domain\SummerBornInfo.Domain.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Domain", "SummerBornInfo.Domain\SummerBornInfo.Domain.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Infrastructure", "Infrastructure\SummerBornInfo.Infrastructure.csproj", "{B2C3D4E5-F6A7-8901-BCDE-F12345678901}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Infrastructure", "SummerBornInfo.Infrastructure\SummerBornInfo.Infrastructure.csproj", "{B2C3D4E5-F6A7-8901-BCDE-F12345678901}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Features", "Features\SummerBornInfo.Features.csproj", "{C3D4E5F6-A7B8-9012-CDEF-123456789012}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Features", "SummerBornInfo.Features\SummerBornInfo.Features.csproj", "{C3D4E5F6-A7B8-9012-CDEF-123456789012}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Web", "Web\SummerBornInfo.Web.csproj", "{D4E5F6A7-B8C9-0123-DEF1-234567890123}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Web", "SummerBornInfo.Web\SummerBornInfo.Web.csproj", "{D4E5F6A7-B8C9-0123-DEF1-234567890123}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Domain.Tests", "Domain.Tests\SummerBornInfo.Domain.Tests.csproj", "{06C19092-003C-4AD8-9F46-0BB510CF7651}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Domain.Tests", "SummerBornInfo.Domain.Tests\SummerBornInfo.Domain.Tests.csproj", "{06C19092-003C-4AD8-9F46-0BB510CF7651}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Infrastructure.Tests", "Infrastructure.Tests\SummerBornInfo.Infrastructure.Tests.csproj", "{07B9975A-6CED-4C3E-AA32-BAC1E5A35CA1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Infrastructure.Tests", "SummerBornInfo.Infrastructure.Tests\SummerBornInfo.Infrastructure.Tests.csproj", "{07B9975A-6CED-4C3E-AA32-BAC1E5A35CA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Features.Tests", "Features.Tests\SummerBornInfo.Features.Tests.csproj", "{CA03C0E3-D787-4BEF-B4D7-32618B5DB0A9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Features.Tests", "SummerBornInfo.Features.Tests\SummerBornInfo.Features.Tests.csproj", "{CA03C0E3-D787-4BEF-B4D7-32618B5DB0A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Web.Tests", "Web.IntegrationTests\SummerBornInfo.Web.Tests.csproj", "{79D71234-D1FA-4B04-BB14-C709F1B3B535}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Web.Tests", "SummerBornInfo.Web.IntegrationTests\SummerBornInfo.Web.Tests.csproj", "{79D71234-D1FA-4B04-BB14-C709F1B3B535}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.TestFramework", "IntegrationTests\SummerBornInfo.TestFramework.csproj", "{0D73BCB5-4E76-477B-8C8C-6ED968404741}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.TestFramework", "SummerBornInfo.IntegrationTests\SummerBornInfo.TestFramework.csproj", "{0D73BCB5-4E76-477B-8C8C-6ED968404741}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5464D64C-5FC2-4E14-910A-F03786714A9D}"
 	ProjectSection(SolutionItems) = preProject

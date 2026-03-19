@@ -15,8 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\SummerBornInfo.Domain.csproj" />
-    <ProjectReference Include="..\Infrastructure\SummerBornInfo.Infrastructure.csproj" />
-    <ProjectReference Include="..\Features\SummerBornInfo.Features.csproj" />
+    <ProjectReference Include="..\SummerBornInfo.Features\SummerBornInfo.Features.csproj" />
   </ItemGroup>
 </Project>

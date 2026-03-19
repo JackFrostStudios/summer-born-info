@@ -13,11 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\SummerBornInfo.Infrastructure.csproj" />
-    <ProjectReference Include="..\IntegrationTests\SummerBornInfo.TestFramework.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="TestContainers" />
@@ -31,6 +26,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SummerBornInfo.IntegrationTests\SummerBornInfo.TestFramework.csproj" />
   </ItemGroup>
 
 </Project>
