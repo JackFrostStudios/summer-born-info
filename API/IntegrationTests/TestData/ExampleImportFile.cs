@@ -9,11 +9,6 @@ public static class ExampleImportFile
         return await GetFileContentAsync(Resource, cancellation);
     }
 
-    public static async Task<byte[]> GetExampleLargeImportFileContentAsync(CancellationToken cancellation)
-    {
-        return await GetFileContentAsync(LargeResource, cancellation);
-    }
-
     private static async Task<byte[]> GetFileContentAsync(string resource, CancellationToken cancellation)
     {
         using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource))

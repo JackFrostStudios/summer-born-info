@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <None Remove="TestData\ExampleImportFile.csv" />
-    <None Remove="TestData\ExampleLargeImportFile.csv" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,7 +25,6 @@
     <EmbeddedResource Include="TestData\ExampleImportFile.csv">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="TestData\ExampleLargeImportFile.csv" />
   </ItemGroup>
 
 </Project>

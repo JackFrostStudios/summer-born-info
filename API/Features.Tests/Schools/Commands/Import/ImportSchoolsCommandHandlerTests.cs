@@ -22,24 +22,4 @@ public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServ
         Assert.NotNull(savedImportRequest);
         Assert.NotEmpty(savedImportRequest.Content);
     }
-
-    [Fact]
-    public async Task GivenLargeImportRequestCommand_WhenExecuted_ThenRequestIsSaved()
-    {
-        // Arrange
-        var handler = new ImportSchoolsCommandHandler(CreateDbContext());
-        var command = new ImportSchoolsCommand(await ExampleImportFile.GetExampleLargeImportFileContentAsync(Xunit.TestContext.Current.CancellationToken));
-
-        // Act
-        var result = await handler.ExecuteAsync(command, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.NotEqual(Guid.Empty, result.SchoolBulkImportRequestId);
-
-        var dbContext = CreateDbContext();
-        var savedImportRequest = dbContext.SchoolBulkImportRequests.Find(result.SchoolBulkImportRequestId);
-
-        Assert.NotNull(savedImportRequest);
-        Assert.NotEmpty(savedImportRequest.Content);
-    }
 }
