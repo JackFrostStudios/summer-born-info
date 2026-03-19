@@ -1,11 +1,11 @@
 namespace SummerBornInfo.Features.Schools.Queries.GetAllSchools;
 
-public record GetAllSchoolsQuery(
+public sealed record GetAllSchoolsQuery(
     Guid? Cursor = null,
     int PageSize = 100
 );
 
-public record SchoolDto
+public sealed record SchoolDto
 {
     public required Guid Id { get; init; }
     public required int URN { get; init; }
@@ -38,7 +38,7 @@ public record SchoolDto
             EstablishmentStatus = EstablishmentStatusDto.FromEntity(school.EstablishmentStatus)
         };
 };
-public record SchoolAddressDto
+public sealed record SchoolAddressDto
 {
     public required string? Street { get; init; }
     public required string? Locality { get; init; }
@@ -58,7 +58,7 @@ public record SchoolAddressDto
 
 };
 
-public record PhaseOfEducationDto
+public sealed record PhaseOfEducationDto
 {
     public required Guid Id { get; init; }
     public required string Code { get; init; }
@@ -72,7 +72,7 @@ public record PhaseOfEducationDto
         };
 }
 
-public record LocalAuthorityDto
+public sealed record LocalAuthorityDto
 {
     public required Guid Id { get; init; }
     public required string Code { get; init; }
@@ -86,7 +86,7 @@ public record LocalAuthorityDto
         };
 }
 
-public record EstablishmentTypeDto
+public sealed record EstablishmentTypeDto
 {
     public required Guid Id { get; init; }
     public required string Code { get; init; }
@@ -100,7 +100,7 @@ public record EstablishmentTypeDto
         };
 }
 
-public record EstablishmentGroupDto
+public sealed record EstablishmentGroupDto
 {
     public required Guid Id { get; init; }
     public required string Code { get; init; }
@@ -114,7 +114,7 @@ public record EstablishmentGroupDto
         };
 }
 
-public record EstablishmentStatusDto
+public sealed record EstablishmentStatusDto
 {
     public required Guid Id { get; init; }
     public required string Code { get; init; }

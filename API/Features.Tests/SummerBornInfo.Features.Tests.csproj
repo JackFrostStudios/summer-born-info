@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Domain\SummerBornInfo.Domain.csproj" />
     <ProjectReference Include="..\Infrastructure\SummerBornInfo.Infrastructure.csproj" />
     <ProjectReference Include="..\Features\SummerBornInfo.Features.csproj" />
+    <ProjectReference Include="..\IntegrationTests\SummerBornInfo.TestFramework.csproj" />
   </ItemGroup>
 
   <ItemGroup>

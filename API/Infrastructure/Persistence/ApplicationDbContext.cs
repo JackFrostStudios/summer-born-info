@@ -9,6 +9,7 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
     public DbSet<EstablishmentType> EstablishmentTypes => Set<EstablishmentType>();
     public DbSet<EstablishmentGroup> EstablishmentGroups => Set<EstablishmentGroup>();
     public DbSet<EstablishmentStatus> EstablishmentStatuses => Set<EstablishmentStatus>();
+    public DbSet<SchoolBulkImportRequest> SchoolBulkImportRequests => Set<SchoolBulkImportRequest>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

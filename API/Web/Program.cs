@@ -34,7 +34,9 @@ schools.MapPost("/import", async (IFormFile csvFile, ImportSchoolsCommandHandler
     }
 
     var stream = csvFile.OpenReadStream();
-    var command = new ImportSchoolsCommand(stream, csvFile.FileName);
+    byte[] content = new byte[stream.Length];
+    await stream.ReadExactlyAsync(content, 0, content.Length);
+    var command = new ImportSchoolsCommand(content);
     var result = await handler.ExecuteAsync(command, CancellationToken.None);
     return Results.Ok(result);
 });
