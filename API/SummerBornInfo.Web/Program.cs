@@ -1,10 +1,11 @@
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 builder.Services.AddOpenApi();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
+var connectionString = builder.Configuration.GetConnectionString("SummerbornInfo");
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<ImportSchoolsCommandHandler>();
 builder.Services.AddScoped<GetAllSchoolsQueryHandler>();
@@ -14,6 +15,9 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await dbContext.Database.EnsureCreatedAsync();
     app.MapOpenApi();
     app.UseSwaggerUI(options =>
     {
@@ -39,7 +43,8 @@ schools.MapPost("/import", async (IFormFile csvFile, ImportSchoolsCommandHandler
     var command = new ImportSchoolsCommand(content);
     var result = await handler.ExecuteAsync(command, CancellationToken.None);
     return Results.Ok(result);
-});
+})
+    .DisableAntiforgery();
 
 schools.MapGet("/", async (GetAllSchoolsQueryHandler handler, Guid? cursor, int? pageSize) =>
 {
