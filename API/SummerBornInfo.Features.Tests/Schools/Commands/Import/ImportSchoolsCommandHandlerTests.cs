@@ -8,7 +8,7 @@ public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServ
     {
         // Arrange
         var handler = new ImportSchoolsCommandHandler(CreateDbContext());
-        var command = new ImportSchoolsCommand(await ExampleImportFile.GetExampleImportFileContentAsync(Xunit.TestContext.Current.CancellationToken));
+        var command = new ImportSchoolsCommand(ExampleImportFile.GetExampleImportFileContent());
 
         // Act
         var result = await handler.ExecuteAsync(command, Xunit.TestContext.Current.CancellationToken);
@@ -20,6 +20,20 @@ public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServ
         var savedImportRequest = dbContext.SchoolBulkImportRequests.Find(result.SchoolBulkImportRequestId);
 
         Assert.NotNull(savedImportRequest);
-        Assert.NotEmpty(savedImportRequest.Content);
+        await AssertLargeObjectExists(savedImportRequest.ContentId);
+    }
+
+    private async Task AssertLargeObjectExists(uint objectId)
+    {
+        await using var conn = new NpgsqlConnection(integrationTestDatabaseInstanceFixture.DatabaseConnectionString);
+        await conn.OpenAsync();
+        await using var cmd = new NpgsqlCommand(
+        "SELECT EXISTS(SELECT 1 FROM pg_largeobject_metadata WHERE oid = @oid)",
+        conn
+        );
+        cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, objectId);
+
+        var exists = (bool)(await cmd.ExecuteScalarAsync())!;
+        Assert.True(exists);
     }
 }

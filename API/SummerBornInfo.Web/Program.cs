@@ -1,7 +1,6 @@
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-
 builder.Services.AddOpenApi();
 
 var connectionString = builder.Configuration.GetConnectionString("SummerbornInfo");
@@ -27,30 +26,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Schools API endpoints
-var schools = app.MapGroup("/api/schools");
-
-schools.MapPost("/import", async (IFormFile csvFile, ImportSchoolsCommandHandler handler) =>
-{
-    if (csvFile == null || csvFile.Length == 0)
-    {
-        return Results.BadRequest("CSV file is required");
-    }
-
-    var stream = csvFile.OpenReadStream();
-    byte[] content = new byte[stream.Length];
-    await stream.ReadExactlyAsync(content, 0, content.Length);
-    var command = new ImportSchoolsCommand(content);
-    var result = await handler.ExecuteAsync(command, CancellationToken.None);
-    return Results.Ok(result);
-})
-    .DisableAntiforgery();
-
-schools.MapGet("/", async (GetAllSchoolsQueryHandler handler, Guid? cursor, int? pageSize) =>
-{
-    var query = new GetAllSchoolsQuery(cursor, pageSize ?? 100);
-    var (schools, nextCursor) = await handler.ExecuteAsync(query, CancellationToken.None);
-    return Results.Ok(new { schools, nextCursor });
-});
+app.RegisterSchoolEndpoints();
 
 app.Run();

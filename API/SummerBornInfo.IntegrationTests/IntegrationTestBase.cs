@@ -2,7 +2,7 @@
 
 public abstract class IntegrationTestBase(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IAsyncLifetime
 {
-    private readonly IntegrationTestDatabaseInstanceFixture integrationTestDatabaseInstanceFixture = new(testDatabaseServerFixture);
+    protected readonly IntegrationTestDatabaseInstanceFixture integrationTestDatabaseInstanceFixture = new(testDatabaseServerFixture);
     protected ApplicationDbContext CreateDbContext()
     {
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();

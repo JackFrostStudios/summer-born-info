@@ -10,7 +10,8 @@ internal sealed class SchoolBulkImportRequestConfiguration : IEntityTypeConfigur
         builder.Property(s => s.Id)
             .IsRequired();
 
-        builder.Property(s => s.Content)
+        builder.Property(s => s.ContentId)
+            .HasColumnType("oid")
             .IsRequired();
     }
 }

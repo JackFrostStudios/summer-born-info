@@ -3,5 +3,5 @@
 public sealed class SchoolBulkImportRequest
 {
     public Guid Id { get; init; } = Guid.CreateVersion7();
-    public required byte[] Content { get; init; }
+    public required uint ContentId { get; init; }
 }
