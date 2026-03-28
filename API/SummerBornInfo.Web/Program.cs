@@ -17,6 +17,9 @@ if (app.Environment.IsDevelopment())
     var scope = app.Services.CreateScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await dbContext.Database.EnsureCreatedAsync();
+    var npgmq = new NpgmqClient(connectionString: dbContext.Database.GetConnectionString() ?? throw new InvalidOperationException("Db Connection string is null"));
+    await npgmq.InitAsync();
+    await npgmq.CreateQueueAsync(EventQueues.SchoolBulkImport);
     app.MapOpenApi();
     app.UseSwaggerUI(options =>
     {

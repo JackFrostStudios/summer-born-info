@@ -1,4 +1,9 @@
-﻿namespace SummerBornInfo.Features.Tests.Schools.Commands.Import;
+﻿using Npgmq;
+using SummerBornInfo.Domain.Entities;
+using SummerBornInfo.Domain.Events;
+using SummerBornInfo.Infrastructure.Events;
+
+namespace SummerBornInfo.Features.Tests.Schools.Commands.Import;
 
 public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) 
     : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
@@ -17,10 +22,11 @@ public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServ
         Assert.NotEqual(Guid.Empty, result.SchoolBulkImportRequestId);
 
         var dbContext = CreateDbContext();
-        var savedImportRequest = dbContext.SchoolBulkImportRequests.Find(result.SchoolBulkImportRequestId);
+        var savedImportRequest = await dbContext.SchoolBulkImportRequests.FindAsync([ result.SchoolBulkImportRequestId ], cancellationToken: Xunit.TestContext.Current.CancellationToken);
 
         Assert.NotNull(savedImportRequest);
         await AssertLargeObjectExists(savedImportRequest.ContentId);
+        await AssertSchoolBulkImportEventExists(savedImportRequest);
     }
 
     private async Task AssertLargeObjectExists(uint objectId)
@@ -35,5 +41,12 @@ public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServ
 
         var exists = (bool)(await cmd.ExecuteScalarAsync())!;
         Assert.True(exists);
+    }
+
+    private async Task AssertSchoolBulkImportEventExists(SchoolBulkImportRequest schoolBulkImportRequest)
+    {
+        var npgmq = new NpgmqClient(integrationTestDatabaseInstanceFixture.DatabaseConnectionString);
+        var result = await npgmq.ReadAsync<SchoolBulkImportUploaded>(EventQueues.SchoolBulkImport, cancellationToken: Xunit.TestContext.Current.CancellationToken);
+        Assert.Equal(schoolBulkImportRequest.Id, result?.Message?.SchoolBulkImportRequestId);
     }
 }

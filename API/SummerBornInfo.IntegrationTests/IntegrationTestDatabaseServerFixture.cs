@@ -1,11 +1,14 @@
-﻿namespace SummerBornInfo.TestFramework;
+﻿using Npgmq;
+using SummerBornInfo.Infrastructure.Events;
+
+namespace SummerBornInfo.TestFramework;
 public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgreSqlContainer;
 
     public IntegrationTestDatabaseServerFixture()
     {
-        _postgreSqlContainer = new PostgreSqlBuilder("postgres:alpine")
+        _postgreSqlContainer = new PostgreSqlBuilder("ghcr.io/pgmq/pg18-pgmq:v1.10.0")
             .WithUsername("test")
             .WithPassword("test")
             .WithName($"integration_tests_postgresql_db_{Guid.NewGuid()}")
@@ -27,6 +30,11 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
 
         var db = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(templateDatabaseConnectionString).Options);
         await db.Database.EnsureCreatedAsync();
+
+        await db.Database.EnsureCreatedAsync();
+        var npgmq = new NpgmqClient(connectionString: db.Database.GetConnectionString() ?? throw new InvalidOperationException("Db Connection string is null"));
+        await npgmq.InitAsync();
+        await npgmq.CreateQueueAsync(EventQueues.SchoolBulkImport);
 
         await using var conn = new NpgsqlConnection(ConnectionString);
         var command = conn.CreateCommand();
