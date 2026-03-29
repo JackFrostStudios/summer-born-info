@@ -1,3 +1,5 @@
+using SummerBornInfo.Infrastructure.Persistence.LargeObjects;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
@@ -8,6 +10,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql
 
 builder.Services.AddScoped<ImportSchoolsCommandHandler>();
 builder.Services.AddScoped<GetAllSchoolsQueryHandler>();
+builder.Services.AddScoped<ILargeObjectWriter,  LargeObjectWriter>();
+builder.Services.AddScoped<IEventEmitter,  EventEmitter>();
 
 var app = builder.Build();
 

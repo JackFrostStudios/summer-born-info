@@ -2,6 +2,7 @@
 using SummerBornInfo.Domain.Entities;
 using SummerBornInfo.Domain.Events;
 using SummerBornInfo.Infrastructure.Events;
+using SummerBornInfo.Infrastructure.Persistence.LargeObjects;
 
 namespace SummerBornInfo.Features.Tests.Schools.Commands.Import;
 
@@ -12,7 +13,8 @@ public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServ
     public async Task GivenImportRequestCommand_WhenExecuted_ThenRequestIsSaved()
     {
         // Arrange
-        var handler = new ImportSchoolsCommandHandler(CreateDbContext());
+        var injectedDbContext = CreateDbContext();
+        var handler = new ImportSchoolsCommandHandler(injectedDbContext, new LargeObjectWriter(injectedDbContext), new EventEmitter(injectedDbContext));
         var command = new ImportSchoolsCommand(ExampleImportFile.GetExampleImportFileContent());
 
         // Act

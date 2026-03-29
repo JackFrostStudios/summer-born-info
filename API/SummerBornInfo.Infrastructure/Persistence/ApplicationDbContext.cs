@@ -1,3 +1,5 @@
+using Npgsql;
+
 namespace SummerBornInfo.Infrastructure.Persistence;
 
 public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
@@ -15,5 +17,10 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
+    }
+
+    public NpgsqlConnection GetNpgsqlConnection()
+    {
+        return (NpgsqlConnection)Database.GetDbConnection();
     }
 }
