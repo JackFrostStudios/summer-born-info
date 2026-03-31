@@ -23,7 +23,7 @@ if (app.Environment.IsDevelopment())
     await dbContext.Database.EnsureCreatedAsync();
     var npgmq = new NpgmqClient(connectionString: dbContext.Database.GetConnectionString() ?? throw new InvalidOperationException("Db Connection string is null"));
     await npgmq.InitAsync();
-    await npgmq.CreateQueueAsync(EventQueues.SchoolBulkImport);
+    await npgmq.CreateQueueAsync(EventQueue.SchoolBulkImport.Name);
     app.MapOpenApi();
     app.UseSwaggerUI(options =>
     {

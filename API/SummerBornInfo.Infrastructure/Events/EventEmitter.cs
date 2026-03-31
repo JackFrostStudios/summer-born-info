@@ -5,9 +5,9 @@ namespace SummerBornInfo.Infrastructure.Events;
 
 public sealed class EventEmitter(ApplicationDbContext dbContext) : IEventEmitter
 {
-    public async Task EmitEventAsync<T>(T message, CancellationToken cancellationToken) where T : class
+    public async Task EmitEventAsync<T>(EventQueue queue, T message, CancellationToken cancellationToken) where T : class
     {
         var npgmq = new NpgmqClient(dbContext.GetNpgsqlConnection());
-        await npgmq.SendAsync<T>(EventQueues.SchoolBulkImport, message, cancellationToken);
+        await npgmq.SendAsync<T>(queue.Name, message, cancellationToken);
     }
 }

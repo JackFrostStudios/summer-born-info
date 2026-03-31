@@ -1,5 +1,7 @@
-﻿using Npgsql;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using Npgsql;
 using NpgsqlTypes;
+using System.Transactions;
 
 namespace SummerBornInfo.Infrastructure.Persistence.LargeObjects;
 
@@ -7,10 +9,7 @@ public sealed class LargeObjectWriter(ApplicationDbContext context) : ILargeObje
 {
     public async Task<uint> StreamContentToNewLargeObjectAsync(Stream content, CancellationToken cancellationToken = default)
     {
-        if (context.Database.CurrentTransaction == null)
-        {
-            throw new InvalidOperationException("Transaction must be started on DbContext to write to a large object.");
-        }
+        await using var transaction = await StartTransactionIfNoneExistsAsync(cancellationToken);
 
         var npgsqlConnection = context.GetNpgsqlConnection();
 
@@ -22,7 +21,20 @@ public sealed class LargeObjectWriter(ApplicationDbContext context) : ILargeObje
 
         await CloseLargeObjectAsync(npgsqlConnection, fileDescriptor, cancellationToken);
 
+        if (transaction != null) { 
+            await transaction.CommitAsync(cancellationToken);
+        }
+
         return largeObjectId;
+    }
+
+    private async Task<IDbContextTransaction?> StartTransactionIfNoneExistsAsync(CancellationToken cancellationToken)
+    {
+        if (context.Database.CurrentTransaction != null)
+        {
+            return null;
+        }
+        return await context.Database.BeginTransactionAsync(cancellationToken);
     }
 
     private static async Task<uint> CreateLargeObjectAsync(NpgsqlConnection connection, CancellationToken cancellationToken)

@@ -36,6 +36,6 @@ public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context, IL
             SchoolBulkImportRequestId = schoolBulkImportRequest.Id
         };
 
-        await eventEmitter.EmitEventAsync(schoolBulkImportUploadedEvent, cancellationToken);
+        await eventEmitter.EmitEventAsync(EventQueue.SchoolBulkImport, schoolBulkImportUploadedEvent, cancellationToken);
     }
 }
