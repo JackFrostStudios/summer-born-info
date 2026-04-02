@@ -1,7 +1,4 @@
-﻿using Npgmq;
-using SummerBornInfo.Infrastructure.Events;
-
-namespace SummerBornInfo.TestFramework.Assertions;
+﻿namespace SummerBornInfo.TestFramework.Assertions;
 
 public static class EventAssertions
 {

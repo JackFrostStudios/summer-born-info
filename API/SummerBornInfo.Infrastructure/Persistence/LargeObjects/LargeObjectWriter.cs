@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
-using Npgsql;
-using NpgsqlTypes;
-using System.Transactions;
-
-namespace SummerBornInfo.Infrastructure.Persistence.LargeObjects;
+﻿namespace SummerBornInfo.Infrastructure.Persistence.LargeObjects;
 
 public sealed class LargeObjectWriter(ApplicationDbContext context) : ILargeObjectWriter
 {

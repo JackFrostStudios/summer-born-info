@@ -1,7 +1,4 @@
-﻿using SummerBornInfo.Infrastructure.Persistence.LargeObjects;
-using SummerBornInfo.TestFramework.Assertions;
-
-namespace SummerBornInfo.Infrastructure.Tests.Persistence.LargeObjects;
+﻿namespace SummerBornInfo.Infrastructure.Tests.Persistence.LargeObjects;
 
 public sealed class LargeObjectWriterTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {

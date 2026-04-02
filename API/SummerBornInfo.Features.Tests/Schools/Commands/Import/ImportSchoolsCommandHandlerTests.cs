@@ -1,11 +1,4 @@
-﻿using Npgmq;
-using SummerBornInfo.Domain.Entities;
-using SummerBornInfo.Domain.Events;
-using SummerBornInfo.Infrastructure.Events;
-using SummerBornInfo.Infrastructure.Persistence.LargeObjects;
-using SummerBornInfo.TestFramework.Assertions;
-
-namespace SummerBornInfo.Features.Tests.Schools.Commands.Import;
+﻿namespace SummerBornInfo.Features.Tests.Schools.Commands.Import;
 
 public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) 
     : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)

@@ -1,7 +1,4 @@
-﻿using Npgmq;
-using SummerBornInfo.Infrastructure.Events;
-
-namespace SummerBornInfo.TestFramework;
+﻿namespace SummerBornInfo.TestFramework;
 public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgreSqlContainer;

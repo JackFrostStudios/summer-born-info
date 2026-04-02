@@ -1,8 +1,4 @@
-﻿using SummerBornInfo.Domain.Events;
-using SummerBornInfo.Infrastructure.Events;
-using SummerBornInfo.TestFramework.Assertions;
-
-namespace SummerBornInfo.Infrastructure.Tests.Persistence.Events;
+﻿namespace SummerBornInfo.Infrastructure.Tests.Persistence.Events;
 
 public class EventEmitterTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {

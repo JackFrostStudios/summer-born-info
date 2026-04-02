@@ -1,7 +1,3 @@
-using SummerBornInfo.Domain.Events;
-using SummerBornInfo.Infrastructure.Events;
-using SummerBornInfo.Infrastructure.Persistence.LargeObjects;
-
 namespace SummerBornInfo.Features.Schools.Commands.Import;
 
 public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context, ILargeObjectWriter largeObjectWriter, IEventEmitter eventEmitter)

@@ -1,8 +1,11 @@
 ﻿global using Bogus;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;
+global using Npgmq;
 global using Npgsql;
+global using NpgsqlTypes;
 global using SummerBornInfo.Domain.Entities;
+global using SummerBornInfo.Infrastructure.Events;
 global using SummerBornInfo.Infrastructure.Persistence;
 global using SummerBornInfo.TestFramework.Logging;
 global using System.Reflection;

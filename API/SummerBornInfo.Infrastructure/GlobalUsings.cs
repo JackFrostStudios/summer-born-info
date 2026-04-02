@@ -1,4 +1,9 @@
 ﻿global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using Microsoft.EntityFrameworkCore.Storage;
+global using Npgmq;
+global using Npgsql;
+global using NpgsqlTypes;
 global using SummerBornInfo.Domain.Entities;
+global using SummerBornInfo.Infrastructure.Persistence;
 global using System.Reflection;

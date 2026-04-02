@@ -6,4 +6,5 @@ global using SummerBornInfo.Features.Schools.Commands.Import;
 global using SummerBornInfo.Features.Schools.Queries.GetAllSchools;
 global using SummerBornInfo.Infrastructure.Events;
 global using SummerBornInfo.Infrastructure.Persistence;
+global using SummerBornInfo.Infrastructure.Persistence.LargeObjects;
 global using SummerBornInfo.Web.API.Schools;

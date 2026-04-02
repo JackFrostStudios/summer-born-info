@@ -1,5 +1,3 @@
-using SummerBornInfo.Infrastructure.Persistence.LargeObjects;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();

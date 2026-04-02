@@ -1,6 +1,9 @@
-﻿global using Npgsql;
-global using NpgsqlTypes;
+﻿global using SummerBornInfo.Domain.Entities;
+global using SummerBornInfo.Domain.Events;
 global using SummerBornInfo.Features.Schools.Commands.Import;
+global using SummerBornInfo.Infrastructure.Events;
+global using SummerBornInfo.Infrastructure.Persistence.LargeObjects;
 global using SummerBornInfo.TestFramework;
+global using SummerBornInfo.TestFramework.Assertions;
 global using SummerBornInfo.TestFramework.TestData;
 global using Xunit;

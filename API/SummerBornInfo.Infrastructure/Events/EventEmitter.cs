@@ -1,7 +1,4 @@
-﻿using Npgmq;
-using SummerBornInfo.Infrastructure.Persistence;
-
-namespace SummerBornInfo.Infrastructure.Events;
+﻿namespace SummerBornInfo.Infrastructure.Events;
 
 public sealed class EventEmitter(ApplicationDbContext dbContext) : IEventEmitter
 {
