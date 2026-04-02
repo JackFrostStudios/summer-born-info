@@ -8,4 +8,5 @@ public sealed record EventQueue
     }
     public readonly string Name;
     public static EventQueue SchoolBulkImport => new(nameof(SchoolBulkImport));
+    public static EventQueue TestQueue => new(nameof(TestQueue));
 }

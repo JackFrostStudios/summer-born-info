@@ -32,6 +32,7 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
         var npgmq = new NpgmqClient(connectionString: db.Database.GetConnectionString() ?? throw new InvalidOperationException("Db Connection string is null"));
         await npgmq.InitAsync();
         await npgmq.CreateQueueAsync(EventQueue.SchoolBulkImport.Name);
+        await npgmq.CreateQueueAsync(EventQueue.TestQueue.Name);
 
         await using var conn = new NpgsqlConnection(ConnectionString);
         var command = conn.CreateCommand();
