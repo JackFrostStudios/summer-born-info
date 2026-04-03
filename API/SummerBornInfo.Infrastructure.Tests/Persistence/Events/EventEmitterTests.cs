@@ -8,16 +8,13 @@ public class EventEmitterTests(IntegrationTestDatabaseServerFixture testDatabase
         // Arrange
         var dbContext = CreateDbContext();
         var eventEmitter = new EventEmitter(dbContext);
-        var schoolBulkImportUploadedEvent = new SchoolBulkImportUploaded
-        {
-            SchoolBulkImportRequestId = Guid.NewGuid()
-        };
+        var testEvent = new TestEvent();
 
         // Act
-        await eventEmitter.EmitEventAsync(EventQueue.SchoolBulkImport, schoolBulkImportUploadedEvent, TestContext.Current.CancellationToken);
+        await eventEmitter.EmitEventAsync(TestEventQueue.TestQueue, testEvent, TestContext.Current.CancellationToken);
 
         //Assert
-        await EventAssertions.AssertEventEqualsAndDeleteAsync(EventQueue.SchoolBulkImport, schoolBulkImportUploadedEvent, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
+        await EventAssertions.AssertEventEqualsAndDeleteAsync(TestEventQueue.TestQueue, testEvent, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -27,17 +24,14 @@ public class EventEmitterTests(IntegrationTestDatabaseServerFixture testDatabase
         var dbContext = CreateDbContext();
         await using var efTransaction = await dbContext.Database.BeginTransactionAsync(TestContext.Current.CancellationToken);
         var eventEmitter = new EventEmitter(dbContext);
-        var schoolBulkImportUploadedEvent = new SchoolBulkImportUploaded
-        {
-            SchoolBulkImportRequestId = Guid.NewGuid()
-        };
+        var testEvent = new TestEvent();
 
         // Act
-        await eventEmitter.EmitEventAsync(EventQueue.SchoolBulkImport, schoolBulkImportUploadedEvent, TestContext.Current.CancellationToken);
+        await eventEmitter.EmitEventAsync(TestEventQueue.TestQueue, testEvent, TestContext.Current.CancellationToken);
         await efTransaction.RollbackAsync(TestContext.Current.CancellationToken);
         
         //Assert
-        await EventAssertions.AssertNoEventsExistAsync(EventQueue.SchoolBulkImport, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
+        await EventAssertions.AssertNoEventsExistAsync(TestEventQueue.TestQueue, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -47,16 +41,13 @@ public class EventEmitterTests(IntegrationTestDatabaseServerFixture testDatabase
         var dbContext = CreateDbContext();
         await using var efTransaction = await dbContext.Database.BeginTransactionAsync(TestContext.Current.CancellationToken);
         var eventEmitter = new EventEmitter(dbContext);
-        var schoolBulkImportUploadedEvent = new SchoolBulkImportUploaded
-        {
-            SchoolBulkImportRequestId = Guid.NewGuid()
-        };
+        var testEvent = new TestEvent();
 
         // Act
-        await eventEmitter.EmitEventAsync(EventQueue.SchoolBulkImport, schoolBulkImportUploadedEvent, TestContext.Current.CancellationToken);
+        await eventEmitter.EmitEventAsync(TestEventQueue.TestQueue, testEvent, TestContext.Current.CancellationToken);
         await efTransaction.CommitAsync(TestContext.Current.CancellationToken);
 
         //Assert
-        await EventAssertions.AssertEventEqualsAndDeleteAsync(EventQueue.SchoolBulkImport, schoolBulkImportUploadedEvent, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
+        await EventAssertions.AssertEventEqualsAndDeleteAsync(TestEventQueue.TestQueue, testEvent, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
     }
 }

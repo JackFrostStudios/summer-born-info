@@ -2,5 +2,5 @@
 
 public interface IEventEmitter
 {
-    Task EmitEventAsync<T>(EventQueue queue, T message, CancellationToken cancellationToken) where T : class;
+    Task EmitEventAsync<T>(IEventQueue queue, T message, CancellationToken cancellationToken) where T : class;
 }

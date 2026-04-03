@@ -1,12 +1,7 @@
 ﻿namespace SummerBornInfo.Infrastructure.Events;
 
-public sealed record EventQueue
+public sealed record EventQueue(string Name) : IEventQueue
 {
-    private EventQueue(string name)
-    {
-        Name = name;
-    }
-    public readonly string Name;
+    public string Name { get; private init; } = Name;
     public static EventQueue SchoolBulkImport => new(nameof(SchoolBulkImport));
-    public static EventQueue TestQueue => new(nameof(TestQueue));
 }

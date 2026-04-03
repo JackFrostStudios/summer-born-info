@@ -2,7 +2,7 @@
 
 public static class EventAssertions
 {
-    public static async Task AssertEventEqualsAndDeleteAsync<T>(EventQueue queue, T message, string connectionString, CancellationToken cancellationToken) where T : class
+    public static async Task AssertEventEqualsAndDeleteAsync<T>(IEventQueue queue, T message, string connectionString, CancellationToken cancellationToken) where T : class
     {
         var npgmq = new NpgmqClient(connectionString);
         var result = await npgmq.ReadAsync<T>(queue.Name, cancellationToken: cancellationToken);
@@ -11,7 +11,7 @@ public static class EventAssertions
         await npgmq.DeleteAsync(queue.Name, result.MsgId, cancellationToken);
     }
 
-    public static async Task AssertNoEventsExistAsync(EventQueue queue, string connectionString, CancellationToken cancellationToken)
+    public static async Task AssertNoEventsExistAsync(IEventQueue queue, string connectionString, CancellationToken cancellationToken)
     {
         var npgmq = new NpgmqClient(connectionString);
         var result = await npgmq.ReadAsync<dynamic>(queue.Name, cancellationToken: cancellationToken);
