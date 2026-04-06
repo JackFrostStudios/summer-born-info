@@ -6,4 +6,5 @@ global using SummerBornInfo.TestFramework;
 global using SummerBornInfo.TestFramework.Assertions;
 global using SummerBornInfo.TestFramework.Events;
 global using SummerBornInfo.TestFramework.TestData;
+global using System.Diagnostics.CodeAnalysis;
 global using Xunit;
