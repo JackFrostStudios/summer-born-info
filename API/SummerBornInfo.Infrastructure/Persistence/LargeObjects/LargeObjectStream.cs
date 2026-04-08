@@ -1,6 +1,6 @@
 ﻿namespace SummerBornInfo.Infrastructure.Persistence.LargeObjects;
 
-public sealed class LargeObjectStream(NpgsqlConnection connection, uint largeObjectId) : Stream
+internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeObjectId) : Stream
 {
     private readonly NpgsqlConnection _connection = connection;
     private readonly uint _largeObjectId = largeObjectId;
