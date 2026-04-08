@@ -1,32 +1,13 @@
 ﻿namespace SummerBornInfo.Infrastructure.Persistence.LargeObjects;
 
-public sealed class LargeObjectStream : Stream
+public sealed class LargeObjectStream(NpgsqlConnection connection, uint largeObjectId) : Stream
 {
-    private readonly NpgsqlConnection _connection;
-    private readonly uint _largeObjectId;
+    private readonly NpgsqlConnection _connection = connection;
+    private readonly uint _largeObjectId = largeObjectId;
     private long _position;
     private long? _length;
     private const int ChunkSize = 1024 * 64; // 64KB chunks
-    public LargeObjectStream(NpgsqlConnection connection, uint largeObjectId)
-    {
-        _connection = connection;
-        _largeObjectId = largeObjectId;
-        if (!LargeObjectExistsAsync().GetAwaiter().GetResult())
-        {
-            throw new InvalidOperationException($"Large Object Id does not exist: {largeObjectId}");
-        }
-    }
 
-    private async Task<bool> LargeObjectExistsAsync()
-    {
-        await using var cmd = new NpgsqlCommand(
-        "SELECT EXISTS(SELECT 1 FROM pg_largeobject_metadata WHERE oid = @oid)",
-        _connection
-        );
-        cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, _largeObjectId);
-
-        return (bool)(await cmd.ExecuteScalarAsync())!;
-    }
     public override bool CanRead => true;
     public override bool CanSeek => true;
     public override bool CanWrite => false;

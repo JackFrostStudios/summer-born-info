@@ -33,11 +33,10 @@ public class LargeObjectStreamTests(IntegrationTestDatabaseServerFixture testDat
     }
 
     [Fact]
-    public async ValueTask GivenALargeObjectDoesNotExists_WhenCreatingStream_ThenInvalidOperationExceptionIsThrown()
+    public async ValueTask GivenALargeObjectDoesNotExists_WhenCreatingStream_ThenNoExceptionIsThrown()
     {
         var ex = Record.Exception(() => new LargeObjectStream(CreateDbContext().GetNpgsqlConnection(), _largeObjectId + 1));
-        Assert.NotNull(ex);
-        Assert.IsType<InvalidOperationException>(ex);
+        Assert.Null(ex);
     }
 
     // -------------------------------------------------------------------------
