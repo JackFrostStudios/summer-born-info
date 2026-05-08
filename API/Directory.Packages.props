@@ -32,6 +32,7 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.14.0" />
+    <PackageVersion Include="Sep" Version="0.12.5" />
     <PackageVersion Include="SourceFlow.Stores.EntityFramework" Version="2.0.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.5" />
     <PackageVersion Include="TestContainers" Version="4.11.0" />

@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsvHelper" />
+    <PackageReference Include="Sep" />
   </ItemGroup>
 
   <ItemGroup>
