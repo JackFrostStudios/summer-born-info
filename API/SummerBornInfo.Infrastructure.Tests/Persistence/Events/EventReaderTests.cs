@@ -34,7 +34,9 @@ public class EventReaderTests(IntegrationTestDatabaseServerFixture testDatabaseS
         var result = await eventReader.ReadEventAsync<TestEvent>(TestEventQueue.TestQueue, 10, TestContext.Current.CancellationToken);
 
         //Assert
-        Assert.Equal(testEvent, result);
+        Assert.NotNull(result);
+        Assert.Equal(testEvent, result.Message);
+        Assert.True(result.MessageId > 0);
     }
 
     [Fact]
@@ -51,13 +53,41 @@ public class EventReaderTests(IntegrationTestDatabaseServerFixture testDatabaseS
         await eventEmitter.EmitEventAsync(TestEventQueue.TestQueue, testEvent, TestContext.Current.CancellationToken);
         await dbContextTransaction.CommitAsync(TestContext.Current.CancellationToken);
         var initialRetrieval = await eventReader.ReadEventAsync<TestEvent>(TestEventQueue.TestQueue, 1, TestContext.Current.CancellationToken);
-        Assert.Equal(testEvent, initialRetrieval);
+        Assert.NotNull(initialRetrieval);
+        Assert.Equal(testEvent, initialRetrieval.Message);
 
         // Act
         await Task.Delay(TimeSpan.FromSeconds(2), TestContext.Current.CancellationToken);
         var result = await eventReader.ReadEventAsync<TestEvent>(TestEventQueue.TestQueue, 10, TestContext.Current.CancellationToken);
 
         //Assert
-        Assert.Equal(testEvent, result);
+        Assert.NotNull(result);
+        Assert.Equal(testEvent, result.Message);
+    }
+
+    [Fact]
+    public async Task GivenEventHasBeenReadAndDeleted_WhenReadingAgain_ThenEventIsNotReturned()
+    {
+        // Arrange
+        var eventReaderDbContext = CreateDbContext();
+        var eventReader = new EventReader(eventReaderDbContext);
+        var eventEmitterDbContext = CreateDbContext();
+        var eventEmitter = new EventEmitter(eventEmitterDbContext);
+
+        await using var dbContextTransaction = await eventEmitterDbContext.Database.BeginTransactionAsync(TestContext.Current.CancellationToken);
+        var testEvent = new TestEvent();
+        await eventEmitter.EmitEventAsync(TestEventQueue.TestQueue, testEvent, TestContext.Current.CancellationToken);
+        await dbContextTransaction.CommitAsync(TestContext.Current.CancellationToken);
+
+        var queuedEvent = await eventReader.ReadEventAsync<TestEvent>(TestEventQueue.TestQueue, 10, TestContext.Current.CancellationToken);
+        Assert.NotNull(queuedEvent);
+
+        // Act
+        await eventReader.DeleteEventAsync(TestEventQueue.TestQueue, queuedEvent.MessageId, TestContext.Current.CancellationToken);
+        await Task.Delay(TimeSpan.FromSeconds(2), TestContext.Current.CancellationToken);
+        var result = await eventReader.ReadEventAsync<TestEvent>(TestEventQueue.TestQueue, 1, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Null(result);
     }
 }
