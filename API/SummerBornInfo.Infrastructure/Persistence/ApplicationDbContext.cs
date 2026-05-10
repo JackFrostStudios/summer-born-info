@@ -10,6 +10,7 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
     public DbSet<EstablishmentGroup> EstablishmentGroups => Set<EstablishmentGroup>();
     public DbSet<EstablishmentStatus> EstablishmentStatuses => Set<EstablishmentStatus>();
     public DbSet<SchoolBulkImportRequest> SchoolBulkImportRequests => Set<SchoolBulkImportRequest>();
+    public DbSet<SchoolBulkImportFailure> SchoolBulkImportFailures => Set<SchoolBulkImportFailure>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

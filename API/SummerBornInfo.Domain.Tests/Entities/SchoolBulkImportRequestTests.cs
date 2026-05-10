@@ -13,6 +13,9 @@ public sealed class SchoolBulkImportRequestTests
 
         // Act & Assert
         Assert.Equal(1u, schoolBulkImportRequest.ContentId);
+        Assert.Equal(0, schoolBulkImportRequest.LinesProcessed);
+        Assert.Equal(SchoolBulkImportStatus.Pending, schoolBulkImportRequest.Status);
+        Assert.Empty(schoolBulkImportRequest.Failures);
     }
 
     [Fact]
@@ -33,15 +36,43 @@ public sealed class SchoolBulkImportRequestTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        // Arrange
         var schoolBulkImportRequest = new SchoolBulkImportRequest
         {
             Id = id,
             ContentId = 1,
+            LinesProcessed = 4,
+            Status = SchoolBulkImportStatus.CompletedWithFailures,
+            Failures =
+            [
+                new SchoolBulkImportFailure
+                {
+                    LineNumber = 3,
+                    ErrorMessage = "Missing URN",
+                },
+            ],
         };
 
         // Act & Assert
         Assert.Equal(id, schoolBulkImportRequest.Id);
         Assert.Equal(1u, schoolBulkImportRequest.ContentId);
+        Assert.Equal(4, schoolBulkImportRequest.LinesProcessed);
+        Assert.Equal(SchoolBulkImportStatus.CompletedWithFailures, schoolBulkImportRequest.Status);
+        Assert.Single(schoolBulkImportRequest.Failures);
+        Assert.Equal(3, schoolBulkImportRequest.Failures[0].LineNumber);
+        Assert.Equal("Missing URN", schoolBulkImportRequest.Failures[0].ErrorMessage);
+    }
+
+    [Fact]
+    public void SchoolBulkImportFailure_ShouldGenerateId()
+    {
+        // Arrange
+        var failure = new SchoolBulkImportFailure
+        {
+            LineNumber = 2,
+            ErrorMessage = "Unable to parse row",
+        };
+
+        // Act & Assert
+        Assert.NotEqual(Guid.Empty, failure.Id);
     }
 }

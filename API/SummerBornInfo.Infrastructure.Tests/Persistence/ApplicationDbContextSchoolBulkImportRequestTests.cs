@@ -23,4 +23,43 @@ public sealed class ApplicationDbContextSchoolBulkImportRequestTests(Integration
         Assert.NotNull(savedSchoolBulkImportRequest);
         Assert.Equivalent(schoolBulkImportRequest, savedSchoolBulkImportRequest);
     }
+
+    [Fact]
+    public async Task GivenSchoolBulkImportRequestWithProgressAndFailure_WhenInsertingToDatabase_ThenAllStateIsRetrieved()
+    {
+        // Arrange
+        var dbContext = CreateDbContext();
+        var schoolBulkImportRequest = new SchoolBulkImportRequest
+        {
+            ContentId = 7,
+            LinesProcessed = 12,
+            Status = SchoolBulkImportStatus.CompletedWithFailures,
+            Failures =
+            [
+                new SchoolBulkImportFailure
+                {
+                    LineNumber = 8,
+                    ErrorMessage = "URN is required",
+                },
+            ],
+        };
+
+        // Act
+        dbContext.SchoolBulkImportRequests.Add(schoolBulkImportRequest);
+        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        dbContext.ChangeTracker.Clear();
+
+        var savedSchoolBulkImportRequest = await dbContext.SchoolBulkImportRequests
+            .Include(x => x.Failures)
+            .SingleAsync(x => x.Id == schoolBulkImportRequest.Id, TestContext.Current.CancellationToken);
+
+        Assert.Equal(7u, savedSchoolBulkImportRequest.ContentId);
+        Assert.Equal(12, savedSchoolBulkImportRequest.LinesProcessed);
+        Assert.Equal(SchoolBulkImportStatus.CompletedWithFailures, savedSchoolBulkImportRequest.Status);
+        Assert.Single(savedSchoolBulkImportRequest.Failures);
+        Assert.Equal(8, savedSchoolBulkImportRequest.Failures[0].LineNumber);
+        Assert.Equal("URN is required", savedSchoolBulkImportRequest.Failures[0].ErrorMessage);
+    }
 }

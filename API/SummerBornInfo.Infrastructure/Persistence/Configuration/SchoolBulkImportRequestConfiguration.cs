@@ -13,5 +13,17 @@ internal sealed class SchoolBulkImportRequestConfiguration : IEntityTypeConfigur
         builder.Property(s => s.ContentId)
             .HasColumnType("oid")
             .IsRequired();
+
+        builder.Property(s => s.LinesProcessed)
+            .IsRequired();
+
+        builder.Property(s => s.Status)
+            .HasConversion<string>()
+            .IsRequired();
+
+        builder.HasMany(s => s.Failures)
+            .WithOne()
+            .HasForeignKey(x => x.SchoolBulkImportRequestId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

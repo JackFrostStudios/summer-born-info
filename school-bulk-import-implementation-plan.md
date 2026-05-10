@@ -29,6 +29,8 @@ Complete the async school bulk import flow after upload so that:
 
 ### 1. Extend the import request persistence model
 
+Status: complete
+
 - Add progress fields to `SchoolBulkImportRequest`, at minimum `LinesProcessed`.
 - Add persisted failed-line storage, preferably as a child entity such as `SchoolBulkImportFailure` with:
   - import request id
@@ -38,6 +40,8 @@ Complete the async school bulk import flow after upload so that:
 - Update EF configuration and add integration/domain tests for the new model shape.
 
 ### 2. Change the importer contract to return row results
+
+Status: in progress
 
 - Add `SchoolImportResult` in the `ProcessImportFile` slice.
 - Update `SchoolsImporter.ImportAsync` to yield `SchoolImportResult` instead of `int`.
