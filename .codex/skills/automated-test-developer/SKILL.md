@@ -14,10 +14,10 @@ Use this skill for test design and implementation.
 - Reuse the existing test framework before adding new helpers.
 - Keep tests close to the feature they cover.
 - Use xUnit and the project's current `Given_When_Then` naming style.
-- When writing tests, analyze the inputs, the expected outputs, and the expected post-action system state.
-- When writing tests, analyze edge cases and error scenarios as part of the test design.
+- Design each test around inputs, outputs, post-action state, edge cases, and failure paths.
 - Assert on outputs and system state, not on whether a function was called.
 - Prefer black-box tests: verify that the input leads to the desired output or system state rather than checking internal implementation details.
+- Aim for the smallest test set that still proves the behaviour.
 
 ## Existing patterns
 
@@ -31,13 +31,10 @@ Use this skill for test design and implementation.
 ## Example
 
 ```csharp
-public sealed class ImportSchoolsCommandHandlerTests(
-    IntegrationTestDatabaseServerFixture testDatabaseServerFixture,
-    ITestOutputHelper testOutputHelper)
-    : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
+public sealed class ImportSchoolsCommandHandlerTests : IntegrationTestBase
 {
     [Fact]
-    public async Task GivenImportRequestCommand_WhenExecuted_ThenRequestIsSaved()
+    public async Task GivenValidImportFile_WhenExecuted_ThenRequestIsSaved()
     {
         var dbContext = CreateDbContext();
         var handler = new ImportSchoolsCommandHandler(
@@ -57,5 +54,6 @@ public sealed class ImportSchoolsCommandHandlerTests(
 ## When unsure
 
 - Prefer a real database-backed test over a mocked repository test.
-- Assert persistence, emitted events, and payload round-trips where relevant.
+- Assert persistence, emitted events, payload round-trips, and externally visible state where relevant.
 - If a new test helper is needed, keep it reusable and local to the existing test framework.
+- Return the minimal set of tests needed to validate the behaviour and the obvious edge cases.

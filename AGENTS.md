@@ -1,18 +1,24 @@
 # Agents
 
-When performing certain actions, spawn a sub-agent to deliver this work efficiently. Provide specific context to that agent to deliver that specific task:
+Use the smallest amount of context that still leads to a good decision.
 
-- When determining how to implement a code change use `architect` -> [`.agents/architect.md`](.agents/architect.md), which should load [`.codex/skills/architect/SKILL.md`](.codex/skills/architect/SKILL.md), for code structure, placement, and project patterns.
-- When implementing automated tests use `automated-test-developer` -> [`.agents/automated-test-developer.md`](.agents/automated-test-developer.md), which should load [`.codex/skills/automated-test-developer/SKILL.md`](.codex/skills/automated-test-developer/SKILL.md), for automated test design and implementation.
+## Delegation
 
-## Feature Delivery Process
+- Use the `architect` sub-agent for code layout, feature placement, and project pattern questions.
+- Use the `automated-test-developer` sub-agent for test design and implementation.
 
-- Before starting implementation, identify a concise bullet-point plan for delivering the feature.
-- Confirm the plan with the user and resolve any clarifications before proceeding.
-- Do not begin implementation until the plan has been agreed.
-- Deliver features using TDD:
-  - create required interfaces or contracts first,
-  - add failing tests that define the desired behavior,
+## Delivery Rules
+
+- For non-trivial or cross-cutting work, draft a short bullet-point plan before implementing.
+- Confirm the plan with the user when the change is ambiguous, risky, or spans multiple files or layers.
+- For small, safe edits, proceed without a separate confirmation step.
+- Prefer TDD for behaviour changes:
+  - define the contract first,
+  - add failing tests,
   - implement until the tests pass.
-- Once the tests pass, review the implementation and refactor where needed to improve code quality.
-- Prefer the simplest solution that is maintainable and fits the existing project patterns.
+- After tests pass, review the result and refactor only where it improves clarity or maintainability.
+- Prefer the simplest maintainable solution that fits the existing project patterns.
+
+## Canonical Project Guide
+
+- Use [AI_PROJECT_GUIDE.md](AI_PROJECT_GUIDE.md) as the source of truth for solution layout and common .NET conventions.

@@ -24,17 +24,15 @@ The platform aims to:
 
 ## Architecture
 
-This project follows a vertical slice architecture. Each feature keeps its request handlers, validation, endpoint registration, and supporting code close together so related behaviour stays self-contained instead of being split across shared service layers.
+This project follows a vertical slice architecture. The compact AI-friendly summary of the solution layout and common conventions lives in [AI_PROJECT_GUIDE.md](./AI_PROJECT_GUIDE.md).
 
-The solution is split into a few clear projects:
+In short:
 
-- **Domain**: Contains entities, value objects, and domain rules that should not depend on infrastructure concerns.
-- **Features**: Contains the application use cases and feature-specific API surface. In general, a feature should be self-contained here.
-- **Infrastructure**: Contains database access, queue integration, large object or file storage, and other external system integrations.
-- **Web**: Hosts the ASP.NET Core application and wires up the feature endpoints.
-- **AppHost**: Uses Aspire to compose the local development environment and start the dependencies the app needs.
-
-As a rule of thumb, put domain logic in `Domain`, application behaviour in `Features`, and anything that talks to PostgreSQL, queues, or external storage in `Infrastructure`.
+- **Domain**: domain entities, value objects, and rules.
+- **Features**: commands, queries, handlers, and feature DTOs.
+- **Infrastructure**: database access, queue integration, large object or file storage, and other external integrations.
+- **Web**: ASP.NET Core HTTP wiring and endpoint registration.
+- **AppHost**: Aspire composition and local dependency startup.
 
 ## Getting Started
 

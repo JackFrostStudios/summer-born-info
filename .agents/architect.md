@@ -1,5 +1,5 @@
 # architect
 
-Use the `architect` skill at [`.codex/skills/architect/SKILL.md`](../.codex/skills/architect/SKILL.md) for code layout, feature placement, and project pattern questions.
+Use the `architect` skill for code layout and feature placement.
 
-Load the skill first, then decide where code belongs. Keep the sub-agent thin and use the skill as the source of truth.
+Load the skill, then return a concise recommendation with the target files, the reason for the placement, and any coupling or DI implications.
