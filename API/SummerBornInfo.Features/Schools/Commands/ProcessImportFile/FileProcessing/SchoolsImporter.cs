@@ -1,4 +1,5 @@
-﻿using nietras.SeparatedValues;
+using nietras.SeparatedValues;
+using SummerBornInfo.Features.Schools.Commands.ProcessImportFile;
 using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing.LookupImporter;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -14,20 +15,40 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
     private readonly LocalAuthorityImporter<TContext> _laImporter = new(context);
     private readonly PhaseOfEducationImporter<TContext> _phaseImporter = new(context);
 
-    public async IAsyncEnumerable<int> ImportAsync(
+    public async IAsyncEnumerable<SchoolImportResult> ImportAsync(
         Stream csvStream,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         using var streamReader = new StreamReader(csvStream, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
-
         using var reader = Sep.New(',').Reader(o => o with { Trim = SepTrim.All }).From(streamReader);
 
-        int processed = 0;
+        int lineNumber = 1;
 
         foreach (var row in reader)
         {
-            await ProcessRowAsync(SchoolCsvFields.FromRow(row), cancellationToken);
-            yield return ++processed;
+            lineNumber++;
+            SchoolImportResult result;
+
+            try
+            {
+                await ProcessRowAsync(SchoolCsvFields.FromRow(row), cancellationToken);
+                result = new SchoolImportResult
+                {
+                    LineNumber = lineNumber,
+                    Succeeded = true,
+                };
+            }
+            catch (Exception ex)
+            {
+                result = new SchoolImportResult
+                {
+                    LineNumber = lineNumber,
+                    Succeeded = false,
+                    ErrorMessage = ex.Message,
+                };
+            }
+
+            yield return result;
         }
     }
 
