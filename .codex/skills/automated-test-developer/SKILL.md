@@ -14,6 +14,10 @@ Use this skill for test design and implementation.
 - Reuse the existing test framework before adding new helpers.
 - Keep tests close to the feature they cover.
 - Use xUnit and the project's current `Given_When_Then` naming style.
+- When writing tests, analyze the inputs, the expected outputs, and the expected post-action system state.
+- When writing tests, analyze edge cases and error scenarios as part of the test design.
+- Assert on outputs and system state, not on whether a function was called.
+- Prefer black-box tests: verify that the input leads to the desired output or system state rather than checking internal implementation details.
 
 ## Existing patterns
 
@@ -55,4 +59,3 @@ public sealed class ImportSchoolsCommandHandlerTests(
 - Prefer a real database-backed test over a mocked repository test.
 - Assert persistence, emitted events, and payload round-trips where relevant.
 - If a new test helper is needed, keep it reusable and local to the existing test framework.
-
