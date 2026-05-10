@@ -41,7 +41,7 @@ Status: complete
 
 ### 2. Change the importer contract to return row results
 
-Status: in progress
+Status: complete
 
 - Add `SchoolImportResult` in the `ProcessImportFile` slice.
 - Update `SchoolsImporter.ImportAsync` to yield `SchoolImportResult` instead of `int`.
@@ -54,6 +54,8 @@ Status: in progress
 - Update importer tests to assert both successful results and failure result behaviour.
 
 ### 3. Implement the process-import command and handler
+
+Status: complete
 
 - Add `ProcessImportFileCommand` carrying `SchoolBulkImportRequestId`.
 - Add `ProcessImportFileCommandHandler` in the same feature folder.
@@ -77,6 +79,8 @@ Status: in progress
 
 ### 4. Fill the queue-consumer gap for the worker
 
+Status: complete
+
 - Extend the queue abstraction so the worker can both read and acknowledge messages.
 - Smallest likely change:
   - add an infrastructure event-envelope/receipt type containing message id and payload
@@ -87,6 +91,8 @@ Status: in progress
   - acknowledged event is deleted and not re-read
 
 ### 5. Add the background service
+
+Status: complete
 
 - Add a hosted service in `API/SummerBornInfo.Web` because this is application startup/runtime wiring.
 - Worker loop responsibilities:

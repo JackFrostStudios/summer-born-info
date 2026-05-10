@@ -7,9 +7,14 @@ var connectionString = builder.Configuration.GetConnectionString("SummerbornInfo
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<ImportSchoolsCommandHandler>();
+builder.Services.AddScoped<ProcessImportFileCommandHandler>();
 builder.Services.AddScoped<GetAllSchoolsQueryHandler>();
-builder.Services.AddScoped<ILargeObjectWriter,  LargeObjectWriter>();
-builder.Services.AddScoped<IEventEmitter,  EventEmitter>();
+builder.Services.AddScoped<SchoolsImporter<ApplicationDbContext>>();
+builder.Services.AddScoped<ILargeObjectWriter, LargeObjectWriter>();
+builder.Services.AddScoped<ILargeObjectReader, LargeObjectReader>();
+builder.Services.AddScoped<IEventEmitter, EventEmitter>();
+builder.Services.AddScoped<IEventReader, EventReader>();
+builder.Services.AddHostedService<ProcessSchoolBulkImportBackgroundService>();
 
 var app = builder.Build();
 
