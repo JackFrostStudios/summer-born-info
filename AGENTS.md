@@ -12,6 +12,8 @@ Use the smallest amount of context that still leads to a good decision.
 - For non-trivial or cross-cutting work, draft a short bullet-point plan before implementing.
 - Confirm the plan with the user when the change is ambiguous, risky, or spans multiple files or layers.
 - For small, safe edits, proceed without a separate confirmation step.
+- Write the plan to a markdown file, when each task has been delivered update the file to indicate the step is complete.
+- After each step is complete commit the changes to git.
 - Prefer TDD for behaviour changes:
   - define the contract first,
   - add failing tests,
