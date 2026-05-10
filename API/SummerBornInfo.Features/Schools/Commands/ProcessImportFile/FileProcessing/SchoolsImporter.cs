@@ -1,6 +1,7 @@
 ﻿using nietras.SeparatedValues;
 using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing.LookupImporter;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
 
@@ -13,9 +14,9 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
     private readonly LocalAuthorityImporter<TContext> _laImporter = new(context);
     private readonly PhaseOfEducationImporter<TContext> _phaseImporter = new(context);
 
-    public async Task<int> ImportAsync(
+    public async IAsyncEnumerable<int> ImportAsync(
         Stream csvStream,
-        CancellationToken cancellationToken = default)
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         using var streamReader = new StreamReader(csvStream, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
 
@@ -26,10 +27,8 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
         foreach (var row in reader)
         {
             await ProcessRowAsync(SchoolCsvFields.FromRow(row), cancellationToken);
-            processed++;
+            yield return ++processed;
         }
-
-        return processed;
     }
 
     private async Task ProcessRowAsync(SchoolCsvFields row, CancellationToken cancellationToken)
@@ -116,5 +115,5 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
         int.TryParse(raw, out var value) ? value : null;
 
     private static string? NullIfEmpty(string raw) =>
-        string.IsNullOrWhiteSpace(raw) ? null : raw;    
+        string.IsNullOrWhiteSpace(raw) ? null : raw;
 }

@@ -1,12 +1,34 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
 using SummerBornInfo.Infrastructure.Persistence;
+using System.Net.Security;
 
 namespace SummerBornInfo.Features.Tests.Schools.Commands.ProcessImportFile.FileProcessing;
 
 public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper)
     : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
+    [Fact]
+    public async Task GivenCsvStream_WhenImportAsync_ThenCountIsYieldedForEachRow()
+    {
+        // Arrange
+        var dbContext = CreateDbContext();
+        var importer = new SchoolsImporter<ApplicationDbContext>(dbContext);
+        using var csvStream = ExampleImportFile.GetExampleImportFileContent();
+
+        // Act
+        List<int> processedCounts = [];
+        await foreach (var count in importer.ImportAsync(csvStream, TestContext.Current.CancellationToken))
+        {
+            processedCounts.Add(count);
+        }
+
+        // Assert
+        Assert.Equal(2, processedCounts.Count);
+        Assert.Equal(1, processedCounts[0]);
+        Assert.Equal(2, processedCounts[1]);
+    }
+
     [Fact]
     public async Task GivenCsvStream_WhenImportAsync_ThenAllSchoolsAreSaved()
     {
@@ -16,7 +38,11 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         using var csvStream = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
-        var processedCount = await importer.ImportAsync(csvStream, TestContext.Current.CancellationToken);
+        var processedCount = 0;
+        await foreach (var count in importer.ImportAsync(csvStream, TestContext.Current.CancellationToken))
+        {
+            processedCount = count;
+        }
 
         // Assert
         Assert.Equal(2, processedCount);
@@ -94,17 +120,26 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         using var csvStream1 = ExampleImportFile.GetExampleImportFileContent();
 
         // First import
-        await importer1.ImportAsync(csvStream1, TestContext.Current.CancellationToken);
+        var processedCount1 = 0;
+        await foreach (var count in importer1.ImportAsync(csvStream1, TestContext.Current.CancellationToken))
+        {
+            processedCount1 = count;
+        }
 
         var dbContext2 = CreateDbContext();
         var importer2 = new SchoolsImporter<ApplicationDbContext>(dbContext2);
         using var csvStream2 = ExampleImportFile.GetExampleImportFileContent();
 
         // Act - Second import
-        var processedCount = await importer2.ImportAsync(csvStream2, TestContext.Current.CancellationToken);
+        var processedCount2 = 0;
+        await foreach (var count in importer2.ImportAsync(csvStream2, TestContext.Current.CancellationToken))
+        {
+            processedCount2 = count;
+        }
 
         // Assert
-        Assert.Equal(2, processedCount);
+        Assert.Equal(2, processedCount1);
+        Assert.Equal(2, processedCount2);
 
         var verifyDbContext = CreateDbContext();
         var schools = await verifyDbContext.Set<School>().ToListAsync(TestContext.Current.CancellationToken);
@@ -120,7 +155,11 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         var importer1 = new SchoolsImporter<ApplicationDbContext>(dbContext1);
         using var csvStream1 = ExampleImportFile.GetExampleImportFileContent();
 
-        await importer1.ImportAsync(csvStream1, TestContext.Current.CancellationToken);
+        var processedCount1 = 0;
+        await foreach (var count in importer1.ImportAsync(csvStream1, TestContext.Current.CancellationToken))
+        {
+            processedCount1 = count;
+        }
 
         var verifyDbContext1 = CreateDbContext();
         var schoolsAfterFirstImport = await verifyDbContext1.Set<School>()
@@ -137,7 +176,11 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         using var csvStream2 = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
-        await importer2.ImportAsync(csvStream2, TestContext.Current.CancellationToken);
+        var processedCount2 = 0;
+        await foreach (var count in importer2.ImportAsync(csvStream2, TestContext.Current.CancellationToken))
+        {
+            processedCount2 = count;
+        }
 
         // Assert
         var verifyDbContext2 = CreateDbContext();
@@ -187,14 +230,23 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         var importer1 = new SchoolsImporter<ApplicationDbContext>(dbContext1);
         using var csvStream1 = ExampleImportFile.GetExampleImportFileContent();
 
-        await importer1.ImportAsync(csvStream1, TestContext.Current.CancellationToken);
+
+        var processedCount1 = 0;
+        await foreach (var count in importer1.ImportAsync(csvStream1, TestContext.Current.CancellationToken))
+        {
+            processedCount1 = count;
+        }
 
         var dbContext2 = CreateDbContext();
         var importer2 = new SchoolsImporter<ApplicationDbContext>(dbContext2);
         using var csvStream2 = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
-        await importer2.ImportAsync(csvStream2, TestContext.Current.CancellationToken);
+        var processedCount2 = 0;
+        await foreach (var count in importer2.ImportAsync(csvStream2, TestContext.Current.CancellationToken))
+        {
+            processedCount2 = count;
+        }
 
         // Assert
         var verifyDbContext = CreateDbContext();
