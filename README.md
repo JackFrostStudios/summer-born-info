@@ -24,46 +24,60 @@ The platform aims to:
 
 ## Architecture
 
-This project follows a clean architecture pattern with the following layers:
+This project follows a vertical slice architecture. Each feature keeps its request handlers, validation, endpoint registration, and supporting code close together so related behaviour stays self-contained instead of being split across shared service layers.
 
-- **Domain**: Contains business entities and domain logic
-- **Features**: Implements use cases and application logic, also contains the Minimal endpoint registration for each feature. 
-- **Infrastructure**: Handles data persistence and external dependencies
-- **Web**: Contains API controllers and application entry point
+The solution is split into a few clear projects:
+
+- **Domain**: Contains entities, value objects, and domain rules that should not depend on infrastructure concerns.
+- **Features**: Contains the application use cases and feature-specific API surface. In general, a feature should be self-contained here.
+- **Infrastructure**: Contains database access, queue integration, large object or file storage, and other external system integrations.
+- **Web**: Hosts the ASP.NET Core application and wires up the feature endpoints.
+- **AppHost**: Uses Aspire to compose the local development environment and start the dependencies the app needs.
+
+As a rule of thumb, put domain logic in `Domain`, application behaviour in `Features`, and anything that talks to PostgreSQL, queues, or external storage in `Infrastructure`.
 
 ## Getting Started
 
 ### Prerequisites
 - .NET 10.0
-- Docker
+- Visual Studio with Aspire support
+- Docker Desktop or another compatible container runtime
 
 ### Running the Application
-1. Navigate to the API directory:
-   ```bash
-   cd API
-   ```
+1. Open `API/SummerBornInfo.sln` in Visual Studio.
+2. Set `SummerBornInfo.AppHost` as the startup project.
+3. Start debugging or run the solution.
 
-2. Run the application:
-   ```bash
-   dotnet run
-   ```
+Visual Studio will start the Aspire app host, which in turn launches the PostgreSQL environment and the `SummerBornInfo.Web` API. The API also performs its development startup work in `Web/Program.cs`, including database creation and queue initialisation when running in Development.
 
-3. The API will be available at `https://localhost:5001`
+If you prefer the command line, you can run the app host from the `API` folder with:
+
+```bash
+dotnet run --project SummerBornInfo.AppHost/SummerBornInfo.AppHost.AppHost/SummerBornInfo.AppHost.csproj
+```
 
 
 ## Testing
-The project includes unit tests and integration tests. The integration tests automatically start a postgres database using test containers.
+The solution includes domain, infrastructure, feature, and web integration test projects. Tests are written with xUnit and are intended to be run through Visual Studio's Test Explorer / test runner.
 
-Run all tests:
+Run all tests from Visual Studio, or from the command line with:
+
 ```bash
-dotnet test
+dotnet test API/SummerBornInfo.sln
 ```
+
+The integration test projects use Testcontainers to provision PostgreSQL when required, so no separate manual database setup should be necessary for test runs.
 
 ## Development
 
-This project uses Docker for development environment setup. The `.devcontainer` configuration provides a consistent development environment.
-Ensure that your visual studio code has the [dev container extension](https://code.visualstudio.com/docs/devcontainers/containers) installed and open the folder, this should launch the docker containers required and automatically connect.
-The Cline plugin is automatically included, AI may be used in the development process but all AI generated changes should be reviewed by a human before submitting a pull request.
+Development is centered around Visual Studio and Aspire:
+
+- Open the solution in Visual Studio and run `SummerBornInfo.AppHost` to start the local environment.
+- Use the Solution Explorer and project references to work feature by feature.
+- Keep changes vertical: feature code should stay in `Features` unless it truly belongs in `Domain` or `Infrastructure`.
+- Use the Visual Studio test runner to execute and debug tests while iterating.
+
+The app host brings up PostgreSQL and the web app together, which is the fastest way to get a consistent local stack running.
 
 ## Contributing
 
