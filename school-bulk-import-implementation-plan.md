@@ -154,7 +154,7 @@ Refactor the completed bulk import implementation so that queue concerns, domain
 
 ### 6. Separate queue delete behaviour from the event reader
 
-Status: pending
+Status: complete
 
 - Refactor `EventReader` so it is responsible only for reading queue messages.
 - Introduce a separate class and interface for delete/acknowledgement behaviour.
@@ -163,7 +163,7 @@ Status: pending
 
 ### 7. Move bulk import progress rules into the domain entity
 
-Status: pending
+Status: complete
 
 - Add an `UpdateProgress` method on `SchoolBulkImportRequest`.
 - Add explicit status-transition methods on `SchoolBulkImportRequest`, for example:
@@ -189,7 +189,7 @@ Status: pending
 
 ### 8. Make worker polling delay configurable
 
-Status: pending
+Status: complete
 
 - Move the delay between iterations in `ProcessSchoolBulkImportBackgroundService` into configuration.
 - Add the setting to `API/SummerBornInfo.Web/appsettings.json`.
@@ -198,7 +198,7 @@ Status: pending
 
 ### 9. Make event read timeout configurable
 
-Status: pending
+Status: complete
 
 - Move the timeout passed to `ReadEventAsync` in `ProcessSchoolBulkImportBackgroundService` into configuration.
 - Add the setting to `API/SummerBornInfo.Web/appsettings.json`.

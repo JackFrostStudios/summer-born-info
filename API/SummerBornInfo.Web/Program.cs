@@ -2,6 +2,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.Services.AddOpenApi();
+builder.Services.Configure<SchoolBulkImportWorkerOptions>(builder.Configuration.GetSection(SchoolBulkImportWorkerOptions.SectionName));
 
 var connectionString = builder.Configuration.GetConnectionString("SummerbornInfo");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
@@ -14,6 +15,7 @@ builder.Services.AddScoped<ILargeObjectWriter, LargeObjectWriter>();
 builder.Services.AddScoped<ILargeObjectReader, LargeObjectReader>();
 builder.Services.AddScoped<IEventEmitter, EventEmitter>();
 builder.Services.AddScoped<IEventReader, EventReader>();
+builder.Services.AddScoped<IEventAcknowledger, EventAcknowledger>();
 builder.Services.AddHostedService<ProcessSchoolBulkImportBackgroundService>();
 
 var app = builder.Build();

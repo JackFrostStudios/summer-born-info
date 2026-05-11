@@ -14,7 +14,7 @@ public sealed class ProcessImportFileCommandHandler(
             .SingleOrDefaultAsync(x => x.Id == command.SchoolBulkImportRequestId, cancellationToken)
             ?? throw new InvalidOperationException($"School bulk import request '{command.SchoolBulkImportRequestId}' was not found.");
 
-        if (schoolBulkImportRequest.Status is SchoolBulkImportStatus.Completed or SchoolBulkImportStatus.CompletedWithFailures or SchoolBulkImportStatus.Processing)
+        if (!schoolBulkImportRequest.ProcessingStarted())
         {
             return;
         }
@@ -22,36 +22,23 @@ public sealed class ProcessImportFileCommandHandler(
         await using var csvStream = await largeObjectReader.ReadLargeObjectAsStreamAsync(schoolBulkImportRequest.ContentId, cancellationToken)
             ?? throw new InvalidOperationException($"Large object '{schoolBulkImportRequest.ContentId}' was not found.");
 
-        schoolBulkImportRequest.Status = SchoolBulkImportStatus.Processing;
         await context.SaveChangesAsync(cancellationToken);
 
         try
         {
             await foreach (var result in schoolsImporter.ImportAsync(csvStream, cancellationToken))
             {
-                schoolBulkImportRequest.LinesProcessed++;
-
-                if (!result.Succeeded)
-                {
-                    schoolBulkImportRequest.Failures.Add(new SchoolBulkImportFailure
-                    {
-                        LineNumber = result.LineNumber,
-                        ErrorMessage = result.ErrorMessage ?? "Unknown import error",
-                    });
-                }
+                schoolBulkImportRequest.UpdateProgress(result.LineNumber, result.Succeeded ? null : result.ErrorMessage ?? "Unknown import error");
 
                 await context.SaveChangesAsync(cancellationToken);
             }
 
-            schoolBulkImportRequest.Status = schoolBulkImportRequest.Failures.Count == 0
-                ? SchoolBulkImportStatus.Completed
-                : SchoolBulkImportStatus.CompletedWithFailures;
-
+            schoolBulkImportRequest.ProcessingComplete();
             await context.SaveChangesAsync(cancellationToken);
         }
         catch
         {
-            schoolBulkImportRequest.Status = SchoolBulkImportStatus.Failed;
+            schoolBulkImportRequest.ProcessingFailed();
             await context.SaveChangesAsync(cancellationToken);
             throw;
         }

@@ -25,5 +25,8 @@ internal sealed class SchoolBulkImportRequestConfiguration : IEntityTypeConfigur
             .WithOne()
             .HasForeignKey(x => x.SchoolBulkImportRequestId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Navigation(x => x.Failures)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

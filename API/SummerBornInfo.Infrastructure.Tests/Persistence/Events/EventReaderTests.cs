@@ -66,11 +66,12 @@ public class EventReaderTests(IntegrationTestDatabaseServerFixture testDatabaseS
     }
 
     [Fact]
-    public async Task GivenEventHasBeenReadAndDeleted_WhenReadingAgain_ThenEventIsNotReturned()
+    public async Task GivenEventHasBeenAcknowledgedByAnotherService_WhenReadingAgain_ThenEventIsNotReturned()
     {
         // Arrange
         var eventReaderDbContext = CreateDbContext();
         var eventReader = new EventReader(eventReaderDbContext);
+        var eventAcknowledger = new EventAcknowledger(CreateDbContext());
         var eventEmitterDbContext = CreateDbContext();
         var eventEmitter = new EventEmitter(eventEmitterDbContext);
 
@@ -83,7 +84,7 @@ public class EventReaderTests(IntegrationTestDatabaseServerFixture testDatabaseS
         Assert.NotNull(queuedEvent);
 
         // Act
-        await eventReader.DeleteEventAsync(TestEventQueue.TestQueue, queuedEvent.MessageId, TestContext.Current.CancellationToken);
+        await eventAcknowledger.DeleteEventAsync(TestEventQueue.TestQueue, queuedEvent.MessageId, TestContext.Current.CancellationToken);
         await Task.Delay(TimeSpan.FromSeconds(2), TestContext.Current.CancellationToken);
         var result = await eventReader.ReadEventAsync<TestEvent>(TestEventQueue.TestQueue, 1, TestContext.Current.CancellationToken);
 

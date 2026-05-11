@@ -32,17 +32,15 @@ public sealed class ApplicationDbContextSchoolBulkImportRequestTests(Integration
         var schoolBulkImportRequest = new SchoolBulkImportRequest
         {
             ContentId = 7,
-            LinesProcessed = 12,
-            Status = SchoolBulkImportStatus.CompletedWithFailures,
-            Failures =
-            [
-                new SchoolBulkImportFailure
-                {
-                    LineNumber = 8,
-                    ErrorMessage = "URN is required",
-                },
-            ],
         };
+        schoolBulkImportRequest.ProcessingStarted();
+        for (var lineNumber = 1; lineNumber <= 11; lineNumber++)
+        {
+            schoolBulkImportRequest.UpdateProgress(lineNumber, null);
+        }
+
+        schoolBulkImportRequest.UpdateProgress(8, "URN is required");
+        schoolBulkImportRequest.ProcessingComplete();
 
         // Act
         dbContext.SchoolBulkImportRequests.Add(schoolBulkImportRequest);

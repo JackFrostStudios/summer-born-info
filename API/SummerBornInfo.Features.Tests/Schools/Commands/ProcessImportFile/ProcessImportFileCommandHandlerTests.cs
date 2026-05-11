@@ -105,8 +105,13 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
         var requestId = await CreateImportRequestAsync(ExampleImportFile.GetExampleImportFileContent());
         var initialDbContext = CreateDbContext();
         var request = await initialDbContext.SchoolBulkImportRequests.SingleAsync(x => x.Id == requestId, TestContext.Current.CancellationToken);
-        request.LinesProcessed = 9;
-        request.Status = SchoolBulkImportStatus.Completed;
+        request.ProcessingStarted();
+        for (var lineNumber = 1; lineNumber <= 9; lineNumber++)
+        {
+            request.UpdateProgress(lineNumber, null);
+        }
+
+        request.ProcessingComplete();
         await initialDbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = CreateHandler(CreateDbContext());

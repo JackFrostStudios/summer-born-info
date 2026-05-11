@@ -5,9 +5,14 @@ namespace SummerBornInfo.Web.BackgroundServices;
 
 public sealed class ProcessSchoolBulkImportBackgroundService(
     IServiceScopeFactory serviceScopeFactory,
+    Microsoft.Extensions.Options.IOptions<SchoolBulkImportWorkerOptions> options,
     ILogger<ProcessSchoolBulkImportBackgroundService> logger) : BackgroundService
 {
-    private static readonly TimeSpan EmptyQueueDelay = TimeSpan.FromSeconds(1);
+    private readonly TimeSpan emptyQueueDelay = TimeSpan.FromSeconds(Math.Max(0, options.Value.EmptyQueueDelaySeconds));
+    private readonly int messageReadTimeoutSeconds = Math.Max(1, options.Value.MessageReadTimeoutSeconds);
+
+    internal TimeSpan EmptyQueueDelay => emptyQueueDelay;
+    internal int MessageReadTimeoutSeconds => messageReadTimeoutSeconds;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -18,7 +23,7 @@ public sealed class ProcessSchoolBulkImportBackgroundService(
                 var processedMessage = await ProcessNextMessageAsync(stoppingToken);
                 if (!processedMessage)
                 {
-                    await Task.Delay(EmptyQueueDelay, stoppingToken);
+                    await Task.Delay(emptyQueueDelay, stoppingToken);
                 }
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
@@ -28,7 +33,7 @@ public sealed class ProcessSchoolBulkImportBackgroundService(
             catch (Exception ex)
             {
                 logger.LogError(ex, "An error occurred while processing school bulk import messages.");
-                await Task.Delay(EmptyQueueDelay, stoppingToken);
+                await Task.Delay(emptyQueueDelay, stoppingToken);
             }
         }
     }
@@ -37,7 +42,8 @@ public sealed class ProcessSchoolBulkImportBackgroundService(
     {
         using var scope = serviceScopeFactory.CreateScope();
         var eventReader = scope.ServiceProvider.GetRequiredService<IEventReader>();
-        var queuedEvent = await eventReader.ReadEventAsync<SchoolBulkImportUploaded>(EventQueue.SchoolBulkImport, 30, cancellationToken);
+        var eventAcknowledger = scope.ServiceProvider.GetRequiredService<IEventAcknowledger>();
+        var queuedEvent = await eventReader.ReadEventAsync<SchoolBulkImportUploaded>(EventQueue.SchoolBulkImport, messageReadTimeoutSeconds, cancellationToken);
 
         if (queuedEvent is null)
         {
@@ -48,7 +54,7 @@ public sealed class ProcessSchoolBulkImportBackgroundService(
         {
             var handler = scope.ServiceProvider.GetRequiredService<ProcessImportFileCommandHandler>();
             await handler.ExecuteAsync(new ProcessImportFileCommand(queuedEvent.Message.SchoolBulkImportRequestId), cancellationToken);
-            await eventReader.DeleteEventAsync(EventQueue.SchoolBulkImport, queuedEvent.MessageId, cancellationToken);
+            await eventAcknowledger.DeleteEventAsync(EventQueue.SchoolBulkImport, queuedEvent.MessageId, cancellationToken);
             return true;
         }
         catch (Exception ex)

@@ -10,10 +10,4 @@ public sealed class EventReader(ApplicationDbContext dbContext) : IEventReader
             ? null
             : new QueuedEvent<T>(message.MsgId, message.Message ?? throw new InvalidOperationException("Queue message payload was null."));
     }
-
-    public async Task DeleteEventAsync(IEventQueue queue, long messageId, CancellationToken cancellationToken)
-    {
-        var npgmq = new NpgmqClient(dbContext.GetNpgsqlConnection());
-        await npgmq.DeleteAsync(queue.Name, messageId, cancellationToken);
-    }
 }
