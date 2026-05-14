@@ -87,10 +87,38 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
         Assert.Equal(2, result.Failures.Count);
         Assert.Equal(2, result.Failures[0].LineNumber);
         Assert.Equal(10, result.Failures[1].LineNumber);
+    }
+
+
+    [Fact]
+    public async Task GivenSchoolBulkImportRequest_WhenGetStatusByRequestId_ThenExcludesContentIdFromPayload()
+    {
+        // Arrange
+        var client = factory.CreateClient();
+        var requestId = Guid.CreateVersion7();
+
+        using (var scope = factory.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var request = new SchoolBulkImportRequest
+            {
+                Id = requestId,
+                ContentId = 42
+            };
+
+            dbContext.SchoolBulkImportRequests.Add(request);
+            await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        }
+
+        // Act
+        var response = await client.GetAsync($"/api/schools/import/{requestId}", TestContext.Current.CancellationToken);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
 
         var rawPayload = await response.Content.ReadFromJsonAsync<Dictionary<string, object?>>(TestContext.Current.CancellationToken);
         Assert.NotNull(rawPayload);
-        Assert.False(rawPayload.ContainsKey("contentId"));
+        Assert.DoesNotContain(rawPayload.Keys, k => k.Equals("contentId", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
