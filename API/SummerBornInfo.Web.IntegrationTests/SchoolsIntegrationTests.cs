@@ -1,8 +1,8 @@
 using System.Net.Http.Json;
 using System.Net;
-using System.Text.Json;
 using SummerBornInfo.Domain.Entities;
 using SummerBornInfo.Features.Schools.Commands.Import;
+using SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus;
 using SummerBornInfo.TestFramework.TestData;
 
 namespace SummerBornInfo.Web.Tests;
@@ -78,22 +78,19 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
 
         // Assert
         response.EnsureSuccessStatusCode();
-        var payload = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-        using var document = JsonDocument.Parse(payload);
-        var root = document.RootElement;
 
-        Assert.True(root.TryGetProperty("schoolBulkImportRequestId", out var idElement));
-        Assert.Equal(requestId, idElement.GetGuid());
-        Assert.Equal("CompletedWithFailures", root.GetProperty("status").GetString());
-        Assert.Equal(2, root.GetProperty("linesProcessed").GetInt32());
+        var result = await response.Content.ReadFromJsonAsync<GetSchoolBulkImportStatusResponse>(TestContext.Current.CancellationToken);
+        Assert.NotNull(result);
+        Assert.Equal(requestId, result.SchoolBulkImportRequestId);
+        Assert.Equal("CompletedWithFailures", result.Status);
+        Assert.Equal(2, result.LinesProcessed);
+        Assert.Equal(2, result.Failures.Count);
+        Assert.Equal(2, result.Failures[0].LineNumber);
+        Assert.Equal(10, result.Failures[1].LineNumber);
 
-        Assert.False(root.TryGetProperty("contentId", out _));
-
-        var failures = root.GetProperty("failures");
-        Assert.Equal(JsonValueKind.Array, failures.ValueKind);
-        Assert.Equal(2, failures.GetArrayLength());
-        Assert.Equal(2, failures[0].GetProperty("lineNumber").GetInt32());
-        Assert.Equal(10, failures[1].GetProperty("lineNumber").GetInt32());
+        var rawPayload = await response.Content.ReadFromJsonAsync<Dictionary<string, object?>>(TestContext.Current.CancellationToken);
+        Assert.NotNull(rawPayload);
+        Assert.False(rawPayload.ContainsKey("contentId"));
     }
 
     [Fact]
@@ -138,10 +135,10 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
 
         // Assert
         response.EnsureSuccessStatusCode();
-        using var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
-        var failures = document.RootElement.GetProperty("failures");
-        Assert.Equal(JsonValueKind.Array, failures.ValueKind);
-        Assert.Equal(0, failures.GetArrayLength());
+
+        var result = await response.Content.ReadFromJsonAsync<GetSchoolBulkImportStatusResponse>(TestContext.Current.CancellationToken);
+        Assert.NotNull(result);
+        Assert.Empty(result.Failures);
     }
 
     [Theory]
