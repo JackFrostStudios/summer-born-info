@@ -7,6 +7,7 @@ global using SummerBornInfo.Features.Schools.Commands.Import;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
 global using SummerBornInfo.Features.Schools.Queries.GetAllSchools;
+global using SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus;
 global using SummerBornInfo.Infrastructure.Events;
 global using SummerBornInfo.Infrastructure.Persistence;
 global using SummerBornInfo.Infrastructure.Persistence.LargeObjects;

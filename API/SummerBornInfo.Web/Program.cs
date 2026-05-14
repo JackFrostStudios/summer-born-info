@@ -10,6 +10,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql
 builder.Services.AddScoped<ImportSchoolsCommandHandler>();
 builder.Services.AddScoped<ProcessImportFileCommandHandler>();
 builder.Services.AddScoped<GetAllSchoolsQueryHandler>();
+builder.Services.AddScoped<GetSchoolBulkImportStatusQueryHandler>();
 builder.Services.AddScoped<SchoolsImporter<ApplicationDbContext>>();
 builder.Services.AddScoped<ILargeObjectWriter, LargeObjectWriter>();
 builder.Services.AddScoped<ILargeObjectReader, LargeObjectReader>();

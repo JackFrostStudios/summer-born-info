@@ -30,6 +30,16 @@ public static class SchoolEndpoints
             var (schools, nextCursor) = await handler.ExecuteAsync(query, CancellationToken.None);
             return Results.Ok(new { schools, nextCursor });
         });
+
+        schools.MapGet("/import/{requestId:guid}", async (GetSchoolBulkImportStatusQueryHandler handler, Guid requestId) =>
+        {
+            var query = new GetSchoolBulkImportStatusQuery(requestId);
+            var result = await handler.ExecuteAsync(query, CancellationToken.None);
+
+            return result is null
+                ? Results.NotFound()
+                : Results.Ok(result);
+        });
     }
 
 }
