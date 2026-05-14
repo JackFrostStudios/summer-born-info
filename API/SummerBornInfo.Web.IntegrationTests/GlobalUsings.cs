@@ -7,5 +7,6 @@ global using SummerBornInfo.Infrastructure.Persistence;
 global using SummerBornInfo.TestFramework;
 global using SummerBornInfo.TestFramework.Logging;
 global using SummerBornInfo.Web.Tests.TestFramework;
+global using System.Diagnostics;
 global using System.Net.Http.Headers;
 global using Xunit;
