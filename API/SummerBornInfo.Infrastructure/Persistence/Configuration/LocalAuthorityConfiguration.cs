@@ -8,7 +8,8 @@ internal sealed class LocalAuthorityConfiguration : IEntityTypeConfiguration<Loc
 
         builder.HasKey(la => la.Id);
         builder.Property(la => la.Id)
-            .IsRequired();
+            .IsRequired()
+            .ValueGeneratedNever();
 
         builder.Property(la => la.Code)
             .HasMaxLength(100)

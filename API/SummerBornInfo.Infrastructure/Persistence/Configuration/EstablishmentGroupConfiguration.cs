@@ -8,7 +8,8 @@ internal sealed class EstablishmentGroupConfiguration : IEntityTypeConfiguration
 
         builder.HasKey(eg => eg.Id);
         builder.Property(eg => eg.Id)
-            .IsRequired();
+            .IsRequired()
+            .ValueGeneratedNever();
 
         builder.Property(eg => eg.Code)
             .HasMaxLength(100)

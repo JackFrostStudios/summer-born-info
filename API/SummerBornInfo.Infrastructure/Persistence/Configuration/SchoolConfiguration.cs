@@ -8,7 +8,8 @@ internal sealed class SchoolConfiguration : IEntityTypeConfiguration<School>
 
         builder.HasKey(s => s.Id);
         builder.Property(s => s.Id)
-            .IsRequired();
+            .IsRequired()
+            .ValueGeneratedNever();
 
         builder.Property(s => s.URN)
             .IsRequired();

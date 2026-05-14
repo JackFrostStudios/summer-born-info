@@ -8,7 +8,8 @@ internal sealed class PhaseOfEducationConfiguration : IEntityTypeConfiguration<P
 
         builder.HasKey(p => p.Id);
         builder.Property(p => p.Id)
-            .IsRequired();
+            .IsRequired()
+            .ValueGeneratedNever();
 
         builder.Property(p => p.Code)
             .HasMaxLength(100)

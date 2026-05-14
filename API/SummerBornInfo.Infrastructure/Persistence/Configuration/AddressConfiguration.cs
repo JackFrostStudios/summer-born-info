@@ -8,7 +8,8 @@ internal sealed class AddressConfiguration : IEntityTypeConfiguration<SchoolAddr
 
         
         builder.Property<Guid>("Id")
-            .IsRequired();
+            .IsRequired()
+            .ValueGeneratedNever();
         builder.HasKey("Id");
 
         builder.Property(a => a.Street)

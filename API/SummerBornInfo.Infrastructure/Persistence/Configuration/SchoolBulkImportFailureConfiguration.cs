@@ -8,7 +8,8 @@ internal sealed class SchoolBulkImportFailureConfiguration : IEntityTypeConfigur
 
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id)
-            .IsRequired();
+            .IsRequired()
+            .ValueGeneratedNever();
 
         builder.Property(x => x.SchoolBulkImportRequestId)
             .IsRequired();
