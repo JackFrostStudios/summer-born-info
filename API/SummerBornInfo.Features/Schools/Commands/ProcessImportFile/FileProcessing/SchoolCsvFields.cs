@@ -1,6 +1,8 @@
-﻿using nietras.SeparatedValues;
+using System.Globalization;
+using nietras.SeparatedValues;
 
 namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
+
 internal sealed record SchoolCsvFields
 {
     public required int URN { get; init; }
@@ -30,28 +32,38 @@ internal sealed record SchoolCsvFields
     {
         return new()
         {
-            URN = int.Parse(row["\"URN\""].ToString().Replace("\"", "")),
-            EstablishmentNumber = int.Parse(row["\"EstablishmentNumber\""].ToString().Replace("\"", "")),
-            EstablishmentName = row["\"EstablishmentName\""].ToString().Replace("\"", ""),
-            LACode = row["\"LA (code)\""].ToString().Replace("\"", ""),
-            LAName = row["\"LA (name)\""].ToString().Replace("\"", ""),
-            EstablishmentTypeCode = row["\"TypeOfEstablishment (code)\""].ToString().Replace("\"", ""),
-            EstablishmentTypeName = row["\"TypeOfEstablishment (name)\""].ToString().Replace("\"", ""),
-            EstablishmentGroupCode = row["\"EstablishmentTypeGroup (code)\""].ToString().Replace("\"", ""),
-            EstablishmentGroupName = row["\"EstablishmentTypeGroup (name)\""].ToString().Replace("\"", ""),
-            EstablishmentStatusCode = row["\"EstablishmentStatus (code)\""].ToString().Replace("\"", ""),
-            EstablishmentStatusName = row["\"EstablishmentStatus (name)\""].ToString().Replace("\"", ""),
-            PhaseOfEducationCode = row["\"PhaseOfEducation (code)\""].ToString().Replace("\"", ""),
-            PhaseOfEducationName = row["\"PhaseOfEducation (name)\""].ToString().Replace("\"", ""),
-            OpenDate = row["\"OpenDate\""].ToString().Replace("\"", ""),
-            CloseDate = row["\"CloseDate\""].ToString().Replace("\"", ""),
-            UKPRN = row["\"UKPRN\""].ToString().Replace("\"", ""),
-            Street = row["\"Street\""].ToString().Replace("\"", ""),
-            Locality = row["\"Locality\""].ToString().Replace("\"", ""),
-            AddressThree = row["\"Address3\""].ToString().Replace("\"", ""),
-            Town = row["\"Town\""].ToString().Replace("\"", ""),
-            County = row["\"County (name)\""].ToString().Replace("\"", ""),
-            Postcode = row["\"Postcode\""].ToString().Replace("\"", ""),
+            URN = ParseInt(row, "URN"),
+            EstablishmentNumber = ParseInt(row, "EstablishmentNumber"),
+            EstablishmentName = ParseString(row, "EstablishmentName"),
+            LACode = ParseString(row, "LA (code)"),
+            LAName = ParseString(row, "LA (name)"),
+            EstablishmentTypeCode = ParseString(row, "TypeOfEstablishment (code)"),
+            EstablishmentTypeName = ParseString(row, "TypeOfEstablishment (name)"),
+            EstablishmentGroupCode = ParseString(row, "EstablishmentTypeGroup (code)"),
+            EstablishmentGroupName = ParseString(row, "EstablishmentTypeGroup (name)"),
+            EstablishmentStatusCode = ParseString(row, "EstablishmentStatus (code)"),
+            EstablishmentStatusName = ParseString(row, "EstablishmentStatus (name)"),
+            PhaseOfEducationCode = ParseString(row, "PhaseOfEducation (code)"),
+            PhaseOfEducationName = ParseString(row, "PhaseOfEducation (name)"),
+            OpenDate = ParseString(row, "OpenDate"),
+            CloseDate = ParseString(row, "CloseDate"),
+            UKPRN = ParseString(row, "UKPRN"),
+            Street = ParseString(row, "Street"),
+            Locality = ParseString(row, "Locality"),
+            AddressThree = ParseString(row, "Address3"),
+            Town = ParseString(row, "Town"),
+            County = ParseString(row, "County (name)"),
+            Postcode = ParseString(row, "Postcode"),
         };
+    }
+
+    private static int ParseInt(SepReader.Row row, string columnName)
+    {
+        return int.Parse(ParseString(row, columnName), CultureInfo.InvariantCulture);
+    }
+
+    private static string ParseString(SepReader.Row row, string columnName)
+    {
+        return row[$"\"{columnName}\""].ToString().Replace("\"", string.Empty, StringComparison.Ordinal);
     }
 }
