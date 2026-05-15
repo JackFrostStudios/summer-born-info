@@ -40,7 +40,7 @@ public sealed class ProcessSchoolBulkImportBackgroundService(
 
     private async Task<bool> ProcessNextMessageAsync(CancellationToken cancellationToken)
     {
-        using var scope = serviceScopeFactory.CreateScope();
+        await using var scope = serviceScopeFactory.CreateAsyncScope();
         var eventReader = scope.ServiceProvider.GetRequiredService<IEventReader>();
         var eventAcknowledger = scope.ServiceProvider.GetRequiredService<IEventAcknowledger>();
         var queuedEvent = await eventReader.ReadEventAsync<SchoolBulkImportUploaded>(EventQueue.SchoolBulkImport, messageReadTimeoutSeconds, cancellationToken);

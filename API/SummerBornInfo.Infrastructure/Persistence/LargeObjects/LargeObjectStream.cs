@@ -16,9 +16,22 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
     {
         get
         {
-            _length ??= GetLengthAsync().GetAwaiter().GetResult();
+            _length ??= GetLength();
             return _length.Value;
         }
+    }
+
+    private long GetLength()
+    {
+        if (_length.HasValue)
+            return _length.Value;
+
+        using var cmd = new NpgsqlCommand(
+            "SELECT COALESCE(SUM(length(data)), 0) FROM pg_largeobject WHERE loid = @oid",
+            _connection);
+        cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, _largeObjectId);
+        _length = (long)cmd.ExecuteScalar()!;
+        return _length.Value;
     }
 
     public async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
@@ -57,7 +70,23 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
     }
 
     public override int Read(byte[] buffer, int offset, int count)
-        => ReadAsync(buffer, offset, count, CancellationToken.None).GetAwaiter().GetResult();
+    {
+        var readBuffer = new Memory<byte>(buffer, offset, count);
+        var bytesToRead = Math.Min(readBuffer.Length, ChunkSize);
+
+        using var cmd = new NpgsqlCommand("SELECT lo_get(@oid, @offset, @length)", _connection);
+        cmd.Parameters.AddWithValue("oid", NpgsqlTypes.NpgsqlDbType.Oid, _largeObjectId);
+        cmd.Parameters.AddWithValue("offset", NpgsqlTypes.NpgsqlDbType.Bigint, _position);
+        cmd.Parameters.AddWithValue("length", NpgsqlTypes.NpgsqlDbType.Integer, bytesToRead);
+
+        var chunk = (byte[]?)cmd.ExecuteScalar();
+        if (chunk == null || chunk.Length == 0)
+            return 0;
+
+        chunk.AsMemory().CopyTo(readBuffer);
+        _position += chunk.Length;
+        return chunk.Length;
+    }
 
     public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) 
         => await ReadAsync(buffer.AsMemory(offset, count), cancellationToken);
@@ -84,6 +113,6 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
 
     public override void SetLength(long value) => throw new NotSupportedException();
     public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
-    public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) => throw new NotSupportedException();
-    public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+    public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) => throw new NotSupportedException();
+    public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default) => throw new NotSupportedException();
 }

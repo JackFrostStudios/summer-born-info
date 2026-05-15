@@ -24,7 +24,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    var scope = app.Services.CreateScope();
+    await using var scope = app.Services.CreateAsyncScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await dbContext.Database.EnsureCreatedAsync();
     var npgmq = new NpgmqClient(connectionString: dbContext.Database.GetConnectionString() ?? throw new InvalidOperationException("Db Connection string is null"));

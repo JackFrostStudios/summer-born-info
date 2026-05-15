@@ -6,7 +6,7 @@ public static class SchoolEndpoints
     {
         var schools = endpoints.MapGroup("/api/schools");
 
-        schools.MapPost("/import", async (HttpRequest req, Stream csvFile, ImportSchoolsCommandHandler handler) =>
+        schools.MapPost("/import", async (HttpRequest req, Stream csvFile, ImportSchoolsCommandHandler handler, CancellationToken cancellationToken) =>
         {
             var maxMessageSize = 100000 * 1024;
             if (req.ContentLength is not null && req.ContentLength > maxMessageSize)
@@ -19,22 +19,22 @@ public static class SchoolEndpoints
             }
 
             var command = new ImportSchoolsCommand(csvFile);
-            var result = await handler.ExecuteAsync(command, CancellationToken.None);
+            var result = await handler.ExecuteAsync(command, cancellationToken);
             return Results.Ok(result);
         })
             .WithMetadata(new RequestSizeLimitAttribute(100000 * 1024));
 
-        schools.MapGet("/", async (GetAllSchoolsQueryHandler handler, Guid? cursor, int? pageSize) =>
+        schools.MapGet("/", async (GetAllSchoolsQueryHandler handler, Guid? cursor, int? pageSize, CancellationToken cancellationToken) =>
         {
             var query = new GetAllSchoolsQuery(cursor, pageSize ?? 100);
-            var (schools, nextCursor) = await handler.ExecuteAsync(query, CancellationToken.None);
+            var (schools, nextCursor) = await handler.ExecuteAsync(query, cancellationToken);
             return Results.Ok(new { schools, nextCursor });
         });
 
-        schools.MapGet("/import/{requestId:guid}", async (GetSchoolBulkImportStatusQueryHandler handler, Guid requestId) =>
+        schools.MapGet("/import/{requestId:guid}", async (GetSchoolBulkImportStatusQueryHandler handler, Guid requestId, CancellationToken cancellationToken) =>
         {
             var query = new GetSchoolBulkImportStatusQuery(requestId);
-            var result = await handler.ExecuteAsync(query, CancellationToken.None);
+            var result = await handler.ExecuteAsync(query, cancellationToken);
 
             return result is null
                 ? Results.NotFound()
