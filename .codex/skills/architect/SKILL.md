@@ -20,3 +20,7 @@ Use this skill for code layout, feature placement, and project pattern decisions
 - If code needs DI, add it in `API/SummerBornInfo.Web/Program.cs`.
 - If the feature is a new slice, mirror the existing `Schools` structure first.
 - Return the recommended target files, the reasoning, and any DI or coupling concerns.
+
+
+## Domain Logic
+- Ensure complex state is managed in Domain entities, simple value updates don't require domain functions but multi value updates or domain actions should be tied to functions on Domain entities.

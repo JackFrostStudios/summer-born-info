@@ -1,6 +1,7 @@
 # Agents
 
-Use the smallest amount of context that still leads to a good decision.
+Use sub-agents extensively to delegate specific actions to specialists, this reduces bloat on the main context window.
+Provide the smallest amount of context that still leads to a good decision.
 
 ## Delegation
 
