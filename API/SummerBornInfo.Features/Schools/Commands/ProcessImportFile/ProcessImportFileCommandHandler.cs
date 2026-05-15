@@ -26,7 +26,7 @@ public sealed class ProcessImportFileCommandHandler(
 
         try
         {
-            await foreach (var result in schoolsImporter.ImportAsync(csvStream, cancellationToken))
+            await foreach (var result in schoolsImporter.ImportAsync(command.SchoolBulkImportRequestId, csvStream, cancellationToken))
             {
                 schoolBulkImportRequest.UpdateProgress(result.LineNumber, result.Succeeded ? null : result.ErrorMessage ?? "Unknown import error");
 

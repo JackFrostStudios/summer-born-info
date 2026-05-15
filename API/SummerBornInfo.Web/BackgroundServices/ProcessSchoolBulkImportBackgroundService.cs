@@ -1,6 +1,5 @@
 using SummerBornInfo.Domain.Events;
 using SummerBornInfo.Features.Schools.Commands.ProcessImportFile;
-using System.Diagnostics;
 
 namespace SummerBornInfo.Web.BackgroundServices;
 
@@ -51,26 +50,15 @@ public sealed class ProcessSchoolBulkImportBackgroundService(
             return false;
         }
 
-        using var activity = SchoolBulkImportTelemetry.ActivitySource.StartActivity(SchoolBulkImportTelemetry.ActivityName, ActivityKind.Consumer);
-        activity?.SetTag("schoolBulkImport.request_id", queuedEvent.Message.SchoolBulkImportRequestId);
-        activity?.SetTag("messaging.message.id", queuedEvent.MessageId);
-        activity?.SetTag("messaging.destination", EventQueue.SchoolBulkImport.Name);
-
         try
         {
             var handler = scope.ServiceProvider.GetRequiredService<ProcessImportFileCommandHandler>();
             await handler.ExecuteAsync(new ProcessImportFileCommand(queuedEvent.Message.SchoolBulkImportRequestId), cancellationToken);
-            activity?.SetTag("schoolBulkImport.outcome", "processed");
             await eventAcknowledger.DeleteEventAsync(EventQueue.SchoolBulkImport, queuedEvent.MessageId, cancellationToken);
-            activity?.SetTag("schoolBulkImport.outcome", "acknowledged");
-            activity?.SetStatus(ActivityStatusCode.Ok);
             return true;
         }
         catch (Exception ex)
         {
-            activity?.SetTag("schoolBulkImport.outcome", "failed");
-            activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
-            activity?.RecordException(ex);
             logger.LogError(ex, "Failed to process school bulk import request {SchoolBulkImportRequestId}.", queuedEvent.Message.SchoolBulkImportRequestId);
             return false;
         }

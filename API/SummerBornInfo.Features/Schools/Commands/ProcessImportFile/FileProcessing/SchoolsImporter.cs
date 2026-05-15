@@ -1,6 +1,7 @@
 using nietras.SeparatedValues;
 using SummerBornInfo.Features.Schools.Commands.ProcessImportFile;
 using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing.LookupImporter;
+using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 
@@ -16,6 +17,7 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
     private readonly PhaseOfEducationImporter<TContext> _phaseImporter = new(context);
 
     public async IAsyncEnumerable<SchoolImportResult> ImportAsync(
+        Guid schoolBulkImportRequestId,
         Stream csvStream,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
@@ -28,6 +30,9 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
         {
             lineNumber++;
             SchoolImportResult result;
+            using var activity = SchoolBulkImportTelemetry.ActivitySource.StartActivity(SchoolBulkImportTelemetry.ActivityName);
+            activity?.SetTag("schoolBulkImport.request_id", schoolBulkImportRequestId);
+            activity?.SetTag("schoolBulkImport.row_number", lineNumber);
 
             try
             {
@@ -37,6 +42,8 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
                     LineNumber = lineNumber,
                     Succeeded = true,
                 };
+                activity?.SetTag("schoolBulkImport.outcome", "processed");
+                activity?.SetStatus(ActivityStatusCode.Ok);
             }
             catch (Exception ex)
             {
@@ -46,6 +53,9 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
                     Succeeded = false,
                     ErrorMessage = ex.Message,
                 };
+                activity?.SetTag("schoolBulkImport.outcome", "failed");
+                activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
+                activity?.SetTag("schoolBulkImport.error", ex.Message);
             }
 
             yield return result;
