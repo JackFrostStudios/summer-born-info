@@ -17,7 +17,7 @@ Goal: raise every `suggestion`-level C# convention in `API/.editorconfig` to `wa
 - [x] Step 11: `dotnet_diagnostic.CA1725`
 - [x] Step 12: `dotnet_naming_rule.constant_fields_should_be_pascal_case`
 - [x] Step 13: `dotnet_naming_rule.camel_case_for_private_internal_fields`
-- [ ] Step 14: `dotnet_diagnostic.IDE0055`
+- [x] Step 14: `dotnet_diagnostic.IDE0055`
 
 ## Working Notes
 
