@@ -8,7 +8,7 @@ public sealed class SchoolBulkImportRequestTests
     public void SchoolBulkImportRequest_ShouldInitalizeWithRequiredProperties()
     {
         // Arrange
-        var schoolBulkImportRequest = new SchoolBulkImportRequest
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
         {
             ContentId = 1,
         };
@@ -24,7 +24,7 @@ public sealed class SchoolBulkImportRequestTests
     public void SchoolBulkImportRequest_ShouldGenerateId()
     {
         // Arrange
-        var schoolBulkImportRequest = new SchoolBulkImportRequest
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
         {
             ContentId = 1,
         };
@@ -37,13 +37,13 @@ public sealed class SchoolBulkImportRequestTests
     public void GivenPendingRequest_WhenProcessingStarted_ThenStatusIsProcessing()
     {
         // Arrange
-        var schoolBulkImportRequest = new SchoolBulkImportRequest
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
         {
             ContentId = 1,
         };
 
         // Act
-        bool started = schoolBulkImportRequest.ProcessingStarted();
+        var started = schoolBulkImportRequest.ProcessingStarted();
 
         // Assert
         Assert.True(started);
@@ -54,7 +54,7 @@ public sealed class SchoolBulkImportRequestTests
     public void GivenCompletedRequest_WhenProcessingStarted_ThenStatusIsUnchanged()
     {
         // Arrange
-        var schoolBulkImportRequest = new SchoolBulkImportRequest
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
         {
             ContentId = 1,
         };
@@ -62,7 +62,7 @@ public sealed class SchoolBulkImportRequestTests
         schoolBulkImportRequest.ProcessingComplete();
 
         // Act
-        bool started = schoolBulkImportRequest.ProcessingStarted();
+        var started = schoolBulkImportRequest.ProcessingStarted();
 
         // Assert
         Assert.False(started);
@@ -73,14 +73,14 @@ public sealed class SchoolBulkImportRequestTests
     public void GivenProcessedRows_WhenUpdatingProgress_ThenProcessedLineCountIncrements()
     {
         // Arrange
-        var schoolBulkImportRequest = new SchoolBulkImportRequest
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
         {
             ContentId = 1,
         };
 
         // Act
-        schoolBulkImportRequest.UpdateProgress(2, null);
-        schoolBulkImportRequest.UpdateProgress(3, null);
+        schoolBulkImportRequest.UpdateProgress(2, errorMessage: null);
+        schoolBulkImportRequest.UpdateProgress(3, errorMessage: null);
 
         // Assert
         Assert.Equal(2, schoolBulkImportRequest.LinesProcessed);
@@ -91,7 +91,7 @@ public sealed class SchoolBulkImportRequestTests
     public void GivenRowFailure_WhenUpdatingProgress_ThenFailureIsRecorded()
     {
         // Arrange
-        var schoolBulkImportRequest = new SchoolBulkImportRequest
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
         {
             ContentId = 1,
         };
@@ -109,7 +109,7 @@ public sealed class SchoolBulkImportRequestTests
     public void GivenExistingFailureForRow_WhenUpdatingProgress_ThenErrorDetailsAreOverwritten()
     {
         // Arrange
-        var schoolBulkImportRequest = new SchoolBulkImportRequest
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
         {
             ContentId = 1,
         };
@@ -128,12 +128,12 @@ public sealed class SchoolBulkImportRequestTests
     public void GivenProcessedRequestWithoutFailures_WhenProcessingCompletes_ThenStatusIsCompleted()
     {
         // Arrange
-        var schoolBulkImportRequest = new SchoolBulkImportRequest
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
         {
             ContentId = 1,
         };
         schoolBulkImportRequest.ProcessingStarted();
-        schoolBulkImportRequest.UpdateProgress(2, null);
+        schoolBulkImportRequest.UpdateProgress(2, errorMessage: null);
 
         // Act
         schoolBulkImportRequest.ProcessingComplete();
@@ -146,7 +146,7 @@ public sealed class SchoolBulkImportRequestTests
     public void GivenProcessedRequestWithFailures_WhenProcessingCompletes_ThenStatusIsCompletedWithFailures()
     {
         // Arrange
-        var schoolBulkImportRequest = new SchoolBulkImportRequest
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
         {
             ContentId = 1,
         };
@@ -164,7 +164,7 @@ public sealed class SchoolBulkImportRequestTests
     public void GivenProcessingRequest_WhenProcessingFails_ThenStatusIsFailed()
     {
         // Arrange
-        var schoolBulkImportRequest = new SchoolBulkImportRequest
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
         {
             ContentId = 1,
         };
@@ -181,9 +181,9 @@ public sealed class SchoolBulkImportRequestTests
     public void SchoolBulkImportRequest_ShouldNotExposePublicSettersForMutableImportState()
     {
         // Act
-        MethodInfo? linesProcessedSetter = typeof(SchoolBulkImportRequest).GetProperty(nameof(SchoolBulkImportRequest.LinesProcessed))!.SetMethod;
-        MethodInfo? statusSetter = typeof(SchoolBulkImportRequest).GetProperty(nameof(SchoolBulkImportRequest.Status))!.SetMethod;
-        MethodInfo? failuresSetter = typeof(SchoolBulkImportRequest).GetProperty(nameof(SchoolBulkImportRequest.Failures))!.SetMethod;
+        var linesProcessedSetter = typeof(SchoolBulkImportRequest).GetProperty(nameof(SchoolBulkImportRequest.LinesProcessed))!.SetMethod;
+        var statusSetter = typeof(SchoolBulkImportRequest).GetProperty(nameof(SchoolBulkImportRequest.Status))!.SetMethod;
+        var failuresSetter = typeof(SchoolBulkImportRequest).GetProperty(nameof(SchoolBulkImportRequest.Failures))!.SetMethod;
 
         // Assert
         Assert.False(linesProcessedSetter?.IsPublic ?? false);
@@ -195,7 +195,7 @@ public sealed class SchoolBulkImportRequestTests
     public void SchoolBulkImportFailure_ShouldGenerateId()
     {
         // Arrange
-        var failure = new SchoolBulkImportFailure(2, "Unable to parse row");
+        SchoolBulkImportFailure failure = new(2, "Unable to parse row");
 
         // Act & Assert
         Assert.NotEqual(Guid.Empty, failure.Id);

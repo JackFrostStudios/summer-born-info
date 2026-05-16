@@ -1,4 +1,5 @@
-﻿using SummerBornInfo.Infrastructure.Persistence;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using SummerBornInfo.Infrastructure.Persistence;
 
 namespace SummerBornInfo.Infrastructure.Tests.Persistence.Events;
 
@@ -8,9 +9,9 @@ public class EventEmitterTests(IntegrationTestDatabaseServerFixture testDatabase
     public async Task GivenNoTransactionHasStarted_WhenEmittingEvent_ThenEventIsCreated()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
-        var eventEmitter = new EventEmitter(dbContext);
-        var testEvent = new TestEvent();
+        var dbContext = CreateDbContext();
+        EventEmitter eventEmitter = new(dbContext);
+        TestEvent testEvent = new();
 
         // Act
         await eventEmitter.EmitEventAsync(TestEventQueue.TestQueue, testEvent, TestContext.Current.CancellationToken);
@@ -23,10 +24,10 @@ public class EventEmitterTests(IntegrationTestDatabaseServerFixture testDatabase
     public async Task GivenTransactionHasStarted_WhenEmittingEvent_ThenEventIsNotPersisted()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         await using var efTransaction = await dbContext.Database.BeginTransactionAsync(TestContext.Current.CancellationToken);
-        var eventEmitter = new EventEmitter(dbContext);
-        var testEvent = new TestEvent();
+        EventEmitter eventEmitter = new(dbContext);
+        TestEvent testEvent = new();
 
         // Act
         await eventEmitter.EmitEventAsync(TestEventQueue.TestQueue, testEvent, TestContext.Current.CancellationToken);
@@ -40,10 +41,10 @@ public class EventEmitterTests(IntegrationTestDatabaseServerFixture testDatabase
     public async Task GivenTransactionHasStarted_WhenEmittingEventIsCommitted_ThenEventIsCreated()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         await using var efTransaction = await dbContext.Database.BeginTransactionAsync(TestContext.Current.CancellationToken);
-        var eventEmitter = new EventEmitter(dbContext);
-        var testEvent = new TestEvent();
+        EventEmitter eventEmitter = new(dbContext);
+        TestEvent testEvent = new();
 
         // Act
         await eventEmitter.EmitEventAsync(TestEventQueue.TestQueue, testEvent, TestContext.Current.CancellationToken);

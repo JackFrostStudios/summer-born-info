@@ -8,7 +8,7 @@ public sealed class ApplicationDbContextPhaseOfEducationTests(IntegrationTestDat
     public async Task GivenNewPhaseOfEducation_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var phaseOfEducation = PhaseOfEducationFactory.GetPhaseOfEducation();
 
         // Act
@@ -23,12 +23,11 @@ public sealed class ApplicationDbContextPhaseOfEducationTests(IntegrationTestDat
         Assert.Equivalent(phaseOfEducation, savedPhaseOfEducation);
     }
 
-
     [Fact]
     public async Task GivenExistingPhaseOfEducation_WhenUpdatingAllFields_ThenUpdatedRecordCanBeRetrieved()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var phaseOfEducation = PhaseOfEducationFactory.GetPhaseOfEducation();
         dbContext.PhasesOfEducation.Add(phaseOfEducation);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -54,18 +53,17 @@ public sealed class ApplicationDbContextPhaseOfEducationTests(IntegrationTestDat
     public async Task GivenExistingPhaseOfEducation_ConcurrentUpdates_ThenSecondUpdateShouldFail()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var phaseOfEducation = PhaseOfEducationFactory.GetPhaseOfEducation();
         dbContext.PhasesOfEducation.Add(phaseOfEducation);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
-
         var phaseOfEducationToUpdateOne = dbContext.PhasesOfEducation.Find(phaseOfEducation.Id);
         Assert.NotNull(phaseOfEducationToUpdateOne);
         phaseOfEducationToUpdateOne.Code = "Code_One";
 
-        ApplicationDbContext dbContextTwo = CreateDbContext();
+        var dbContextTwo = CreateDbContext();
         var phaseOfEducationToUpdateTwo = dbContextTwo.PhasesOfEducation.Find(phaseOfEducation.Id);
         Assert.NotNull(phaseOfEducationToUpdateTwo);
         phaseOfEducationToUpdateTwo.Code = "Code_Two";

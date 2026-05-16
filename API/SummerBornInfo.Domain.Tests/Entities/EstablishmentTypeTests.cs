@@ -6,10 +6,10 @@ public sealed class EstablishmentTypeTests
     public void EstablishmentType_ShouldInitalizeWithRequiredProperties()
     {
         // Arrange
-        var establishmentType = new EstablishmentType
+        EstablishmentType establishmentType = new()
         {
             Code = "AC",
-            Name = "Academy"
+            Name = "Academy",
         };
 
         // Act & Assert
@@ -21,10 +21,10 @@ public sealed class EstablishmentTypeTests
     public void EstablishmentType_ShouldGenerateId()
     {
         // Arrange
-        var establishmentType = new EstablishmentType
+        EstablishmentType establishmentType = new()
         {
             Code = "AC",
-            Name = "Academy"
+            Name = "Academy",
         };
 
         // Act & Assert
@@ -36,11 +36,11 @@ public sealed class EstablishmentTypeTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var establishmentType = new EstablishmentType
+        EstablishmentType establishmentType = new()
         {
             Id = id,
             Code = "AC",
-            Name = "Academy"
+            Name = "Academy",
         };
 
         // Act & Assert

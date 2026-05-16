@@ -28,7 +28,7 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
             return _length.Value;
         }
 
-        using var cmd = new NpgsqlCommand(
+        using NpgsqlCommand cmd = new(
             "SELECT COALESCE(SUM(length(data)), 0) FROM pg_largeobject WHERE loid = @oid",
             _connection);
         cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, _largeObjectId);
@@ -43,7 +43,7 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
             return _length.Value;
         }
 
-        await using var cmd = new NpgsqlCommand(
+        await using NpgsqlCommand cmd = new(
             "SELECT COALESCE(SUM(length(data)), 0) FROM pg_largeobject WHERE loid = @oid",
             _connection);
         cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, _largeObjectId);
@@ -68,22 +68,22 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
             SeekOrigin.Begin => offset,
             SeekOrigin.Current => _position + offset,
             SeekOrigin.End => Length + offset,
-            _ => throw new NotImplementedException($"Unknown SeekOrigin: {origin}"),
+            _ => throw new NotSupportedException($"Unknown SeekOrigin: {origin}"),
         };
         return _position;
     }
 
     public override int Read(byte[] buffer, int offset, int count)
     {
-        var readBuffer = new Memory<byte>(buffer, offset, count);
-        int bytesToRead = Math.Min(readBuffer.Length, ChunkSize);
+        Memory<byte> readBuffer = new(buffer, offset, count);
+        var bytesToRead = Math.Min(readBuffer.Length, ChunkSize);
 
-        using var cmd = new NpgsqlCommand("SELECT lo_get(@oid, @offset, @length)", _connection);
-        cmd.Parameters.AddWithValue("oid", NpgsqlTypes.NpgsqlDbType.Oid, _largeObjectId);
-        cmd.Parameters.AddWithValue("offset", NpgsqlTypes.NpgsqlDbType.Bigint, _position);
-        cmd.Parameters.AddWithValue("length", NpgsqlTypes.NpgsqlDbType.Integer, bytesToRead);
+        using NpgsqlCommand cmd = new("SELECT lo_get(@oid, @offset, @length)", _connection);
+        cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, _largeObjectId);
+        cmd.Parameters.AddWithValue("offset", NpgsqlDbType.Bigint, _position);
+        cmd.Parameters.AddWithValue("length", NpgsqlDbType.Integer, bytesToRead);
 
-        byte[] chunk = (byte[]?)cmd.ExecuteScalar();
+        var chunk = (byte[]?)cmd.ExecuteScalar();
         if (chunk == null || chunk.Length == 0)
         {
             return 0;
@@ -95,18 +95,20 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
     }
 
     public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-        => await ReadAsync(buffer.AsMemory(offset, count), cancellationToken);
+    {
+        return await ReadAsync(buffer.AsMemory(offset, count), cancellationToken);
+    }
 
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
-        int bytesToRead = Math.Min(buffer.Length, ChunkSize);
+        var bytesToRead = Math.Min(buffer.Length, ChunkSize);
 
-        await using var cmd = new NpgsqlCommand("SELECT lo_get(@oid, @offset, @length)", _connection);
-        cmd.Parameters.AddWithValue("oid", NpgsqlTypes.NpgsqlDbType.Oid, _largeObjectId);
-        cmd.Parameters.AddWithValue("offset", NpgsqlTypes.NpgsqlDbType.Bigint, _position);
-        cmd.Parameters.AddWithValue("length", NpgsqlTypes.NpgsqlDbType.Integer, bytesToRead);
+        await using NpgsqlCommand cmd = new("SELECT lo_get(@oid, @offset, @length)", _connection);
+        cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, _largeObjectId);
+        cmd.Parameters.AddWithValue("offset", NpgsqlDbType.Bigint, _position);
+        cmd.Parameters.AddWithValue("length", NpgsqlDbType.Integer, bytesToRead);
 
-        byte[] chunk = (byte[]?)(await cmd.ExecuteScalarAsync(cancellationToken));
+        var chunk = (byte[]?)await cmd.ExecuteScalarAsync(cancellationToken);
 
         if (chunk == null || chunk.Length == 0)
         {

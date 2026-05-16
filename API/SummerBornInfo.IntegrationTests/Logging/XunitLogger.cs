@@ -7,12 +7,12 @@ public class XUnitLogger(ITestOutputHelper testOutputHelper, LoggerExternalScope
     private readonly LoggerExternalScopeProvider _scopeProvider = scopeProvider;
 
     public static ILogger CreateLogger(ITestOutputHelper testOutputHelper) => new XUnitLogger(testOutputHelper, new LoggerExternalScopeProvider(), "");
-    public static ILogger<T> CreateLogger<T>(ITestOutputHelper testOutputHelper) where T : notnull => new XUnitLogger<T>(testOutputHelper, new LoggerExternalScopeProvider());
+    public static ILogger<T> CreateLogger<T>(ITestOutputHelper testOutputHelper) where T : notnull => new GenericXUnitLogger<T>(testOutputHelper, new LoggerExternalScopeProvider());
     public bool IsEnabled(LogLevel logLevel) => logLevel != LogLevel.None;
     public IDisposable? BeginScope<TState>(TState? state) where TState : notnull => _scopeProvider.Push(state);
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        var sb = new StringBuilder();
+        StringBuilder sb = new();
         sb.Append(GetLogLevelString(logLevel))
           .Append(" [").Append(_categoryName).Append("] ")
           .Append(formatter(state, exception));
@@ -41,9 +41,8 @@ public class XUnitLogger(ITestOutputHelper testOutputHelper, LoggerExternalScope
             LogLevel.Warning => "warn",
             LogLevel.Error => "fail",
             LogLevel.Critical => "crit",
-            _ => throw new ArgumentOutOfRangeException(nameof(logLevel))
+            _ => throw new ArgumentOutOfRangeException(nameof(logLevel)),
         };
     }
-
 
 }

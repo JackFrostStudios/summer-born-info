@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Domain.Entities;
+namespace SummerBornInfo.Domain.Entities;
 
 public sealed class SchoolBulkImportRequest
 {
@@ -30,7 +30,7 @@ public sealed class SchoolBulkImportRequest
             return;
         }
 
-        SchoolBulkImportFailure? existingFailure = _failures.SingleOrDefault(x => x.LineNumber == lineNumber);
+        var existingFailure = _failures.SingleOrDefault(x => x.LineNumber == lineNumber);
         if (existingFailure is null)
         {
             _failures.Add(new SchoolBulkImportFailure(lineNumber, errorMessage));

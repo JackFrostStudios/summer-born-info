@@ -1,3 +1,5 @@
+using SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus.Response;
+
 namespace SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus;
 
 public sealed class GetSchoolBulkImportStatusQueryHandler(ApplicationDbContext context)
@@ -26,9 +28,9 @@ public sealed class GetSchoolBulkImportStatusQueryHandler(ApplicationDbContext c
                 .Select(x => new SchoolBulkImportFailureResponse
                 {
                     LineNumber = x.LineNumber,
-                    Message = x.ErrorMessage
+                    Message = x.ErrorMessage,
                 })
-                .ToList()
+                .ToList(),
         };
     }
 }

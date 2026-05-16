@@ -6,7 +6,6 @@ internal sealed class AddressConfiguration : IEntityTypeConfiguration<SchoolAddr
     {
         builder.ToTable("school");
 
-
         builder.Property<Guid>("Id")
             .IsRequired()
             .ValueGeneratedNever();

@@ -6,10 +6,10 @@ public sealed class LocalAuthorityTests
     public void LocalAuthority_ShouldInitalizeWithRequiredProperties()
     {
         // Arrange
-        var localAuthority = new LocalAuthority
+        LocalAuthority localAuthority = new()
         {
             Code = "E09000001",
-            Name = "Local Authority One"
+            Name = "Local Authority One",
         };
 
         // Act & Assert
@@ -21,10 +21,10 @@ public sealed class LocalAuthorityTests
     public void LocalAuthority_ShouldGenerateId()
     {
         // Arrange
-        var localAuthority = new LocalAuthority
+        LocalAuthority localAuthority = new()
         {
             Code = "E09000001",
-            Name = "Local Authority One"
+            Name = "Local Authority One",
         };
 
         // Act & Assert
@@ -36,11 +36,11 @@ public sealed class LocalAuthorityTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var localAuthority = new LocalAuthority
+        LocalAuthority localAuthority = new()
         {
             Id = id,
             Code = "E09000001",
-            Name = "Local Authority One"
+            Name = "Local Authority One",
         };
 
         // Act & Assert

@@ -8,7 +8,7 @@ public sealed class ApplicationDbContextEstablishmentGroupTests(IntegrationTestD
     public async Task GivenNewEstablishmentGroup_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var establishmentGroup = EstablishmentGroupFactory.GetEstablishmentGroup();
 
         // Act
@@ -23,12 +23,11 @@ public sealed class ApplicationDbContextEstablishmentGroupTests(IntegrationTestD
         Assert.Equivalent(establishmentGroup, savedEstablishmentGroup);
     }
 
-
     [Fact]
     public async Task GivenExistingEstablishmentGroup_WhenUpdatingAllFields_ThenUpdatedRecordCanBeRetrieved()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var establishmentGroup = EstablishmentGroupFactory.GetEstablishmentGroup();
         dbContext.EstablishmentGroups.Add(establishmentGroup);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -54,18 +53,17 @@ public sealed class ApplicationDbContextEstablishmentGroupTests(IntegrationTestD
     public async Task GivenExistingEstablishmentGroup_ConcurrentUpdates_ThenSecondUpdateShouldFail()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var establishmentGroup = EstablishmentGroupFactory.GetEstablishmentGroup();
         dbContext.EstablishmentGroups.Add(establishmentGroup);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
-
         var establishmentGroupToUpdateOne = dbContext.EstablishmentGroups.Find(establishmentGroup.Id);
         Assert.NotNull(establishmentGroupToUpdateOne);
         establishmentGroupToUpdateOne.Code = "Code_One";
 
-        ApplicationDbContext dbContextTwo = CreateDbContext();
+        var dbContextTwo = CreateDbContext();
         var establishmentGroupToUpdateTwo = dbContextTwo.EstablishmentGroups.Find(establishmentGroup.Id);
         Assert.NotNull(establishmentGroupToUpdateTwo);
         establishmentGroupToUpdateTwo.Code = "Code_Two";

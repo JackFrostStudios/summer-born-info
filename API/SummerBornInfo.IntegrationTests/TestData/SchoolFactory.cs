@@ -2,18 +2,18 @@
 
 public static class SchoolFactory
 {
-    private static int URN = 0;
-    private static int UKPRN = 999;
-    private static int EstablishmentNumber = 9999;
-    private readonly static Faker _faker = new("en_GB");
+    private static int _urn;
+    private static int _ukprn = 999;
+    private static int _establishmentNumber = 9999;
+    private static readonly Faker _faker = new("en_GB");
 
     public static School GetSchool()
     {
-        EstablishmentGroup establishmentGroup = EstablishmentGroupFactory.GetEstablishmentGroup();
-        EstablishmentStatus establishmentStatus = EstablishmentStatusFactory.GetEstablishmentStatus();
-        EstablishmentType establishmentType = EstablishmentTypeFactory.GetEstablishmentType();
-        LocalAuthority localAuthority = LocalAuthorityFactory.GetLocalAuthority();
-        PhaseOfEducation phaseOfEducation = PhaseOfEducationFactory.GetPhaseOfEducation();
+        var establishmentGroup = EstablishmentGroupFactory.GetEstablishmentGroup();
+        var establishmentStatus = EstablishmentStatusFactory.GetEstablishmentStatus();
+        var establishmentType = EstablishmentTypeFactory.GetEstablishmentType();
+        var localAuthority = LocalAuthorityFactory.GetLocalAuthority();
+        var phaseOfEducation = PhaseOfEducationFactory.GetPhaseOfEducation();
 
         var closeDate = _faker.Date.PastDateOnly(1);
         var openDate = _faker.Date.PastDateOnly(100, closeDate);
@@ -23,15 +23,15 @@ public static class SchoolFactory
             CloseDate = closeDate,
             OpenDate = openDate,
             Name = _faker.Company.CompanyName(),
-            UKPRN = Interlocked.Increment(ref UKPRN),
-            URN = Interlocked.Increment(ref URN),
-            EstablishmentNumber = Interlocked.Increment(ref EstablishmentNumber),
+            UKPRN = Interlocked.Increment(ref _ukprn),
+            URN = Interlocked.Increment(ref _urn),
+            EstablishmentNumber = Interlocked.Increment(ref _establishmentNumber),
             Address = SchoolAddressFactory.GetSchoolAddress(),
             EstablishmentGroup = establishmentGroup,
             EstablishmentStatus = establishmentStatus,
             EstablishmentType = establishmentType,
             LocalAuthority = localAuthority,
-            PhaseOfEducation = phaseOfEducation
+            PhaseOfEducation = phaseOfEducation,
         };
     }
 }

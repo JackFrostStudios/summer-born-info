@@ -6,10 +6,10 @@ public sealed class EstablishmentStatusTests
     public void EstablishmentStatus_ShouldInitalizeWithRequiredProperties()
     {
         // Arrange
-        var establishmentStatus = new EstablishmentStatus
+        EstablishmentStatus establishmentStatus = new()
         {
             Code = "OPEN",
-            Name = "Open"
+            Name = "Open",
         };
 
         // Act & Assert
@@ -21,10 +21,10 @@ public sealed class EstablishmentStatusTests
     public void EstablishmentStatus_ShouldGenerateId()
     {
         // Arrange
-        var establishmentStatus = new EstablishmentStatus
+        EstablishmentStatus establishmentStatus = new()
         {
             Code = "OPEN",
-            Name = "Open"
+            Name = "Open",
         };
 
         // Act & Assert
@@ -36,11 +36,11 @@ public sealed class EstablishmentStatusTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var establishmentStatus = new EstablishmentStatus
+        EstablishmentStatus establishmentStatus = new()
         {
             Id = id,
             Code = "OPEN",
-            Name = "Open"
+            Name = "Open",
         };
 
         // Act & Assert

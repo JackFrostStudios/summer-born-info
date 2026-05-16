@@ -2,8 +2,8 @@ using System.Net.Http.Json;
 using System.Net;
 using SummerBornInfo.Domain.Entities;
 using SummerBornInfo.Features.Schools.Commands.Import;
-using SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus;
 using SummerBornInfo.TestFramework.TestData;
+using SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus.Response;
 
 namespace SummerBornInfo.Web.Tests;
 
@@ -24,8 +24,8 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
     {
         // Arrange
         var client = factory.CreateClient();
-        using Stream csvStream = ExampleImportFile.GetExampleImportFileContent();
-        using var content = new StreamContent(csvStream);
+        using var csvStream = ExampleImportFile.GetExampleImportFileContent();
+        using StreamContent content = new(csvStream);
         content.Headers.ContentType = new MediaTypeHeaderValue("text/csv");
 
         // Act
@@ -58,10 +58,10 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
         using (var scope = factory.Services.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var request = new SchoolBulkImportRequest
+            SchoolBulkImportRequest request = new()
             {
                 Id = requestId,
-                ContentId = 42
+                ContentId = 42,
             };
 
             request.ProcessingStarted();
@@ -89,7 +89,6 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
         Assert.Equal(10, result.Failures[1].LineNumber);
     }
 
-
     [Fact]
     public async Task GivenSchoolBulkImportRequest_WhenGetStatusByRequestId_ThenExcludesContentIdFromPayload()
     {
@@ -100,10 +99,10 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
         using (var scope = factory.Services.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var request = new SchoolBulkImportRequest
+            SchoolBulkImportRequest request = new()
             {
                 Id = requestId,
-                ContentId = 42
+                ContentId = 42,
             };
 
             dbContext.SchoolBulkImportRequests.Add(request);
@@ -144,14 +143,14 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
         using (var scope = factory.Services.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var request = new SchoolBulkImportRequest
+            SchoolBulkImportRequest request = new()
             {
                 Id = requestId,
-                ContentId = 7
+                ContentId = 7,
             };
 
             request.ProcessingStarted();
-            request.UpdateProgress(1, null);
+            request.UpdateProgress(1, errorMessage: null);
             request.ProcessingComplete();
 
             dbContext.SchoolBulkImportRequests.Add(request);
@@ -198,7 +197,7 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
 
     private async Task<SchoolBulkImportRequest?> WaitForImportRequestAsync(Guid requestId, CancellationToken cancellationToken)
     {
-        DateTime started = DateTime.UtcNow;
+        var started = DateTime.UtcNow;
 
         while (DateTime.UtcNow - started < TimeSpan.FromSeconds(15))
         {
@@ -221,10 +220,10 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
 
     private static SchoolBulkImportRequest CreateImportRequestInStatus(Guid requestId, SchoolBulkImportStatus status)
     {
-        var request = new SchoolBulkImportRequest
+        SchoolBulkImportRequest request = new()
         {
             Id = requestId,
-            ContentId = 999
+            ContentId = 999,
         };
 
         if (status is SchoolBulkImportStatus.Pending)
@@ -241,7 +240,7 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
 
         if (status is SchoolBulkImportStatus.Completed)
         {
-            request.UpdateProgress(1, null);
+            request.UpdateProgress(1, errorMessage: null);
             request.ProcessingComplete();
             return request;
         }

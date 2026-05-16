@@ -69,8 +69,8 @@ public static class Extensions
                     .AddAspNetCoreInstrumentation(tracing =>
                         // Exclude health check requests from tracing
                         tracing.Filter = context =>
-                            !context.Request.Path.StartsWithSegments(HealthEndpointPath)
-                            && !context.Request.Path.StartsWithSegments(AlivenessEndpointPath)
+                            !context.Request.Path.StartsWithSegments(HealthEndpointPath, StringComparison.OrdinalIgnoreCase)
+                            && !context.Request.Path.StartsWithSegments(AlivenessEndpointPath, StringComparison.OrdinalIgnoreCase)
                     )
                     .AddNpgsql()
                     .AddHttpClientInstrumentation();
@@ -83,7 +83,7 @@ public static class Extensions
 
     private static TBuilder AddOpenTelemetryExporters<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
-        bool useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
+        var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
 
         if (useOtlpExporter)
         {
@@ -121,7 +121,7 @@ public static class Extensions
             // Only health checks tagged with the "live" tag must pass for app to be considered alive
             app.MapHealthChecks(AlivenessEndpointPath, new HealthCheckOptions
             {
-                Predicate = r => r.Tags.Contains("live")
+                Predicate = r => r.Tags.Contains("live"),
             });
         }
 

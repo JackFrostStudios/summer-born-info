@@ -1,10 +1,10 @@
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.Services.AddOpenApi();
 builder.Services.Configure<SchoolBulkImportWorkerOptions>(builder.Configuration.GetSection(SchoolBulkImportWorkerOptions.SectionName));
 
-string? connectionString = builder.Configuration.GetConnectionString("SummerbornInfo");
+var connectionString = builder.Configuration.GetConnectionString("SummerbornInfo");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<ImportSchoolsCommandHandler>();
@@ -19,15 +19,14 @@ builder.Services.AddScoped<IEventReader, EventReader>();
 builder.Services.AddScoped<IEventAcknowledger, EventAcknowledger>();
 builder.Services.AddHostedService<ProcessSchoolBulkImportBackgroundService>();
 
-WebApplication app = builder.Build();
-
+var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
+    await using var scope = app.Services.CreateAsyncScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await dbContext.Database.EnsureCreatedAsync();
-    var npgmq = new NpgmqClient(connectionString: dbContext.Database.GetConnectionString() ?? throw new InvalidOperationException("Db Connection string is null"));
+    NpgmqClient npgmq = new(connectionString: dbContext.Database.GetConnectionString() ?? throw new InvalidOperationException("Db Connection string is null"));
     await npgmq.InitAsync();
     await npgmq.CreateQueueAsync(EventQueue.SchoolBulkImport.Name);
     app.MapOpenApi();

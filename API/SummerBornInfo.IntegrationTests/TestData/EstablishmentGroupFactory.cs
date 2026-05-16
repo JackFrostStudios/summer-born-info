@@ -4,11 +4,11 @@ public sealed class EstablishmentGroupFactory
 {
     public static EstablishmentGroup GetEstablishmentGroup()
     {
-        (string? code, string? name) = CodeAndNameFactory.GetCodeAndName();
+        (var code, var name) = CodeAndNameFactory.GetCodeAndName();
         return new EstablishmentGroup()
         {
             Code = code,
-            Name = name
+            Name = name,
         };
     }
 }

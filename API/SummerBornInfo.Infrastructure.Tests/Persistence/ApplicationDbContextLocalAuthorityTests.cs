@@ -8,7 +8,7 @@ public sealed class ApplicationDbContextLocalAuthorityTests(IntegrationTestDatab
     public async Task GivenNewLocalAuthority_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var localAuthority = LocalAuthorityFactory.GetLocalAuthority();
 
         // Act
@@ -23,12 +23,11 @@ public sealed class ApplicationDbContextLocalAuthorityTests(IntegrationTestDatab
         Assert.Equivalent(localAuthority, savedLocalAuthority);
     }
 
-
     [Fact]
     public async Task GivenExistingLocalAuthority_WhenUpdatingAllFields_ThenUpdatedRecordCanBeRetrieved()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var localAuthority = LocalAuthorityFactory.GetLocalAuthority();
         dbContext.LocalAuthorities.Add(localAuthority);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -54,18 +53,17 @@ public sealed class ApplicationDbContextLocalAuthorityTests(IntegrationTestDatab
     public async Task GivenExistingLocalAuthority_ConcurrentUpdates_ThenSecondUpdateShouldFail()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var localAuthority = LocalAuthorityFactory.GetLocalAuthority();
         dbContext.LocalAuthorities.Add(localAuthority);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
-
         var localAuthorityToUpdateOne = dbContext.LocalAuthorities.Find(localAuthority.Id);
         Assert.NotNull(localAuthorityToUpdateOne);
         localAuthorityToUpdateOne.Code = "Code_One";
 
-        ApplicationDbContext dbContextTwo = CreateDbContext();
+        var dbContextTwo = CreateDbContext();
         var localAuthorityToUpdateTwo = dbContextTwo.LocalAuthorities.Find(localAuthority.Id);
         Assert.NotNull(localAuthorityToUpdateTwo);
         localAuthorityToUpdateTwo.Code = "Code_Two";

@@ -6,10 +6,10 @@ public sealed class EstablishmentGroupTests
     public void EstablishmentGroup_ShouldInitalizeWithRequiredProperties()
     {
         // Arrange
-        var establishmentGroup = new EstablishmentGroup
+        EstablishmentGroup establishmentGroup = new()
         {
             Code = "SCH",
-            Name = "School"
+            Name = "School",
         };
 
         // Act & Assert
@@ -21,10 +21,10 @@ public sealed class EstablishmentGroupTests
     public void EstablishmentGroup_ShouldGenerateId()
     {
         // Arrange
-        var establishmentGroup = new EstablishmentGroup
+        EstablishmentGroup establishmentGroup = new()
         {
             Code = "SCH",
-            Name = "School"
+            Name = "School",
         };
 
         // Act & Assert
@@ -36,11 +36,11 @@ public sealed class EstablishmentGroupTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var establishmentGroup = new EstablishmentGroup
+        EstablishmentGroup establishmentGroup = new()
         {
             Id = id,
             Code = "SCH",
-            Name = "School"
+            Name = "School",
         };
 
         // Act & Assert

@@ -21,16 +21,16 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
         Stream csvStream,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        using var streamReader = new StreamReader(csvStream, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
+        using StreamReader streamReader = new(csvStream, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
         using var reader = Sep.New(',').Reader(o => o with { Trim = SepTrim.All }).From(streamReader);
 
-        int lineNumber = 1;
+        var lineNumber = 1;
 
         foreach (var row in reader)
         {
             lineNumber++;
             SchoolImportResult result;
-            using Activity? activity = SchoolBulkImportTelemetry.ActivitySource.StartActivity(SchoolBulkImportTelemetry.ActivityName);
+            using var activity = SchoolBulkImportTelemetry.ActivitySource.StartActivity(SchoolBulkImportTelemetry.ActivityName);
             activity?.SetTag("schoolBulkImport.request_id", schoolBulkImportRequestId);
             activity?.SetTag("schoolBulkImport.row_number", lineNumber);
 
@@ -64,11 +64,11 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
 
     private async Task ProcessRowAsync(SchoolCsvFields row, CancellationToken cancellationToken)
     {
-        LocalAuthority localAuthority = await _laImporter.UpsertAsync(row.LACode, row.LAName, cancellationToken);
-        EstablishmentType establishmentType = await _typeImporter.UpsertAsync(row.EstablishmentTypeCode, row.EstablishmentTypeName, cancellationToken);
-        EstablishmentGroup establishmentGroup = await _groupImporter.UpsertAsync(row.EstablishmentGroupCode, row.EstablishmentGroupName, cancellationToken);
-        EstablishmentStatus establishmentStatus = await _statusImporter.UpsertAsync(row.EstablishmentStatusCode, row.EstablishmentStatusName, cancellationToken);
-        PhaseOfEducation phaseOfEducation = await _phaseImporter.UpsertAsync(row.PhaseOfEducationCode, row.PhaseOfEducationName, cancellationToken);
+        var localAuthority = await _laImporter.UpsertAsync(row.LACode, row.LAName, cancellationToken);
+        var establishmentType = await _typeImporter.UpsertAsync(row.EstablishmentTypeCode, row.EstablishmentTypeName, cancellationToken);
+        var establishmentGroup = await _groupImporter.UpsertAsync(row.EstablishmentGroupCode, row.EstablishmentGroupName, cancellationToken);
+        var establishmentStatus = await _statusImporter.UpsertAsync(row.EstablishmentStatusCode, row.EstablishmentStatusName, cancellationToken);
+        var phaseOfEducation = await _phaseImporter.UpsertAsync(row.PhaseOfEducationCode, row.PhaseOfEducationName, cancellationToken);
 
         var school = await _context.Set<School>()
             .FirstOrDefaultAsync(s => s.URN == row.URN, cancellationToken);
@@ -139,13 +139,13 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
         }
 
         return DateOnly.TryParseExact(raw, "dd-MM-yyyy", CultureInfo.InvariantCulture,
-                                      DateTimeStyles.None, out DateOnly date)
+                                      DateTimeStyles.None, out var date)
             ? date
             : null;
     }
 
     private static int? ParseNullableInt(string raw) =>
-        int.TryParse(raw, out int value) ? value : null;
+        int.TryParse(raw, CultureInfo.InvariantCulture, out var value) ? value : null;
 
     private static string? NullIfEmpty(string raw) =>
         string.IsNullOrWhiteSpace(raw) ? null : raw;

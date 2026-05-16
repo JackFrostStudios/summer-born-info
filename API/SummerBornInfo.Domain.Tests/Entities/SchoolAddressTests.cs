@@ -6,10 +6,10 @@ public sealed class SchoolAddressTests
     public void SchoolAddress_ShouldInitalizeWithRequiredProperties()
     {
         // Arrange
-        var address = new SchoolAddress
+        SchoolAddress address = new()
         {
             Town = "Test Town",
-            PostCode = "TE1 2ST"
+            PostCode = "TE1 2ST",
         };
 
         // Act & Assert
@@ -21,14 +21,14 @@ public sealed class SchoolAddressTests
     public void SchoolAddress_ShouldInitalizeWithAllProperties()
     {
         // Arrange
-        var address = new SchoolAddress
+        SchoolAddress address = new()
         {
             Street = "123 Test Street",
             Locality = "Test Area",
             AddressThree = "Test Building",
             Town = "Test Town",
             County = "Test County",
-            PostCode = "TE1 2ST"
+            PostCode = "TE1 2ST",
         };
 
         // Act & Assert

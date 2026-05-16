@@ -4,19 +4,16 @@ public class LargeObjectReader(ApplicationDbContext context) : ILargeObjectReade
 {
     public async Task<Stream?> ReadLargeObjectAsStreamAsync(uint largeObjectId, CancellationToken cancellationToken = default)
     {
-        if (!await LargeObjectExistsAsync(largeObjectId, cancellationToken))
-        {
-            return null;
-        }
-
-        return new LargeObjectStream(context.GetNpgsqlConnection(), largeObjectId);
+        return await LargeObjectExistsAsync(largeObjectId, cancellationToken)
+            ? new LargeObjectStream(context.GetNpgsqlConnection(), largeObjectId)
+            : null;
     }
 
     private async Task<bool> LargeObjectExistsAsync(uint objectId, CancellationToken cancellationToken)
     {
         await context.Database.OpenConnectionAsync(cancellationToken);
 
-        await using var cmd = new NpgsqlCommand(
+        await using NpgsqlCommand cmd = new(
         "SELECT EXISTS(SELECT 1 FROM pg_largeobject_metadata WHERE oid = @oid)",
         context.GetNpgsqlConnection()
         );

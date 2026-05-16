@@ -8,7 +8,7 @@ public sealed class ApplicationDbContextEstablishmentTypeTests(IntegrationTestDa
     public async Task GivenNewEstablishmentType_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var establishmentType = EstablishmentTypeFactory.GetEstablishmentType();
 
         // Act
@@ -23,12 +23,11 @@ public sealed class ApplicationDbContextEstablishmentTypeTests(IntegrationTestDa
         Assert.Equivalent(establishmentType, savedEstablishmentType);
     }
 
-
     [Fact]
     public async Task GivenExistingEstablishmentType_WhenUpdatingAllFields_ThenUpdatedRecordCanBeRetrieved()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var establishmentType = EstablishmentTypeFactory.GetEstablishmentType();
         dbContext.EstablishmentTypes.Add(establishmentType);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -54,18 +53,17 @@ public sealed class ApplicationDbContextEstablishmentTypeTests(IntegrationTestDa
     public async Task GivenExistingEstablishmentType_ConcurrentUpdates_ThenSecondUpdateShouldFail()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var establishmentType = EstablishmentTypeFactory.GetEstablishmentType();
         dbContext.EstablishmentTypes.Add(establishmentType);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
-
         var establishmentTypeToUpdateOne = dbContext.EstablishmentTypes.Find(establishmentType.Id);
         Assert.NotNull(establishmentTypeToUpdateOne);
         establishmentTypeToUpdateOne.Code = "Code_One";
 
-        ApplicationDbContext dbContextTwo = CreateDbContext();
+        var dbContextTwo = CreateDbContext();
         var establishmentTypeToUpdateTwo = dbContextTwo.EstablishmentTypes.Find(establishmentType.Id);
         Assert.NotNull(establishmentTypeToUpdateTwo);
         establishmentTypeToUpdateTwo.Code = "Code_Two";

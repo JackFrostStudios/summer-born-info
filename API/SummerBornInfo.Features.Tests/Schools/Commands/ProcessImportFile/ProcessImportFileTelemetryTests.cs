@@ -15,18 +15,18 @@ public sealed class ProcessImportFileTelemetryTests(
     public async Task GivenImportRequestWithMixedRows_WhenExecuted_ThenEachProcessedRowEmitsActivity()
     {
         // Arrange
-        using MemoryStream invalidCsv = CreateCsvStream(
+        using var invalidCsv = CreateCsvStream(
             "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\"",
             "\"100000\",\"3614\",\"The Aldgate School\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\"",
             "\"INVALID\",\"1045\",\"Broken School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\"",
             "\"100004\",\"1045\",\"Sherborne Nursery School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\"");
-        Guid requestId = await CreateImportRequestAsync(invalidCsv);
-        ProcessImportFileCommandHandler handler = CreateHandler(CreateDbContext());
-        var capturedActivities = new List<Activity>();
+        var requestId = await CreateImportRequestAsync(invalidCsv);
+        var handler = CreateHandler(CreateDbContext());
+        List<Activity> capturedActivities = new();
 
-        using var activityListener = new ActivityListener
+        using ActivityListener activityListener = new()
         {
-            ShouldListenTo = source => source.Name == SchoolBulkImportTelemetry.ActivitySourceName,
+            ShouldListenTo = source => string.Equals(source.Name, SchoolBulkImportTelemetry.ActivitySourceName, StringComparison.Ordinal),
             SampleUsingParentId = static (ref ActivityCreationOptions<string> _) => ActivitySamplingResult.AllDataAndRecorded,
             Sample = static (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
             ActivityStopped = activity =>
@@ -35,7 +35,7 @@ public sealed class ProcessImportFileTelemetryTests(
                 {
                     capturedActivities.Add(activity);
                 }
-            }
+            },
         };
 
         ActivitySource.AddActivityListener(activityListener);
@@ -63,8 +63,9 @@ public sealed class ProcessImportFileTelemetryTests(
         lock (capturedActivities)
         {
             processActivities = capturedActivities
-                .Where(activity => activity.OperationName == SchoolBulkImportTelemetry.ActivityName
-                    && Equals(activity.GetTagItem("schoolBulkImport.request_id"), requestId))
+                .Where(activity =>
+                    string.Equals(activity.OperationName, SchoolBulkImportTelemetry.ActivityName, StringComparison.Ordinal) && Equals(activity.GetTagItem("schoolBulkImport.request_id"),
+                    requestId))
                 .ToList();
         }
 
@@ -74,16 +75,16 @@ public sealed class ProcessImportFileTelemetryTests(
         Assert.Contains(processActivities, activity => Equals(activity.GetTagItem("schoolBulkImport.outcome"), "failed"));
     }
 
-    private ProcessImportFileCommandHandler CreateHandler(ApplicationDbContext dbContext) =>
+    private static ProcessImportFileCommandHandler CreateHandler(ApplicationDbContext dbContext) =>
         new(dbContext, new LargeObjectReader(dbContext), new SchoolsImporter<ApplicationDbContext>(dbContext));
 
     private async Task<Guid> CreateImportRequestAsync(Stream content)
     {
         var dbContext = CreateDbContext();
-        var writer = new LargeObjectWriter(dbContext);
+        LargeObjectWriter writer = new(dbContext);
         var largeObjectId = await writer.StreamContentToNewLargeObjectAsync(content, TestContext.Current.CancellationToken);
 
-        var request = new SchoolBulkImportRequest
+        SchoolBulkImportRequest request = new()
         {
             ContentId = largeObjectId,
         };

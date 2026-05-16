@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore.Storage;
 using SummerBornInfo.Infrastructure.Persistence;
 
 namespace SummerBornInfo.Infrastructure.Tests.Persistence.Events;
@@ -9,13 +10,13 @@ public sealed class EventAcknowledgerTests(IntegrationTestDatabaseServerFixture 
     public async Task GivenQueuedEventExists_WhenDeleted_ThenItIsNotReturnedAgain()
     {
         // Arrange
-        var eventReader = new EventReader(CreateDbContext());
-        var eventAcknowledger = new EventAcknowledger(CreateDbContext());
-        ApplicationDbContext eventEmitterDbContext = CreateDbContext();
-        var eventEmitter = new EventEmitter(eventEmitterDbContext);
+        EventReader eventReader = new(CreateDbContext());
+        EventAcknowledger eventAcknowledger = new(CreateDbContext());
+        var eventEmitterDbContext = CreateDbContext();
+        EventEmitter eventEmitter = new(eventEmitterDbContext);
 
         await using var dbContextTransaction = await eventEmitterDbContext.Database.BeginTransactionAsync(TestContext.Current.CancellationToken);
-        var testEvent = new TestEvent();
+        TestEvent testEvent = new();
         await eventEmitter.EmitEventAsync(TestEventQueue.TestQueue, testEvent, TestContext.Current.CancellationToken);
         await dbContextTransaction.CommitAsync(TestContext.Current.CancellationToken);
 

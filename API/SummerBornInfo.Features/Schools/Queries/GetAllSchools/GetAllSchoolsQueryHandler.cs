@@ -1,12 +1,14 @@
+using SummerBornInfo.Features.Schools.Queries.GetAllSchools.Response;
+
 namespace SummerBornInfo.Features.Schools.Queries.GetAllSchools;
 
 public sealed class GetAllSchoolsQueryHandler(ApplicationDbContext context)
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<(List<SchoolDto> Schools, Guid? NextCursor)> ExecuteAsync(GetAllSchoolsQuery request, CancellationToken cancellationToken)
+    public async Task<(List<SchoolResponse> Schools, Guid? NextCursor)> ExecuteAsync(GetAllSchoolsQuery request, CancellationToken cancellationToken)
     {
-        IQueryable<School> query = _context.Schools
+        var query = _context.Schools
             .AsNoTracking();
 
         if (request.Cursor.HasValue)
@@ -21,10 +23,10 @@ public sealed class GetAllSchoolsQueryHandler(ApplicationDbContext context)
             .Take(request.PageSize + 1)
             .ToListAsync(cancellationToken);
 
-        bool hasMore = schools.Count > request.PageSize;
+        var hasMore = schools.Count > request.PageSize;
         var schoolsToReturn = hasMore ? [.. schools.Take(request.PageSize)] : schools;
 
-        var schoolDtos = schoolsToReturn.Select(s => SchoolDto.FromEntity(s)).ToList();
+        var schoolResponses = schoolsToReturn.Select(SchoolResponse.FromEntity).ToList();
 
         Guid? nextCursor = null;
         if (hasMore)
@@ -32,6 +34,6 @@ public sealed class GetAllSchoolsQueryHandler(ApplicationDbContext context)
             nextCursor = schoolsToReturn.Last().Id;
         }
 
-        return (schoolDtos, nextCursor);
+        return (schoolResponses, nextCursor);
     }
 }

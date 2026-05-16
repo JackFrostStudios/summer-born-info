@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore.Storage;
+
 namespace SummerBornInfo.Features.Schools.Commands.Import;
 
 public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context, ILargeObjectWriter largeObjectWriter, IEventEmitter eventEmitter)
@@ -6,9 +8,9 @@ public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context, IL
     {
         await using var efTransaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
-        uint largeObjectId = await largeObjectWriter.StreamContentToNewLargeObjectAsync(command.Content, cancellationToken);
+        var largeObjectId = await largeObjectWriter.StreamContentToNewLargeObjectAsync(command.Content, cancellationToken);
 
-        SchoolBulkImportRequest schoolBulkImportRequest = await SaveNewSchoolBulkImportRequestAsync(largeObjectId, cancellationToken);
+        var schoolBulkImportRequest = await SaveNewSchoolBulkImportRequestAsync(largeObjectId, cancellationToken);
 
         await EmitSchoolBulkImportEvent(schoolBulkImportRequest, cancellationToken);
 
@@ -19,7 +21,7 @@ public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context, IL
 
     private async Task<SchoolBulkImportRequest> SaveNewSchoolBulkImportRequestAsync(uint largeObjectId, CancellationToken cancellationToken)
     {
-        var schoolBulkImportRequest = new SchoolBulkImportRequest() { ContentId = largeObjectId };
+        SchoolBulkImportRequest schoolBulkImportRequest = new() { ContentId = largeObjectId };
         context.Add(schoolBulkImportRequest);
         await context.SaveChangesAsync(cancellationToken);
         return schoolBulkImportRequest;
@@ -27,9 +29,9 @@ public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context, IL
 
     private async Task EmitSchoolBulkImportEvent(SchoolBulkImportRequest schoolBulkImportRequest, CancellationToken cancellationToken)
     {
-        var schoolBulkImportUploadedEvent = new SchoolBulkImportUploaded
+        SchoolBulkImportUploaded schoolBulkImportUploadedEvent = new()
         {
-            SchoolBulkImportRequestId = schoolBulkImportRequest.Id
+            SchoolBulkImportRequestId = schoolBulkImportRequest.Id,
         };
 
         await eventEmitter.EmitEventAsync(EventQueue.SchoolBulkImport, schoolBulkImportUploadedEvent, cancellationToken);

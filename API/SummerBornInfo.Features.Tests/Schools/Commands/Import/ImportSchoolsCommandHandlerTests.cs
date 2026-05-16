@@ -1,4 +1,6 @@
-﻿namespace SummerBornInfo.Features.Tests.Schools.Commands.Import;
+﻿using SummerBornInfo.Infrastructure.Persistence;
+
+namespace SummerBornInfo.Features.Tests.Schools.Commands.Import;
 
 public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper)
     : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
@@ -8,8 +10,8 @@ public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServ
     {
         // Arrange
         var injectedDbContext = CreateDbContext();
-        var handler = new ImportSchoolsCommandHandler(injectedDbContext, new LargeObjectWriter(injectedDbContext), new EventEmitter(injectedDbContext));
-        var command = new ImportSchoolsCommand(ExampleImportFile.GetExampleImportFileContent());
+        ImportSchoolsCommandHandler handler = new(injectedDbContext, new LargeObjectWriter(injectedDbContext), new EventEmitter(injectedDbContext));
+        ImportSchoolsCommand command = new(ExampleImportFile.GetExampleImportFileContent());
 
         // Act
         var result = await handler.ExecuteAsync(command, TestContext.Current.CancellationToken);
@@ -28,7 +30,7 @@ public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServ
 
     private async Task AssertSchoolBulkImportEventExistsAsync(SchoolBulkImportRequest schoolBulkImportRequest)
     {
-        var expectedEvent = new SchoolBulkImportUploaded { SchoolBulkImportRequestId = schoolBulkImportRequest.Id };
+        SchoolBulkImportUploaded expectedEvent = new() { SchoolBulkImportRequestId = schoolBulkImportRequest.Id };
         await EventAssertions.AssertEventEqualsAndDeleteAsync(EventQueue.SchoolBulkImport, expectedEvent, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
     }
 }

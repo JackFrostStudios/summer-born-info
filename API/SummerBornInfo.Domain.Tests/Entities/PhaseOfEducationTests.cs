@@ -6,10 +6,10 @@ public sealed class PhaseOfEducationTests
     public void PhaseOfEducation_ShouldInitalizeWithRequiredProperties()
     {
         // Arrange
-        var phase = new PhaseOfEducation
+        PhaseOfEducation phase = new()
         {
             Code = "PRI",
-            Name = "Primary"
+            Name = "Primary",
         };
 
         // Act & Assert
@@ -21,10 +21,10 @@ public sealed class PhaseOfEducationTests
     public void PhaseOfEducation_ShouldGenerateId()
     {
         // Arrange
-        var phase = new PhaseOfEducation
+        PhaseOfEducation phase = new()
         {
             Code = "PRI",
-            Name = "Primary"
+            Name = "Primary",
         };
 
         // Act & Assert
@@ -36,11 +36,11 @@ public sealed class PhaseOfEducationTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var phase = new PhaseOfEducation
+        PhaseOfEducation phase = new()
         {
             Id = id,
             Code = "PRI",
-            Name = "Primary"
+            Name = "Primary",
         };
 
         // Act & Assert

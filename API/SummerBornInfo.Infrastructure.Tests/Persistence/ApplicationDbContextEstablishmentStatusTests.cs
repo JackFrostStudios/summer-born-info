@@ -8,7 +8,7 @@ public sealed class ApplicationDbContextEstablishmentStatusTests(IntegrationTest
     public async Task GivenNewEstablishmentStatus_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var establishmentStatus = EstablishmentStatusFactory.GetEstablishmentStatus();
 
         // Act
@@ -23,12 +23,11 @@ public sealed class ApplicationDbContextEstablishmentStatusTests(IntegrationTest
         Assert.Equivalent(establishmentStatus, savedEstablishmentStatus);
     }
 
-
     [Fact]
     public async Task GivenExistingEstablishmentStatus_WhenUpdatingAllFields_ThenUpdatedRecordCanBeRetrieved()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var establishmentStatus = EstablishmentStatusFactory.GetEstablishmentStatus();
         dbContext.EstablishmentStatuses.Add(establishmentStatus);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -54,18 +53,17 @@ public sealed class ApplicationDbContextEstablishmentStatusTests(IntegrationTest
     public async Task GivenExistingEstablishmentStatus_ConcurrentUpdates_ThenSecondUpdateShouldFail()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var establishmentStatus = EstablishmentStatusFactory.GetEstablishmentStatus();
         dbContext.EstablishmentStatuses.Add(establishmentStatus);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
-
         var establishmentStatusToUpdateOne = dbContext.EstablishmentStatuses.Find(establishmentStatus.Id);
         Assert.NotNull(establishmentStatusToUpdateOne);
         establishmentStatusToUpdateOne.Code = "Code_One";
 
-        ApplicationDbContext dbContextTwo = CreateDbContext();
+        var dbContextTwo = CreateDbContext();
         var establishmentStatusToUpdateTwo = dbContextTwo.EstablishmentStatuses.Find(establishmentStatus.Id);
         Assert.NotNull(establishmentStatusToUpdateTwo);
         establishmentStatusToUpdateTwo.Code = "Code_Two";

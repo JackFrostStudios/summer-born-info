@@ -8,7 +8,7 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
     public async Task GivenNewSchool_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var school = SchoolFactory.GetSchool();
 
         // Act
@@ -27,7 +27,7 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
     public async Task GivenNewSchoolWithOnlyRequiredFields_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var school = SchoolFactory.GetSchool();
         school.UKPRN = null;
         school.OpenDate = null;
@@ -53,7 +53,7 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
     public async Task GivenExistingSchool_WhenUpdatingAllFields_ThenUpdatedRecordCanBeRetrieved()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var school = SchoolFactory.GetSchool();
         dbContext.Schools.Add(school);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -95,24 +95,22 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
     public async Task GivenExistingSchool_ConcurrentUpdates_ThenSecondUpdateShouldFail()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         var school = SchoolFactory.GetSchool();
         dbContext.Schools.Add(school);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
-
         var schoolToUpdateOne = dbContext.Schools.Find(school.Id);
         Assert.NotNull(schoolToUpdateOne);
         schoolToUpdateOne.URN = 999999999;
 
-        ApplicationDbContext dbContextTwo = CreateDbContext();
+        var dbContextTwo = CreateDbContext();
         var schoolToUpdateTwo = dbContextTwo.Schools.Find(school.Id);
         Assert.NotNull(schoolToUpdateTwo);
         schoolToUpdateTwo.URN = 999999998;
         await dbContextTwo.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContextTwo.ChangeTracker.Clear();
-
 
         // Act & Assert
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () => await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken));

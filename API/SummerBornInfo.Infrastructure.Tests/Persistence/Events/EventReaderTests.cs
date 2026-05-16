@@ -1,4 +1,5 @@
-﻿using SummerBornInfo.Infrastructure.Persistence;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using SummerBornInfo.Infrastructure.Persistence;
 
 namespace SummerBornInfo.Infrastructure.Tests.Persistence.Events;
 
@@ -8,8 +9,8 @@ public class EventReaderTests(IntegrationTestDatabaseServerFixture testDatabaseS
     public async Task GivenNoEventExists_WhenReadingEvent_ThenNullIsReturned()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
-        var eventReader = new EventReader(dbContext);
+        var dbContext = CreateDbContext();
+        EventReader eventReader = new(dbContext);
 
         // Act
         var result = await eventReader.ReadEventAsync<TestEvent>(TestEventQueue.TestQueue, 10, TestContext.Current.CancellationToken);
@@ -22,13 +23,13 @@ public class EventReaderTests(IntegrationTestDatabaseServerFixture testDatabaseS
     public async Task GivenAnEventExists_WhenReadingEvent_ThenTheEventIsReturned()
     {
         // Arrange
-        ApplicationDbContext eventReaderDbContext = CreateDbContext();
-        var eventReader = new EventReader(eventReaderDbContext);
-        ApplicationDbContext eventEmitterDbContext = CreateDbContext();
-        var eventEmitter = new EventEmitter(eventEmitterDbContext);
+        var eventReaderDbContext = CreateDbContext();
+        EventReader eventReader = new(eventReaderDbContext);
+        var eventEmitterDbContext = CreateDbContext();
+        EventEmitter eventEmitter = new(eventEmitterDbContext);
 
         await using var dbContextTransaction = await eventEmitterDbContext.Database.BeginTransactionAsync(TestContext.Current.CancellationToken);
-        var testEvent = new TestEvent();
+        TestEvent testEvent = new();
         await eventEmitter.EmitEventAsync(TestEventQueue.TestQueue, testEvent, TestContext.Current.CancellationToken);
         await dbContextTransaction.CommitAsync(TestContext.Current.CancellationToken);
 
@@ -45,13 +46,13 @@ public class EventReaderTests(IntegrationTestDatabaseServerFixture testDatabaseS
     public async Task GivenEventHasBeenRead_WhenTimeoutExpires_ThenTheEventCanBeRetrievedAgain()
     {
         // Arrange
-        ApplicationDbContext eventReaderDbContext = CreateDbContext();
-        var eventReader = new EventReader(eventReaderDbContext);
-        ApplicationDbContext eventEmitterDbContext = CreateDbContext();
-        var eventEmitter = new EventEmitter(eventEmitterDbContext);
+        var eventReaderDbContext = CreateDbContext();
+        EventReader eventReader = new(eventReaderDbContext);
+        var eventEmitterDbContext = CreateDbContext();
+        EventEmitter eventEmitter = new(eventEmitterDbContext);
 
         await using var dbContextTransaction = await eventEmitterDbContext.Database.BeginTransactionAsync(TestContext.Current.CancellationToken);
-        var testEvent = new TestEvent();
+        TestEvent testEvent = new();
         await eventEmitter.EmitEventAsync(TestEventQueue.TestQueue, testEvent, TestContext.Current.CancellationToken);
         await dbContextTransaction.CommitAsync(TestContext.Current.CancellationToken);
         var initialRetrieval = await eventReader.ReadEventAsync<TestEvent>(TestEventQueue.TestQueue, 1, TestContext.Current.CancellationToken);
@@ -71,14 +72,14 @@ public class EventReaderTests(IntegrationTestDatabaseServerFixture testDatabaseS
     public async Task GivenEventHasBeenAcknowledgedByAnotherService_WhenReadingAgain_ThenEventIsNotReturned()
     {
         // Arrange
-        ApplicationDbContext eventReaderDbContext = CreateDbContext();
-        var eventReader = new EventReader(eventReaderDbContext);
-        var eventAcknowledger = new EventAcknowledger(CreateDbContext());
-        ApplicationDbContext eventEmitterDbContext = CreateDbContext();
-        var eventEmitter = new EventEmitter(eventEmitterDbContext);
+        var eventReaderDbContext = CreateDbContext();
+        EventReader eventReader = new(eventReaderDbContext);
+        EventAcknowledger eventAcknowledger = new(CreateDbContext());
+        var eventEmitterDbContext = CreateDbContext();
+        EventEmitter eventEmitter = new(eventEmitterDbContext);
 
         await using var dbContextTransaction = await eventEmitterDbContext.Database.BeginTransactionAsync(TestContext.Current.CancellationToken);
-        var testEvent = new TestEvent();
+        TestEvent testEvent = new();
         await eventEmitter.EmitEventAsync(TestEventQueue.TestQueue, testEvent, TestContext.Current.CancellationToken);
         await dbContextTransaction.CommitAsync(TestContext.Current.CancellationToken);
 

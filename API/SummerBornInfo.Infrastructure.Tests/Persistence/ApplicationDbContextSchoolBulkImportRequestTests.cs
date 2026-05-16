@@ -8,8 +8,8 @@ public sealed class ApplicationDbContextSchoolBulkImportRequestTests(Integration
     public async Task GivenNewSchoolBulkImportRequest_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
-        var schoolBulkImportRequest = new SchoolBulkImportRequest()
+        var dbContext = CreateDbContext();
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
         {
             ContentId = 1,
         };
@@ -30,15 +30,15 @@ public sealed class ApplicationDbContextSchoolBulkImportRequestTests(Integration
     public async Task GivenSchoolBulkImportRequestWithProgressAndFailure_WhenInsertingToDatabase_ThenAllStateIsRetrieved()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
-        var schoolBulkImportRequest = new SchoolBulkImportRequest
+        var dbContext = CreateDbContext();
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
         {
             ContentId = 7,
         };
         schoolBulkImportRequest.ProcessingStarted();
-        for (int lineNumber = 1; lineNumber <= 11; lineNumber++)
+        for (var lineNumber = 1; lineNumber <= 11; lineNumber++)
         {
-            schoolBulkImportRequest.UpdateProgress(lineNumber, null);
+            schoolBulkImportRequest.UpdateProgress(lineNumber, errorMessage: null);
         }
 
         schoolBulkImportRequest.UpdateProgress(8, "URN is required");

@@ -2,10 +2,10 @@
 
 public abstract class IntegrationTestBase(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IAsyncLifetime
 {
-    protected readonly IntegrationTestDatabaseInstanceFixture integrationTestDatabaseInstanceFixture = new(testDatabaseServerFixture);
+    protected IntegrationTestDatabaseInstanceFixture integrationTestDatabaseInstanceFixture { get; } = new(testDatabaseServerFixture);
     protected ApplicationDbContext CreateDbContext()
     {
-        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+        DbContextOptionsBuilder<ApplicationDbContext> optionsBuilder = new();
         optionsBuilder
             .UseNpgsql(integrationTestDatabaseInstanceFixture.DatabaseConnectionString);
 

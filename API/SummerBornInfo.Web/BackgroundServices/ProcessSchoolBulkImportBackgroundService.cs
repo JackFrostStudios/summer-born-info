@@ -3,7 +3,7 @@ using SummerBornInfo.Features.Schools.Commands.ProcessImportFile;
 
 namespace SummerBornInfo.Web.BackgroundServices;
 
-public sealed class ProcessSchoolBulkImportBackgroundService(
+public sealed partial class ProcessSchoolBulkImportBackgroundService(
     IServiceScopeFactory serviceScopeFactory,
     Microsoft.Extensions.Options.IOptions<SchoolBulkImportWorkerOptions> options,
     ILogger<ProcessSchoolBulkImportBackgroundService> logger) : BackgroundService
@@ -20,7 +20,7 @@ public sealed class ProcessSchoolBulkImportBackgroundService(
         {
             try
             {
-                bool processedMessage = await ProcessNextMessageAsync(stoppingToken);
+                var processedMessage = await ProcessNextMessageAsync(stoppingToken);
                 if (!processedMessage)
                 {
                     await Task.Delay(emptyQueueDelay, stoppingToken);
@@ -32,7 +32,7 @@ public sealed class ProcessSchoolBulkImportBackgroundService(
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "An error occurred while processing school bulk import messages.");
+                LogUnhandledProcessingError(logger, ex);
                 await Task.Delay(emptyQueueDelay, stoppingToken);
             }
         }
@@ -40,7 +40,7 @@ public sealed class ProcessSchoolBulkImportBackgroundService(
 
     private async Task<bool> ProcessNextMessageAsync(CancellationToken cancellationToken)
     {
-        await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
+        await using var scope = serviceScopeFactory.CreateAsyncScope();
         var eventReader = scope.ServiceProvider.GetRequiredService<IEventReader>();
         var eventAcknowledger = scope.ServiceProvider.GetRequiredService<IEventAcknowledger>();
         var queuedEvent = await eventReader.ReadEventAsync<SchoolBulkImportUploaded>(EventQueue.SchoolBulkImport, messageReadTimeoutSeconds, cancellationToken);
@@ -52,15 +52,28 @@ public sealed class ProcessSchoolBulkImportBackgroundService(
 
         try
         {
-            ProcessImportFileCommandHandler handler = scope.ServiceProvider.GetRequiredService<ProcessImportFileCommandHandler>();
+            var handler = scope.ServiceProvider.GetRequiredService<ProcessImportFileCommandHandler>();
             await handler.ExecuteAsync(new ProcessImportFileCommand(queuedEvent.Message.SchoolBulkImportRequestId), cancellationToken);
             await eventAcknowledger.DeleteEventAsync(EventQueue.SchoolBulkImport, queuedEvent.MessageId, cancellationToken);
             return true;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to process school bulk import request {SchoolBulkImportRequestId}.", queuedEvent.Message.SchoolBulkImportRequestId);
+            LogFailedToProcessRequest(logger, queuedEvent.Message.SchoolBulkImportRequestId, ex);
             return false;
         }
     }
+
+    [LoggerMessage(
+        Level = LogLevel.Error,
+        Message = "An error occurred while processing school bulk import messages.")]
+    private static partial void LogUnhandledProcessingError(ILogger logger, Exception exception);
+
+    [LoggerMessage(
+        Level = LogLevel.Error,
+        Message = "Failed to process school bulk import request {SchoolBulkImportRequestId}.")]
+    private static partial void LogFailedToProcessRequest(
+        ILogger logger,
+        Guid schoolBulkImportRequestId,
+        Exception exception);
 }

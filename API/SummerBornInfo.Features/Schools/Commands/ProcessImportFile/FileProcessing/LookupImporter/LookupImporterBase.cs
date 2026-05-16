@@ -8,12 +8,12 @@ internal abstract class LookupImporterBase<TEntity, TContext>(TContext context)
     private readonly Dictionary<string, TEntity> _cache = new(StringComparer.OrdinalIgnoreCase);
     public async Task<TEntity> UpsertAsync(string code, string name, CancellationToken cancellationToken = default)
     {
-        if (_cache.TryGetValue(code, out TEntity? cached))
+        if (_cache.TryGetValue(code, out var cached))
         {
             return cached;
         }
 
-        TEntity? entity = await FindByCodeAsync(_context, code, cancellationToken);
+        var entity = await FindByCodeAsync(_context, code, cancellationToken);
 
         if (entity is null)
         {

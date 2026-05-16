@@ -4,21 +4,21 @@ public static class LargeObjectAssertions
 {
     public static async Task AssertLargeObjectExistsAsync(uint objectId, string connectionString, CancellationToken cancellationToken)
     {
-        bool exists = await DoesLargeObjectExistAsync(objectId, connectionString, cancellationToken);
+        var exists = await DoesLargeObjectExistAsync(objectId, connectionString, cancellationToken);
         Assert.True(exists);
     }
 
     public static async Task AssertLargeObjectDoesNotExistsAsync(uint objectId, string connectionString, CancellationToken cancellationToken)
     {
-        bool exists = await DoesLargeObjectExistAsync(objectId, connectionString, cancellationToken);
+        var exists = await DoesLargeObjectExistAsync(objectId, connectionString, cancellationToken);
         Assert.False(exists);
     }
 
     private static async Task<bool> DoesLargeObjectExistAsync(uint objectId, string connectionString, CancellationToken cancellationToken)
     {
-        await using var conn = new NpgsqlConnection(connectionString);
+        await using NpgsqlConnection conn = new(connectionString);
         await conn.OpenAsync(cancellationToken);
-        await using var cmd = new NpgsqlCommand(
+        await using NpgsqlCommand cmd = new(
         "SELECT EXISTS(SELECT 1 FROM pg_largeobject_metadata WHERE oid = @oid)",
         conn
         );
@@ -29,13 +29,13 @@ public static class LargeObjectAssertions
 
     public static async Task AssertLargeObjectEqualsOriginalAsync(uint objectId, Stream originalObject, string connectionString, CancellationToken cancellationToken)
     {
-        await using var conn = new NpgsqlConnection(connectionString);
+        await using NpgsqlConnection conn = new(connectionString);
         await conn.OpenAsync(cancellationToken);
 
-        await using var cmd = new NpgsqlCommand("SELECT lo_get(@oid)", conn);
+        await using NpgsqlCommand cmd = new("SELECT lo_get(@oid)", conn);
         cmd.Parameters.AddWithValue("oid", NpgsqlTypes.NpgsqlDbType.Oid, objectId);
 
-        byte[] data = (byte[])(await cmd.ExecuteScalarAsync(cancellationToken))!;
+        var data = (byte[])(await cmd.ExecuteScalarAsync(cancellationToken))!;
 
         if (originalObject.CanSeek)
         {
@@ -43,7 +43,7 @@ public static class LargeObjectAssertions
         }
 
         byte[] originalData;
-        using (var memoryStream = new MemoryStream())
+        using (MemoryStream memoryStream = new())
         {
             await originalObject.CopyToAsync(memoryStream, cancellationToken);
             originalData = memoryStream.ToArray();

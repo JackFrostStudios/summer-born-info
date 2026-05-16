@@ -6,14 +6,14 @@ public sealed class SchoolTests
     public void School_ShouldInitalizeWithRequiredProperties()
     {
         // Arrange
-        var address = new SchoolAddress { Town = "Test Town", PostCode = "TE1 2ST" };
-        var phaseOfEducation = new PhaseOfEducation { Id = Guid.NewGuid(), Code = "PRI", Name = "Primary" };
-        var localAuthority = new LocalAuthority { Id = Guid.NewGuid(), Code = "LA01", Name = "Test LA" };
-        var establishmentType = new EstablishmentType { Id = Guid.NewGuid(), Code = "AC", Name = "Academy" };
-        var establishmentGroup = new EstablishmentGroup { Id = Guid.NewGuid(), Code = "SCH", Name = "School" };
-        var establishmentStatus = new EstablishmentStatus { Id = Guid.NewGuid(), Code = "OPEN", Name = "Open" };
+        SchoolAddress address = new() { Town = "Test Town", PostCode = "TE1 2ST" };
+        PhaseOfEducation phaseOfEducation = new() { Id = Guid.NewGuid(), Code = "PRI", Name = "Primary" };
+        LocalAuthority localAuthority = new() { Id = Guid.NewGuid(), Code = "LA01", Name = "Test LA" };
+        EstablishmentType establishmentType = new() { Id = Guid.NewGuid(), Code = "AC", Name = "Academy" };
+        EstablishmentGroup establishmentGroup = new() { Id = Guid.NewGuid(), Code = "SCH", Name = "School" };
+        EstablishmentStatus establishmentStatus = new() { Id = Guid.NewGuid(), Code = "OPEN", Name = "Open" };
 
-        var school = new School
+        School school = new()
         {
             URN = 123456,
             EstablishmentNumber = 1234,
@@ -23,7 +23,7 @@ public sealed class SchoolTests
             LocalAuthority = localAuthority,
             EstablishmentType = establishmentType,
             EstablishmentGroup = establishmentGroup,
-            EstablishmentStatus = establishmentStatus
+            EstablishmentStatus = establishmentStatus,
         };
 
         // Act & Assert 
@@ -42,14 +42,14 @@ public sealed class SchoolTests
     public void School_ShouldGenerateId()
     {
         // Arrange
-        var address = new SchoolAddress { Town = "Test Town", PostCode = "TE1 2ST" };
-        var phaseOfEducation = new PhaseOfEducation { Id = Guid.NewGuid(), Code = "PRI", Name = "Primary" };
-        var localAuthority = new LocalAuthority { Id = Guid.NewGuid(), Code = "LA01", Name = "Test LA" };
-        var establishmentType = new EstablishmentType { Id = Guid.NewGuid(), Code = "AC", Name = "Academy" };
-        var establishmentGroup = new EstablishmentGroup { Id = Guid.NewGuid(), Code = "SCH", Name = "School" };
-        var establishmentStatus = new EstablishmentStatus { Id = Guid.NewGuid(), Code = "OPEN", Name = "Open" };
+        SchoolAddress address = new() { Town = "Test Town", PostCode = "TE1 2ST" };
+        PhaseOfEducation phaseOfEducation = new() { Id = Guid.NewGuid(), Code = "PRI", Name = "Primary" };
+        LocalAuthority localAuthority = new() { Id = Guid.NewGuid(), Code = "LA01", Name = "Test LA" };
+        EstablishmentType establishmentType = new() { Id = Guid.NewGuid(), Code = "AC", Name = "Academy" };
+        EstablishmentGroup establishmentGroup = new() { Id = Guid.NewGuid(), Code = "SCH", Name = "School" };
+        EstablishmentStatus establishmentStatus = new() { Id = Guid.NewGuid(), Code = "OPEN", Name = "Open" };
 
-        var school = new School
+        School school = new()
         {
             URN = 123456,
             EstablishmentNumber = 1234,
@@ -59,7 +59,7 @@ public sealed class SchoolTests
             LocalAuthority = localAuthority,
             EstablishmentType = establishmentType,
             EstablishmentGroup = establishmentGroup,
-            EstablishmentStatus = establishmentStatus
+            EstablishmentStatus = establishmentStatus,
         };
 
         // Act & Assert
@@ -71,16 +71,16 @@ public sealed class SchoolTests
     {
         // Arrange
         var schoolId = Guid.NewGuid();
-        var address = new SchoolAddress { Town = "Test Town", PostCode = "TE1 2ST" };
-        var openDate = new DateOnly(2026, 1, 1);
-        var closeDate = new DateOnly(2026, 2, 1);
-        var phaseOfEducation = new PhaseOfEducation { Id = Guid.NewGuid(), Code = "PRI", Name = "Primary" };
-        var localAuthority = new LocalAuthority { Id = Guid.NewGuid(), Code = "LA01", Name = "Test LA" };
-        var establishmentType = new EstablishmentType { Id = Guid.NewGuid(), Code = "AC", Name = "Academy" };
-        var establishmentGroup = new EstablishmentGroup { Id = Guid.NewGuid(), Code = "SCH", Name = "School" };
-        var establishmentStatus = new EstablishmentStatus { Id = Guid.NewGuid(), Code = "OPEN", Name = "Open" };
+        SchoolAddress address = new() { Town = "Test Town", PostCode = "TE1 2ST" };
+        DateOnly openDate = new(2026, 1, 1);
+        DateOnly closeDate = new(2026, 2, 1);
+        PhaseOfEducation phaseOfEducation = new() { Id = Guid.NewGuid(), Code = "PRI", Name = "Primary" };
+        LocalAuthority localAuthority = new() { Id = Guid.NewGuid(), Code = "LA01", Name = "Test LA" };
+        EstablishmentType establishmentType = new() { Id = Guid.NewGuid(), Code = "AC", Name = "Academy" };
+        EstablishmentGroup establishmentGroup = new() { Id = Guid.NewGuid(), Code = "SCH", Name = "School" };
+        EstablishmentStatus establishmentStatus = new() { Id = Guid.NewGuid(), Code = "OPEN", Name = "Open" };
 
-        var school = new School
+        School school = new()
         {
             Id = schoolId,
             URN = 123456,
@@ -94,7 +94,7 @@ public sealed class SchoolTests
             LocalAuthority = localAuthority,
             EstablishmentType = establishmentType,
             EstablishmentGroup = establishmentGroup,
-            EstablishmentStatus = establishmentStatus
+            EstablishmentStatus = establishmentStatus,
         };
 
         // Act & Assert 

@@ -4,11 +4,11 @@ public sealed class LocalAuthorityFactory
 {
     public static LocalAuthority GetLocalAuthority()
     {
-        (string? code, string? name) = CodeAndNameFactory.GetCodeAndName();
+        (var code, var name) = CodeAndNameFactory.GetCodeAndName();
         return new LocalAuthority()
         {
             Code = code,
-            Name = name
+            Name = name,
         };
     }
 }

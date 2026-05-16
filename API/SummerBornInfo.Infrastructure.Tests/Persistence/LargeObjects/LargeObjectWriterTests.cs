@@ -1,4 +1,5 @@
-﻿using SummerBornInfo.Infrastructure.Persistence;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using SummerBornInfo.Infrastructure.Persistence;
 
 namespace SummerBornInfo.Infrastructure.Tests.Persistence.LargeObjects;
 
@@ -8,10 +9,9 @@ public sealed class LargeObjectWriterTests(IntegrationTestDatabaseServerFixture 
     public async Task GivenNoTransactionHasStarted_WhenWritingLargeObject_ThenDataIsSavedToLargeObject()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
-        var largeObjectWriter = new LargeObjectWriter(dbContext);
-        Stream largeObjectStream = ExampleImportFile.GetExampleImportFileContent();
-
+        var dbContext = CreateDbContext();
+        LargeObjectWriter largeObjectWriter = new(dbContext);
+        var largeObjectStream = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
         var largeObjectId = await largeObjectWriter.StreamContentToNewLargeObjectAsync(largeObjectStream, TestContext.Current.CancellationToken);
@@ -25,11 +25,10 @@ public sealed class LargeObjectWriterTests(IntegrationTestDatabaseServerFixture 
     public async Task GivenTransactionHasStarted_WhenWritingLargeObjectAndTransactionIsRolledBack_ThenLargeObjectIsNotPersisted()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         await using var efTransaction = await dbContext.Database.BeginTransactionAsync(TestContext.Current.CancellationToken);
-        var largeObjectWriter = new LargeObjectWriter(dbContext);
-        Stream largeObjectStream = ExampleImportFile.GetExampleImportFileContent();
-
+        LargeObjectWriter largeObjectWriter = new(dbContext);
+        var largeObjectStream = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
         var largeObjectId = await largeObjectWriter.StreamContentToNewLargeObjectAsync(largeObjectStream, TestContext.Current.CancellationToken);
@@ -43,11 +42,10 @@ public sealed class LargeObjectWriterTests(IntegrationTestDatabaseServerFixture 
     public async Task GivenTransactionHasStarted_WhenWritingLargeObjectAndTransactionIsCommitted_ThenDataIsSavedToLargeObject()
     {
         // Arrange
-        ApplicationDbContext dbContext = CreateDbContext();
+        var dbContext = CreateDbContext();
         await using var efTransaction = await dbContext.Database.BeginTransactionAsync(TestContext.Current.CancellationToken);
-        var largeObjectWriter = new LargeObjectWriter(dbContext);
-        Stream largeObjectStream = ExampleImportFile.GetExampleImportFileContent();
-
+        LargeObjectWriter largeObjectWriter = new(dbContext);
+        var largeObjectStream = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
         var largeObjectId = await largeObjectWriter.StreamContentToNewLargeObjectAsync(largeObjectStream, TestContext.Current.CancellationToken);
