@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile;
 
 public static class SchoolBulkImportTelemetry

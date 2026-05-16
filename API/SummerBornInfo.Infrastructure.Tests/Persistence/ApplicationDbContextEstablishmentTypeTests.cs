@@ -1,5 +1,3 @@
-using SummerBornInfo.Infrastructure.Persistence;
-
 namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 
 public sealed class ApplicationDbContextEstablishmentTypeTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)

@@ -1,6 +1,3 @@
-using SummerBornInfo.Domain.Events;
-using SummerBornInfo.Features.Schools.Commands.ProcessImportFile;
-
 namespace SummerBornInfo.Web.BackgroundServices;
 
 public sealed partial class ProcessSchoolBulkImportBackgroundService(

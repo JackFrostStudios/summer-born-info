@@ -3,6 +3,7 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting;
 global using Npgmq;
 global using SummerBornInfo.AppHost.ServiceDefaults;
+global using SummerBornInfo.Domain.Events;
 global using SummerBornInfo.Features.Schools.Commands.Import;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;

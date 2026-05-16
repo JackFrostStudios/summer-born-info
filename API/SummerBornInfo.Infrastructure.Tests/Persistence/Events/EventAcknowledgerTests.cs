@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore.Storage;
-using SummerBornInfo.Infrastructure.Persistence;
-
 namespace SummerBornInfo.Infrastructure.Tests.Persistence.Events;
 
 public sealed class EventAcknowledgerTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper)

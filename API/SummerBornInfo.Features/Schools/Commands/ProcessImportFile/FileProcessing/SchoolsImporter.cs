@@ -1,10 +1,3 @@
-using nietras.SeparatedValues;
-using SummerBornInfo.Features.Schools.Commands.ProcessImportFile;
-using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing.LookupImporter;
-using System.Diagnostics;
-using System.Globalization;
-using System.Runtime.CompilerServices;
-
 namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
 
 public sealed class SchoolsImporter<TContext>(TContext context) where TContext : DbContext

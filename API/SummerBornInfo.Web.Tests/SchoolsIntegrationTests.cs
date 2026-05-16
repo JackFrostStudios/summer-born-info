@@ -1,10 +1,3 @@
-using System.Net.Http.Json;
-using System.Net;
-using SummerBornInfo.Domain.Entities;
-using SummerBornInfo.Features.Schools.Commands.Import;
-using SummerBornInfo.TestFramework.TestData;
-using SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus.Response;
-
 namespace SummerBornInfo.Web.Tests;
 
 public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper)

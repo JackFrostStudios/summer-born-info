@@ -1,5 +1,3 @@
-using System.Reflection;
-
 namespace SummerBornInfo.Domain.Tests.Entities;
 
 public sealed class SchoolBulkImportRequestTests

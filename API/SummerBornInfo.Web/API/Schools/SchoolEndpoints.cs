@@ -1,5 +1,3 @@
-﻿using SummerBornInfo.Features.Schools.Queries.GetAllSchools.Response;
-
 namespace SummerBornInfo.Web.API.Schools;
 
 public static class SchoolEndpoints

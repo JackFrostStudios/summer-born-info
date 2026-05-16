@@ -1,5 +1,3 @@
-using Docker.DotNet.Models;
-
 namespace SummerBornInfo.TestFramework;
 
 public abstract class IntegrationTestBase(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IAsyncLifetime

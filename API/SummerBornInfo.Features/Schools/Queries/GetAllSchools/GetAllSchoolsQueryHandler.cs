@@ -1,5 +1,3 @@
-using SummerBornInfo.Features.Schools.Queries.GetAllSchools.Response;
-
 namespace SummerBornInfo.Features.Schools.Queries.GetAllSchools;
 
 public sealed class GetAllSchoolsQueryHandler(ApplicationDbContext context)

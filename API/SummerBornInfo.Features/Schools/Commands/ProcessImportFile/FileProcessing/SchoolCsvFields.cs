@@ -1,6 +1,3 @@
-using System.Globalization;
-using nietras.SeparatedValues;
-
 namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
 
 internal sealed record SchoolCsvFields

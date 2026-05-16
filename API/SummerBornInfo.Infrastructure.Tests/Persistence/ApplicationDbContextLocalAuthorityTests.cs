@@ -1,6 +1,3 @@
-using Bogus.DataSets;
-using SummerBornInfo.Infrastructure.Persistence;
-
 namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 
 public sealed class ApplicationDbContextLocalAuthorityTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)

@@ -1,5 +1,3 @@
-﻿using SummerBornInfo.Infrastructure.Persistence;
-
 namespace SummerBornInfo.Features.Tests.Schools.Commands.Import;
 
 public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper)

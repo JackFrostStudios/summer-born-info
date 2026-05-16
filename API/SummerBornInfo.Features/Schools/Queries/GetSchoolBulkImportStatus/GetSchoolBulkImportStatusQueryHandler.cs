@@ -1,5 +1,3 @@
-using SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus.Response;
-
 namespace SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus;
 
 public sealed class GetSchoolBulkImportStatusQueryHandler(ApplicationDbContext context)
