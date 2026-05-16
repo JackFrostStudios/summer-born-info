@@ -11,7 +11,7 @@ indent_size = 4
 dotnet_sort_system_directives_first = true
 
 # Don't use this. qualifier
-dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_field = false:warning
 dotnet_style_qualification_for_property = false:suggestion
 
 # use int x = .. over Int32
