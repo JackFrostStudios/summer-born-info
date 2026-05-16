@@ -5,6 +5,7 @@ public static class ExampleImportFile
     const string Resource = "SummerBornInfo.TestFramework.TestData.ExampleImportFile.csv";
     public static Stream GetExampleImportFileContent()
     {
-        return Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource) ?? throw new Exception($"Unable to retrieve resource {Resource}");
+        return Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource)
+            ?? throw new Exceptions.ExampleImportFileResourceNotFoundException($"Unable to retrieve resource {Resource}");
     }
 }
