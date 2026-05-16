@@ -4,7 +4,7 @@ Goal: raise every `suggestion`-level C# convention in `API/.editorconfig` to `wa
 
 ## Status
 
-- [ ] Step 1: `dotnet_style_predefined_type_for_locals_parameters_members`
+- [x] Step 1: `dotnet_style_predefined_type_for_locals_parameters_members`
 - [ ] Step 2: `dotnet_style_predefined_type_for_member_access`
 - [ ] Step 3: `dotnet_style_qualification_for_field`
 - [ ] Step 4: `dotnet_style_qualification_for_property`

@@ -1,1 +1,1 @@
-﻿[assembly: InternalsVisibleTo("SummerBornInfo.Infrastructure.Tests")]
+[assembly: InternalsVisibleTo("SummerBornInfo.Infrastructure.Tests")]

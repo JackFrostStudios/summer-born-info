@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Domain.Events;
+namespace SummerBornInfo.Domain.Events;
 
 public sealed record SchoolBulkImportUploaded
 {

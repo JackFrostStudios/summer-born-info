@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.TestFramework.Logging;
+namespace SummerBornInfo.TestFramework.Logging;
 
 public class XUnitLogger(ITestOutputHelper testOutputHelper, LoggerExternalScopeProvider scopeProvider, string? categoryName) : ILogger
 {

@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.TestFramework;
+namespace SummerBornInfo.TestFramework;
 
 public static class TestEntityFrameworkLoggingConfiguration
 {

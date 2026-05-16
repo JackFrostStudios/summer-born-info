@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing.LookupImporter;
+namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing.LookupImporter;
 
 internal sealed class PhaseOfEducationImporter<TContext>(TContext context)
     : LookupImporterBase<PhaseOfEducation, TContext>(context)

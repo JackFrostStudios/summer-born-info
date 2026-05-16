@@ -1,2 +1,2 @@
-﻿global using SummerBornInfo.Domain.Entities;
+global using SummerBornInfo.Domain.Entities;
 global using Xunit;

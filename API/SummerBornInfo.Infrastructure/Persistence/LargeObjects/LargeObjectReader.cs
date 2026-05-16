@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Infrastructure.Persistence.LargeObjects;
+namespace SummerBornInfo.Infrastructure.Persistence.LargeObjects;
 
 public class LargeObjectReader(ApplicationDbContext context) : ILargeObjectReader
 {

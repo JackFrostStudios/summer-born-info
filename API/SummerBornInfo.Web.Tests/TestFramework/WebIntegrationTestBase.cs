@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Web.Tests.TestFramework;
+namespace SummerBornInfo.Web.Tests.TestFramework;
 
 public class WebIntegrationTestBase(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IAsyncLifetime
 {

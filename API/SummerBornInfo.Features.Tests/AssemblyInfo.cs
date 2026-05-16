@@ -1,1 +1,1 @@
-﻿[assembly: AssemblyFixture(typeof(IntegrationTestDatabaseServerFixture))]
+[assembly: AssemblyFixture(typeof(IntegrationTestDatabaseServerFixture))]

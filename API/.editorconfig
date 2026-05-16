@@ -15,7 +15,7 @@ dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
 
 # use int x = .. over Int32
-dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
+dotnet_style_predefined_type_for_locals_parameters_members = true:warning
 
 # use int.MaxValue over Int32.MaxValue
 dotnet_style_predefined_type_for_member_access = true:suggestion

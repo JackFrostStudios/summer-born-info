@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.TestFramework.Events;
+namespace SummerBornInfo.TestFramework.Events;
 
 public sealed record TestEvent
 {

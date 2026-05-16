@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.TestFramework.TestData;
+namespace SummerBornInfo.TestFramework.TestData;
 
 public static class SchoolFactory
 {

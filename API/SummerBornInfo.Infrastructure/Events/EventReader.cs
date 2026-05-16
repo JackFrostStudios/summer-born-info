@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Infrastructure.Events;
+namespace SummerBornInfo.Infrastructure.Events;
 
 public sealed class EventReader(ApplicationDbContext dbContext) : IEventReader
 {

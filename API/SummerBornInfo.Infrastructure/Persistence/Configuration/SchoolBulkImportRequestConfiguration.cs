@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
+namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
 
 internal sealed class SchoolBulkImportRequestConfiguration : IEntityTypeConfiguration<SchoolBulkImportRequest>
 {

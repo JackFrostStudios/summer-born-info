@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Infrastructure.Persistence.LargeObjects;
+namespace SummerBornInfo.Infrastructure.Persistence.LargeObjects;
 
 internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeObjectId) : Stream
 {

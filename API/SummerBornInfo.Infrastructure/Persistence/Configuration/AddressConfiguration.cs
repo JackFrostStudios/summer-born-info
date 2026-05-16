@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
+namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
 
 internal sealed class AddressConfiguration : IEntityTypeConfiguration<SchoolAddress>
 {

@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.TestFramework;
+namespace SummerBornInfo.TestFramework;
 
 public sealed class IntegrationTestDatabaseInstanceFixture(IntegrationTestDatabaseServerFixture databaseServerFixture) : IAsyncLifetime
 {
