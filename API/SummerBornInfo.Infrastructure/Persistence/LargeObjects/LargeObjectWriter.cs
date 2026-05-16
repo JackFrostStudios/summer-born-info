@@ -36,11 +36,12 @@ public sealed class LargeObjectWriter(ApplicationDbContext context) : ILargeObje
     private static async Task<uint> CreateLargeObjectAsync(NpgsqlConnection connection, CancellationToken cancellationToken)
     {
         await using NpgsqlCommand createCmd = new("SELECT lo_create(0)", connection);
-        var createLargeObjectResult = await createCmd.ExecuteScalarAsync(cancellationToken) ?? throw new Exception("Unable to create large object");
+        var createLargeObjectResult = await createCmd.ExecuteScalarAsync(cancellationToken)
+            ?? throw new Exceptions.LargeObjectCreationException("Unable to create large object");
 
         if (createLargeObjectResult is not uint largeObjectId)
         {
-            throw new Exception("Unable to create large object");
+            throw new Exceptions.LargeObjectCreationException("Unable to create large object");
         }
         return largeObjectId;
     }
@@ -54,7 +55,7 @@ public sealed class LargeObjectWriter(ApplicationDbContext context) : ILargeObje
 
         if (openLargeObjectResult is not int fileDescriptor || fileDescriptor < 0)
         {
-            throw new Exception("Unable to open large object");
+            throw new Exceptions.LargeObjectOpenException("Unable to open large object");
         }
 
         return fileDescriptor;
