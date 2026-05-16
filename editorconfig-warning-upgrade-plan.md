@@ -9,7 +9,7 @@ Goal: raise every `suggestion`-level C# convention in `API/.editorconfig` to `wa
 - [x] Step 3: `dotnet_style_qualification_for_field`
 - [x] Step 4: `dotnet_style_qualification_for_property`
 - [x] Step 5: `csharp_preferred_modifier_order`
-- [ ] Step 6: `csharp_style_throw_expression`
+- [x] Step 6: `csharp_style_throw_expression`
 - [ ] Step 7: `csharp_style_var_for_built_in_types`
 - [ ] Step 8: `csharp_style_var_when_type_is_apparent`
 - [ ] Step 9: `csharp_style_var_elsewhere`
