@@ -23,11 +23,13 @@ This document is the compact source of truth for the repository layout and the c
 - Add DI wiring in `API/SummerBornInfo.Web/Program.cs`.
 - Mirror the existing `Schools` slice when adding a new feature slice.
 - Reuse existing patterns before introducing new abstractions or helper frameworks.
+- Imports should be managed via "global using" in a single GlobalUsings.cs file per project to reduce noise in classes. The imports in these files should be sorted to reduce merge conflicts.
 
 ## Review Checklist
 
 - If there is a complex entity state change, does the change happen through a domain method that encapsulates the complex rules?
 - If there is a entity state change related to a specific domain action, does the change happen through a domain method with a name reflecting the action?
+- Are there any imports in individual files? If they are not overloading the global using with a named import then refactor the using to "GlobalUsings.cs" in that project.
 
 ## Testing Expectations
 
