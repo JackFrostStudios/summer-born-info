@@ -37,11 +37,11 @@ public sealed class LargeObjectWriter(ApplicationDbContext context) : ILargeObje
     {
         await using NpgsqlCommand createCmd = new("SELECT lo_create(0)", connection);
         var createLargeObjectResult = await createCmd.ExecuteScalarAsync(cancellationToken)
-            ?? throw new Exceptions.LargeObjectCreationException("Unable to create large object");
+            ?? throw new LargeObjectCreationException("Unable to create large object");
 
         if (createLargeObjectResult is not uint largeObjectId)
         {
-            throw new Exceptions.LargeObjectCreationException("Unable to create large object");
+            throw new LargeObjectCreationException("Unable to create large object");
         }
         return largeObjectId;
     }
