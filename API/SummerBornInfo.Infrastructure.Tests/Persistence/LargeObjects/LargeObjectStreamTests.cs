@@ -1,4 +1,4 @@
-﻿using SummerBornInfo.Infrastructure.Persistence;
+using SummerBornInfo.Infrastructure.Persistence;
 
 namespace SummerBornInfo.Infrastructure.Tests.Persistence.LargeObjects;
 
@@ -15,8 +15,8 @@ public class LargeObjectStreamTests(IntegrationTestDatabaseServerFixture testDat
         LargeObjectWriter largeObjectWriter = new(dbContext);
 
         var sourceStream = ExampleImportFile.GetExampleImportFileContent();
-        using MemoryStream ms = new();
-        await sourceStream.CopyToAsync(ms);
+        await using MemoryStream ms = new();
+        await sourceStream.CopyToAsync(ms, TestContext.Current.CancellationToken);
         _originalContent = ms.ToArray();
 
         ms.Position = 0;
@@ -206,7 +206,7 @@ public class LargeObjectStreamTests(IntegrationTestDatabaseServerFixture testDat
     {
         var stream = await CreateStream();
         var buffer = new byte[16];
-        var bytesRead = stream.Read(buffer, 0, buffer.Length);
+        var bytesRead = await stream.ReadAsync(buffer, TestContext.Current.CancellationToken);
 
         Assert.True(bytesRead > 0);
         Assert.Equal(bytesRead, stream.Position);
@@ -219,7 +219,7 @@ public class LargeObjectStreamTests(IntegrationTestDatabaseServerFixture testDat
         var stream = await CreateStream();
         stream.Position = _originalContent.Length;
         var buffer = new byte[16];
-        var bytesRead = stream.Read(buffer, 0, buffer.Length);
+        var bytesRead = await stream.ReadAsync(buffer, TestContext.Current.CancellationToken);
         Assert.Equal(0, bytesRead);
     }
 
@@ -230,7 +230,7 @@ public class LargeObjectStreamTests(IntegrationTestDatabaseServerFixture testDat
         var buffer = new byte[32];
         const int offset = 8;
         const int count = 16;
-        var bytesRead = stream.Read(buffer, offset, count);
+        var bytesRead = await stream.ReadAsync(buffer.AsMemory(offset, count), TestContext.Current.CancellationToken);
 
         Assert.True(bytesRead > 0);
         // Bytes before offset must remain zero
@@ -303,7 +303,7 @@ public class LargeObjectStreamTests(IntegrationTestDatabaseServerFixture testDat
         int bytesRead;
         while ((bytesRead = await stream.ReadAsync(buffer.AsMemory(), TestContext.Current.CancellationToken)) > 0)
         {
-            result.Write(buffer, 0, bytesRead);
+            await result.WriteAsync(buffer.AsMemory(0, bytesRead), TestContext.Current.CancellationToken);
         }
 
         Assert.Equal(_originalContent, result.ToArray());
@@ -317,7 +317,7 @@ public class LargeObjectStreamTests(IntegrationTestDatabaseServerFixture testDat
     public async Task GivenALargeObjectExists_WhenReadingTheStreamEndToEnd_ThenTheResultShouldMatchTheLargeObject()
     {
         var stream = await CreateStream();
-        using MemoryStream result = new();
+        await using MemoryStream result = new();
         await stream.CopyToAsync(result, TestContext.Current.CancellationToken);
         Assert.Equal(_originalContent, result.ToArray());
     }
@@ -326,13 +326,11 @@ public class LargeObjectStreamTests(IntegrationTestDatabaseServerFixture testDat
     public async Task GivenALargeObjectExists_WhenReadingEndToEndThenSeekingToBeginAndReadingAgain_ThenBothReadsShouldProduceTheSameResult()
     {
         var stream = await CreateStream();
-
-        using MemoryStream first = new();
+        await using MemoryStream first = new();
         await stream.CopyToAsync(first, TestContext.Current.CancellationToken);
 
         stream.Seek(0, SeekOrigin.Begin);
-
-        using MemoryStream second = new();
+        await using MemoryStream second = new();
         await stream.CopyToAsync(second, TestContext.Current.CancellationToken);
 
         Assert.Equal(first.ToArray(), second.ToArray());

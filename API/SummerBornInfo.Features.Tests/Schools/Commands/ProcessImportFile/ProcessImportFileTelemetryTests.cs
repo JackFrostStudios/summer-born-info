@@ -14,8 +14,9 @@ public sealed class ProcessImportFileTelemetryTests(
     [Fact]
     public async Task GivenImportRequestWithMixedRows_WhenExecuted_ThenEachProcessedRowEmitsActivity()
     {
-        // Arrange
-        using var invalidCsv = CreateCsvStream(
+        await
+                // Arrange
+                using var invalidCsv = CreateCsvStream(
             "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\"",
             "\"100000\",\"3614\",\"The Aldgate School\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\"",
             "\"INVALID\",\"1045\",\"Broken School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\"",
@@ -44,21 +45,6 @@ public sealed class ProcessImportFileTelemetryTests(
         await handler.ExecuteAsync(new ProcessImportFileCommand(requestId), TestContext.Current.CancellationToken);
 
         // Assert
-        var verifyDbContext = CreateDbContext();
-        var request = await verifyDbContext.SchoolBulkImportRequests
-            .Include(x => x.Failures)
-            .SingleAsync(x => x.Id == requestId, TestContext.Current.CancellationToken);
-
-        Assert.Equal(3, request.LinesProcessed);
-        Assert.Equal(SchoolBulkImportStatus.CompletedWithFailures, request.Status);
-        Assert.Single(request.Failures);
-
-        var schools = await verifyDbContext.Schools
-            .OrderBy(x => x.URN)
-            .ToListAsync(TestContext.Current.CancellationToken);
-
-        Assert.Equal([100000, 100004], schools.Select(x => x.URN).ToArray());
-
         List<Activity> processActivities;
         lock (capturedActivities)
         {

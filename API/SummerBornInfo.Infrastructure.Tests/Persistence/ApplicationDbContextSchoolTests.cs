@@ -1,4 +1,5 @@
-﻿using SummerBornInfo.Infrastructure.Persistence;
+using Bogus.DataSets;
+using SummerBornInfo.Infrastructure.Persistence;
 
 namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 
@@ -17,7 +18,7 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
 
         //Assert
         dbContext.ChangeTracker.Clear();
-        var savedSchool = dbContext.Schools.Find(school.Id);
+        var savedSchool = await dbContext.Schools.FindAsync([school.Id], TestContext.Current.CancellationToken);
 
         Assert.NotNull(savedSchool);
         Assert.Equivalent(school, savedSchool);
@@ -43,7 +44,7 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
 
         //Assert
         dbContext.ChangeTracker.Clear();
-        var savedSchool = dbContext.Schools.Find(school.Id);
+        var savedSchool = await dbContext.Schools.FindAsync([school.Id], TestContext.Current.CancellationToken);
 
         Assert.NotNull(savedSchool);
         Assert.Equivalent(school, savedSchool);
@@ -59,7 +60,7 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
-        var schoolToUpdate = dbContext.Schools.Find(school.Id);
+        var schoolToUpdate = await dbContext.Schools.FindAsync([school.Id], TestContext.Current.CancellationToken);
         Assert.NotNull(schoolToUpdate);
         schoolToUpdate.URN = 999999999;
         schoolToUpdate.UKPRN = 999999999;
@@ -85,7 +86,7 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
 
         //Assert
         dbContext.ChangeTracker.Clear();
-        var savedSchool = dbContext.Schools.Find(school.Id);
+        var savedSchool = await dbContext.Schools.FindAsync([school.Id], TestContext.Current.CancellationToken);
 
         Assert.NotNull(savedSchool);
         Assert.Equivalent(schoolToUpdate, savedSchool);
@@ -101,12 +102,12 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
-        var schoolToUpdateOne = dbContext.Schools.Find(school.Id);
+        var schoolToUpdateOne = await dbContext.Schools.FindAsync([school.Id], TestContext.Current.CancellationToken);
         Assert.NotNull(schoolToUpdateOne);
         schoolToUpdateOne.URN = 999999999;
 
         var dbContextTwo = CreateDbContext();
-        var schoolToUpdateTwo = dbContextTwo.Schools.Find(school.Id);
+        var schoolToUpdateTwo = await dbContextTwo.Schools.FindAsync([school.Id], TestContext.Current.CancellationToken);
         Assert.NotNull(schoolToUpdateTwo);
         schoolToUpdateTwo.URN = 999999998;
         await dbContextTwo.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -115,7 +116,7 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         // Act & Assert
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () => await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken));
 
-        var savedSchool = dbContextTwo.Schools.Find(school.Id);
+        var savedSchool = await dbContextTwo.Schools.FindAsync([school.Id], TestContext.Current.CancellationToken);
         Assert.Equivalent(schoolToUpdateTwo, savedSchool);
     }
 }

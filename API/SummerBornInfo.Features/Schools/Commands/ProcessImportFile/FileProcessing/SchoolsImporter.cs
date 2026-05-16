@@ -22,7 +22,7 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         using StreamReader streamReader = new(csvStream, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
-        using var reader = Sep.New(',').Reader(o => o with { Trim = SepTrim.All }).From(streamReader);
+        using var reader = await Sep.New(',').Reader(o => o with { Trim = SepTrim.All }).FromAsync(streamReader, cancellationToken);
 
         var lineNumber = 1;
 

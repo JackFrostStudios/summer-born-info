@@ -328,6 +328,11 @@ dotnet_diagnostic.MA0004.severity = none
 # CA1707: Identifiers should not contain underscores
 dotnet_diagnostic.CA1707.severity = none
 
+# Test projects (root-level files)
+[*Tests/*.cs]
+# CA1707: Identifiers should not contain underscores
+dotnet_diagnostic.CA1707.severity = none
+
 [**/EventQueue.cs]
 # CA1711: Identifiers should not have incorrect suffix
 dotnet_diagnostic.CA1711.severity = none
@@ -339,6 +344,15 @@ dotnet_diagnostic.CA1711.severity = none
 [**/TestEventQueue.cs]
 # CA1711: Identifiers should not have incorrect suffix
 dotnet_diagnostic.CA1711.severity = none
+
+[**/AppHost.cs]
+# MA0048: File name must match type name
+dotnet_diagnostic.MA0048.severity = none
+
+# Allow long methods for EF Core configuration.
+[*SummerBornInfo.Infrastructure/Persistence/Configuration/*.cs]
+# MA0051: Method is too long
+dotnet_diagnostic.MA0051.severity = none
 
 # Verify settings
 [**/*.{txt,xml,json}]

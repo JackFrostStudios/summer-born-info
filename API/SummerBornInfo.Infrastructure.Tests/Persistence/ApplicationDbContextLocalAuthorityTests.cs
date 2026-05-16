@@ -1,4 +1,5 @@
-﻿using SummerBornInfo.Infrastructure.Persistence;
+using Bogus.DataSets;
+using SummerBornInfo.Infrastructure.Persistence;
 
 namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 
@@ -17,7 +18,7 @@ public sealed class ApplicationDbContextLocalAuthorityTests(IntegrationTestDatab
 
         //Assert
         dbContext.ChangeTracker.Clear();
-        var savedLocalAuthority = dbContext.LocalAuthorities.Find(localAuthority.Id);
+        var savedLocalAuthority = await dbContext.LocalAuthorities.FindAsync([localAuthority.Id], TestContext.Current.CancellationToken);
 
         Assert.NotNull(savedLocalAuthority);
         Assert.Equivalent(localAuthority, savedLocalAuthority);
@@ -33,7 +34,7 @@ public sealed class ApplicationDbContextLocalAuthorityTests(IntegrationTestDatab
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
-        var localAuthorityToUpdate = dbContext.LocalAuthorities.Find(localAuthority.Id);
+        var localAuthorityToUpdate = await dbContext.LocalAuthorities.FindAsync([localAuthority.Id], TestContext.Current.CancellationToken);
         Assert.NotNull(localAuthorityToUpdate);
         localAuthorityToUpdate.Code = "Update_Code";
         localAuthority.Name = "Update Name";
@@ -43,7 +44,7 @@ public sealed class ApplicationDbContextLocalAuthorityTests(IntegrationTestDatab
 
         //Assert
         dbContext.ChangeTracker.Clear();
-        var savedLocalAuthority = dbContext.LocalAuthorities.Find(localAuthority.Id);
+        var savedLocalAuthority = await dbContext.LocalAuthorities.FindAsync([localAuthority.Id], TestContext.Current.CancellationToken);
 
         Assert.NotNull(savedLocalAuthority);
         Assert.Equivalent(localAuthorityToUpdate, savedLocalAuthority);
@@ -59,12 +60,12 @@ public sealed class ApplicationDbContextLocalAuthorityTests(IntegrationTestDatab
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
-        var localAuthorityToUpdateOne = dbContext.LocalAuthorities.Find(localAuthority.Id);
+        var localAuthorityToUpdateOne = await dbContext.LocalAuthorities.FindAsync([localAuthority.Id], TestContext.Current.CancellationToken);
         Assert.NotNull(localAuthorityToUpdateOne);
         localAuthorityToUpdateOne.Code = "Code_One";
 
         var dbContextTwo = CreateDbContext();
-        var localAuthorityToUpdateTwo = dbContextTwo.LocalAuthorities.Find(localAuthority.Id);
+        var localAuthorityToUpdateTwo = await dbContextTwo.LocalAuthorities.FindAsync([localAuthority.Id], TestContext.Current.CancellationToken);
         Assert.NotNull(localAuthorityToUpdateTwo);
         localAuthorityToUpdateTwo.Code = "Code_Two";
         await dbContextTwo.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -73,7 +74,7 @@ public sealed class ApplicationDbContextLocalAuthorityTests(IntegrationTestDatab
         // Act & Assert
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () => await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken));
 
-        var savedLocalAuthority = dbContextTwo.LocalAuthorities.Find(localAuthority.Id);
+        var savedLocalAuthority = await dbContextTwo.LocalAuthorities.FindAsync([localAuthority.Id], TestContext.Current.CancellationToken);
         Assert.Equivalent(localAuthorityToUpdateTwo, savedLocalAuthority);
     }
 }

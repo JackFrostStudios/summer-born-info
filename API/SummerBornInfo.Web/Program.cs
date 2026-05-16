@@ -40,4 +40,4 @@ app.UseHttpsRedirection();
 
 app.RegisterSchoolEndpoints();
 
-app.Run();
+await app.RunAsync();

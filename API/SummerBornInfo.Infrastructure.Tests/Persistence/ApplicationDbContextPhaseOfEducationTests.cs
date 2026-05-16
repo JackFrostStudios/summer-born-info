@@ -1,4 +1,5 @@
-﻿using SummerBornInfo.Infrastructure.Persistence;
+using Bogus.DataSets;
+using SummerBornInfo.Infrastructure.Persistence;
 
 namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 
@@ -17,7 +18,7 @@ public sealed class ApplicationDbContextPhaseOfEducationTests(IntegrationTestDat
 
         //Assert
         dbContext.ChangeTracker.Clear();
-        var savedPhaseOfEducation = dbContext.PhasesOfEducation.Find(phaseOfEducation.Id);
+        var savedPhaseOfEducation = await dbContext.PhasesOfEducation.FindAsync([phaseOfEducation.Id], TestContext.Current.CancellationToken);
 
         Assert.NotNull(savedPhaseOfEducation);
         Assert.Equivalent(phaseOfEducation, savedPhaseOfEducation);
@@ -33,7 +34,7 @@ public sealed class ApplicationDbContextPhaseOfEducationTests(IntegrationTestDat
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
-        var phaseOfEducationToUpdate = dbContext.PhasesOfEducation.Find(phaseOfEducation.Id);
+        var phaseOfEducationToUpdate = await dbContext.PhasesOfEducation.FindAsync([phaseOfEducation.Id], TestContext.Current.CancellationToken);
         Assert.NotNull(phaseOfEducationToUpdate);
         phaseOfEducationToUpdate.Code = "Update_Code";
         phaseOfEducation.Name = "Update Name";
@@ -43,7 +44,7 @@ public sealed class ApplicationDbContextPhaseOfEducationTests(IntegrationTestDat
 
         //Assert
         dbContext.ChangeTracker.Clear();
-        var savedPhaseOfEducation = dbContext.PhasesOfEducation.Find(phaseOfEducation.Id);
+        var savedPhaseOfEducation = await dbContext.PhasesOfEducation.FindAsync([phaseOfEducation.Id], TestContext.Current.CancellationToken);
 
         Assert.NotNull(savedPhaseOfEducation);
         Assert.Equivalent(phaseOfEducationToUpdate, savedPhaseOfEducation);
@@ -59,12 +60,12 @@ public sealed class ApplicationDbContextPhaseOfEducationTests(IntegrationTestDat
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
-        var phaseOfEducationToUpdateOne = dbContext.PhasesOfEducation.Find(phaseOfEducation.Id);
+        var phaseOfEducationToUpdateOne = await dbContext.PhasesOfEducation.FindAsync([phaseOfEducation.Id], TestContext.Current.CancellationToken);
         Assert.NotNull(phaseOfEducationToUpdateOne);
         phaseOfEducationToUpdateOne.Code = "Code_One";
 
         var dbContextTwo = CreateDbContext();
-        var phaseOfEducationToUpdateTwo = dbContextTwo.PhasesOfEducation.Find(phaseOfEducation.Id);
+        var phaseOfEducationToUpdateTwo = await dbContextTwo.PhasesOfEducation.FindAsync([phaseOfEducation.Id], TestContext.Current.CancellationToken);
         Assert.NotNull(phaseOfEducationToUpdateTwo);
         phaseOfEducationToUpdateTwo.Code = "Code_Two";
         await dbContextTwo.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -73,7 +74,7 @@ public sealed class ApplicationDbContextPhaseOfEducationTests(IntegrationTestDat
         // Act & Assert
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () => await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken));
 
-        var savedPhaseOfEducation = dbContextTwo.PhasesOfEducation.Find(phaseOfEducation.Id);
+        var savedPhaseOfEducation = await dbContextTwo.PhasesOfEducation.FindAsync([phaseOfEducation.Id], TestContext.Current.CancellationToken);
         Assert.Equivalent(phaseOfEducationToUpdateTwo, savedPhaseOfEducation);
     }
 }

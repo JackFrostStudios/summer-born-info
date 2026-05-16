@@ -1,4 +1,4 @@
-﻿using SummerBornInfo.Infrastructure.Persistence;
+using SummerBornInfo.Infrastructure.Persistence;
 
 namespace SummerBornInfo.Infrastructure.Tests.Persistence.LargeObjects;
 
@@ -67,7 +67,7 @@ public class LargeObjectReaderTests(IntegrationTestDatabaseServerFixture testDat
     {
         stream.Seek(0, SeekOrigin.Begin);
         byte[] data;
-        using MemoryStream expectedMemoryStream = new();
+        await using MemoryStream expectedMemoryStream = new();
         await stream.CopyToAsync(expectedMemoryStream, cancellationToken);
         data = expectedMemoryStream.ToArray();
         return data;

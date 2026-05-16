@@ -1,4 +1,5 @@
-﻿using SummerBornInfo.Infrastructure.Persistence;
+using Bogus.DataSets;
+using SummerBornInfo.Infrastructure.Persistence;
 
 namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 
@@ -20,7 +21,7 @@ public sealed class ApplicationDbContextSchoolBulkImportRequestTests(Integration
 
         //Assert
         dbContext.ChangeTracker.Clear();
-        var savedSchoolBulkImportRequest = dbContext.SchoolBulkImportRequests.Find(schoolBulkImportRequest.Id);
+        var savedSchoolBulkImportRequest = await dbContext.SchoolBulkImportRequests.FindAsync([schoolBulkImportRequest.Id], TestContext.Current.CancellationToken);
 
         Assert.NotNull(savedSchoolBulkImportRequest);
         Assert.Equivalent(schoolBulkImportRequest, savedSchoolBulkImportRequest);

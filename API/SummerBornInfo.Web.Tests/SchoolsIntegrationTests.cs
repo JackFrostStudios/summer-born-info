@@ -24,7 +24,7 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
     {
         // Arrange
         var client = factory.CreateClient();
-        using var csvStream = ExampleImportFile.GetExampleImportFileContent();
+        await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
         using StreamContent content = new(csvStream);
         content.Headers.ContentType = new MediaTypeHeaderValue("text/csv");
 
@@ -42,7 +42,7 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
         Assert.Equal(SchoolBulkImportStatus.Completed, request.Status);
         Assert.Empty(request.Failures);
 
-        using var scope = factory.Services.CreateScope();
+        await using var scope = factory.Services.CreateAsyncScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         var schools = await dbContext.Schools.ToListAsync(TestContext.Current.CancellationToken);
         Assert.Equal(2, schools.Count);
@@ -55,7 +55,7 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
         var client = factory.CreateClient();
         var requestId = Guid.CreateVersion7();
 
-        using (var scope = factory.Services.CreateScope())
+        await using (var scope = factory.Services.CreateAsyncScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             SchoolBulkImportRequest request = new()
@@ -96,7 +96,7 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
         var client = factory.CreateClient();
         var requestId = Guid.CreateVersion7();
 
-        using (var scope = factory.Services.CreateScope())
+        await using (var scope = factory.Services.CreateAsyncScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             SchoolBulkImportRequest request = new()
@@ -140,7 +140,7 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
         var client = factory.CreateClient();
         var requestId = Guid.CreateVersion7();
 
-        using (var scope = factory.Services.CreateScope())
+        await using (var scope = factory.Services.CreateAsyncScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             SchoolBulkImportRequest request = new()
@@ -180,7 +180,7 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
         var client = factory.CreateClient();
         var requestId = Guid.CreateVersion7();
 
-        using (var scope = factory.Services.CreateScope())
+        await using (var scope = factory.Services.CreateAsyncScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var request = CreateImportRequestInStatus(requestId, status);
@@ -201,7 +201,7 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
 
         while (DateTime.UtcNow - started < TimeSpan.FromSeconds(15))
         {
-            using var scope = factory.Services.CreateScope();
+            await using var scope = factory.Services.CreateAsyncScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var request = await dbContext.SchoolBulkImportRequests
                 .Include(x => x.Failures)

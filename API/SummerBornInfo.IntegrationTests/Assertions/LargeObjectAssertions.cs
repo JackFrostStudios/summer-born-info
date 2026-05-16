@@ -1,4 +1,4 @@
-﻿namespace SummerBornInfo.TestFramework.Assertions;
+namespace SummerBornInfo.TestFramework.Assertions;
 
 public static class LargeObjectAssertions
 {
@@ -43,7 +43,7 @@ public static class LargeObjectAssertions
         }
 
         byte[] originalData;
-        using (MemoryStream memoryStream = new())
+        await using (MemoryStream memoryStream = new())
         {
             await originalObject.CopyToAsync(memoryStream, cancellationToken);
             originalData = memoryStream.ToArray();

@@ -16,4 +16,4 @@ builder.AddProject<SummerBornInfo_Web>("API")
     .WaitFor(postgresdb)
     .WithReference(postgresdb);
 
-builder.Build().Run();
+await builder.Build().RunAsync();

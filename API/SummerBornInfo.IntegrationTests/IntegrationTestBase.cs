@@ -1,4 +1,6 @@
-﻿namespace SummerBornInfo.TestFramework;
+using Docker.DotNet.Models;
+
+namespace SummerBornInfo.TestFramework;
 
 public abstract class IntegrationTestBase(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IAsyncLifetime
 {
@@ -17,8 +19,17 @@ public abstract class IntegrationTestBase(IntegrationTestDatabaseServerFixture t
     {
         await integrationTestDatabaseInstanceFixture.InitializeAsync();
     }
-    public virtual async ValueTask DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
-        await integrationTestDatabaseInstanceFixture.DisposeAsync();
+        await DisposeAsync(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    public async ValueTask DisposeAsync(bool disposing)
+    {
+        if (disposing)
+        {
+            await integrationTestDatabaseInstanceFixture.DisposeAsync();
+        }
     }
 }

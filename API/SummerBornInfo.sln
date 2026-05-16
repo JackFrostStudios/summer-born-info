@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Infrastructu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Features.Tests", "SummerBornInfo.Features.Tests\SummerBornInfo.Features.Tests.csproj", "{CA03C0E3-D787-4BEF-B4D7-32618B5DB0A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Web.Tests", "SummerBornInfo.Web.IntegrationTests\SummerBornInfo.Web.Tests.csproj", "{79D71234-D1FA-4B04-BB14-C709F1B3B535}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.Web.Tests", "SummerBornInfo.Web.Tests\SummerBornInfo.Web.Tests.csproj", "{79D71234-D1FA-4B04-BB14-C709F1B3B535}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.TestFramework", "SummerBornInfo.IntegrationTests\SummerBornInfo.TestFramework.csproj", "{0D73BCB5-4E76-477B-8C8C-6ED968404741}"
 EndProject
