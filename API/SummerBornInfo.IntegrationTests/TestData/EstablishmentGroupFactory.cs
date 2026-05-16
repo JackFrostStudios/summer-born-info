@@ -4,7 +4,7 @@ public sealed class EstablishmentGroupFactory
 {
     public static EstablishmentGroup GetEstablishmentGroup()
     {
-        var (code, name) = CodeAndNameFactory.GetCodeAndName();
+        (string? code, string? name) = CodeAndNameFactory.GetCodeAndName();
         return new EstablishmentGroup()
         {
             Code = code,

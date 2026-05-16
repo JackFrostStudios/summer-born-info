@@ -1,4 +1,5 @@
 ﻿namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing.LookupImporter;
+
 internal abstract class LookupImporterBase<TEntity, TContext>(TContext context)
     where TEntity : class
     where TContext : DbContext
@@ -7,10 +8,12 @@ internal abstract class LookupImporterBase<TEntity, TContext>(TContext context)
     private readonly Dictionary<string, TEntity> _cache = new(StringComparer.OrdinalIgnoreCase);
     public async Task<TEntity> UpsertAsync(string code, string name, CancellationToken cancellationToken = default)
     {
-        if (_cache.TryGetValue(code, out var cached))
+        if (_cache.TryGetValue(code, out TEntity? cached))
+        {
             return cached;
+        }
 
-        var entity = await FindByCodeAsync(_context, code, cancellationToken);
+        TEntity? entity = await FindByCodeAsync(_context, code, cancellationToken);
 
         if (entity is null)
         {

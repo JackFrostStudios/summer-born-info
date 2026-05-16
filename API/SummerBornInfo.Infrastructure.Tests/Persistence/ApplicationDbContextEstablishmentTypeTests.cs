@@ -1,4 +1,6 @@
-﻿namespace SummerBornInfo.Infrastructure.Tests.Persistence;
+﻿using SummerBornInfo.Infrastructure.Persistence;
+
+namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 
 public sealed class ApplicationDbContextEstablishmentTypeTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
@@ -6,7 +8,7 @@ public sealed class ApplicationDbContextEstablishmentTypeTests(IntegrationTestDa
     public async Task GivenNewEstablishmentType_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var establishmentType = EstablishmentTypeFactory.GetEstablishmentType();
 
         // Act
@@ -26,7 +28,7 @@ public sealed class ApplicationDbContextEstablishmentTypeTests(IntegrationTestDa
     public async Task GivenExistingEstablishmentType_WhenUpdatingAllFields_ThenUpdatedRecordCanBeRetrieved()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var establishmentType = EstablishmentTypeFactory.GetEstablishmentType();
         dbContext.EstablishmentTypes.Add(establishmentType);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -52,7 +54,7 @@ public sealed class ApplicationDbContextEstablishmentTypeTests(IntegrationTestDa
     public async Task GivenExistingEstablishmentType_ConcurrentUpdates_ThenSecondUpdateShouldFail()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var establishmentType = EstablishmentTypeFactory.GetEstablishmentType();
         dbContext.EstablishmentTypes.Add(establishmentType);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -63,7 +65,7 @@ public sealed class ApplicationDbContextEstablishmentTypeTests(IntegrationTestDa
         Assert.NotNull(establishmentTypeToUpdateOne);
         establishmentTypeToUpdateOne.Code = "Code_One";
 
-        var dbContextTwo = CreateDbContext();
+        ApplicationDbContext dbContextTwo = CreateDbContext();
         var establishmentTypeToUpdateTwo = dbContextTwo.EstablishmentTypes.Find(establishmentType.Id);
         Assert.NotNull(establishmentTypeToUpdateTwo);
         establishmentTypeToUpdateTwo.Code = "Code_Two";

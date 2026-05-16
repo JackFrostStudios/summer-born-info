@@ -1,4 +1,6 @@
-﻿namespace SummerBornInfo.Infrastructure.Tests.Persistence;
+﻿using SummerBornInfo.Infrastructure.Persistence;
+
+namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 
 public sealed class ApplicationDbContextSchoolBulkImportRequestTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
@@ -6,7 +8,7 @@ public sealed class ApplicationDbContextSchoolBulkImportRequestTests(Integration
     public async Task GivenNewSchoolBulkImportRequest_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var schoolBulkImportRequest = new SchoolBulkImportRequest()
         {
             ContentId = 1,
@@ -28,13 +30,13 @@ public sealed class ApplicationDbContextSchoolBulkImportRequestTests(Integration
     public async Task GivenSchoolBulkImportRequestWithProgressAndFailure_WhenInsertingToDatabase_ThenAllStateIsRetrieved()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var schoolBulkImportRequest = new SchoolBulkImportRequest
         {
             ContentId = 7,
         };
         schoolBulkImportRequest.ProcessingStarted();
-        for (var lineNumber = 1; lineNumber <= 11; lineNumber++)
+        for (int lineNumber = 1; lineNumber <= 11; lineNumber++)
         {
             schoolBulkImportRequest.UpdateProgress(lineNumber, null);
         }

@@ -1,6 +1,6 @@
 ﻿namespace SummerBornInfo.Features.Tests.Schools.Commands.Import;
 
-public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) 
+public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper)
     : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
     [Fact]
@@ -18,7 +18,7 @@ public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServ
         Assert.NotEqual(Guid.Empty, result.SchoolBulkImportRequestId);
 
         var dbContext = CreateDbContext();
-        var savedImportRequest = await dbContext.SchoolBulkImportRequests.FindAsync([ result.SchoolBulkImportRequestId ], cancellationToken: TestContext.Current.CancellationToken);
+        var savedImportRequest = await dbContext.SchoolBulkImportRequests.FindAsync([result.SchoolBulkImportRequestId], cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(savedImportRequest);
         await LargeObjectAssertions.AssertLargeObjectExistsAsync(savedImportRequest.ContentId, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);

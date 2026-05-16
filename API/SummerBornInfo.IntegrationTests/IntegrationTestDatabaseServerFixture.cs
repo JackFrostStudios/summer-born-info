@@ -1,4 +1,5 @@
 ﻿namespace SummerBornInfo.TestFramework;
+
 public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgreSqlContainer;
@@ -22,7 +23,7 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
         await _postgreSqlContainer.StartAsync();
         ConnectionString = _postgreSqlContainer.GetConnectionString();
 
-        var templateDatabaseConnectionString = ConnectionString.Replace("Database=postgres", $"Database={TemplateDataBaseName}");
+        string templateDatabaseConnectionString = ConnectionString.Replace("Database=postgres", $"Database={TemplateDataBaseName}");
         templateDatabaseConnectionString += ";Pooling=false";
 
         var db = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(templateDatabaseConnectionString).Options);

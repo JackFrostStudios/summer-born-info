@@ -1,4 +1,6 @@
-﻿namespace SummerBornInfo.Infrastructure.Tests.Persistence;
+﻿using SummerBornInfo.Infrastructure.Persistence;
+
+namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 
 public sealed class ApplicationDbContextPhaseOfEducationTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
@@ -6,7 +8,7 @@ public sealed class ApplicationDbContextPhaseOfEducationTests(IntegrationTestDat
     public async Task GivenNewPhaseOfEducation_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var phaseOfEducation = PhaseOfEducationFactory.GetPhaseOfEducation();
 
         // Act
@@ -26,7 +28,7 @@ public sealed class ApplicationDbContextPhaseOfEducationTests(IntegrationTestDat
     public async Task GivenExistingPhaseOfEducation_WhenUpdatingAllFields_ThenUpdatedRecordCanBeRetrieved()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var phaseOfEducation = PhaseOfEducationFactory.GetPhaseOfEducation();
         dbContext.PhasesOfEducation.Add(phaseOfEducation);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -52,7 +54,7 @@ public sealed class ApplicationDbContextPhaseOfEducationTests(IntegrationTestDat
     public async Task GivenExistingPhaseOfEducation_ConcurrentUpdates_ThenSecondUpdateShouldFail()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var phaseOfEducation = PhaseOfEducationFactory.GetPhaseOfEducation();
         dbContext.PhasesOfEducation.Add(phaseOfEducation);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -63,7 +65,7 @@ public sealed class ApplicationDbContextPhaseOfEducationTests(IntegrationTestDat
         Assert.NotNull(phaseOfEducationToUpdateOne);
         phaseOfEducationToUpdateOne.Code = "Code_One";
 
-        var dbContextTwo = CreateDbContext();
+        ApplicationDbContext dbContextTwo = CreateDbContext();
         var phaseOfEducationToUpdateTwo = dbContextTwo.PhasesOfEducation.Find(phaseOfEducation.Id);
         Assert.NotNull(phaseOfEducationToUpdateTwo);
         phaseOfEducationToUpdateTwo.Code = "Code_Two";

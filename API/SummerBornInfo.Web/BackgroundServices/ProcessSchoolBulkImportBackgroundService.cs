@@ -20,7 +20,7 @@ public sealed class ProcessSchoolBulkImportBackgroundService(
         {
             try
             {
-                var processedMessage = await ProcessNextMessageAsync(stoppingToken);
+                bool processedMessage = await ProcessNextMessageAsync(stoppingToken);
                 if (!processedMessage)
                 {
                     await Task.Delay(emptyQueueDelay, stoppingToken);
@@ -40,7 +40,7 @@ public sealed class ProcessSchoolBulkImportBackgroundService(
 
     private async Task<bool> ProcessNextMessageAsync(CancellationToken cancellationToken)
     {
-        await using var scope = serviceScopeFactory.CreateAsyncScope();
+        await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
         var eventReader = scope.ServiceProvider.GetRequiredService<IEventReader>();
         var eventAcknowledger = scope.ServiceProvider.GetRequiredService<IEventAcknowledger>();
         var queuedEvent = await eventReader.ReadEventAsync<SchoolBulkImportUploaded>(EventQueue.SchoolBulkImport, messageReadTimeoutSeconds, cancellationToken);
@@ -52,7 +52,7 @@ public sealed class ProcessSchoolBulkImportBackgroundService(
 
         try
         {
-            var handler = scope.ServiceProvider.GetRequiredService<ProcessImportFileCommandHandler>();
+            ProcessImportFileCommandHandler handler = scope.ServiceProvider.GetRequiredService<ProcessImportFileCommandHandler>();
             await handler.ExecuteAsync(new ProcessImportFileCommand(queuedEvent.Message.SchoolBulkImportRequestId), cancellationToken);
             await eventAcknowledger.DeleteEventAsync(EventQueue.SchoolBulkImport, queuedEvent.MessageId, cancellationToken);
             return true;

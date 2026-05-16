@@ -21,7 +21,7 @@ public sealed class GetAllSchoolsQueryHandler(ApplicationDbContext context)
             .Take(request.PageSize + 1)
             .ToListAsync(cancellationToken);
 
-        var hasMore = schools.Count > request.PageSize;
+        bool hasMore = schools.Count > request.PageSize;
         var schoolsToReturn = hasMore ? [.. schools.Take(request.PageSize)] : schools;
 
         var schoolDtos = schoolsToReturn.Select(s => SchoolDto.FromEntity(s)).ToList();

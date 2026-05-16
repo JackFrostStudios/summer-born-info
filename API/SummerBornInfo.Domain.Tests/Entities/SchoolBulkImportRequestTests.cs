@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace SummerBornInfo.Domain.Tests.Entities;
 
 public sealed class SchoolBulkImportRequestTests
@@ -41,7 +43,7 @@ public sealed class SchoolBulkImportRequestTests
         };
 
         // Act
-        var started = schoolBulkImportRequest.ProcessingStarted();
+        bool started = schoolBulkImportRequest.ProcessingStarted();
 
         // Assert
         Assert.True(started);
@@ -60,7 +62,7 @@ public sealed class SchoolBulkImportRequestTests
         schoolBulkImportRequest.ProcessingComplete();
 
         // Act
-        var started = schoolBulkImportRequest.ProcessingStarted();
+        bool started = schoolBulkImportRequest.ProcessingStarted();
 
         // Assert
         Assert.False(started);
@@ -179,9 +181,9 @@ public sealed class SchoolBulkImportRequestTests
     public void SchoolBulkImportRequest_ShouldNotExposePublicSettersForMutableImportState()
     {
         // Act
-        var linesProcessedSetter = typeof(SchoolBulkImportRequest).GetProperty(nameof(SchoolBulkImportRequest.LinesProcessed))!.SetMethod;
-        var statusSetter = typeof(SchoolBulkImportRequest).GetProperty(nameof(SchoolBulkImportRequest.Status))!.SetMethod;
-        var failuresSetter = typeof(SchoolBulkImportRequest).GetProperty(nameof(SchoolBulkImportRequest.Failures))!.SetMethod;
+        MethodInfo? linesProcessedSetter = typeof(SchoolBulkImportRequest).GetProperty(nameof(SchoolBulkImportRequest.LinesProcessed))!.SetMethod;
+        MethodInfo? statusSetter = typeof(SchoolBulkImportRequest).GetProperty(nameof(SchoolBulkImportRequest.Status))!.SetMethod;
+        MethodInfo? failuresSetter = typeof(SchoolBulkImportRequest).GetProperty(nameof(SchoolBulkImportRequest.Failures))!.SetMethod;
 
         // Assert
         Assert.False(linesProcessedSetter?.IsPublic ?? false);

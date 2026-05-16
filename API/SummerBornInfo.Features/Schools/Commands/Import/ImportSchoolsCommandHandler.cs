@@ -5,10 +5,10 @@ public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context, IL
     public async Task<ImportSchoolsResponse> ExecuteAsync(ImportSchoolsCommand command, CancellationToken cancellationToken)
     {
         await using var efTransaction = await context.Database.BeginTransactionAsync(cancellationToken);
-        
-        var largeObjectId = await largeObjectWriter.StreamContentToNewLargeObjectAsync(command.Content, cancellationToken);
 
-        var schoolBulkImportRequest = await SaveNewSchoolBulkImportRequestAsync(largeObjectId, cancellationToken);
+        uint largeObjectId = await largeObjectWriter.StreamContentToNewLargeObjectAsync(command.Content, cancellationToken);
+
+        SchoolBulkImportRequest schoolBulkImportRequest = await SaveNewSchoolBulkImportRequestAsync(largeObjectId, cancellationToken);
 
         await EmitSchoolBulkImportEvent(schoolBulkImportRequest, cancellationToken);
 

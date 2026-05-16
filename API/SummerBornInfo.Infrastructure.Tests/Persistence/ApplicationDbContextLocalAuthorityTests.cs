@@ -1,4 +1,6 @@
-﻿namespace SummerBornInfo.Infrastructure.Tests.Persistence;
+﻿using SummerBornInfo.Infrastructure.Persistence;
+
+namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 
 public sealed class ApplicationDbContextLocalAuthorityTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
@@ -6,7 +8,7 @@ public sealed class ApplicationDbContextLocalAuthorityTests(IntegrationTestDatab
     public async Task GivenNewLocalAuthority_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var localAuthority = LocalAuthorityFactory.GetLocalAuthority();
 
         // Act
@@ -26,7 +28,7 @@ public sealed class ApplicationDbContextLocalAuthorityTests(IntegrationTestDatab
     public async Task GivenExistingLocalAuthority_WhenUpdatingAllFields_ThenUpdatedRecordCanBeRetrieved()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var localAuthority = LocalAuthorityFactory.GetLocalAuthority();
         dbContext.LocalAuthorities.Add(localAuthority);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -52,7 +54,7 @@ public sealed class ApplicationDbContextLocalAuthorityTests(IntegrationTestDatab
     public async Task GivenExistingLocalAuthority_ConcurrentUpdates_ThenSecondUpdateShouldFail()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var localAuthority = LocalAuthorityFactory.GetLocalAuthority();
         dbContext.LocalAuthorities.Add(localAuthority);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -63,7 +65,7 @@ public sealed class ApplicationDbContextLocalAuthorityTests(IntegrationTestDatab
         Assert.NotNull(localAuthorityToUpdateOne);
         localAuthorityToUpdateOne.Code = "Code_One";
 
-        var dbContextTwo = CreateDbContext();
+        ApplicationDbContext dbContextTwo = CreateDbContext();
         var localAuthorityToUpdateTwo = dbContextTwo.LocalAuthorities.Find(localAuthority.Id);
         Assert.NotNull(localAuthorityToUpdateTwo);
         localAuthorityToUpdateTwo.Code = "Code_Two";

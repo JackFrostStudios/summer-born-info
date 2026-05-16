@@ -4,13 +4,13 @@ public static class LargeObjectAssertions
 {
     public static async Task AssertLargeObjectExistsAsync(uint objectId, string connectionString, CancellationToken cancellationToken)
     {
-        var exists = await DoesLargeObjectExistAsync(objectId, connectionString, cancellationToken);
+        bool exists = await DoesLargeObjectExistAsync(objectId, connectionString, cancellationToken);
         Assert.True(exists);
     }
 
     public static async Task AssertLargeObjectDoesNotExistsAsync(uint objectId, string connectionString, CancellationToken cancellationToken)
     {
-        var exists = await DoesLargeObjectExistAsync(objectId, connectionString, cancellationToken);
+        bool exists = await DoesLargeObjectExistAsync(objectId, connectionString, cancellationToken);
         Assert.False(exists);
     }
 
@@ -38,7 +38,9 @@ public static class LargeObjectAssertions
         byte[] data = (byte[])(await cmd.ExecuteScalarAsync(cancellationToken))!;
 
         if (originalObject.CanSeek)
+        {
             originalObject.Seek(0, SeekOrigin.Begin);
+        }
 
         byte[] originalData;
         using (var memoryStream = new MemoryStream())

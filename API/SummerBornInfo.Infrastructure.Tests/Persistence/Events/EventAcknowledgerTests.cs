@@ -1,3 +1,5 @@
+using SummerBornInfo.Infrastructure.Persistence;
+
 namespace SummerBornInfo.Infrastructure.Tests.Persistence.Events;
 
 public sealed class EventAcknowledgerTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper)
@@ -9,7 +11,7 @@ public sealed class EventAcknowledgerTests(IntegrationTestDatabaseServerFixture 
         // Arrange
         var eventReader = new EventReader(CreateDbContext());
         var eventAcknowledger = new EventAcknowledger(CreateDbContext());
-        var eventEmitterDbContext = CreateDbContext();
+        ApplicationDbContext eventEmitterDbContext = CreateDbContext();
         var eventEmitter = new EventEmitter(eventEmitterDbContext);
 
         await using var dbContextTransaction = await eventEmitterDbContext.Database.BeginTransactionAsync(TestContext.Current.CancellationToken);

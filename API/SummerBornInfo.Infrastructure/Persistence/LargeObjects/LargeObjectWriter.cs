@@ -4,19 +4,20 @@ public sealed class LargeObjectWriter(ApplicationDbContext context) : ILargeObje
 {
     public async Task<uint> StreamContentToNewLargeObjectAsync(Stream content, CancellationToken cancellationToken = default)
     {
-        await using var transaction = await StartTransactionIfNoneExistsAsync(cancellationToken);
+        await using IDbContextTransaction? transaction = await StartTransactionIfNoneExistsAsync(cancellationToken);
 
         var npgsqlConnection = context.GetNpgsqlConnection();
 
-        var largeObjectId = await CreateLargeObjectAsync(npgsqlConnection, cancellationToken);
+        uint largeObjectId = await CreateLargeObjectAsync(npgsqlConnection, cancellationToken);
 
-        var fileDescriptor = await OpenLargeObjectAsync(npgsqlConnection, largeObjectId, cancellationToken);
+        int fileDescriptor = await OpenLargeObjectAsync(npgsqlConnection, largeObjectId, cancellationToken);
 
         await WriteToLargeObjectAsync(npgsqlConnection, content, fileDescriptor, cancellationToken);
 
         await CloseLargeObjectAsync(npgsqlConnection, fileDescriptor, cancellationToken);
 
-        if (transaction != null) { 
+        if (transaction != null)
+        {
             await transaction.CommitAsync(cancellationToken);
         }
 
@@ -62,12 +63,12 @@ public sealed class LargeObjectWriter(ApplicationDbContext context) : ILargeObje
     private static async Task WriteToLargeObjectAsync(NpgsqlConnection connection, Stream content, int fileDescriptor, CancellationToken cancellationToken)
     {
         const int chunkSize = 8192;
-        var buffer = new byte[chunkSize];
+        byte[] buffer = new byte[chunkSize];
         int bytesRead;
 
         while ((bytesRead = await content.ReadAsync(buffer.AsMemory(0, chunkSize), cancellationToken)) > 0)
         {
-            var chunk = bytesRead == chunkSize ? buffer : buffer[..bytesRead];
+            byte[] chunk = bytesRead == chunkSize ? buffer : buffer[..bytesRead];
 
             await using var writeCommand = new NpgsqlCommand("SELECT lowrite($1, $2)", connection);
             writeCommand.Parameters.AddWithValue(fileDescriptor);

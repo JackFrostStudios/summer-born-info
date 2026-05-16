@@ -1,4 +1,6 @@
-﻿namespace SummerBornInfo.Infrastructure.Tests.Persistence;
+﻿using SummerBornInfo.Infrastructure.Persistence;
+
+namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 
 public sealed class ApplicationDbContextEstablishmentStatusTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
@@ -6,7 +8,7 @@ public sealed class ApplicationDbContextEstablishmentStatusTests(IntegrationTest
     public async Task GivenNewEstablishmentStatus_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var establishmentStatus = EstablishmentStatusFactory.GetEstablishmentStatus();
 
         // Act
@@ -26,7 +28,7 @@ public sealed class ApplicationDbContextEstablishmentStatusTests(IntegrationTest
     public async Task GivenExistingEstablishmentStatus_WhenUpdatingAllFields_ThenUpdatedRecordCanBeRetrieved()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var establishmentStatus = EstablishmentStatusFactory.GetEstablishmentStatus();
         dbContext.EstablishmentStatuses.Add(establishmentStatus);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -52,7 +54,7 @@ public sealed class ApplicationDbContextEstablishmentStatusTests(IntegrationTest
     public async Task GivenExistingEstablishmentStatus_ConcurrentUpdates_ThenSecondUpdateShouldFail()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var establishmentStatus = EstablishmentStatusFactory.GetEstablishmentStatus();
         dbContext.EstablishmentStatuses.Add(establishmentStatus);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -63,7 +65,7 @@ public sealed class ApplicationDbContextEstablishmentStatusTests(IntegrationTest
         Assert.NotNull(establishmentStatusToUpdateOne);
         establishmentStatusToUpdateOne.Code = "Code_One";
 
-        var dbContextTwo = CreateDbContext();
+        ApplicationDbContext dbContextTwo = CreateDbContext();
         var establishmentStatusToUpdateTwo = dbContextTwo.EstablishmentStatuses.Find(establishmentStatus.Id);
         Assert.NotNull(establishmentStatusToUpdateTwo);
         establishmentStatusToUpdateTwo.Code = "Code_Two";

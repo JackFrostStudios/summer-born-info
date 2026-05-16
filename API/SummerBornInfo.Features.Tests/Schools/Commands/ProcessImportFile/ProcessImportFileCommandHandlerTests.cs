@@ -13,7 +13,7 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
     {
         // Arrange
         var dbContext = CreateDbContext();
-        var handler = CreateHandler(dbContext);
+        ProcessImportFileCommandHandler handler = CreateHandler(dbContext);
         var command = new ProcessImportFileCommand(Guid.CreateVersion7());
 
         // Act / Assert
@@ -33,7 +33,7 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
         dbContext.SchoolBulkImportRequests.Add(schoolBulkImportRequest);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = CreateHandler(CreateDbContext());
+        ProcessImportFileCommandHandler handler = CreateHandler(CreateDbContext());
         var command = new ProcessImportFileCommand(schoolBulkImportRequest.Id);
 
         // Act / Assert
@@ -44,8 +44,8 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
     public async Task GivenValidImportRequest_WhenExecuted_ThenProgressAndStatusAreUpdated()
     {
         // Arrange
-        var requestId = await CreateImportRequestAsync(ExampleImportFile.GetExampleImportFileContent());
-        var handler = CreateHandler(CreateDbContext());
+        Guid requestId = await CreateImportRequestAsync(ExampleImportFile.GetExampleImportFileContent());
+        ProcessImportFileCommandHandler handler = CreateHandler(CreateDbContext());
 
         // Act
         await handler.ExecuteAsync(new ProcessImportFileCommand(requestId), TestContext.Current.CancellationToken);
@@ -68,13 +68,13 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
     public async Task GivenImportRequestWithInvalidRow_WhenExecuted_ThenFailureIsRecordedAndImportContinues()
     {
         // Arrange
-        using var invalidCsv = CreateCsvStream(
+        using MemoryStream invalidCsv = CreateCsvStream(
             "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\"",
             "\"100000\",\"3614\",\"The Aldgate School\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\"",
             "\"INVALID\",\"1045\",\"Broken School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\"",
             "\"100004\",\"1045\",\"Sherborne Nursery School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\"");
-        var requestId = await CreateImportRequestAsync(invalidCsv);
-        var handler = CreateHandler(CreateDbContext());
+        Guid requestId = await CreateImportRequestAsync(invalidCsv);
+        ProcessImportFileCommandHandler handler = CreateHandler(CreateDbContext());
 
         // Act
         await handler.ExecuteAsync(new ProcessImportFileCommand(requestId), TestContext.Current.CancellationToken);
@@ -102,11 +102,11 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
     public async Task GivenCompletedImportRequest_WhenExecuted_ThenRequestIsNotProcessedAgain()
     {
         // Arrange
-        var requestId = await CreateImportRequestAsync(ExampleImportFile.GetExampleImportFileContent());
+        Guid requestId = await CreateImportRequestAsync(ExampleImportFile.GetExampleImportFileContent());
         var initialDbContext = CreateDbContext();
         var request = await initialDbContext.SchoolBulkImportRequests.SingleAsync(x => x.Id == requestId, TestContext.Current.CancellationToken);
         request.ProcessingStarted();
-        for (var lineNumber = 1; lineNumber <= 9; lineNumber++)
+        for (int lineNumber = 1; lineNumber <= 9; lineNumber++)
         {
             request.UpdateProgress(lineNumber, null);
         }
@@ -114,7 +114,7 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
         request.ProcessingComplete();
         await initialDbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = CreateHandler(CreateDbContext());
+        ProcessImportFileCommandHandler handler = CreateHandler(CreateDbContext());
 
         // Act
         await handler.ExecuteAsync(new ProcessImportFileCommand(requestId), TestContext.Current.CancellationToken);

@@ -1,4 +1,6 @@
-﻿namespace SummerBornInfo.Infrastructure.Tests.Persistence;
+﻿using SummerBornInfo.Infrastructure.Persistence;
+
+namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 
 public sealed class ApplicationDbContextEstablishmentGroupTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
@@ -6,7 +8,7 @@ public sealed class ApplicationDbContextEstablishmentGroupTests(IntegrationTestD
     public async Task GivenNewEstablishmentGroup_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var establishmentGroup = EstablishmentGroupFactory.GetEstablishmentGroup();
 
         // Act
@@ -26,7 +28,7 @@ public sealed class ApplicationDbContextEstablishmentGroupTests(IntegrationTestD
     public async Task GivenExistingEstablishmentGroup_WhenUpdatingAllFields_ThenUpdatedRecordCanBeRetrieved()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var establishmentGroup = EstablishmentGroupFactory.GetEstablishmentGroup();
         dbContext.EstablishmentGroups.Add(establishmentGroup);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -52,7 +54,7 @@ public sealed class ApplicationDbContextEstablishmentGroupTests(IntegrationTestD
     public async Task GivenExistingEstablishmentGroup_ConcurrentUpdates_ThenSecondUpdateShouldFail()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var establishmentGroup = EstablishmentGroupFactory.GetEstablishmentGroup();
         dbContext.EstablishmentGroups.Add(establishmentGroup);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -63,7 +65,7 @@ public sealed class ApplicationDbContextEstablishmentGroupTests(IntegrationTestD
         Assert.NotNull(establishmentGroupToUpdateOne);
         establishmentGroupToUpdateOne.Code = "Code_One";
 
-        var dbContextTwo = CreateDbContext();
+        ApplicationDbContext dbContextTwo = CreateDbContext();
         var establishmentGroupToUpdateTwo = dbContextTwo.EstablishmentGroups.Find(establishmentGroup.Id);
         Assert.NotNull(establishmentGroupToUpdateTwo);
         establishmentGroupToUpdateTwo.Code = "Code_Two";

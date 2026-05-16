@@ -4,7 +4,7 @@ public sealed class EstablishmentStatusFactory
 {
     public static EstablishmentStatus GetEstablishmentStatus()
     {
-        var (code, name) = CodeAndNameFactory.GetCodeAndName();
+        (string? code, string? name) = CodeAndNameFactory.GetCodeAndName();
         return new EstablishmentStatus()
         {
             Code = code,

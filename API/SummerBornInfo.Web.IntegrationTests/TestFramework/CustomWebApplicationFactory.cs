@@ -24,7 +24,8 @@ public sealed class CustomWebApplicationFactory(IntegrationTestDatabaseServerFix
             });
         });
 
-        builder.ConfigureLogging(logging => {
+        builder.ConfigureLogging(logging =>
+        {
             logging.AddProvider(new XUnitLoggerProvider(testOutputHelper));
         });
     }

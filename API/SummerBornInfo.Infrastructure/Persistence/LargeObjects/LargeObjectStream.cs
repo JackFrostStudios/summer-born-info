@@ -11,7 +11,7 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
     public override bool CanRead => true;
     public override bool CanSeek => true;
     public override bool CanWrite => false;
-    
+
     public override long Length
     {
         get
@@ -24,7 +24,9 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
     private long GetLength()
     {
         if (_length.HasValue)
+        {
             return _length.Value;
+        }
 
         using var cmd = new NpgsqlCommand(
             "SELECT COALESCE(SUM(length(data)), 0) FROM pg_largeobject WHERE loid = @oid",
@@ -37,7 +39,9 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
     public async Task<long> GetLengthAsync(CancellationToken cancellationToken = default)
     {
         if (_length.HasValue)
+        {
             return _length.Value;
+        }
 
         await using var cmd = new NpgsqlCommand(
             "SELECT COALESCE(SUM(length(data)), 0) FROM pg_largeobject WHERE loid = @oid",
@@ -72,38 +76,42 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
     public override int Read(byte[] buffer, int offset, int count)
     {
         var readBuffer = new Memory<byte>(buffer, offset, count);
-        var bytesToRead = Math.Min(readBuffer.Length, ChunkSize);
+        int bytesToRead = Math.Min(readBuffer.Length, ChunkSize);
 
         using var cmd = new NpgsqlCommand("SELECT lo_get(@oid, @offset, @length)", _connection);
         cmd.Parameters.AddWithValue("oid", NpgsqlTypes.NpgsqlDbType.Oid, _largeObjectId);
         cmd.Parameters.AddWithValue("offset", NpgsqlTypes.NpgsqlDbType.Bigint, _position);
         cmd.Parameters.AddWithValue("length", NpgsqlTypes.NpgsqlDbType.Integer, bytesToRead);
 
-        var chunk = (byte[]?)cmd.ExecuteScalar();
+        byte[] chunk = (byte[]?)cmd.ExecuteScalar();
         if (chunk == null || chunk.Length == 0)
+        {
             return 0;
+        }
 
         chunk.AsMemory().CopyTo(readBuffer);
         _position += chunk.Length;
         return chunk.Length;
     }
 
-    public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) 
+    public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         => await ReadAsync(buffer.AsMemory(offset, count), cancellationToken);
 
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
-        var bytesToRead = Math.Min(buffer.Length, ChunkSize);
+        int bytesToRead = Math.Min(buffer.Length, ChunkSize);
 
         await using var cmd = new NpgsqlCommand("SELECT lo_get(@oid, @offset, @length)", _connection);
         cmd.Parameters.AddWithValue("oid", NpgsqlTypes.NpgsqlDbType.Oid, _largeObjectId);
         cmd.Parameters.AddWithValue("offset", NpgsqlTypes.NpgsqlDbType.Bigint, _position);
         cmd.Parameters.AddWithValue("length", NpgsqlTypes.NpgsqlDbType.Integer, bytesToRead);
 
-        var chunk = (byte[]?)(await cmd.ExecuteScalarAsync(cancellationToken));
+        byte[] chunk = (byte[]?)(await cmd.ExecuteScalarAsync(cancellationToken));
 
         if (chunk == null || chunk.Length == 0)
+        {
             return 0;
+        }
 
         chunk.AsMemory().CopyTo(buffer);
         _position += chunk.Length;

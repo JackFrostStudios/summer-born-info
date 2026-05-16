@@ -79,7 +79,7 @@ public sealed class SchoolTests
         var establishmentType = new EstablishmentType { Id = Guid.NewGuid(), Code = "AC", Name = "Academy" };
         var establishmentGroup = new EstablishmentGroup { Id = Guid.NewGuid(), Code = "SCH", Name = "School" };
         var establishmentStatus = new EstablishmentStatus { Id = Guid.NewGuid(), Code = "OPEN", Name = "Open" };
-        
+
         var school = new School
         {
             Id = schoolId,

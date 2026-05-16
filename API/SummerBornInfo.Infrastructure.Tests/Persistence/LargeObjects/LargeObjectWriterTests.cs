@@ -1,4 +1,6 @@
-﻿namespace SummerBornInfo.Infrastructure.Tests.Persistence.LargeObjects;
+﻿using SummerBornInfo.Infrastructure.Persistence;
+
+namespace SummerBornInfo.Infrastructure.Tests.Persistence.LargeObjects;
 
 public sealed class LargeObjectWriterTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
@@ -6,9 +8,9 @@ public sealed class LargeObjectWriterTests(IntegrationTestDatabaseServerFixture 
     public async Task GivenNoTransactionHasStarted_WhenWritingLargeObject_ThenDataIsSavedToLargeObject()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var largeObjectWriter = new LargeObjectWriter(dbContext);
-        var largeObjectStream = ExampleImportFile.GetExampleImportFileContent();
+        Stream largeObjectStream = ExampleImportFile.GetExampleImportFileContent();
 
 
         // Act
@@ -23,10 +25,10 @@ public sealed class LargeObjectWriterTests(IntegrationTestDatabaseServerFixture 
     public async Task GivenTransactionHasStarted_WhenWritingLargeObjectAndTransactionIsRolledBack_ThenLargeObjectIsNotPersisted()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         await using var efTransaction = await dbContext.Database.BeginTransactionAsync(TestContext.Current.CancellationToken);
         var largeObjectWriter = new LargeObjectWriter(dbContext);
-        var largeObjectStream = ExampleImportFile.GetExampleImportFileContent();
+        Stream largeObjectStream = ExampleImportFile.GetExampleImportFileContent();
 
 
         // Act
@@ -41,10 +43,10 @@ public sealed class LargeObjectWriterTests(IntegrationTestDatabaseServerFixture 
     public async Task GivenTransactionHasStarted_WhenWritingLargeObjectAndTransactionIsCommitted_ThenDataIsSavedToLargeObject()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         await using var efTransaction = await dbContext.Database.BeginTransactionAsync(TestContext.Current.CancellationToken);
         var largeObjectWriter = new LargeObjectWriter(dbContext);
-        var largeObjectStream = ExampleImportFile.GetExampleImportFileContent();
+        Stream largeObjectStream = ExampleImportFile.GetExampleImportFileContent();
 
 
         // Act

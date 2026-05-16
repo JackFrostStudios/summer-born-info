@@ -30,7 +30,7 @@ public sealed class SchoolBulkImportRequest
             return;
         }
 
-        var existingFailure = _failures.SingleOrDefault(x => x.LineNumber == lineNumber);
+        SchoolBulkImportFailure? existingFailure = _failures.SingleOrDefault(x => x.LineNumber == lineNumber);
         if (existingFailure is null)
         {
             _failures.Add(new SchoolBulkImportFailure(lineNumber, errorMessage));

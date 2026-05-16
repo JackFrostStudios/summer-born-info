@@ -1,4 +1,6 @@
-﻿namespace SummerBornInfo.Infrastructure.Tests.Persistence;
+﻿using SummerBornInfo.Infrastructure.Persistence;
+
+namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 
 public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
@@ -6,7 +8,7 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
     public async Task GivenNewSchool_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var school = SchoolFactory.GetSchool();
 
         // Act
@@ -25,7 +27,7 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
     public async Task GivenNewSchoolWithOnlyRequiredFields_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var school = SchoolFactory.GetSchool();
         school.UKPRN = null;
         school.OpenDate = null;
@@ -51,7 +53,7 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
     public async Task GivenExistingSchool_WhenUpdatingAllFields_ThenUpdatedRecordCanBeRetrieved()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var school = SchoolFactory.GetSchool();
         dbContext.Schools.Add(school);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -93,7 +95,7 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
     public async Task GivenExistingSchool_ConcurrentUpdates_ThenSecondUpdateShouldFail()
     {
         // Arrange
-        var dbContext = CreateDbContext();
+        ApplicationDbContext dbContext = CreateDbContext();
         var school = SchoolFactory.GetSchool();
         dbContext.Schools.Add(school);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -104,7 +106,7 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         Assert.NotNull(schoolToUpdateOne);
         schoolToUpdateOne.URN = 999999999;
 
-        var dbContextTwo = CreateDbContext();
+        ApplicationDbContext dbContextTwo = CreateDbContext();
         var schoolToUpdateTwo = dbContextTwo.Schools.Find(school.Id);
         Assert.NotNull(schoolToUpdateTwo);
         schoolToUpdateTwo.URN = 999999998;

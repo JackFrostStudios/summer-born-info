@@ -16,11 +16,11 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         // Arrange
         var dbContext = CreateDbContext();
         var importer = new SchoolsImporter<ApplicationDbContext>(dbContext);
-        using var csvStream = ExampleImportFile.GetExampleImportFileContent();
+        using Stream csvStream = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
         List<SchoolImportResult> results = [];
-        await foreach (var result in importer.ImportAsync(TestRequestId, csvStream, TestContext.Current.CancellationToken))
+        await foreach (SchoolImportResult result in importer.ImportAsync(TestRequestId, csvStream, TestContext.Current.CancellationToken))
         {
             results.Add(result);
         }
@@ -41,7 +41,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         // Arrange
         var dbContext = CreateDbContext();
         var importer = new SchoolsImporter<ApplicationDbContext>(dbContext);
-        using var csvStream = ExampleImportFile.GetExampleImportFileContent();
+        using Stream csvStream = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
         var results = await importer.ImportAsync(TestRequestId, csvStream, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
@@ -118,13 +118,13 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         // Arrange
         var dbContext1 = CreateDbContext();
         var importer1 = new SchoolsImporter<ApplicationDbContext>(dbContext1);
-        using var csvStream1 = ExampleImportFile.GetExampleImportFileContent();
+        using Stream csvStream1 = ExampleImportFile.GetExampleImportFileContent();
 
         var firstResults = await importer1.ImportAsync(TestRequestId, csvStream1, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
 
         var dbContext2 = CreateDbContext();
         var importer2 = new SchoolsImporter<ApplicationDbContext>(dbContext2);
-        using var csvStream2 = ExampleImportFile.GetExampleImportFileContent();
+        using Stream csvStream2 = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
         var secondResults = await importer2.ImportAsync(TestRequestId, csvStream2, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
@@ -147,7 +147,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         // Arrange
         var dbContext1 = CreateDbContext();
         var importer1 = new SchoolsImporter<ApplicationDbContext>(dbContext1);
-        using var csvStream1 = ExampleImportFile.GetExampleImportFileContent();
+        using Stream csvStream1 = ExampleImportFile.GetExampleImportFileContent();
 
         var firstResults = await importer1.ImportAsync(TestRequestId, csvStream1, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
 
@@ -163,7 +163,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
 
         var dbContext2 = CreateDbContext();
         var importer2 = new SchoolsImporter<ApplicationDbContext>(dbContext2);
-        using var csvStream2 = ExampleImportFile.GetExampleImportFileContent();
+        using Stream csvStream2 = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
         var secondResults = await importer2.ImportAsync(TestRequestId, csvStream2, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
@@ -217,13 +217,13 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         // Arrange
         var dbContext1 = CreateDbContext();
         var importer1 = new SchoolsImporter<ApplicationDbContext>(dbContext1);
-        using var csvStream1 = ExampleImportFile.GetExampleImportFileContent();
+        using Stream csvStream1 = ExampleImportFile.GetExampleImportFileContent();
 
         var firstResults = await importer1.ImportAsync(TestRequestId, csvStream1, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
 
         var dbContext2 = CreateDbContext();
         var importer2 = new SchoolsImporter<ApplicationDbContext>(dbContext2);
-        using var csvStream2 = ExampleImportFile.GetExampleImportFileContent();
+        using Stream csvStream2 = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
         var secondResults = await importer2.ImportAsync(TestRequestId, csvStream2, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
@@ -256,7 +256,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         // Arrange
         var dbContext = CreateDbContext();
         var importer = new SchoolsImporter<ApplicationDbContext>(dbContext);
-        using var csvStream = CreateCsvStream(
+        using MemoryStream csvStream = CreateCsvStream(
             "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\"",
             "\"100000\",\"3614\",\"The Aldgate School\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\"",
             "\"INVALID\",\"1045\",\"Broken School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\"",

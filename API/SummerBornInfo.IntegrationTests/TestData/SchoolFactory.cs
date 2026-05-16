@@ -9,11 +9,11 @@ public static class SchoolFactory
 
     public static School GetSchool()
     {
-        var establishmentGroup = EstablishmentGroupFactory.GetEstablishmentGroup();
-        var establishmentStatus = EstablishmentStatusFactory.GetEstablishmentStatus();
-        var establishmentType = EstablishmentTypeFactory.GetEstablishmentType();
-        var localAuthority = LocalAuthorityFactory.GetLocalAuthority();
-        var phaseOfEducation = PhaseOfEducationFactory.GetPhaseOfEducation();
+        EstablishmentGroup establishmentGroup = EstablishmentGroupFactory.GetEstablishmentGroup();
+        EstablishmentStatus establishmentStatus = EstablishmentStatusFactory.GetEstablishmentStatus();
+        EstablishmentType establishmentType = EstablishmentTypeFactory.GetEstablishmentType();
+        LocalAuthority localAuthority = LocalAuthorityFactory.GetLocalAuthority();
+        PhaseOfEducation phaseOfEducation = PhaseOfEducationFactory.GetPhaseOfEducation();
 
         var closeDate = _faker.Date.PastDateOnly(1);
         var openDate = _faker.Date.PastDateOnly(100, closeDate);

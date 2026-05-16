@@ -1,4 +1,6 @@
-﻿namespace SummerBornInfo.Infrastructure.Tests.Persistence.LargeObjects;
+﻿using SummerBornInfo.Infrastructure.Persistence;
+
+namespace SummerBornInfo.Infrastructure.Tests.Persistence.LargeObjects;
 
 public class LargeObjectReaderTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper)
 : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
@@ -7,12 +9,12 @@ public class LargeObjectReaderTests(IntegrationTestDatabaseServerFixture testDat
     public async ValueTask GivenALargeObjectExists_WhenReadingToStream_ThenReadingStreamEndToEndWillReturnTheLargeObject()
     {
         // Arrange
-        var writerDbContext = CreateDbContext();
+        ApplicationDbContext writerDbContext = CreateDbContext();
         var largeObjectWriter = new LargeObjectWriter(writerDbContext);
-        var largeObjectStream = ExampleImportFile.GetExampleImportFileContent();
+        Stream largeObjectStream = ExampleImportFile.GetExampleImportFileContent();
         var largeObjectId = await largeObjectWriter.StreamContentToNewLargeObjectAsync(largeObjectStream, TestContext.Current.CancellationToken);
 
-        var readerDbContext = CreateDbContext();
+        ApplicationDbContext readerDbContext = CreateDbContext();
         var largeObjectReader = new LargeObjectReader(readerDbContext);
 
         // Act
@@ -27,7 +29,7 @@ public class LargeObjectReaderTests(IntegrationTestDatabaseServerFixture testDat
     public async ValueTask GivenConnectionIsOpen_WhenReadingToStream_ThenNoExceptionIsThrown()
     {
         // Arrange
-        var readerDbContext = CreateDbContext();
+        ApplicationDbContext readerDbContext = CreateDbContext();
         await readerDbContext.Database.OpenConnectionAsync(TestContext.Current.CancellationToken);
         var largeObjectReader = new LargeObjectReader(readerDbContext);
 
@@ -42,7 +44,7 @@ public class LargeObjectReaderTests(IntegrationTestDatabaseServerFixture testDat
     public async ValueTask GivenALargeObjectDoesNotExists_WhenReadingToStream_ThenNullIsReturned()
     {
         // Arrange
-        var readerDbContext = CreateDbContext();
+        ApplicationDbContext readerDbContext = CreateDbContext();
         var largeObjectReader = new LargeObjectReader(readerDbContext);
 
         // Act
@@ -54,8 +56,8 @@ public class LargeObjectReaderTests(IntegrationTestDatabaseServerFixture testDat
 
     private static async ValueTask AssertOriginalLargeObjectMatchesResultAsync(Stream expectedObject, Stream actualObject, CancellationToken cancellationToken)
     {
-        var expectedData = await GetDataFromStreamAsync(expectedObject, cancellationToken);
-        var actualData = await GetDataFromStreamAsync(actualObject, cancellationToken);
+        byte[] expectedData = await GetDataFromStreamAsync(expectedObject, cancellationToken);
+        byte[] actualData = await GetDataFromStreamAsync(actualObject, cancellationToken);
         Assert.Equal(expectedData.Length, actualData.Length);
 
         Assert.Equal(expectedData, actualData);

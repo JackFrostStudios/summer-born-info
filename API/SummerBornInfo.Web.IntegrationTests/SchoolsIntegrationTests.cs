@@ -24,7 +24,7 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
     {
         // Arrange
         var client = factory.CreateClient();
-        using var csvStream = ExampleImportFile.GetExampleImportFileContent();
+        using Stream csvStream = ExampleImportFile.GetExampleImportFileContent();
         using var content = new StreamContent(csvStream);
         content.Headers.ContentType = new MediaTypeHeaderValue("text/csv");
 
@@ -198,7 +198,7 @@ public sealed class SchoolsIntegrationTests(IntegrationTestDatabaseServerFixture
 
     private async Task<SchoolBulkImportRequest?> WaitForImportRequestAsync(Guid requestId, CancellationToken cancellationToken)
     {
-        var started = DateTime.UtcNow;
+        DateTime started = DateTime.UtcNow;
 
         while (DateTime.UtcNow - started < TimeSpan.FromSeconds(15))
         {
