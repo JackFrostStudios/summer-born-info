@@ -51,7 +51,7 @@ Target namespace:
 - [x] Update `LargeObjectWriter` to throw those specific exceptions for each current CA2201 site.
 - [x] Add `ExampleImportFileResourceNotFoundException` under the test data `Exceptions` folder.
 - [x] Update `ExampleImportFile` to throw the new resource-specific exception.
-- [ ] Run the relevant test/build validation to confirm the warning is resolved and no namespace issues were introduced.
+- [x] Run the relevant test/build validation to confirm the warning is resolved and no namespace issues were introduced.
 
 ## Notes
 
