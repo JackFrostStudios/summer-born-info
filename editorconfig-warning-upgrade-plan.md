@@ -13,7 +13,7 @@ Goal: raise every `suggestion`-level C# convention in `API/.editorconfig` to `wa
 - [x] Step 7: `csharp_style_var_for_built_in_types`
 - [x] Step 8: `csharp_style_var_when_type_is_apparent`
 - [x] Step 9: `csharp_style_var_elsewhere`
-- [ ] Step 10: `dotnet_diagnostic.CA1826`
+- [x] Step 10: `dotnet_diagnostic.CA1826`
 - [ ] Step 11: `dotnet_diagnostic.CA1725`
 - [ ] Step 12: `dotnet_naming_rule.constant_fields_should_be_pascal_case`
 - [ ] Step 13: `dotnet_naming_rule.camel_case_for_private_internal_fields`
