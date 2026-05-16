@@ -12,7 +12,7 @@ dotnet_sort_system_directives_first = true
 
 # Don't use this. qualifier
 dotnet_style_qualification_for_field = false:warning
-dotnet_style_qualification_for_property = false:suggestion
+dotnet_style_qualification_for_property = false:warning
 
 # use int x = .. over Int32
 dotnet_style_predefined_type_for_locals_parameters_members = true:warning
