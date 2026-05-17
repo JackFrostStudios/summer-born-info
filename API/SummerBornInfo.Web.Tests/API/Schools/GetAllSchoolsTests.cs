@@ -3,7 +3,7 @@ namespace SummerBornInfo.Web.Tests.API.Schools;
 public sealed class GetAllSchoolsTests(
     IntegrationTestDatabaseServerFixture testDatabaseServerFixture,
     ITestOutputHelper testOutputHelper)
-    : SchoolEndpointTestBase(testDatabaseServerFixture, testOutputHelper)
+    : WebIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
     [Fact]
     public async Task GivenSchoolExists_WhenGetAllSchools_ThenReturnsSchoolInformation()
