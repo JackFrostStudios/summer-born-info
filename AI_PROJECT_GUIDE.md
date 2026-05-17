@@ -13,16 +13,24 @@ This document is the compact source of truth for the repository layout and the c
 
 ## Conventions
 
+### General Guidance
+
 - Keep feature code vertical and self-contained unless a shared abstraction is clearly justified.
 - Put business rules in `Domain`, application behaviour in `Features`, and external system access in `Infrastructure`.
 - Features orchestrate use-cases and persistence; domain entities enforce invariants and own state mutation.
+- Add DI wiring in `API/SummerBornInfo.Web/Program.cs`.
+- Mirror the existing `Schools` slice when adding a new feature slice.
+- Reuse existing patterns before introducing new abstractions or helper frameworks.
+
+### Domain State Management
+
 - Encapsulate complex entity state transitions inside domain entities. Feature handlers must call domain methods rather than setting entity state directly when there is a domain action linked to the change.
 - When a state change is for a specific  domain action or has invariants, model it as a domain method and keep entity setters private.
 - Example pattern: for school import processing, use `SchoolBulkImportRequest.ProcessingStarted()`, `UpdateProgress(...)`, and `ProcessingComplete()` instead of direct status mutation in feature handlers.
 - Anti-pattern: directly assigning entity status (for example `request.Status = ...`) in feature code when a domain method exists for that transition.
-- Add DI wiring in `API/SummerBornInfo.Web/Program.cs`.
-- Mirror the existing `Schools` slice when adding a new feature slice.
-- Reuse existing patterns before introducing new abstractions or helper frameworks.
+
+### Using Style
+
 - Imports should be managed via "global using" in a single GlobalUsings.cs file per project to reduce noise in classes. The imports in these files should be sorted to reduce merge conflicts.
 
 ## Review Checklist
