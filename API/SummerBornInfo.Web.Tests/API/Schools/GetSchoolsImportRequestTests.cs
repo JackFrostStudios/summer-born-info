@@ -1,9 +1,9 @@
 namespace SummerBornInfo.Web.Tests.API.Schools;
 
-public sealed class GetSchoolImportRequestTests(
+public sealed class GetSchoolsImportRequestTests(
     IntegrationTestDatabaseServerFixture testDatabaseServerFixture,
     ITestOutputHelper testOutputHelper)
-    : SchoolEndpointTestBase(testDatabaseServerFixture, testOutputHelper)
+    : WebIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
     [Fact]
     public async Task GivenSchoolBulkImportRequest_WhenGetStatusByRequestId_ThenReturnsExpectedPayload()
@@ -150,5 +150,43 @@ public sealed class GetSchoolImportRequestTests(
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    private static SchoolBulkImportRequest CreateImportRequestInStatus(Guid requestId, SchoolBulkImportStatus status)
+    {
+        SchoolBulkImportRequest request = new()
+        {
+            Id = requestId,
+            ContentId = 999,
+        };
+
+        if (status is SchoolBulkImportStatus.Pending)
+        {
+            return request;
+        }
+
+        _ = request.ProcessingStarted();
+
+        if (status is SchoolBulkImportStatus.Processing)
+        {
+            return request;
+        }
+
+        if (status is SchoolBulkImportStatus.Completed)
+        {
+            request.UpdateProgress(1, errorMessage: null);
+            request.ProcessingComplete();
+            return request;
+        }
+
+        if (status is SchoolBulkImportStatus.CompletedWithFailures)
+        {
+            request.UpdateProgress(1, "failure");
+            request.ProcessingComplete();
+            return request;
+        }
+
+        request.ProcessingFailed();
+        return request;
     }
 }

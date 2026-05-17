@@ -1,9 +1,9 @@
 namespace SummerBornInfo.Web.Tests.API.Schools;
 
-public sealed class CreateSchoolImportRequestTests(
+public sealed class CreateSchoolsImportRequestTests(
     IntegrationTestDatabaseServerFixture testDatabaseServerFixture,
     ITestOutputHelper testOutputHelper)
-    : SchoolEndpointTestBase(testDatabaseServerFixture, testOutputHelper)
+    : WebIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
     [Fact]
     public async Task GivenImportRequest_WhenPosted_ThenBackgroundWorkerProcessesTheFile()
@@ -32,5 +32,28 @@ public sealed class CreateSchoolImportRequestTests(
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         var schools = await dbContext.Schools.ToListAsync(TestContext.Current.CancellationToken);
         Assert.Equal(2, schools.Count);
+    }
+
+    private async Task<SchoolBulkImportRequest?> WaitForImportRequestAsync(Guid requestId, CancellationToken cancellationToken)
+    {
+        var started = DateTime.UtcNow;
+
+        while (DateTime.UtcNow - started < TimeSpan.FromSeconds(15))
+        {
+            await using var scope = Factory.Services.CreateAsyncScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var request = await dbContext.SchoolBulkImportRequests
+                .Include(x => x.Failures)
+                .SingleOrDefaultAsync(x => x.Id == requestId, cancellationToken);
+
+            if (request?.Status is SchoolBulkImportStatus.Completed or SchoolBulkImportStatus.CompletedWithFailures or SchoolBulkImportStatus.Failed)
+            {
+                return request;
+            }
+
+            await Task.Delay(TimeSpan.FromMilliseconds(250), cancellationToken);
+        }
+
+        return null;
     }
 }
