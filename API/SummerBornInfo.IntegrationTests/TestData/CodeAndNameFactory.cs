@@ -6,7 +6,7 @@ public static class CodeAndNameFactory
     public static (string code, string name) GetCodeAndName()
     {
         var words = _faker.Lorem.Words();
-        var name = string.Join(" ", words);
+        var name = string.Join(' ', words);
         var code = string.Join("", words).ToUpperInvariant();
         return (code, name);
     }

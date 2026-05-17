@@ -30,9 +30,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.AppHost", "SummerBornInfo.AppHost\SummerBornInfo.AppHost.AppHost\SummerBornInfo.AppHost.csproj", "{E130BE2B-8CDD-4E6A-A739-9E274AA60436}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.AppHost", "SummerBornInfo.AppHost\SummerBornInfo.AppHost.csproj", "{E130BE2B-8CDD-4E6A-A739-9E274AA60436}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.AppHost.ServiceDefaults", "SummerBornInfo.AppHost\SummerBornInfo.AppHost.ServiceDefaults\SummerBornInfo.AppHost.ServiceDefaults.csproj", "{2147AC19-6941-AF8A-0810-21EFD460D781}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.AppHost.ServiceDefaults", "SummerBornInfo.AppHost.ServiceDefaults\SummerBornInfo.AppHost.ServiceDefaults.csproj", "{2147AC19-6941-AF8A-0810-21EFD460D781}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

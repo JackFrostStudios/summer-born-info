@@ -14,8 +14,8 @@ public sealed class LargeObjectWriterTests(IntegrationTestDatabaseServerFixture 
         var largeObjectId = await largeObjectWriter.StreamContentToNewLargeObjectAsync(largeObjectStream, TestContext.Current.CancellationToken);
 
         //Assert
-        await LargeObjectAssertions.AssertLargeObjectExistsAsync(largeObjectId, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
-        await LargeObjectAssertions.AssertLargeObjectEqualsOriginalAsync(largeObjectId, largeObjectStream, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
+        await LargeObjectAssertions.AssertLargeObjectExistsAsync(largeObjectId, IntegrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
+        await LargeObjectAssertions.AssertLargeObjectEqualsOriginalAsync(largeObjectId, largeObjectStream, IntegrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public sealed class LargeObjectWriterTests(IntegrationTestDatabaseServerFixture 
         await efTransaction.RollbackAsync(TestContext.Current.CancellationToken);
 
         //Assert
-        await LargeObjectAssertions.AssertLargeObjectDoesNotExistsAsync(largeObjectId, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
+        await LargeObjectAssertions.AssertLargeObjectDoesNotExistsAsync(largeObjectId, IntegrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public sealed class LargeObjectWriterTests(IntegrationTestDatabaseServerFixture 
         await efTransaction.CommitAsync(TestContext.Current.CancellationToken);
 
         //Assert
-        await LargeObjectAssertions.AssertLargeObjectExistsAsync(largeObjectId, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
-        await LargeObjectAssertions.AssertLargeObjectEqualsOriginalAsync(largeObjectId, largeObjectStream, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
+        await LargeObjectAssertions.AssertLargeObjectExistsAsync(largeObjectId, IntegrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
+        await LargeObjectAssertions.AssertLargeObjectEqualsOriginalAsync(largeObjectId, largeObjectStream, IntegrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
     }
 }

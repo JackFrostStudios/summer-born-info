@@ -1,6 +1,6 @@
 namespace SummerBornInfo.TestFramework.TestData;
 
-public sealed class SchoolAddressFactory
+public static class SchoolAddressFactory
 {
     private static readonly Faker _faker = new("en_GB");
     public static SchoolAddress GetSchoolAddress()

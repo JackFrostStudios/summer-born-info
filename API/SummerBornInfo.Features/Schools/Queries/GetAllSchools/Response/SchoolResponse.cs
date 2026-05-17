@@ -15,8 +15,9 @@ public sealed record SchoolResponse
     public required EstablishmentTypeResponse EstablishmentType { get; init; }
     public required EstablishmentGroupResponse EstablishmentGroup { get; init; }
     public required EstablishmentStatusResponse EstablishmentStatus { get; init; }
-    public static SchoolResponse FromEntity(School school) =>
-        new()
+    public static SchoolResponse FromEntity(School school)
+    {
+        return new()
         {
             Id = school.Id,
             URN = school.URN,
@@ -32,4 +33,5 @@ public sealed record SchoolResponse
             EstablishmentGroup = EstablishmentGroupResponse.FromEntity(school.EstablishmentGroup),
             EstablishmentStatus = EstablishmentStatusResponse.FromEntity(school.EstablishmentStatus),
         };
+    }
 };

@@ -31,7 +31,7 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
         using NpgsqlCommand cmd = new(
             "SELECT COALESCE(SUM(length(data)), 0) FROM pg_largeobject WHERE loid = @oid",
             _connection);
-        cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, _largeObjectId);
+        _ = cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, _largeObjectId);
         _length = (long)cmd.ExecuteScalar()!;
         return _length.Value;
     }
@@ -46,7 +46,7 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
         await using NpgsqlCommand cmd = new(
             "SELECT COALESCE(SUM(length(data)), 0) FROM pg_largeobject WHERE loid = @oid",
             _connection);
-        cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, _largeObjectId);
+        _ = cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, _largeObjectId);
         _length = (long)(await cmd.ExecuteScalarAsync(cancellationToken))!;
         return _length.Value;
     }
@@ -79,9 +79,9 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
         var bytesToRead = Math.Min(readBuffer.Length, ChunkSize);
 
         using NpgsqlCommand cmd = new("SELECT lo_get(@oid, @offset, @length)", _connection);
-        cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, _largeObjectId);
-        cmd.Parameters.AddWithValue("offset", NpgsqlDbType.Bigint, _position);
-        cmd.Parameters.AddWithValue("length", NpgsqlDbType.Integer, bytesToRead);
+        _ = cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, _largeObjectId);
+        _ = cmd.Parameters.AddWithValue("offset", NpgsqlDbType.Bigint, _position);
+        _ = cmd.Parameters.AddWithValue("length", NpgsqlDbType.Integer, bytesToRead);
 
         var chunk = (byte[]?)cmd.ExecuteScalar();
         if (chunk == null || chunk.Length == 0)
@@ -104,9 +104,9 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
         var bytesToRead = Math.Min(buffer.Length, ChunkSize);
 
         await using NpgsqlCommand cmd = new("SELECT lo_get(@oid, @offset, @length)", _connection);
-        cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, _largeObjectId);
-        cmd.Parameters.AddWithValue("offset", NpgsqlDbType.Bigint, _position);
-        cmd.Parameters.AddWithValue("length", NpgsqlDbType.Integer, bytesToRead);
+        _ = cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, _largeObjectId);
+        _ = cmd.Parameters.AddWithValue("offset", NpgsqlDbType.Bigint, _position);
+        _ = cmd.Parameters.AddWithValue("length", NpgsqlDbType.Integer, bytesToRead);
 
         var chunk = (byte[]?)await cmd.ExecuteScalarAsync(cancellationToken);
 
@@ -121,8 +121,23 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
     }
     public override void Flush() { }
 
-    public override void SetLength(long value) => throw new NotSupportedException();
-    public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
-    public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) => throw new NotSupportedException();
-    public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+    public override void SetLength(long value)
+    {
+        throw new NotSupportedException();
+    }
+
+    public override void Write(byte[] buffer, int offset, int count)
+    {
+        throw new NotSupportedException();
+    }
+
+    public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+    {
+        throw new NotSupportedException();
+    }
+
+    public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
+    {
+        throw new NotSupportedException();
+    }
 }

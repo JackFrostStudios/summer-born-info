@@ -63,7 +63,7 @@ public class LargeObjectReaderTests(IntegrationTestDatabaseServerFixture testDat
 
     private static async ValueTask<byte[]> GetDataFromStreamAsync(Stream stream, CancellationToken cancellationToken)
     {
-        stream.Seek(0, SeekOrigin.Begin);
+        _ = stream.Seek(0, SeekOrigin.Begin);
         byte[] data;
         await using MemoryStream expectedMemoryStream = new();
         await stream.CopyToAsync(expectedMemoryStream, cancellationToken);

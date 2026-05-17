@@ -20,8 +20,8 @@ public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context, IL
     private async Task<SchoolBulkImportRequest> SaveNewSchoolBulkImportRequestAsync(uint largeObjectId, CancellationToken cancellationToken)
     {
         SchoolBulkImportRequest schoolBulkImportRequest = new() { ContentId = largeObjectId };
-        context.Add(schoolBulkImportRequest);
-        await context.SaveChangesAsync(cancellationToken);
+        _ = context.Add(schoolBulkImportRequest);
+        _ = await context.SaveChangesAsync(cancellationToken);
         return schoolBulkImportRequest;
     }
 

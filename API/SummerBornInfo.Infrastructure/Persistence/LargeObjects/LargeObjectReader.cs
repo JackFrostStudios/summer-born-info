@@ -17,7 +17,7 @@ public class LargeObjectReader(ApplicationDbContext context) : ILargeObjectReade
         "SELECT EXISTS(SELECT 1 FROM pg_largeobject_metadata WHERE oid = @oid)",
         context.GetNpgsqlConnection()
         );
-        cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, objectId);
+        _ = cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, objectId);
 
         return (bool)(await cmd.ExecuteScalarAsync(cancellationToken))!;
     }

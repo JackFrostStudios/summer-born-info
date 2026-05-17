@@ -6,7 +6,7 @@ public static class SchoolEndpoints
     {
         var schools = endpoints.MapGroup("/api/schools");
 
-        schools.MapPost("/import", async (HttpRequest req, Stream csvFile, ImportSchoolsCommandHandler handler, CancellationToken cancellationToken) =>
+        _ = schools.MapPost("/import", async (HttpRequest req, Stream csvFile, ImportSchoolsCommandHandler handler, CancellationToken cancellationToken) =>
         {
             var maxMessageSize = 100000 * 1024;
             if (req.ContentLength is not null && req.ContentLength > maxMessageSize)
@@ -24,14 +24,14 @@ public static class SchoolEndpoints
         })
             .WithMetadata(new RequestSizeLimitAttribute(100000 * 1024));
 
-        schools.MapGet("/", async (GetAllSchoolsQueryHandler handler, Guid? cursor, int? pageSize, CancellationToken cancellationToken) =>
+        _ = schools.MapGet("/", async (GetAllSchoolsQueryHandler handler, Guid? cursor, int? pageSize, CancellationToken cancellationToken) =>
         {
             GetAllSchoolsQuery query = new(cursor, pageSize ?? 100);
             (var schools, var nextCursor) = await handler.ExecuteAsync(query, cancellationToken);
             return Results.Ok(new { schools, nextCursor });
         });
 
-        schools.MapGet("/import/{requestId:guid}", async (GetSchoolBulkImportStatusQueryHandler handler, Guid requestId, CancellationToken cancellationToken) =>
+        _ = schools.MapGet("/import/{requestId:guid}", async (GetSchoolBulkImportStatusQueryHandler handler, Guid requestId, CancellationToken cancellationToken) =>
         {
             GetSchoolBulkImportStatusQuery query = new(requestId);
             var result = await handler.ExecuteAsync(query, cancellationToken);

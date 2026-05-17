@@ -251,7 +251,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         Assert.Equal(2, establishmentTypes.Count);
 
         var establishmentGroups = await verifyDbContext.Set<EstablishmentGroup>().ToListAsync(TestContext.Current.CancellationToken);
-        Assert.Single(establishmentGroups);
+        _ = Assert.Single(establishmentGroups);
 
         var establishmentStatuses = await verifyDbContext.Set<EstablishmentStatus>().ToListAsync(TestContext.Current.CancellationToken);
         Assert.Equal(2, establishmentStatuses.Count);
@@ -299,6 +299,8 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         Assert.Equal([100000, 100004], [.. schools.Select(x => x.URN)]);
     }
 
-    private static MemoryStream CreateCsvStream(params string[] lines) =>
-        new(System.Text.Encoding.UTF8.GetBytes(string.Join(Environment.NewLine, lines)));
+    private static MemoryStream CreateCsvStream(params string[] lines)
+    {
+        return new(System.Text.Encoding.UTF8.GetBytes(string.Join(Environment.NewLine, lines)));
+    }
 }

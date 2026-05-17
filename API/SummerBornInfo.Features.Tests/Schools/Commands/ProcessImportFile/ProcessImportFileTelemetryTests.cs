@@ -17,13 +17,13 @@ public sealed class ProcessImportFileTelemetryTests(
             "\"100004\",\"1045\",\"Sherborne Nursery School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\"");
         var requestId = await CreateImportRequestAsync(invalidCsv);
         var handler = CreateHandler(CreateDbContext());
-        List<Activity> capturedActivities = new();
+        List<Activity> capturedActivities = [];
 
         using ActivityListener activityListener = new()
         {
             ShouldListenTo = source => string.Equals(source.Name, SchoolBulkImportTelemetry.ActivitySourceName, StringComparison.Ordinal),
-            SampleUsingParentId = static (ref ActivityCreationOptions<string> _) => ActivitySamplingResult.AllDataAndRecorded,
-            Sample = static (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
+            SampleUsingParentId = static (ref _) => ActivitySamplingResult.AllDataAndRecorded,
+            Sample = static (ref _) => ActivitySamplingResult.AllDataAndRecorded,
             ActivityStopped = activity =>
             {
                 lock (capturedActivities)
@@ -42,11 +42,13 @@ public sealed class ProcessImportFileTelemetryTests(
         List<Activity> processActivities;
         lock (capturedActivities)
         {
-            processActivities = capturedActivities
-                .Where(activity =>
-                    string.Equals(activity.OperationName, SchoolBulkImportTelemetry.ActivityName, StringComparison.Ordinal) && Equals(activity.GetTagItem("schoolBulkImport.request_id"),
-                    requestId))
-                .ToList();
+            processActivities = [
+                .. capturedActivities
+                    .Where(activity =>
+                        string.Equals(activity.OperationName, SchoolBulkImportTelemetry.ActivityName, StringComparison.Ordinal)
+                        && Equals(activity.GetTagItem("schoolBulkImport.request_id"), requestId)
+                    ),
+            ];
         }
 
         Assert.Equal(3, processActivities.Count);
@@ -55,8 +57,10 @@ public sealed class ProcessImportFileTelemetryTests(
         Assert.Contains(processActivities, activity => Equals(activity.GetTagItem("schoolBulkImport.outcome"), "failed"));
     }
 
-    private static ProcessImportFileCommandHandler CreateHandler(ApplicationDbContext dbContext) =>
-        new(dbContext, new LargeObjectReader(dbContext), new SchoolsImporter<ApplicationDbContext>(dbContext));
+    private static ProcessImportFileCommandHandler CreateHandler(ApplicationDbContext dbContext)
+    {
+        return new(dbContext, new LargeObjectReader(dbContext), new SchoolsImporter<ApplicationDbContext>(dbContext));
+    }
 
     private async Task<Guid> CreateImportRequestAsync(Stream content)
     {
@@ -69,12 +73,14 @@ public sealed class ProcessImportFileTelemetryTests(
             ContentId = largeObjectId,
         };
 
-        dbContext.SchoolBulkImportRequests.Add(request);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.SchoolBulkImportRequests.Add(request);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         return request.Id;
     }
 
-    private static MemoryStream CreateCsvStream(params string[] lines) =>
-        new(System.Text.Encoding.UTF8.GetBytes(string.Join(Environment.NewLine, lines)));
+    private static MemoryStream CreateCsvStream(params string[] lines)
+    {
+        return new(System.Text.Encoding.UTF8.GetBytes(string.Join(Environment.NewLine, lines)));
+    }
 }

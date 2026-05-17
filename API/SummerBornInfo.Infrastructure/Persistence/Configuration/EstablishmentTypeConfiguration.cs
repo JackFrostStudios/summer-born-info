@@ -4,25 +4,25 @@ internal sealed class EstablishmentTypeConfiguration : IEntityTypeConfiguration<
 {
     public void Configure(EntityTypeBuilder<EstablishmentType> builder)
     {
-        builder.ToTable("establishment_type");
+        _ = builder.ToTable("establishment_type");
 
-        builder.HasKey(et => et.Id);
-        builder.Property(et => et.Id)
+        _ = builder.HasKey(et => et.Id);
+        _ = builder.Property(et => et.Id)
             .IsRequired()
             .ValueGeneratedNever();
 
-        builder.Property(et => et.Code)
+        _ = builder.Property(et => et.Code)
             .HasMaxLength(100)
             .IsRequired();
 
-        builder.HasIndex(et => et.Code)
+        _ = builder.HasIndex(et => et.Code)
             .IsUnique();
 
-        builder.Property(et => et.Name)
+        _ = builder.Property(et => et.Name)
             .HasMaxLength(300)
             .IsRequired();
 
-        builder.Property<uint>("Version")
+        _ = builder.Property<uint>("Version")
             .IsRowVersion();
     }
 }

@@ -5,11 +5,8 @@ public sealed partial class ProcessSchoolBulkImportBackgroundService(
     Microsoft.Extensions.Options.IOptions<SchoolBulkImportWorkerOptions> options,
     ILogger<ProcessSchoolBulkImportBackgroundService> logger) : BackgroundService
 {
-    private readonly TimeSpan emptyQueueDelay = TimeSpan.FromSeconds(Math.Max(0, options.Value.EmptyQueueDelaySeconds));
-    private readonly int messageReadTimeoutSeconds = Math.Max(1, options.Value.MessageReadTimeoutSeconds);
-
-    internal TimeSpan EmptyQueueDelay => emptyQueueDelay;
-    internal int MessageReadTimeoutSeconds => messageReadTimeoutSeconds;
+    internal TimeSpan EmptyQueueDelay { get; } = TimeSpan.FromSeconds(Math.Max(0, options.Value.EmptyQueueDelaySeconds));
+    internal int MessageReadTimeoutSeconds { get; } = Math.Max(1, options.Value.MessageReadTimeoutSeconds);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -20,7 +17,7 @@ public sealed partial class ProcessSchoolBulkImportBackgroundService(
                 var processedMessage = await ProcessNextMessageAsync(stoppingToken);
                 if (!processedMessage)
                 {
-                    await Task.Delay(emptyQueueDelay, stoppingToken);
+                    await Task.Delay(EmptyQueueDelay, stoppingToken);
                 }
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
@@ -30,7 +27,7 @@ public sealed partial class ProcessSchoolBulkImportBackgroundService(
             catch (Exception ex)
             {
                 LogUnhandledProcessingError(logger, ex);
-                await Task.Delay(emptyQueueDelay, stoppingToken);
+                await Task.Delay(EmptyQueueDelay, stoppingToken);
             }
         }
     }
@@ -40,7 +37,7 @@ public sealed partial class ProcessSchoolBulkImportBackgroundService(
         await using var scope = serviceScopeFactory.CreateAsyncScope();
         var eventReader = scope.ServiceProvider.GetRequiredService<IEventReader>();
         var eventAcknowledger = scope.ServiceProvider.GetRequiredService<IEventAcknowledger>();
-        var queuedEvent = await eventReader.ReadEventAsync<SchoolBulkImportUploaded>(EventQueue.SchoolBulkImport, messageReadTimeoutSeconds, cancellationToken);
+        var queuedEvent = await eventReader.ReadEventAsync<SchoolBulkImportUploaded>(EventQueue.SchoolBulkImport, MessageReadTimeoutSeconds, cancellationToken);
 
         if (queuedEvent is null)
         {

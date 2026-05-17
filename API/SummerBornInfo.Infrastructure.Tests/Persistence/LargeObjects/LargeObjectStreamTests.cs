@@ -33,7 +33,7 @@ public class LargeObjectStreamTests(IntegrationTestDatabaseServerFixture testDat
     }
 
     [Fact]
-    public async ValueTask GivenALargeObjectDoesNotExists_WhenCreatingStream_ThenNoExceptionIsThrown()
+    public void GivenALargeObjectDoesNotExists_WhenCreatingStream_ThenNoExceptionIsThrown()
     {
         var ex = Record.Exception(() => new LargeObjectStream(CreateDbContext().GetNpgsqlConnection(), _largeObjectId + 1));
         Assert.Null(ex);
@@ -124,7 +124,7 @@ public class LargeObjectStreamTests(IntegrationTestDatabaseServerFixture testDat
     public async ValueTask GivenANewStream_WhenSettingPositionToANegativeValue_ThenItShouldThrowArgumentOutOfRangeException()
     {
         var stream = await CreateStream();
-        Assert.Throws<ArgumentOutOfRangeException>(() => stream.Position = -1);
+        _ = Assert.Throws<ArgumentOutOfRangeException>(() => stream.Position = -1);
     }
 
     // -------------------------------------------------------------------------
@@ -192,7 +192,7 @@ public class LargeObjectStreamTests(IntegrationTestDatabaseServerFixture testDat
     public async ValueTask GivenANewStream_WhenSeekingWithAnUnknownSeekOrigin_ThenItShouldThrowNotSupportedException()
     {
         var stream = await CreateStream();
-        Assert.Throws<NotSupportedException>(() => stream.Seek(0, (SeekOrigin)99));
+        _ = Assert.Throws<NotSupportedException>(() => stream.Seek(0, (SeekOrigin)99));
     }
 
     // -------------------------------------------------------------------------
@@ -327,7 +327,7 @@ public class LargeObjectStreamTests(IntegrationTestDatabaseServerFixture testDat
         await using MemoryStream first = new();
         await stream.CopyToAsync(first, TestContext.Current.CancellationToken);
 
-        stream.Seek(0, SeekOrigin.Begin);
+        _ = stream.Seek(0, SeekOrigin.Begin);
         await using MemoryStream second = new();
         await stream.CopyToAsync(second, TestContext.Current.CancellationToken);
 
@@ -354,21 +354,21 @@ public class LargeObjectStreamTests(IntegrationTestDatabaseServerFixture testDat
     public async ValueTask GivenALargeObjectExists_WhenCallingSetLength_ThenItShouldThrowNotSupportedException()
     {
         var stream = await CreateStream();
-        Assert.Throws<NotSupportedException>(() => stream.SetLength(100));
+        _ = Assert.Throws<NotSupportedException>(() => stream.SetLength(100));
     }
 
     [Fact]
     public async ValueTask GivenALargeObjectExists_WhenCallingSynchronousWrite_ThenItShouldThrowNotSupportedException()
     {
         var stream = await CreateStream();
-        Assert.Throws<NotSupportedException>(() => stream.Write([1, 2, 3], 0, 3));
+        _ = Assert.Throws<NotSupportedException>(() => stream.Write([1, 2, 3], 0, 3));
     }
 
     [Fact]
     public async Task GivenALargeObjectExists_WhenCallingWriteAsyncViaTaskOverload_ThenItShouldThrowNotSupportedException()
     {
         var stream = await CreateStream();
-        await Assert.ThrowsAsync<NotSupportedException>(
+        _ = await Assert.ThrowsAsync<NotSupportedException>(
             () => stream.WriteAsync([1, 2, 3], 0, 3, TestContext.Current.CancellationToken));
     }
 
@@ -376,7 +376,7 @@ public class LargeObjectStreamTests(IntegrationTestDatabaseServerFixture testDat
     public async Task GivenALargeObjectExists_WhenCallingWriteAsyncViaMemoryOverload_ThenItShouldThrowNotSupportedException()
     {
         var stream = await CreateStream();
-        await Assert.ThrowsAsync<NotSupportedException>(
+        _ = await Assert.ThrowsAsync<NotSupportedException>(
             async () => await stream.WriteAsync(new ReadOnlyMemory<byte>([1, 2, 3]), TestContext.Current.CancellationToken));
     }
 

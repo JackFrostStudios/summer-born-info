@@ -10,8 +10,8 @@ public sealed class ApplicationDbContextEstablishmentGroupTests(IntegrationTestD
         var establishmentGroup = EstablishmentGroupFactory.GetEstablishmentGroup();
 
         // Act
-        dbContext.EstablishmentGroups.Add(establishmentGroup);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.EstablishmentGroups.Add(establishmentGroup);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         //Assert
         dbContext.ChangeTracker.Clear();
@@ -27,8 +27,8 @@ public sealed class ApplicationDbContextEstablishmentGroupTests(IntegrationTestD
         // Arrange
         var dbContext = CreateDbContext();
         var establishmentGroup = EstablishmentGroupFactory.GetEstablishmentGroup();
-        dbContext.EstablishmentGroups.Add(establishmentGroup);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.EstablishmentGroups.Add(establishmentGroup);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
         var establishmentGroupToUpdate = await dbContext.EstablishmentGroups.FindAsync([establishmentGroup.Id], TestContext.Current.CancellationToken);
@@ -37,7 +37,7 @@ public sealed class ApplicationDbContextEstablishmentGroupTests(IntegrationTestD
         establishmentGroup.Name = "Update Name";
 
         // Act
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         //Assert
         dbContext.ChangeTracker.Clear();
@@ -53,8 +53,8 @@ public sealed class ApplicationDbContextEstablishmentGroupTests(IntegrationTestD
         // Arrange
         var dbContext = CreateDbContext();
         var establishmentGroup = EstablishmentGroupFactory.GetEstablishmentGroup();
-        dbContext.EstablishmentGroups.Add(establishmentGroup);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.EstablishmentGroups.Add(establishmentGroup);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
         var establishmentGroupToUpdateOne = await dbContext.EstablishmentGroups.FindAsync([establishmentGroup.Id], TestContext.Current.CancellationToken);
@@ -65,11 +65,11 @@ public sealed class ApplicationDbContextEstablishmentGroupTests(IntegrationTestD
         var establishmentGroupToUpdateTwo = await dbContextTwo.EstablishmentGroups.FindAsync([establishmentGroup.Id], TestContext.Current.CancellationToken);
         Assert.NotNull(establishmentGroupToUpdateTwo);
         establishmentGroupToUpdateTwo.Code = "Code_Two";
-        await dbContextTwo.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = await dbContextTwo.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContextTwo.ChangeTracker.Clear();
 
         // Act & Assert
-        await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () => await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken));
+        _ = await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () => await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken));
 
         var savedEstablishmentGroup = await dbContextTwo.EstablishmentGroups.FindAsync([establishmentGroup.Id], TestContext.Current.CancellationToken);
         Assert.Equivalent(establishmentGroupToUpdateTwo, savedEstablishmentGroup);

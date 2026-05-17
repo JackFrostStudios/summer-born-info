@@ -14,7 +14,7 @@ public class EventEmitterTests(IntegrationTestDatabaseServerFixture testDatabase
         await eventEmitter.EmitEventAsync(TestEventQueue.TestQueue, testEvent, TestContext.Current.CancellationToken);
 
         //Assert
-        await EventAssertions.AssertEventEqualsAndDeleteAsync(TestEventQueue.TestQueue, testEvent, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
+        await EventAssertions.AssertEventEqualsAndDeleteAsync(TestEventQueue.TestQueue, testEvent, IntegrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class EventEmitterTests(IntegrationTestDatabaseServerFixture testDatabase
         await efTransaction.RollbackAsync(TestContext.Current.CancellationToken);
 
         //Assert
-        await EventAssertions.AssertNoEventsExistAsync(TestEventQueue.TestQueue, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
+        await EventAssertions.AssertNoEventsExistAsync(TestEventQueue.TestQueue, IntegrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -48,6 +48,6 @@ public class EventEmitterTests(IntegrationTestDatabaseServerFixture testDatabase
         await efTransaction.CommitAsync(TestContext.Current.CancellationToken);
 
         //Assert
-        await EventAssertions.AssertEventEqualsAndDeleteAsync(TestEventQueue.TestQueue, testEvent, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
+        await EventAssertions.AssertEventEqualsAndDeleteAsync(TestEventQueue.TestQueue, testEvent, IntegrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
     }
 }

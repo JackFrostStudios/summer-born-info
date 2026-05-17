@@ -11,7 +11,7 @@ public sealed class IntegrationTestDatabaseInstanceFixture(IntegrationTestDataba
         var command = conn.CreateCommand();
         command.CommandText = $"""CREATE DATABASE "{DatabaseName}" TEMPLATE "{databaseServerFixture.TemplateDataBaseName}";""";
         await conn.OpenAsync(TestContext.Current.CancellationToken);
-        await command.ExecuteNonQueryAsync(TestContext.Current.CancellationToken);
+        _ = await command.ExecuteNonQueryAsync(TestContext.Current.CancellationToken);
         await conn.CloseAsync();
         DatabaseConnectionString = databaseServerFixture.ConnectionString?.Replace("Database=postgres", $"Database={DatabaseName}", StringComparison.Ordinal) ?? throw new InvalidOperationException("Database Server Fixture Connection String is null");
     }
@@ -22,7 +22,7 @@ public sealed class IntegrationTestDatabaseInstanceFixture(IntegrationTestDataba
         var command = conn.CreateCommand();
         command.CommandText = $"""DROP DATABASE "{DatabaseName}" WITH (FORCE);""";
         await conn.OpenAsync(CancellationToken.None);
-        await command.ExecuteNonQueryAsync(CancellationToken.None);
+        _ = await command.ExecuteNonQueryAsync(CancellationToken.None);
         await conn.CloseAsync();
     }
 }

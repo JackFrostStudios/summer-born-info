@@ -29,7 +29,7 @@ public sealed class GetAllSchoolsQueryHandler(ApplicationDbContext context)
         Guid? nextCursor = null;
         if (hasMore)
         {
-            nextCursor = schoolsToReturn.Last().Id;
+            nextCursor = schoolsToReturn[^1].Id;
         }
 
         return (schoolResponses, nextCursor);

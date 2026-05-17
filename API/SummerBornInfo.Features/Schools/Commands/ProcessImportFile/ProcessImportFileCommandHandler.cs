@@ -20,7 +20,7 @@ public sealed class ProcessImportFileCommandHandler(
         await using var csvStream = await largeObjectReader.ReadLargeObjectAsStreamAsync(schoolBulkImportRequest.ContentId, cancellationToken)
             ?? throw new InvalidOperationException($"Large object '{schoolBulkImportRequest.ContentId}' was not found.");
 
-        await context.SaveChangesAsync(cancellationToken);
+        _ = await context.SaveChangesAsync(cancellationToken);
 
         try
         {
@@ -28,16 +28,16 @@ public sealed class ProcessImportFileCommandHandler(
             {
                 schoolBulkImportRequest.UpdateProgress(result.LineNumber, result.Succeeded ? null : result.ErrorMessage ?? "Unknown import error");
 
-                await context.SaveChangesAsync(cancellationToken);
+                _ = await context.SaveChangesAsync(cancellationToken);
             }
 
             schoolBulkImportRequest.ProcessingComplete();
-            await context.SaveChangesAsync(cancellationToken);
+            _ = await context.SaveChangesAsync(cancellationToken);
         }
         catch
         {
             schoolBulkImportRequest.ProcessingFailed();
-            await context.SaveChangesAsync(cancellationToken);
+            _ = await context.SaveChangesAsync(cancellationToken);
             throw;
         }
     }

@@ -18,7 +18,7 @@ internal abstract class LookupImporterBase<TEntity, TContext>(TContext context)
         if (entity is null)
         {
             entity = Create(code, name);
-            await _context.Set<TEntity>().AddAsync(entity, cancellationToken);
+            _ = await _context.Set<TEntity>().AddAsync(entity, cancellationToken);
         }
         else
         {

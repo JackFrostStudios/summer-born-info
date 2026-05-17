@@ -21,14 +21,15 @@ public sealed class GetSchoolBulkImportStatusQueryHandler(ApplicationDbContext c
             SchoolBulkImportRequestId = importRequest.Id,
             Status = importRequest.Status.ToString(),
             LinesProcessed = importRequest.LinesProcessed,
-            Failures = importRequest.Failures
-                .OrderBy(x => x.LineNumber)
-                .Select(x => new SchoolBulkImportFailureResponse
-                {
-                    LineNumber = x.LineNumber,
-                    Message = x.ErrorMessage,
-                })
-                .ToList(),
+            Failures = [
+                .. importRequest.Failures
+                    .OrderBy(x => x.LineNumber)
+                    .Select(x => new SchoolBulkImportFailureResponse
+                    {
+                        LineNumber = x.LineNumber,
+                        Message = x.ErrorMessage,
+                    }),
+            ],
         };
     }
 }

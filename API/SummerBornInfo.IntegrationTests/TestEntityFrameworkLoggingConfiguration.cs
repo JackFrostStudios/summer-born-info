@@ -10,13 +10,13 @@ public static class TestEntityFrameworkLoggingConfiguration
             // Const is set to true to enable logging if required.
             // Config file has been avoided here as it just adds complication for now as this is the only configuration value.
 #pragma warning disable CS0162 // Unreachable code detected
-            optionsBuilder
+            _ = optionsBuilder
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors();
 #pragma warning restore CS0162 // Unreachable code detected
         }
 
-        optionsBuilder
+        _ = optionsBuilder
                 .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddProvider(new XUnitLoggerProvider(testOutputHelper))));
     }
 }

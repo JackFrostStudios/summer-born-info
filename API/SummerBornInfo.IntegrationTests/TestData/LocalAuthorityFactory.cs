@@ -1,6 +1,6 @@
 namespace SummerBornInfo.TestFramework.TestData;
 
-public sealed class LocalAuthorityFactory
+public static class LocalAuthorityFactory
 {
     public static LocalAuthority GetLocalAuthority()
     {

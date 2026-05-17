@@ -56,7 +56,7 @@ public sealed class SchoolBulkImportRequestTests
         {
             ContentId = 1,
         };
-        schoolBulkImportRequest.ProcessingStarted();
+        _ = schoolBulkImportRequest.ProcessingStarted();
         schoolBulkImportRequest.ProcessingComplete();
 
         // Act
@@ -98,7 +98,7 @@ public sealed class SchoolBulkImportRequestTests
         schoolBulkImportRequest.UpdateProgress(3, "Missing URN");
 
         // Assert
-        Assert.Single(schoolBulkImportRequest.Failures);
+        _ = Assert.Single(schoolBulkImportRequest.Failures);
         Assert.Equal(3, schoolBulkImportRequest.Failures[0].LineNumber);
         Assert.Equal("Missing URN", schoolBulkImportRequest.Failures[0].ErrorMessage);
     }
@@ -118,7 +118,7 @@ public sealed class SchoolBulkImportRequestTests
 
         // Assert
         Assert.Equal(2, schoolBulkImportRequest.LinesProcessed);
-        Assert.Single(schoolBulkImportRequest.Failures);
+        _ = Assert.Single(schoolBulkImportRequest.Failures);
         Assert.Equal("URN must be numeric", schoolBulkImportRequest.Failures[0].ErrorMessage);
     }
 
@@ -130,7 +130,7 @@ public sealed class SchoolBulkImportRequestTests
         {
             ContentId = 1,
         };
-        schoolBulkImportRequest.ProcessingStarted();
+        _ = schoolBulkImportRequest.ProcessingStarted();
         schoolBulkImportRequest.UpdateProgress(2, errorMessage: null);
 
         // Act
@@ -148,7 +148,7 @@ public sealed class SchoolBulkImportRequestTests
         {
             ContentId = 1,
         };
-        schoolBulkImportRequest.ProcessingStarted();
+        _ = schoolBulkImportRequest.ProcessingStarted();
         schoolBulkImportRequest.UpdateProgress(3, "Missing URN");
 
         // Act
@@ -166,7 +166,7 @@ public sealed class SchoolBulkImportRequestTests
         {
             ContentId = 1,
         };
-        schoolBulkImportRequest.ProcessingStarted();
+        _ = schoolBulkImportRequest.ProcessingStarted();
 
         // Act
         schoolBulkImportRequest.ProcessingFailed();

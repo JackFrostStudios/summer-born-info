@@ -6,27 +6,43 @@ public class XUnitLogger(ITestOutputHelper testOutputHelper, LoggerExternalScope
     private readonly string? _categoryName = categoryName;
     private readonly LoggerExternalScopeProvider _scopeProvider = scopeProvider;
 
-    public static ILogger CreateLogger(ITestOutputHelper testOutputHelper) => new XUnitLogger(testOutputHelper, new LoggerExternalScopeProvider(), "");
-    public static ILogger<T> CreateLogger<T>(ITestOutputHelper testOutputHelper) where T : notnull => new GenericXUnitLogger<T>(testOutputHelper, new LoggerExternalScopeProvider());
-    public bool IsEnabled(LogLevel logLevel) => logLevel != LogLevel.None;
-    public IDisposable? BeginScope<TState>(TState? state) where TState : notnull => _scopeProvider.Push(state);
+    public static ILogger CreateLogger(ITestOutputHelper testOutputHelper)
+    {
+        return new XUnitLogger(testOutputHelper, new LoggerExternalScopeProvider(), "");
+    }
+
+    public static ILogger<T> CreateLogger<T>(ITestOutputHelper testOutputHelper) where T : notnull
+    {
+        return new GenericXUnitLogger<T>(testOutputHelper, new LoggerExternalScopeProvider());
+    }
+
+    public bool IsEnabled(LogLevel logLevel)
+    {
+        return logLevel != LogLevel.None;
+    }
+
+    public IDisposable? BeginScope<TState>(TState? state) where TState : notnull
+    {
+        return _scopeProvider.Push(state);
+    }
+
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
         StringBuilder sb = new();
-        sb.Append(GetLogLevelString(logLevel))
+        _ = sb.Append(GetLogLevelString(logLevel))
           .Append(" [").Append(_categoryName).Append("] ")
           .Append(formatter(state, exception));
 
         if (exception != null)
         {
-            sb.Append('\n').Append(exception);
+            _ = sb.Append('\n').Append(exception);
         }
 
         // Append scopes
         _scopeProvider.ForEachScope((scope, state) =>
         {
-            state.Append("\n => ");
-            state.Append(scope);
+            _ = state.Append("\n => ");
+            _ = state.Append(scope);
         }, sb);
 
         _testOutputHelper.WriteLine(sb.ToString());
@@ -41,6 +57,7 @@ public class XUnitLogger(ITestOutputHelper testOutputHelper, LoggerExternalScope
             LogLevel.Warning => "warn",
             LogLevel.Error => "fail",
             LogLevel.Critical => "crit",
+            LogLevel.None => "none",
             _ => throw new ArgumentOutOfRangeException(nameof(logLevel)),
         };
     }

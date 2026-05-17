@@ -4,20 +4,20 @@ internal sealed class SchoolBulkImportFailureConfiguration : IEntityTypeConfigur
 {
     public void Configure(EntityTypeBuilder<SchoolBulkImportFailure> builder)
     {
-        builder.ToTable("school_bulk_import_failure");
+        _ = builder.ToTable("school_bulk_import_failure");
 
-        builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id)
+        _ = builder.HasKey(x => x.Id);
+        _ = builder.Property(x => x.Id)
             .IsRequired()
             .ValueGeneratedNever();
 
-        builder.Property(x => x.SchoolBulkImportRequestId)
+        _ = builder.Property(x => x.SchoolBulkImportRequestId)
             .IsRequired();
 
-        builder.Property(x => x.LineNumber)
+        _ = builder.Property(x => x.LineNumber)
             .IsRequired();
 
-        builder.Property(x => x.ErrorMessage)
+        _ = builder.Property(x => x.ErrorMessage)
             .IsRequired();
     }
 }

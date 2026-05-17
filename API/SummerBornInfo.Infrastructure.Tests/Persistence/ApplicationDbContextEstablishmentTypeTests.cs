@@ -10,8 +10,8 @@ public sealed class ApplicationDbContextEstablishmentTypeTests(IntegrationTestDa
         var establishmentType = EstablishmentTypeFactory.GetEstablishmentType();
 
         // Act
-        dbContext.EstablishmentTypes.Add(establishmentType);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.EstablishmentTypes.Add(establishmentType);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         //Assert
         dbContext.ChangeTracker.Clear();
@@ -27,8 +27,8 @@ public sealed class ApplicationDbContextEstablishmentTypeTests(IntegrationTestDa
         // Arrange
         var dbContext = CreateDbContext();
         var establishmentType = EstablishmentTypeFactory.GetEstablishmentType();
-        dbContext.EstablishmentTypes.Add(establishmentType);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.EstablishmentTypes.Add(establishmentType);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
         var establishmentTypeToUpdate = await dbContext.EstablishmentTypes.FindAsync([establishmentType.Id], TestContext.Current.CancellationToken);
@@ -37,7 +37,7 @@ public sealed class ApplicationDbContextEstablishmentTypeTests(IntegrationTestDa
         establishmentType.Name = "Update Name";
 
         // Act
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         //Assert
         dbContext.ChangeTracker.Clear();
@@ -53,8 +53,8 @@ public sealed class ApplicationDbContextEstablishmentTypeTests(IntegrationTestDa
         // Arrange
         var dbContext = CreateDbContext();
         var establishmentType = EstablishmentTypeFactory.GetEstablishmentType();
-        dbContext.EstablishmentTypes.Add(establishmentType);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.EstablishmentTypes.Add(establishmentType);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
         var establishmentTypeToUpdateOne = await dbContext.EstablishmentTypes.FindAsync([establishmentType.Id], TestContext.Current.CancellationToken);
@@ -65,11 +65,11 @@ public sealed class ApplicationDbContextEstablishmentTypeTests(IntegrationTestDa
         var establishmentTypeToUpdateTwo = await dbContextTwo.EstablishmentTypes.FindAsync([establishmentType.Id], TestContext.Current.CancellationToken);
         Assert.NotNull(establishmentTypeToUpdateTwo);
         establishmentTypeToUpdateTwo.Code = "Code_Two";
-        await dbContextTwo.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = await dbContextTwo.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContextTwo.ChangeTracker.Clear();
 
         // Act & Assert
-        await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () => await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken));
+        _ = await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () => await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken));
 
         var savedEstablishmentType = await dbContextTwo.EstablishmentTypes.FindAsync([establishmentType.Id], TestContext.Current.CancellationToken);
         Assert.Equivalent(establishmentTypeToUpdateTwo, savedEstablishmentType);

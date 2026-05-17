@@ -5,6 +5,6 @@ public sealed class EventAcknowledger(ApplicationDbContext dbContext) : IEventAc
     public async Task DeleteEventAsync(IEventQueue queue, long messageId, CancellationToken cancellationToken)
     {
         var npgmq = new NpgmqClient(dbContext.GetNpgsqlConnection());
-        await npgmq.DeleteAsync(queue.Name, messageId, cancellationToken);
+        _ = await npgmq.DeleteAsync(queue.Name, messageId, cancellationToken);
     }
 }

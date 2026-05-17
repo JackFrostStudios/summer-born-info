@@ -2,7 +2,7 @@ namespace SummerBornInfo.Web.Tests.TestFramework;
 
 public class WebIntegrationTestBase(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IAsyncLifetime
 {
-    protected CustomWebApplicationFactory factory { get; } = new(testDatabaseServerFixture, testOutputHelper);
+    protected CustomWebApplicationFactory Factory { get; } = new(testDatabaseServerFixture, testOutputHelper);
 
     public async ValueTask DisposeAsync()
     {
@@ -14,12 +14,12 @@ public class WebIntegrationTestBase(IntegrationTestDatabaseServerFixture testDat
     {
         if (disposing)
         {
-            await factory.DisposeAsync();
+            await Factory.DisposeAsync();
         }
     }
 
     public async ValueTask InitializeAsync()
     {
-        await factory.InitializeAsync();
+        await Factory.InitializeAsync();
     }
 }

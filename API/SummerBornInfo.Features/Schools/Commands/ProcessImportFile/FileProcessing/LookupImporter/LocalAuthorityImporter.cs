@@ -5,13 +5,19 @@ internal sealed class LocalAuthorityImporter<TContext>(TContext context)
     where TContext : DbContext
 {
     protected override Task<LocalAuthority?> FindByCodeAsync(
-        TContext context, string code, CancellationToken cancellationToken) =>
-        context.Set<LocalAuthority>()
+        TContext context, string code, CancellationToken cancellationToken)
+    {
+        return context.Set<LocalAuthority>()
                .FirstOrDefaultAsync(e => e.Code == code, cancellationToken);
+    }
 
-    protected override LocalAuthority Create(string code, string name) =>
-        new() { Code = code, Name = name };
+    protected override LocalAuthority Create(string code, string name)
+    {
+        return new() { Code = code, Name = name };
+    }
 
-    protected override void UpdateName(LocalAuthority entity, string name) =>
+    protected override void UpdateName(LocalAuthority entity, string name)
+    {
         entity.Name = name;
+    }
 }

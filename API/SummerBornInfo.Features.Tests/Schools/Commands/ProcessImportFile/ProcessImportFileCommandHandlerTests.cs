@@ -12,7 +12,7 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
         ProcessImportFileCommand command = new(Guid.CreateVersion7());
 
         // Act / Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => handler.ExecuteAsync(command, TestContext.Current.CancellationToken));
+        _ = await Assert.ThrowsAsync<InvalidOperationException>(() => handler.ExecuteAsync(command, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -25,14 +25,14 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
             ContentId = 999999,
         };
 
-        dbContext.SchoolBulkImportRequests.Add(schoolBulkImportRequest);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.SchoolBulkImportRequests.Add(schoolBulkImportRequest);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = CreateHandler(CreateDbContext());
         ProcessImportFileCommand command = new(schoolBulkImportRequest.Id);
 
         // Act / Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => handler.ExecuteAsync(command, TestContext.Current.CancellationToken));
+        _ = await Assert.ThrowsAsync<InvalidOperationException>(() => handler.ExecuteAsync(command, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
 
         Assert.Equal(3, request.LinesProcessed);
         Assert.Equal(SchoolBulkImportStatus.CompletedWithFailures, request.Status);
-        Assert.Single(request.Failures);
+        _ = Assert.Single(request.Failures);
         Assert.Equal(3, request.Failures[0].LineNumber);
         Assert.NotNull(request.Failures[0].ErrorMessage);
 
@@ -91,7 +91,7 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
             .OrderBy(x => x.URN)
             .ToListAsync(TestContext.Current.CancellationToken);
 
-        Assert.Equal([100000, 100004], schools.Select(x => x.URN).ToArray());
+        Assert.Equal([100000, 100004], [.. schools.Select(x => x.URN)]);
     }
 
     [Fact]
@@ -101,14 +101,14 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
         var requestId = await CreateImportRequestAsync(ExampleImportFile.GetExampleImportFileContent());
         var initialDbContext = CreateDbContext();
         var request = await initialDbContext.SchoolBulkImportRequests.SingleAsync(x => x.Id == requestId, TestContext.Current.CancellationToken);
-        request.ProcessingStarted();
+        _ = request.ProcessingStarted();
         for (var lineNumber = 1; lineNumber <= 9; lineNumber++)
         {
             request.UpdateProgress(lineNumber, errorMessage: null);
         }
 
         request.ProcessingComplete();
-        await initialDbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = await initialDbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = CreateHandler(CreateDbContext());
 
@@ -123,8 +123,10 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
         Assert.Empty(await verifyDbContext.Schools.ToListAsync(TestContext.Current.CancellationToken));
     }
 
-    private static ProcessImportFileCommandHandler CreateHandler(ApplicationDbContext dbContext) =>
-        new(dbContext, new LargeObjectReader(dbContext), new SchoolsImporter<ApplicationDbContext>(dbContext));
+    private static ProcessImportFileCommandHandler CreateHandler(ApplicationDbContext dbContext)
+    {
+        return new(dbContext, new LargeObjectReader(dbContext), new SchoolsImporter<ApplicationDbContext>(dbContext));
+    }
 
     private async Task<Guid> CreateImportRequestAsync(Stream content)
     {
@@ -137,12 +139,14 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
             ContentId = largeObjectId,
         };
 
-        dbContext.SchoolBulkImportRequests.Add(request);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.SchoolBulkImportRequests.Add(request);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         return request.Id;
     }
 
-    private static MemoryStream CreateCsvStream(params string[] lines) =>
-        new(System.Text.Encoding.UTF8.GetBytes(string.Join(Environment.NewLine, lines)));
+    private static MemoryStream CreateCsvStream(params string[] lines)
+    {
+        return new(System.Text.Encoding.UTF8.GetBytes(string.Join(Environment.NewLine, lines)));
+    }
 }

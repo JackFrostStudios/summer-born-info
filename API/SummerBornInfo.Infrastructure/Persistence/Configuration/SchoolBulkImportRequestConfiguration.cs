@@ -4,30 +4,30 @@ internal sealed class SchoolBulkImportRequestConfiguration : IEntityTypeConfigur
 {
     public void Configure(EntityTypeBuilder<SchoolBulkImportRequest> builder)
     {
-        builder.ToTable("school_bulk_import_request");
+        _ = builder.ToTable("school_bulk_import_request");
 
-        builder.HasKey(s => s.Id);
-        builder.Property(s => s.Id)
+        _ = builder.HasKey(s => s.Id);
+        _ = builder.Property(s => s.Id)
             .IsRequired()
             .ValueGeneratedNever();
 
-        builder.Property(s => s.ContentId)
+        _ = builder.Property(s => s.ContentId)
             .HasColumnType("oid")
             .IsRequired();
 
-        builder.Property(s => s.LinesProcessed)
+        _ = builder.Property(s => s.LinesProcessed)
             .IsRequired();
 
-        builder.Property(s => s.Status)
+        _ = builder.Property(s => s.Status)
             .HasConversion<string>()
             .IsRequired();
 
-        builder.HasMany(s => s.Failures)
+        _ = builder.HasMany(s => s.Failures)
             .WithOne()
             .HasForeignKey(x => x.SchoolBulkImportRequestId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Navigation(x => x.Failures)
+        _ = builder.Navigation(x => x.Failures)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

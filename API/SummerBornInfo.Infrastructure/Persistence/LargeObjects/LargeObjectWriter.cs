@@ -50,12 +50,12 @@ public sealed class LargeObjectWriter(ApplicationDbContext context) : ILargeObje
     {
         // Open the large object for writing (INV_WRITE = 0x20000)
         await using NpgsqlCommand openCommand = new("SELECT lo_open($1, 131072)", connection);
-        openCommand.Parameters.AddWithValue(NpgsqlDbType.Oid, largeObjectId);
-        var openLargeObjectResult = await openCommand.ExecuteScalarAsync(cancellationToken)!;
+        _ = openCommand.Parameters.AddWithValue(NpgsqlDbType.Oid, largeObjectId);
+        var openLargeObjectResult = await openCommand.ExecuteScalarAsync(cancellationToken);
 
         if (openLargeObjectResult is not int fileDescriptor || fileDescriptor < 0)
         {
-            throw new Exceptions.LargeObjectOpenException("Unable to open large object");
+            throw new LargeObjectOpenException("Unable to open large object");
         }
 
         return fileDescriptor;
@@ -72,16 +72,16 @@ public sealed class LargeObjectWriter(ApplicationDbContext context) : ILargeObje
             var chunk = bytesRead == chunkSize ? buffer : buffer[..bytesRead];
 
             await using NpgsqlCommand writeCommand = new("SELECT lowrite($1, $2)", connection);
-            writeCommand.Parameters.AddWithValue(fileDescriptor);
-            writeCommand.Parameters.AddWithValue(chunk);
-            await writeCommand.ExecuteScalarAsync(cancellationToken);
+            _ = writeCommand.Parameters.AddWithValue(fileDescriptor);
+            _ = writeCommand.Parameters.AddWithValue(chunk);
+            _ = await writeCommand.ExecuteScalarAsync(cancellationToken);
         }
     }
 
     private static async Task CloseLargeObjectAsync(NpgsqlConnection connection, int fileDescriptor, CancellationToken cancellationToken)
     {
         await using NpgsqlCommand closeCommand = new("SELECT lo_close($1)", connection);
-        closeCommand.Parameters.AddWithValue(fileDescriptor);
-        await closeCommand.ExecuteScalarAsync(cancellationToken);
+        _ = closeCommand.Parameters.AddWithValue(fileDescriptor);
+        _ = await closeCommand.ExecuteScalarAsync(cancellationToken);
     }
 }

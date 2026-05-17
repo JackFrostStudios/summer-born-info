@@ -1,6 +1,6 @@
 namespace SummerBornInfo.TestFramework.TestData;
 
-public sealed class EstablishmentTypeFactory
+public static class EstablishmentTypeFactory
 {
     public static EstablishmentType GetEstablishmentType()
     {

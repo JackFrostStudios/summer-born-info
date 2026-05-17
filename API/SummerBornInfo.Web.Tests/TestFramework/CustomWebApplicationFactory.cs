@@ -6,27 +6,27 @@ public sealed class CustomWebApplicationFactory(IntegrationTestDatabaseServerFix
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureServices(services =>
+        _ = builder.ConfigureServices(services =>
         {
             // Remove the existing DbContext registration
             var descriptor = services.SingleOrDefault(
                 d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
             if (descriptor != null)
             {
-                services.Remove(descriptor);
+                _ = services.Remove(descriptor);
             }
 
             // Add DbContext with TestContainers connection string
-            services.AddDbContext<ApplicationDbContext>(optionsBuilder =>
+            _ = services.AddDbContext<ApplicationDbContext>(optionsBuilder =>
             {
-                optionsBuilder.UseNpgsql(integrationTestDatabaseInstanceFixture.DatabaseConnectionString);
+                _ = optionsBuilder.UseNpgsql(integrationTestDatabaseInstanceFixture.DatabaseConnectionString);
                 TestEntityFrameworkLoggingConfiguration.AddLoggingToDbContextOptions(optionsBuilder, testOutputHelper);
             });
         });
 
-        builder.ConfigureLogging(logging =>
+        _ = builder.ConfigureLogging(logging =>
         {
-            logging.AddProvider(new XUnitLoggerProvider(testOutputHelper));
+            _ = logging.AddProvider(new XUnitLoggerProvider(testOutputHelper));
         });
     }
 

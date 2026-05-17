@@ -4,25 +4,25 @@ internal sealed class LocalAuthorityConfiguration : IEntityTypeConfiguration<Loc
 {
     public void Configure(EntityTypeBuilder<LocalAuthority> builder)
     {
-        builder.ToTable("local_authority");
+        _ = builder.ToTable("local_authority");
 
-        builder.HasKey(la => la.Id);
-        builder.Property(la => la.Id)
+        _ = builder.HasKey(la => la.Id);
+        _ = builder.Property(la => la.Id)
             .IsRequired()
             .ValueGeneratedNever();
 
-        builder.Property(la => la.Code)
+        _ = builder.Property(la => la.Code)
             .HasMaxLength(100)
             .IsRequired();
 
-        builder.HasIndex(la => la.Code)
+        _ = builder.HasIndex(la => la.Code)
             .IsUnique();
 
-        builder.Property(la => la.Name)
+        _ = builder.Property(la => la.Name)
             .HasMaxLength(300)
             .IsRequired();
 
-        builder.Property<uint>("Version")
+        _ = builder.Property<uint>("Version")
             .IsRowVersion();
     }
 }

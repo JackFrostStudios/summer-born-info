@@ -2,7 +2,7 @@ namespace SummerBornInfo.TestFramework.TestData;
 
 public static class ExampleImportFile
 {
-    const string Resource = "SummerBornInfo.TestFramework.TestData.ExampleImportFile.csv";
+    private const string Resource = "SummerBornInfo.TestFramework.TestData.ExampleImportFile.csv";
     public static Stream GetExampleImportFileContent()
     {
         return Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource)

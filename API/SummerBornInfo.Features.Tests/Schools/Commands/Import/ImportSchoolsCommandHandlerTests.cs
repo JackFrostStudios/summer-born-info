@@ -21,14 +21,14 @@ public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServ
         var savedImportRequest = await dbContext.SchoolBulkImportRequests.FindAsync([result.SchoolBulkImportRequestId], cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(savedImportRequest);
-        await LargeObjectAssertions.AssertLargeObjectExistsAsync(savedImportRequest.ContentId, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
-        await LargeObjectAssertions.AssertLargeObjectEqualsOriginalAsync(savedImportRequest.ContentId, command.Content, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
+        await LargeObjectAssertions.AssertLargeObjectExistsAsync(savedImportRequest.ContentId, IntegrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
+        await LargeObjectAssertions.AssertLargeObjectEqualsOriginalAsync(savedImportRequest.ContentId, command.Content, IntegrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
         await AssertSchoolBulkImportEventExistsAsync(savedImportRequest);
     }
 
     private async Task AssertSchoolBulkImportEventExistsAsync(SchoolBulkImportRequest schoolBulkImportRequest)
     {
         SchoolBulkImportUploaded expectedEvent = new() { SchoolBulkImportRequestId = schoolBulkImportRequest.Id };
-        await EventAssertions.AssertEventEqualsAndDeleteAsync(EventQueue.SchoolBulkImport, expectedEvent, integrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
+        await EventAssertions.AssertEventEqualsAndDeleteAsync(EventQueue.SchoolBulkImport, expectedEvent, IntegrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);
     }
 }

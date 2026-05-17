@@ -20,26 +20,26 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
 
     public async ValueTask InitializeAsync()
     {
-        await _postgreSqlContainer.StartAsync();
+        await _postgreSqlContainer.StartAsync(TestContext.Current.CancellationToken);
         ConnectionString = _postgreSqlContainer.GetConnectionString();
 
-        var templateDatabaseConnectionString = ConnectionString.Replace("Database=postgres", $"Database={TemplateDataBaseName}");
+        var templateDatabaseConnectionString = ConnectionString.Replace("Database=postgres", $"Database={TemplateDataBaseName}", StringComparison.Ordinal);
         templateDatabaseConnectionString += ";Pooling=false";
 
         ApplicationDbContext db = new(new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(templateDatabaseConnectionString).Options);
-        await db.Database.EnsureCreatedAsync();
+        _ = await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
 
-        await db.Database.EnsureCreatedAsync();
+        _ = await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
         NpgmqClient npgmq = new(connectionString: db.Database.GetConnectionString() ?? throw new InvalidOperationException("Db Connection string is null"));
-        await npgmq.InitAsync();
-        await npgmq.CreateQueueAsync(EventQueue.SchoolBulkImport.Name);
-        await npgmq.CreateQueueAsync(TestEventQueue.TestQueue.Name);
+        await npgmq.InitAsync(TestContext.Current.CancellationToken);
+        await npgmq.CreateQueueAsync(EventQueue.SchoolBulkImport.Name, TestContext.Current.CancellationToken);
+        await npgmq.CreateQueueAsync(TestEventQueue.TestQueue.Name, TestContext.Current.CancellationToken);
 
         await using NpgsqlConnection conn = new(ConnectionString);
         var command = conn.CreateCommand();
         command.CommandText = $"""ALTER DATABASE "{TemplateDataBaseName}" is_template=true;""";
-        await conn.OpenAsync();
-        await command.ExecuteNonQueryAsync();
+        await conn.OpenAsync(TestContext.Current.CancellationToken);
+        _ = await command.ExecuteNonQueryAsync(TestContext.Current.CancellationToken);
         await conn.CloseAsync();
     }
 

@@ -8,7 +8,7 @@ public static class EventAssertions
         var result = await npgmq.ReadAsync<T>(queue.Name, cancellationToken: cancellationToken);
         Assert.NotNull(result);
         Assert.Equal(message, result.Message);
-        await npgmq.DeleteAsync(queue.Name, result.MsgId, cancellationToken);
+        _ = await npgmq.DeleteAsync(queue.Name, result.MsgId, cancellationToken);
     }
 
     public static async Task AssertNoEventsExistAsync(IEventQueue queue, string connectionString, CancellationToken cancellationToken)

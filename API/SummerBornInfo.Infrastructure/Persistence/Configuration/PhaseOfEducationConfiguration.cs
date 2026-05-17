@@ -4,25 +4,25 @@ internal sealed class PhaseOfEducationConfiguration : IEntityTypeConfiguration<P
 {
     public void Configure(EntityTypeBuilder<PhaseOfEducation> builder)
     {
-        builder.ToTable("phase_of_education");
+        _ = builder.ToTable("phase_of_education");
 
-        builder.HasKey(p => p.Id);
-        builder.Property(p => p.Id)
+        _ = builder.HasKey(p => p.Id);
+        _ = builder.Property(p => p.Id)
             .IsRequired()
             .ValueGeneratedNever();
 
-        builder.Property(p => p.Code)
+        _ = builder.Property(p => p.Code)
             .HasMaxLength(100)
             .IsRequired();
 
-        builder.HasIndex(p => p.Code)
+        _ = builder.HasIndex(p => p.Code)
             .IsUnique();
 
-        builder.Property(p => p.Name)
+        _ = builder.Property(p => p.Name)
             .HasMaxLength(300)
             .IsRequired();
 
-        builder.Property<uint>("Version")
+        _ = builder.Property<uint>("Version")
             .IsRowVersion();
 
     }

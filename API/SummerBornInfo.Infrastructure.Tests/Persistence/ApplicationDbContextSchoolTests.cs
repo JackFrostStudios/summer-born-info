@@ -10,8 +10,8 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         var school = SchoolFactory.GetSchool();
 
         // Act
-        dbContext.Schools.Add(school);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.Schools.Add(school);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         //Assert
         dbContext.ChangeTracker.Clear();
@@ -36,8 +36,8 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         school.Address.County = null;
 
         // Act
-        dbContext.Schools.Add(school);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.Schools.Add(school);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         //Assert
         dbContext.ChangeTracker.Clear();
@@ -53,8 +53,8 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         // Arrange
         var dbContext = CreateDbContext();
         var school = SchoolFactory.GetSchool();
-        dbContext.Schools.Add(school);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.Schools.Add(school);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
         var schoolToUpdate = await dbContext.Schools.FindAsync([school.Id], TestContext.Current.CancellationToken);
@@ -72,14 +72,14 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         schoolToUpdate.EstablishmentStatus = EstablishmentStatusFactory.GetEstablishmentStatus();
 
         // Act
-        dbContext.PhasesOfEducation.Add(schoolToUpdate.PhaseOfEducation);
-        dbContext.LocalAuthorities.Add(schoolToUpdate.LocalAuthority);
-        dbContext.EstablishmentTypes.Add(schoolToUpdate.EstablishmentType);
-        dbContext.EstablishmentGroups.Add(schoolToUpdate.EstablishmentGroup);
-        dbContext.PhasesOfEducation.Add(schoolToUpdate.PhaseOfEducation);
-        dbContext.EstablishmentStatuses.Add(schoolToUpdate.EstablishmentStatus);
-        dbContext.Schools.Update(schoolToUpdate);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.PhasesOfEducation.Add(schoolToUpdate.PhaseOfEducation);
+        _ = dbContext.LocalAuthorities.Add(schoolToUpdate.LocalAuthority);
+        _ = dbContext.EstablishmentTypes.Add(schoolToUpdate.EstablishmentType);
+        _ = dbContext.EstablishmentGroups.Add(schoolToUpdate.EstablishmentGroup);
+        _ = dbContext.PhasesOfEducation.Add(schoolToUpdate.PhaseOfEducation);
+        _ = dbContext.EstablishmentStatuses.Add(schoolToUpdate.EstablishmentStatus);
+        _ = dbContext.Schools.Update(schoolToUpdate);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         //Assert
         dbContext.ChangeTracker.Clear();
@@ -95,8 +95,8 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         // Arrange
         var dbContext = CreateDbContext();
         var school = SchoolFactory.GetSchool();
-        dbContext.Schools.Add(school);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.Schools.Add(school);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContext.ChangeTracker.Clear();
 
         var schoolToUpdateOne = await dbContext.Schools.FindAsync([school.Id], TestContext.Current.CancellationToken);
@@ -107,11 +107,11 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         var schoolToUpdateTwo = await dbContextTwo.Schools.FindAsync([school.Id], TestContext.Current.CancellationToken);
         Assert.NotNull(schoolToUpdateTwo);
         schoolToUpdateTwo.URN = 999999998;
-        await dbContextTwo.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = await dbContextTwo.SaveChangesAsync(TestContext.Current.CancellationToken);
         dbContextTwo.ChangeTracker.Clear();
 
         // Act & Assert
-        await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () => await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken));
+        _ = await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () => await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken));
 
         var savedSchool = await dbContextTwo.Schools.FindAsync([school.Id], TestContext.Current.CancellationToken);
         Assert.Equivalent(schoolToUpdateTwo, savedSchool);

@@ -25,12 +25,12 @@ if (app.Environment.IsDevelopment())
 {
     await using var scope = app.Services.CreateAsyncScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await dbContext.Database.EnsureCreatedAsync();
+    _ = await dbContext.Database.EnsureCreatedAsync(app.Lifetime.ApplicationStopping);
     NpgmqClient npgmq = new(connectionString: dbContext.Database.GetConnectionString() ?? throw new InvalidOperationException("Db Connection string is null"));
-    await npgmq.InitAsync();
-    await npgmq.CreateQueueAsync(EventQueue.SchoolBulkImport.Name);
-    app.MapOpenApi();
-    app.UseSwaggerUI(options =>
+    await npgmq.InitAsync(app.Lifetime.ApplicationStopping);
+    await npgmq.CreateQueueAsync(EventQueue.SchoolBulkImport.Name, app.Lifetime.ApplicationStopping);
+    _ = app.MapOpenApi();
+    _ = app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/openapi/v1.json", "v1");
     });

@@ -24,8 +24,8 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
             lineNumber++;
             SchoolImportResult result;
             using var activity = SchoolBulkImportTelemetry.ActivitySource.StartActivity(SchoolBulkImportTelemetry.ActivityName);
-            activity?.SetTag("schoolBulkImport.request_id", schoolBulkImportRequestId);
-            activity?.SetTag("schoolBulkImport.row_number", lineNumber);
+            _ = (activity?.SetTag("schoolBulkImport.request_id", schoolBulkImportRequestId));
+            _ = (activity?.SetTag("schoolBulkImport.row_number", lineNumber));
 
             try
             {
@@ -35,8 +35,8 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
                     LineNumber = lineNumber,
                     Succeeded = true,
                 };
-                activity?.SetTag("schoolBulkImport.outcome", "processed");
-                activity?.SetStatus(ActivityStatusCode.Ok);
+                _ = (activity?.SetTag("schoolBulkImport.outcome", "processed"));
+                _ = (activity?.SetStatus(ActivityStatusCode.Ok));
             }
             catch (Exception ex)
             {
@@ -46,9 +46,9 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
                     Succeeded = false,
                     ErrorMessage = ex.Message,
                 };
-                activity?.SetTag("schoolBulkImport.outcome", "failed");
-                activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
-                activity?.SetTag("schoolBulkImport.error", ex.Message);
+                _ = (activity?.SetTag("schoolBulkImport.outcome", "failed"));
+                _ = (activity?.SetStatus(ActivityStatusCode.Error, ex.Message));
+                _ = (activity?.SetTag("schoolBulkImport.error", ex.Message));
             }
 
             yield return result;
@@ -84,7 +84,7 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
                 PhaseOfEducation = phaseOfEducation,
             };
 
-            await _context.Set<School>().AddAsync(school, cancellationToken);
+            _ = await _context.Set<School>().AddAsync(school, cancellationToken);
         }
         else
         {
@@ -108,21 +108,24 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
             school.PhaseOfEducation = phaseOfEducation;
         }
 
-        await _context.SaveChangesAsync(cancellationToken);
+        _ = await _context.SaveChangesAsync(cancellationToken);
 
         _context.Entry(school.Address).State = EntityState.Detached;
         _context.Entry(school).State = EntityState.Detached;
     }
 
-    private static SchoolAddress BuildAddress(SchoolCsvFields row) => new()
+    private static SchoolAddress BuildAddress(SchoolCsvFields row)
     {
-        Street = NullIfEmpty(row.Street),
-        Locality = NullIfEmpty(row.Locality),
-        AddressThree = NullIfEmpty(row.AddressThree),
-        Town = row.Town,
-        County = NullIfEmpty(row.County),
-        PostCode = row.Postcode,
-    };
+        return new()
+        {
+            Street = NullIfEmpty(row.Street),
+            Locality = NullIfEmpty(row.Locality),
+            AddressThree = NullIfEmpty(row.AddressThree),
+            Town = row.Town,
+            County = NullIfEmpty(row.County),
+            PostCode = row.Postcode,
+        };
+    }
 
     private static DateOnly? ParseDate(string raw)
     {
@@ -137,9 +140,13 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
             : null;
     }
 
-    private static int? ParseNullableInt(string raw) =>
-        int.TryParse(raw, CultureInfo.InvariantCulture, out var value) ? value : null;
+    private static int? ParseNullableInt(string raw)
+    {
+        return int.TryParse(raw, CultureInfo.InvariantCulture, out var value) ? value : null;
+    }
 
-    private static string? NullIfEmpty(string raw) =>
-        string.IsNullOrWhiteSpace(raw) ? null : raw;
+    private static string? NullIfEmpty(string raw)
+    {
+        return string.IsNullOrWhiteSpace(raw) ? null : raw;
+    }
 }

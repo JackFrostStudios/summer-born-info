@@ -4,34 +4,34 @@ internal sealed class AddressConfiguration : IEntityTypeConfiguration<SchoolAddr
 {
     public void Configure(EntityTypeBuilder<SchoolAddress> builder)
     {
-        builder.ToTable("school");
+        _ = builder.ToTable("school");
 
-        builder.Property<Guid>("Id")
+        _ = builder.Property<Guid>("Id")
             .IsRequired()
             .ValueGeneratedNever();
-        builder.HasKey("Id");
+        _ = builder.HasKey("Id");
 
-        builder.Property(a => a.Street)
+        _ = builder.Property(a => a.Street)
             .HasMaxLength(300);
 
-        builder.Property(a => a.Locality)
+        _ = builder.Property(a => a.Locality)
             .HasMaxLength(300);
 
-        builder.Property(a => a.AddressThree)
+        _ = builder.Property(a => a.AddressThree)
             .HasMaxLength(300);
 
-        builder.Property(a => a.Town)
+        _ = builder.Property(a => a.Town)
             .HasMaxLength(300)
             .IsRequired();
 
-        builder.Property(a => a.County)
+        _ = builder.Property(a => a.County)
             .HasMaxLength(300);
 
-        builder.Property(a => a.PostCode)
+        _ = builder.Property(a => a.PostCode)
             .HasMaxLength(30)
             .IsRequired();
 
-        builder.Property<uint>("Version")
+        _ = builder.Property<uint>("Version")
             .IsRowVersion();
     }
 }

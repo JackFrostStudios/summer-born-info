@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SummerBornInfo.AppHost\SummerBornInfo.AppHost.ServiceDefaults\SummerBornInfo.AppHost.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\SummerBornInfo.AppHost.ServiceDefaults\SummerBornInfo.AppHost.ServiceDefaults.csproj" />
     <ProjectReference Include="..\SummerBornInfo.Features\SummerBornInfo.Features.csproj" />
   </ItemGroup>
 </Project>

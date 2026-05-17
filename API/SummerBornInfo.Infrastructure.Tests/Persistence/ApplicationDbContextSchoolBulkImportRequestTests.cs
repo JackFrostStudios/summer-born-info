@@ -13,8 +13,8 @@ public sealed class ApplicationDbContextSchoolBulkImportRequestTests(Integration
         };
 
         // Act
-        dbContext.SchoolBulkImportRequests.Add(schoolBulkImportRequest);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.SchoolBulkImportRequests.Add(schoolBulkImportRequest);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         //Assert
         dbContext.ChangeTracker.Clear();
@@ -33,7 +33,7 @@ public sealed class ApplicationDbContextSchoolBulkImportRequestTests(Integration
         {
             ContentId = 7,
         };
-        schoolBulkImportRequest.ProcessingStarted();
+        _ = schoolBulkImportRequest.ProcessingStarted();
         for (var lineNumber = 1; lineNumber <= 11; lineNumber++)
         {
             schoolBulkImportRequest.UpdateProgress(lineNumber, errorMessage: null);
@@ -43,8 +43,8 @@ public sealed class ApplicationDbContextSchoolBulkImportRequestTests(Integration
         schoolBulkImportRequest.ProcessingComplete();
 
         // Act
-        dbContext.SchoolBulkImportRequests.Add(schoolBulkImportRequest);
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        _ = dbContext.SchoolBulkImportRequests.Add(schoolBulkImportRequest);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Assert
         dbContext.ChangeTracker.Clear();
@@ -56,7 +56,7 @@ public sealed class ApplicationDbContextSchoolBulkImportRequestTests(Integration
         Assert.Equal(7u, savedSchoolBulkImportRequest.ContentId);
         Assert.Equal(12, savedSchoolBulkImportRequest.LinesProcessed);
         Assert.Equal(SchoolBulkImportStatus.CompletedWithFailures, savedSchoolBulkImportRequest.Status);
-        Assert.Single(savedSchoolBulkImportRequest.Failures);
+        _ = Assert.Single(savedSchoolBulkImportRequest.Failures);
         Assert.Equal(8, savedSchoolBulkImportRequest.Failures[0].LineNumber);
         Assert.Equal("URN is required", savedSchoolBulkImportRequest.Failures[0].ErrorMessage);
     }

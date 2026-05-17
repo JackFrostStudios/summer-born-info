@@ -8,14 +8,16 @@ public sealed record SchoolAddressResponse
     public required string Town { get; init; }
     public required string? County { get; init; }
     public required string PostCode { get; init; }
-    public static SchoolAddressResponse FromEntity(SchoolAddress schoolAddress) => new()
+    public static SchoolAddressResponse FromEntity(SchoolAddress schoolAddress)
     {
-        Street = schoolAddress.Street,
-        Locality = schoolAddress.Locality,
-        AddressThree = schoolAddress.AddressThree,
-        Town = schoolAddress.Town,
-        County = schoolAddress.County,
-        PostCode = schoolAddress.PostCode,
-    };
-
+        return new()
+        {
+            Street = schoolAddress.Street,
+            Locality = schoolAddress.Locality,
+            AddressThree = schoolAddress.AddressThree,
+            Town = schoolAddress.Town,
+            County = schoolAddress.County,
+            PostCode = schoolAddress.PostCode,
+        };
+    }
 };
