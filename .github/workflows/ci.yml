@@ -36,12 +36,6 @@ jobs:
           --report-xunit-trx
           --coverlet
           --coverlet-output-format cobertura
-          --coverlet-include "[SummerBornInfo.Domain]*"
-          --coverlet-include "[SummerBornInfo.Features]*"
-          --coverlet-include "[SummerBornInfo.Infrastructure]*"
-          --coverlet-include "[SummerBornInfo.Web]*"
-          --coverlet-include "[SummerBornInfo.AppHost]*"
-          --coverlet-include "[SummerBornInfo.AppHost.ServiceDefaults]*"
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         if: always()
