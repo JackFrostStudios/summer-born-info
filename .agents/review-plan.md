@@ -1,9 +1,9 @@
 # Review Plan
 
-- [ ] Gather solution context and confirm review scope.
-- [ ] Review production readiness, including Aspire coupling in `SummerBornInfo.Web`.
-- [ ] Review maintainability and simplicity.
-- [ ] Review AI-assisted development instructions and workflow hygiene.
-- [ ] Review security and operations readiness.
-- [ ] Review testing, configuration, and dependency readiness.
-- [ ] Combine findings into a single markdown report.
+- [x] Gather solution context and confirm review scope.
+- [x] Review production readiness, including Aspire coupling in `SummerBornInfo.Web`.
+- [x] Review maintainability and simplicity.
+- [x] Review AI-assisted development instructions and workflow hygiene.
+- [x] Review security and operations readiness.
+- [x] Review testing, configuration, and dependency readiness.
+- [x] Combine findings into a single markdown report.
