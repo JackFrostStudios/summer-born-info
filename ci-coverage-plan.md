@@ -1,4 +1,4 @@
 - [x] Review current CI and test project coverage support
-- [ ] Add coverage threshold support to the test projects
+- [x] Add coverage threshold support to the test projects
 - [ ] Update the GitHub Actions workflow to build, run tests, and fail below 90% line coverage
 - [ ] Verify the pipeline commands locally and capture any follow-up constraints
