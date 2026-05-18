@@ -23,3 +23,46 @@ jobs:
         run: dotnet restore SummerBornInfo.sln
       - name: Build solution with analyzer enforcement
         run: dotnet build SummerBornInfo.sln -c Release --no-restore
+      - name: Run tests with coverage
+        run: >
+          dotnet test SummerBornInfo.sln
+          -c Release
+          --no-restore
+          --results-directory TestResults
+          --coverlet
+          --coverlet-output-format cobertura
+          --coverlet-include "[SummerBornInfo.Domain]*"
+          --coverlet-include "[SummerBornInfo.Features]*"
+          --coverlet-include "[SummerBornInfo.Infrastructure]*"
+          --coverlet-include "[SummerBornInfo.Web]*"
+          --coverlet-include "[SummerBornInfo.AppHost]*"
+          --coverlet-include "[SummerBornInfo.AppHost.ServiceDefaults]*"
+      - name: Enforce 90% line coverage
+        shell: pwsh
+        run: |
+          $coverageFile = Join-Path $PWD "TestResults/coverage.cobertura.xml"
+
+          if (-not (Test-Path $coverageFile)) {
+            throw "Coverage report not found at $coverageFile."
+          }
+
+          [xml]$coverage = Get-Content $coverageFile
+          [double]$lineCoverage = [double]$coverage.coverage.'line-rate' * 100
+          [int]$linesCovered = [int]$coverage.coverage.'lines-covered'
+          [int]$linesValid = [int]$coverage.coverage.'lines-valid'
+
+          $summary = @(
+            "## Coverage summary"
+            ""
+            "- Line coverage: $([string]::Format('{0:N2}%', $lineCoverage))"
+            "- Covered lines: $linesCovered"
+            "- Valid lines: $linesValid"
+            "- Threshold: 90.00%"
+          )
+
+          $summary -join "`n" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          Write-Host ("Line coverage: {0:N2}% ({1}/{2})" -f $lineCoverage, $linesCovered, $linesValid)
+
+          if ($lineCoverage -lt 90) {
+            throw ("Line coverage {0:N2}% is below the required 90.00% threshold." -f $lineCoverage)
+          }
