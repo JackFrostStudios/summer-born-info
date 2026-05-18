@@ -15,7 +15,8 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
 
         // Act
         List<SchoolImportResult> results = [];
-        await foreach (var result in importer.ImportAsync(_testRequestId, csvStream, TestContext.Current.CancellationToken))
+        await foreach (var result in importer.ImportAsync(_testRequestId, csvStream, TestContext.Current.CancellationToken)
+                           .WithCancellation(TestContext.Current.CancellationToken))
         {
             results.Add(result);
         }
@@ -297,6 +298,51 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
 
         Assert.Equal(2, schools.Count);
         Assert.Equal([100000, 100004], [.. schools.Select(x => x.URN)]);
+    }
+
+    [Fact]
+    public async Task GivenCsvStreamWithInvalidRow_WhenImportAsync_ThenFailureMessageIsSanitized()
+    {
+        // Arrange
+        var dbContext = CreateDbContext();
+        SchoolsImporter<ApplicationDbContext> importer = new(dbContext);
+        await using var csvStream = CreateCsvStream(
+            "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\"",
+            "\"INVALID\",\"1045\",\"Broken School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\"");
+
+        // Act
+        var results = await importer.ImportAsync(_testRequestId, csvStream, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        var failure = Assert.Single(results);
+        Assert.False(failure.Succeeded);
+        Assert.Equal("Unable to parse CSV row.", failure.ErrorMessage);
+    }
+
+    [Fact]
+    public async Task GivenProcessedRowsToSkip_WhenImportAsync_ThenEarlierRowsAreSkipped()
+    {
+        // Arrange
+        var dbContext = CreateDbContext();
+        SchoolsImporter<ApplicationDbContext> importer = new(dbContext);
+        await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
+
+        // Act
+        var results = await importer.ImportAsync(_testRequestId, csvStream, processedRowsToSkip: 1, TestContext.Current.CancellationToken)
+            .ToListAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        var result = Assert.Single(results);
+        Assert.True(result.Succeeded);
+        Assert.Equal(3, result.LineNumber);
+
+        var verifyDbContext = CreateDbContext();
+        var schools = await verifyDbContext.Set<School>()
+            .OrderBy(x => x.URN)
+            .ToListAsync(TestContext.Current.CancellationToken);
+
+        var school = Assert.Single(schools);
+        Assert.Equal(100004, school.URN);
     }
 
     private static MemoryStream CreateCsvStream(params string[] lines)

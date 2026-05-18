@@ -6,4 +6,5 @@ public sealed class SchoolBulkImportWorkerOptions
 
     public int EmptyQueueDelaySeconds { get; init; } = 1;
     public int MessageReadTimeoutSeconds { get; init; } = 30;
+    public int MaxRetryCount { get; init; } = 3;
 }

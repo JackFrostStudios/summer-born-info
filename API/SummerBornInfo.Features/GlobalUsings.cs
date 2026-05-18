@@ -6,6 +6,7 @@ global using nietras.SeparatedValues;
 global using SummerBornInfo.Domain.Entities;
 global using SummerBornInfo.Domain.Events;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
+global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing.Exceptions;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing.LookupImporter;
 global using SummerBornInfo.Features.Schools.Queries.GetAllSchools.Response;
 global using SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus.Response;

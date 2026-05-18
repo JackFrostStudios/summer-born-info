@@ -3,7 +3,7 @@ namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile;
 public sealed class ProcessImportFileCommandHandler(
     ApplicationDbContext context,
     ILargeObjectReader largeObjectReader,
-    SchoolsImporter<ApplicationDbContext> schoolsImporter)
+    ISchoolsImporter schoolsImporter) : IProcessImportFileCommandHandler
 {
     public async Task ExecuteAsync(ProcessImportFileCommand command, CancellationToken cancellationToken)
     {
@@ -24,7 +24,11 @@ public sealed class ProcessImportFileCommandHandler(
 
         try
         {
-            await foreach (var result in schoolsImporter.ImportAsync(command.SchoolBulkImportRequestId, csvStream, cancellationToken))
+            await foreach (var result in schoolsImporter.ImportAsync(
+                command.SchoolBulkImportRequestId,
+                csvStream,
+                schoolBulkImportRequest.LinesProcessed,
+                cancellationToken))
             {
                 schoolBulkImportRequest.UpdateProgress(result.LineNumber, result.Succeeded ? null : result.ErrorMessage ?? "Unknown import error");
 
@@ -34,11 +38,17 @@ public sealed class ProcessImportFileCommandHandler(
             schoolBulkImportRequest.ProcessingComplete();
             _ = await context.SaveChangesAsync(cancellationToken);
         }
-        catch
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex)
         {
             schoolBulkImportRequest.ProcessingFailed();
             _ = await context.SaveChangesAsync(cancellationToken);
-            throw;
+            throw ex is SchoolBulkImportException
+                ? ex
+                : new SchoolBulkImportProcessingException(ex);
         }
     }
 }

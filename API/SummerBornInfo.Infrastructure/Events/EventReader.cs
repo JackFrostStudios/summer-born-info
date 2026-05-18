@@ -8,6 +8,9 @@ public sealed class EventReader(ApplicationDbContext dbContext) : IEventReader
         var message = await npgmq.ReadAsync<T>(queue.Name, messageReadTimeoutSeconds, cancellationToken);
         return message is null
             ? null
-            : new QueuedEvent<T>(message.MsgId, message.Message ?? throw new InvalidOperationException("Queue message payload was null."));
+            : new QueuedEvent<T>(
+                message.MsgId,
+                message.Message ?? throw new InvalidOperationException("Queue message payload was null."),
+                message.ReadCt);
     }
 }

@@ -1,6 +1,6 @@
 namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
 
-public sealed class SchoolsImporter<TContext>(TContext context) where TContext : DbContext
+public sealed class SchoolsImporter<TContext>(TContext context) : ISchoolsImporter where TContext : DbContext
 {
     private readonly TContext _context = context;
     private readonly EstablishmentGroupImporter<TContext> _groupImporter = new(context);
@@ -9,9 +9,18 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
     private readonly LocalAuthorityImporter<TContext> _laImporter = new(context);
     private readonly PhaseOfEducationImporter<TContext> _phaseImporter = new(context);
 
+    public IAsyncEnumerable<SchoolImportResult> ImportAsync(
+        Guid schoolBulkImportRequestId,
+        Stream csvStream,
+        CancellationToken cancellationToken)
+    {
+        return ImportAsync(schoolBulkImportRequestId, csvStream, processedRowsToSkip: 0, cancellationToken);
+    }
+
     public async IAsyncEnumerable<SchoolImportResult> ImportAsync(
         Guid schoolBulkImportRequestId,
         Stream csvStream,
+        int processedRowsToSkip = 0,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         using StreamReader streamReader = new(csvStream, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
@@ -22,6 +31,13 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
         foreach (var row in reader)
         {
             lineNumber++;
+
+            if (processedRowsToSkip > 0)
+            {
+                processedRowsToSkip--;
+                continue;
+            }
+
             SchoolImportResult result;
             using var activity = SchoolBulkImportTelemetry.ActivitySource.StartActivity(SchoolBulkImportTelemetry.ActivityName);
             _ = (activity?.SetTag("schoolBulkImport.request_id", schoolBulkImportRequestId));
@@ -29,30 +45,75 @@ public sealed class SchoolsImporter<TContext>(TContext context) where TContext :
 
             try
             {
-                await ProcessRowAsync(SchoolCsvFields.FromRow(row), cancellationToken);
-                result = new SchoolImportResult
-                {
-                    LineNumber = lineNumber,
-                    Succeeded = true,
-                };
-                _ = (activity?.SetTag("schoolBulkImport.outcome", "processed"));
-                _ = (activity?.SetStatus(ActivityStatusCode.Ok));
+                var schoolCsvFields = ParseRow(row);
+                result = await ImportParsedRowAsync(schoolCsvFields, lineNumber, activity, cancellationToken);
             }
-            catch (Exception ex)
+            catch (SchoolBulkImportRowParseException ex)
             {
-                result = new SchoolImportResult
-                {
-                    LineNumber = lineNumber,
-                    Succeeded = false,
-                    ErrorMessage = ex.Message,
-                };
-                _ = (activity?.SetTag("schoolBulkImport.outcome", "failed"));
-                _ = (activity?.SetStatus(ActivityStatusCode.Error, ex.Message));
-                _ = (activity?.SetTag("schoolBulkImport.error", ex.Message));
+                MarkRowFailure(activity, ex.Message);
+                result = new SchoolImportResult { LineNumber = lineNumber, Succeeded = false, ErrorMessage = ex.Message };
             }
 
             yield return result;
         }
+    }
+
+    private async Task<SchoolImportResult> ImportParsedRowAsync(
+        SchoolCsvFields schoolCsvFields,
+        int lineNumber,
+        Activity? activity,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await ProcessRowAsync(schoolCsvFields, cancellationToken);
+            MarkRowProcessed(activity);
+            return new SchoolImportResult { LineNumber = lineNumber, Succeeded = true };
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (SchoolBulkImportProcessingException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            MarkRowAborted(activity);
+            throw new SchoolBulkImportProcessingException(ex);
+        }
+    }
+
+    private static SchoolCsvFields ParseRow(SepReader.Row row)
+    {
+        try
+        {
+            return SchoolCsvFields.FromRow(row);
+        }
+        catch (Exception ex)
+        {
+            throw new SchoolBulkImportRowParseException(ex);
+        }
+    }
+
+    private static void MarkRowProcessed(Activity? activity)
+    {
+        _ = (activity?.SetTag("schoolBulkImport.outcome", "processed"));
+        _ = (activity?.SetStatus(ActivityStatusCode.Ok));
+    }
+
+    private static void MarkRowFailure(Activity? activity, string errorMessage)
+    {
+        _ = (activity?.SetTag("schoolBulkImport.outcome", "failed"));
+        _ = (activity?.SetStatus(ActivityStatusCode.Error, errorMessage));
+        _ = (activity?.SetTag("schoolBulkImport.error", errorMessage));
+    }
+
+    private static void MarkRowAborted(Activity? activity)
+    {
+        _ = (activity?.SetTag("schoolBulkImport.outcome", "aborted"));
+        _ = (activity?.SetStatus(ActivityStatusCode.Error, "The import file could not be processed. Please try again."));
     }
 
     private async Task ProcessRowAsync(SchoolCsvFields row, CancellationToken cancellationToken)

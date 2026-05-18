@@ -123,6 +123,77 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
         Assert.Empty(await verifyDbContext.Schools.ToListAsync(TestContext.Current.CancellationToken));
     }
 
+    [Fact]
+    public async Task GivenUnexpectedImporterFailure_WhenExecuted_ThenFailureIsMarkedAndGenericExceptionIsThrown()
+    {
+        // Arrange
+        var requestId = await CreateImportRequestAsync(ExampleImportFile.GetExampleImportFileContent());
+        var dbContext = CreateDbContext();
+        var handler = new ProcessImportFileCommandHandler(
+            dbContext,
+            new LargeObjectReader(dbContext),
+            new ThrowingSchoolsImporter(_ => throw new InvalidOperationException("SQL details should not leak.")));
+
+        // Act
+        var exception = await Assert.ThrowsAsync<SchoolBulkImportProcessingException>(
+            () => handler.ExecuteAsync(new ProcessImportFileCommand(requestId), TestContext.Current.CancellationToken));
+
+        // Assert
+        Assert.Equal("The import file could not be processed. Please try again.", exception.Message);
+
+        var verifyDbContext = CreateDbContext();
+        var request = await verifyDbContext.SchoolBulkImportRequests
+            .Include(x => x.Failures)
+            .SingleAsync(x => x.Id == requestId, TestContext.Current.CancellationToken);
+
+        Assert.Equal(SchoolBulkImportStatus.Failed, request.Status);
+        Assert.Equal(0, request.LinesProcessed);
+        Assert.Empty(request.Failures);
+    }
+
+    [Fact]
+    public async Task GivenPreviouslyFailedRequestWithPartialProgress_WhenExecutedAgain_ThenProcessingResumesFromLastProcessedRow()
+    {
+        // Arrange
+        var requestId = await CreateImportRequestAsync(ExampleImportFile.GetExampleImportFileContent());
+        var firstRunDbContext = CreateDbContext();
+        var firstRunHandler = new ProcessImportFileCommandHandler(
+            firstRunDbContext,
+            new LargeObjectReader(firstRunDbContext),
+            new ThrowingSchoolsImporter(async cancellationToken =>
+            {
+                var importerDbContext = CreateDbContext();
+                SchoolsImporter<ApplicationDbContext> importer = new(importerDbContext);
+                await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
+                var firstResult = await importer.ImportAsync(requestId, csvStream, cancellationToken).FirstAsync(cancellationToken);
+                return firstResult;
+            }));
+
+        _ = await Assert.ThrowsAsync<SchoolBulkImportProcessingException>(
+            () => firstRunHandler.ExecuteAsync(new ProcessImportFileCommand(requestId), TestContext.Current.CancellationToken));
+
+        var retryHandler = CreateHandler(CreateDbContext());
+
+        // Act
+        await retryHandler.ExecuteAsync(new ProcessImportFileCommand(requestId), TestContext.Current.CancellationToken);
+
+        // Assert
+        var verifyDbContext = CreateDbContext();
+        var request = await verifyDbContext.SchoolBulkImportRequests
+            .Include(x => x.Failures)
+            .SingleAsync(x => x.Id == requestId, TestContext.Current.CancellationToken);
+
+        Assert.Equal(2, request.LinesProcessed);
+        Assert.Equal(SchoolBulkImportStatus.Completed, request.Status);
+        Assert.Empty(request.Failures);
+
+        var schools = await verifyDbContext.Schools
+            .OrderBy(x => x.URN)
+            .ToListAsync(TestContext.Current.CancellationToken);
+
+        Assert.Equal([100000, 100004], [.. schools.Select(x => x.URN)]);
+    }
+
     private static ProcessImportFileCommandHandler CreateHandler(ApplicationDbContext dbContext)
     {
         return new(dbContext, new LargeObjectReader(dbContext), new SchoolsImporter<ApplicationDbContext>(dbContext));
@@ -148,5 +219,23 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
     private static MemoryStream CreateCsvStream(params string[] lines)
     {
         return new(System.Text.Encoding.UTF8.GetBytes(string.Join(Environment.NewLine, lines)));
+    }
+
+    private sealed class ThrowingSchoolsImporter(Func<CancellationToken, Task<SchoolImportResult>> firstResultFactory) : ISchoolsImporter
+    {
+        public async IAsyncEnumerable<SchoolImportResult> ImportAsync(
+            Guid schoolBulkImportRequestId,
+            Stream csvStream,
+            int processedRowsToSkip = 0,
+            [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            if (processedRowsToSkip > 0)
+            {
+                yield break;
+            }
+
+            yield return await firstResultFactory(cancellationToken);
+            throw new InvalidOperationException("SQL details should not leak.");
+        }
     }
 }

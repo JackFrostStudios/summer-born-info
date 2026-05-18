@@ -7,6 +7,7 @@ public sealed partial class ProcessSchoolBulkImportBackgroundService(
 {
     internal TimeSpan EmptyQueueDelay { get; } = TimeSpan.FromSeconds(Math.Max(0, options.Value.EmptyQueueDelaySeconds));
     internal int MessageReadTimeoutSeconds { get; } = Math.Max(1, options.Value.MessageReadTimeoutSeconds);
+    internal int MaxRetryCount { get; } = Math.Max(0, options.Value.MaxRetryCount);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -32,7 +33,7 @@ public sealed partial class ProcessSchoolBulkImportBackgroundService(
         }
     }
 
-    private async Task<bool> ProcessNextMessageAsync(CancellationToken cancellationToken)
+    internal async Task<bool> ProcessNextMessageAsync(CancellationToken cancellationToken)
     {
         await using var scope = serviceScopeFactory.CreateAsyncScope();
         var eventReader = scope.ServiceProvider.GetRequiredService<IEventReader>();
@@ -44,9 +45,16 @@ public sealed partial class ProcessSchoolBulkImportBackgroundService(
             return false;
         }
 
+        if (queuedEvent.ReadCount > MaxRetryCount)
+        {
+            LogPoisonMessageAcknowledged(logger, queuedEvent.Message.SchoolBulkImportRequestId, queuedEvent.ReadCount, MaxRetryCount);
+            await eventAcknowledger.DeleteEventAsync(EventQueue.SchoolBulkImport, queuedEvent.MessageId, cancellationToken);
+            return true;
+        }
+
         try
         {
-            var handler = scope.ServiceProvider.GetRequiredService<ProcessImportFileCommandHandler>();
+            var handler = scope.ServiceProvider.GetRequiredService<IProcessImportFileCommandHandler>();
             await handler.ExecuteAsync(new ProcessImportFileCommand(queuedEvent.Message.SchoolBulkImportRequestId), cancellationToken);
             await eventAcknowledger.DeleteEventAsync(EventQueue.SchoolBulkImport, queuedEvent.MessageId, cancellationToken);
             return true;
@@ -70,4 +78,13 @@ public sealed partial class ProcessSchoolBulkImportBackgroundService(
         ILogger logger,
         Guid schoolBulkImportRequestId,
         Exception exception);
+
+    [LoggerMessage(
+        Level = LogLevel.Warning,
+        Message = "Acknowledged poison school bulk import message for request {SchoolBulkImportRequestId} after {ReadCount} reads exceeded the configured max retry count of {MaxRetryCount}.")]
+    private static partial void LogPoisonMessageAcknowledged(
+        ILogger logger,
+        Guid schoolBulkImportRequestId,
+        long readCount,
+        int maxRetryCount);
 }
