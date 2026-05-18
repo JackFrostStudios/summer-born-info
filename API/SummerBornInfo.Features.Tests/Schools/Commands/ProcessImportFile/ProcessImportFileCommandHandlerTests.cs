@@ -163,7 +163,9 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
             new ThrowingSchoolsImporter(async cancellationToken =>
             {
                 var importerDbContext = CreateDbContext();
-                SchoolsImporter<ApplicationDbContext> importer = new(importerDbContext);
+                SchoolsImporter<ApplicationDbContext> importer = new(
+                    importerDbContext,
+                    Microsoft.Extensions.Logging.Abstractions.NullLogger<SchoolsImporter<ApplicationDbContext>>.Instance);
                 await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
                 var firstResult = await importer.ImportAsync(requestId, csvStream, cancellationToken).FirstAsync(cancellationToken);
                 return firstResult;
@@ -196,7 +198,12 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
 
     private static ProcessImportFileCommandHandler CreateHandler(ApplicationDbContext dbContext)
     {
-        return new(dbContext, new LargeObjectReader(dbContext), new SchoolsImporter<ApplicationDbContext>(dbContext));
+        return new(
+            dbContext,
+            new LargeObjectReader(dbContext),
+            new SchoolsImporter<ApplicationDbContext>(
+                dbContext,
+                Microsoft.Extensions.Logging.Abstractions.NullLogger<SchoolsImporter<ApplicationDbContext>>.Instance));
     }
 
     private async Task<Guid> CreateImportRequestAsync(Stream content)

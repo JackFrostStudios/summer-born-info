@@ -1,4 +1,4 @@
 namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing.Exceptions;
 
-public sealed class SchoolBulkImportRowParseException(Exception innerException)
-    : SchoolBulkImportException("Unable to parse CSV row.", innerException);
+public sealed class SchoolBulkImportRowParseException(string message, Exception innerException)
+    : SchoolBulkImportException(message, innerException);

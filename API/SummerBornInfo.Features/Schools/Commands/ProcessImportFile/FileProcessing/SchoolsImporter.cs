@@ -1,6 +1,6 @@
 namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
 
-public sealed class SchoolsImporter<TContext>(TContext context) : ISchoolsImporter where TContext : DbContext
+public sealed partial class SchoolsImporter<TContext>(TContext context, ILogger<SchoolsImporter<TContext>> logger) : ISchoolsImporter where TContext : DbContext
 {
     private readonly TContext _context = context;
     private readonly EstablishmentGroupImporter<TContext> _groupImporter = new(context);
@@ -46,7 +46,7 @@ public sealed class SchoolsImporter<TContext>(TContext context) : ISchoolsImport
             try
             {
                 var schoolCsvFields = ParseRow(row);
-                result = await ImportParsedRowAsync(schoolCsvFields, lineNumber, activity, cancellationToken);
+                result = await ImportParsedRowAsync(schoolBulkImportRequestId, schoolCsvFields, lineNumber, activity, cancellationToken);
             }
             catch (SchoolBulkImportRowParseException ex)
             {
@@ -59,6 +59,7 @@ public sealed class SchoolsImporter<TContext>(TContext context) : ISchoolsImport
     }
 
     private async Task<SchoolImportResult> ImportParsedRowAsync(
+        Guid schoolBulkImportRequestId,
         SchoolCsvFields schoolCsvFields,
         int lineNumber,
         Activity? activity,
@@ -80,6 +81,7 @@ public sealed class SchoolsImporter<TContext>(TContext context) : ISchoolsImport
         }
         catch (Exception ex)
         {
+            LogUnexpectedProcessingError(logger, lineNumber, schoolBulkImportRequestId, ex.Message, ex);
             MarkRowAborted(activity);
             throw new SchoolBulkImportProcessingException(ex);
         }
@@ -93,7 +95,7 @@ public sealed class SchoolsImporter<TContext>(TContext context) : ISchoolsImport
         }
         catch (Exception ex)
         {
-            throw new SchoolBulkImportRowParseException(ex);
+            throw new SchoolBulkImportRowParseException($"Unable to parse CSV row. {ex.Message}", ex);
         }
     }
 
@@ -210,4 +212,15 @@ public sealed class SchoolsImporter<TContext>(TContext context) : ISchoolsImport
     {
         return string.IsNullOrWhiteSpace(raw) ? null : raw;
     }
+
+    [LoggerMessage(
+        EventId = 1,
+        Level = LogLevel.Error,
+        Message = "Unexpected error processing school bulk import row {LineNumber} for request {SchoolBulkImportRequestId}: {ErrorMessage}")]
+    private static partial void LogUnexpectedProcessingError(
+        ILogger logger,
+        int lineNumber,
+        Guid schoolBulkImportRequestId,
+        string errorMessage,
+        Exception exception);
 }

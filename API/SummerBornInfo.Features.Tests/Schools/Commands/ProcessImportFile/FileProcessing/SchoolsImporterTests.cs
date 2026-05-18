@@ -10,7 +10,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer = new(dbContext);
+        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
         await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
@@ -36,7 +36,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer = new(dbContext);
+        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
         await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
@@ -123,13 +123,13 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext1 = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer1 = new(dbContext1);
+        SchoolsImporter<ApplicationDbContext> importer1 = new(dbContext1, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
         await using var csvStream1 = ExampleImportFile.GetExampleImportFileContent();
 
         var firstResults = await importer1.ImportAsync(_testRequestId, csvStream1, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
 
         var dbContext2 = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer2 = new(dbContext2);
+        SchoolsImporter<ApplicationDbContext> importer2 = new(dbContext2, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
         await using var csvStream2 = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
@@ -152,7 +152,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext1 = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer1 = new(dbContext1);
+        SchoolsImporter<ApplicationDbContext> importer1 = new(dbContext1, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
         await using var csvStream1 = ExampleImportFile.GetExampleImportFileContent();
 
         var firstResults = await importer1.ImportAsync(_testRequestId, csvStream1, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
@@ -168,7 +168,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
             .ToListAsync(TestContext.Current.CancellationToken);
 
         var dbContext2 = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer2 = new(dbContext2);
+        SchoolsImporter<ApplicationDbContext> importer2 = new(dbContext2, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
         await using var csvStream2 = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
@@ -227,13 +227,13 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext1 = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer1 = new(dbContext1);
+        SchoolsImporter<ApplicationDbContext> importer1 = new(dbContext1, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
         await using var csvStream1 = ExampleImportFile.GetExampleImportFileContent();
 
         var firstResults = await importer1.ImportAsync(_testRequestId, csvStream1, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
 
         var dbContext2 = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer2 = new(dbContext2);
+        SchoolsImporter<ApplicationDbContext> importer2 = new(dbContext2, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
         await using var csvStream2 = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
@@ -266,7 +266,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer = new(dbContext);
+        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
         await using var csvStream = CreateCsvStream(
             "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\"",
             "\"100000\",\"3614\",\"The Aldgate School\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\"",
@@ -301,11 +301,11 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     }
 
     [Fact]
-    public async Task GivenCsvStreamWithInvalidRow_WhenImportAsync_ThenFailureMessageIsSanitized()
+    public async Task GivenCsvStreamWithInvalidRow_WhenImportAsync_ThenFailureMessageIncludesParseErrorDetails()
     {
         // Arrange
         var dbContext = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer = new(dbContext);
+        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
         await using var csvStream = CreateCsvStream(
             "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\"",
             "\"INVALID\",\"1045\",\"Broken School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\"");
@@ -316,7 +316,8 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         // Assert
         var failure = Assert.Single(results);
         Assert.False(failure.Succeeded);
-        Assert.Equal("Unable to parse CSV row.", failure.ErrorMessage);
+        Assert.Contains("Unable to parse CSV row.", failure.ErrorMessage, StringComparison.Ordinal);
+        Assert.Contains("The input string 'INVALID' was not in a correct format.", failure.ErrorMessage, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -324,7 +325,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer = new(dbContext);
+        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
         await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
@@ -345,8 +346,71 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         Assert.Equal(100004, school.URN);
     }
 
+    [Fact]
+    public async Task GivenUnexpectedProcessingError_WhenImportAsync_ThenOriginalExceptionIsLoggedAndWrapped()
+    {
+        // Arrange
+        var dbContext = CreateDbContext();
+        var logger = new TestLogger<SchoolsImporter<ApplicationDbContext>>();
+        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, logger);
+        await dbContext.DisposeAsync();
+        await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
+
+        // Act
+        var exception = await Assert.ThrowsAsync<SchoolBulkImportProcessingException>(
+            async () => _ = await importer.ImportAsync(_testRequestId, csvStream, TestContext.Current.CancellationToken)
+                .ToListAsync(TestContext.Current.CancellationToken));
+
+        // Assert
+        Assert.NotNull(exception.InnerException);
+        Assert.Contains(logger.Entries, entry =>
+            entry.LogLevel == Microsoft.Extensions.Logging.LogLevel.Error
+            && entry.Message.Contains(exception.InnerException.Message, StringComparison.Ordinal));
+    }
+
     private static MemoryStream CreateCsvStream(params string[] lines)
     {
         return new(System.Text.Encoding.UTF8.GetBytes(string.Join(Environment.NewLine, lines)));
+    }
+
+    private static Microsoft.Extensions.Logging.Abstractions.NullLogger<T> CreateLogger<T>() where T : class
+    {
+        return Microsoft.Extensions.Logging.Abstractions.NullLogger<T>.Instance;
+    }
+
+    private sealed class TestLogger<T> : Microsoft.Extensions.Logging.ILogger<T>
+    {
+        public List<LogEntry> Entries { get; } = [];
+
+        public IDisposable BeginScope<TState>(TState state) where TState : notnull
+        {
+            return NullScope.Instance;
+        }
+
+        public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
+        {
+            return true;
+        }
+
+        public void Log<TState>(
+            Microsoft.Extensions.Logging.LogLevel logLevel,
+            Microsoft.Extensions.Logging.EventId eventId,
+            TState state,
+            Exception? exception,
+            Func<TState, Exception?, string> formatter)
+        {
+            Entries.Add(new LogEntry(logLevel, formatter(state, exception), exception));
+        }
+
+        public sealed record LogEntry(Microsoft.Extensions.Logging.LogLevel LogLevel, string Message, Exception? Exception);
+
+        private sealed class NullScope : IDisposable
+        {
+            public static readonly NullScope Instance = new();
+
+            public void Dispose()
+            {
+            }
+        }
     }
 }

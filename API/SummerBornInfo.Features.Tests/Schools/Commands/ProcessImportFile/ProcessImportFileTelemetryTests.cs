@@ -59,7 +59,12 @@ public sealed class ProcessImportFileTelemetryTests(
 
     private static ProcessImportFileCommandHandler CreateHandler(ApplicationDbContext dbContext)
     {
-        return new(dbContext, new LargeObjectReader(dbContext), new SchoolsImporter<ApplicationDbContext>(dbContext));
+        return new(
+            dbContext,
+            new LargeObjectReader(dbContext),
+            new SchoolsImporter<ApplicationDbContext>(
+                dbContext,
+                Microsoft.Extensions.Logging.Abstractions.NullLogger<SchoolsImporter<ApplicationDbContext>>.Instance));
     }
 
     private async Task<Guid> CreateImportRequestAsync(Stream content)
