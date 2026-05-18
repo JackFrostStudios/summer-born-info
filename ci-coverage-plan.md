@@ -1,4 +1,3 @@
-- [x] Review current CI and test project coverage support
-- [x] Add coverage threshold support to the test projects
-- [x] Update the GitHub Actions workflow to build, run tests, and fail below 90% line coverage
-- [x] Verify the pipeline commands locally and capture any follow-up constraints
+- [x] Review the current CI workflow inputs and map the example coverage flow onto this repo's API-only test setup
+- [x] Update `.github/workflows/ci.yml` to publish coverage artifacts, generate a sticky PR coverage comment, and keep the 90% coverage gate with simpler reporting
+- [ ] Run the relevant validation commands locally and capture any follow-up constraints

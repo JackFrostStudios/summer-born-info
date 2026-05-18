@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+permissions:
+  checks: write
+  pull-requests: write
+
 jobs:
   build-core:
     runs-on: ubuntu-latest
@@ -23,12 +27,13 @@ jobs:
         run: dotnet restore SummerBornInfo.sln
       - name: Build solution with analyzer enforcement
         run: dotnet build SummerBornInfo.sln -c Release --no-restore
-      - name: Run tests with coverage
+      - name: Run tests with coverage and TRX output
         run: >
           dotnet test SummerBornInfo.sln
           -c Release
-          --no-restore
+          --no-build
           --results-directory TestResults
+          --report-xunit-trx
           --coverlet
           --coverlet-output-format cobertura
           --coverlet-include "[SummerBornInfo.Domain]*"
@@ -37,32 +42,43 @@ jobs:
           --coverlet-include "[SummerBornInfo.Web]*"
           --coverlet-include "[SummerBornInfo.AppHost]*"
           --coverlet-include "[SummerBornInfo.AppHost.ServiceDefaults]*"
-      - name: Enforce 90% line coverage
-        shell: pwsh
-        run: |
-          $coverageFile = Join-Path $PWD "TestResults/coverage.cobertura.xml"
-
-          if (-not (Test-Path $coverageFile)) {
-            throw "Coverage report not found at $coverageFile."
-          }
-
-          [xml]$coverage = Get-Content $coverageFile
-          [double]$lineCoverage = [double]$coverage.coverage.'line-rate' * 100
-          [int]$linesCovered = [int]$coverage.coverage.'lines-covered'
-          [int]$linesValid = [int]$coverage.coverage.'lines-valid'
-
-          $summary = @(
-            "## Coverage summary"
-            ""
-            "- Line coverage: $([string]::Format('{0:N2}%', $lineCoverage))"
-            "- Covered lines: $linesCovered"
-            "- Valid lines: $linesValid"
-            "- Threshold: 90.00%"
-          )
-
-          $summary -join "`n" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          Write-Host ("Line coverage: {0:N2}% ({1}/{2})" -f $lineCoverage, $linesCovered, $linesValid)
-
-          if ($lineCoverage -lt 90) {
-            throw ("Line coverage {0:N2}% is below the required 90.00% threshold." -f $lineCoverage)
-          }
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: ${{ github.workspace }}/API/TestResults/coverage.cobertura.xml
+          retention-days: 5
+          if-no-files-found: ignore
+      - name: Publish code coverage summary
+        uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95 # v1.3.0
+        if: always() && hashFiles('API/TestResults/coverage.cobertura.xml') != ''
+        with:
+          filename: API/TestResults/coverage.cobertura.xml
+          badge: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: false
+          indicators: true
+          fail_below_min: true
+          output: both
+          thresholds: "90 100"
+      - name: Add coverage PR comment
+        uses: marocchino/sticky-pull-request-comment@52423e01640425a022ef5fd42c6fb5f633a02728 # v2.9.1
+        if: github.event_name == 'pull_request' && hashFiles('API/TestResults/coverage.cobertura.xml') != ''
+        with:
+          recreate: true
+          path: code-coverage-results.md
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: ${{ github.workspace }}/API/TestResults/**/*
+          retention-days: 5
+          if-no-files-found: ignore
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@170bf24d20d201b842d7a52403b73ed297e6645b # v2.18.0
+        if: always() && hashFiles('API/TestResults/**/*.trx') != ''
+        with:
+          trx_files: ${{ github.workspace }}/API/TestResults/**/*.trx
