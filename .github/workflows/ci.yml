@@ -46,13 +46,13 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage
-          path: ${{ github.workspace }}/coverage-results/coverage.xml
+          path: ${{ github.workspace }}/API/coverage-results/coverage.xml
           retention-days: 5
           if-no-files-found: ignore
       - name: Publish code coverage summary
         uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95 # v1.3.0
         with:
-          filename: /coverage-results/coverage.xml
+          filename: /API/coverage-results/coverage.xml
           badge: true
           format: markdown
           hide_branch_rate: false
