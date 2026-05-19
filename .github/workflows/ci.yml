@@ -48,7 +48,7 @@ jobs:
       - name: Publish code coverage summary
         uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95 # v1.3.0
         with:
-          filename: **/coverage.cobertura.xml
+          filename: /**/coverage.cobertura.xml
           badge: true
           format: markdown
           hide_branch_rate: false
