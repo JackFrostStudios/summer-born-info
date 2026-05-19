@@ -12,10 +12,6 @@
     <InformationalVersion>1.0.0</InformationalVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
-    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --coverlet-exclude-assemblies-without-sources MissingAny</TestingPlatformCommandLineArguments>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Meziantou.Analyzer" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />
   </ItemGroup>

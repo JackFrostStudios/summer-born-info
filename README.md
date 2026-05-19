@@ -58,10 +58,16 @@ dotnet run --project SummerBornInfo.AppHost/SummerBornInfo.AppHost.AppHost/Summe
 ## Testing
 The solution includes domain, infrastructure, feature, and web integration test projects. Tests are written with xUnit and are intended to be run through Visual Studio's Test Explorer / test runner.
 
-Run all tests from Visual Studio, or if you prefer the command line, you can run the app host from the `API` folder with::
+Run all tests from Visual Studio, or from the `API` folder on the command line with:
 
 ```bash
 dotnet test
+```
+
+For a coverage run that excludes third-party assemblies and keeps the report focused on repository code, use:
+
+```bash
+dotnet test --results-directory TestResults --report-xunit-trx --coverlet --coverlet-exclude-assemblies-without-sources MissingAny --coverlet-output-format cobertura
 ```
 
 The integration test projects use Testcontainers to provision PostgreSQL when required, so no separate manual database setup should be necessary for test runs.
