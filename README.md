@@ -67,7 +67,7 @@ dotnet test
 For a coverage run that excludes third-party assemblies and keeps the report focused on repository code, use:
 
 ```bash
-dotnet test --results-directory TestResults --report-xunit-trx --coverlet --coverlet-exclude-assemblies-without-sources MissingAny --coverlet-output-format cobertura
+dotnet test --report-xunit-trx --coverlet --coverlet-exclude-assemblies-without-sources MissingAny --coverlet-output-format cobertura
 ```
 
 The integration test projects use Testcontainers to provision PostgreSQL when required, so no separate manual database setup should be necessary for test runs.
