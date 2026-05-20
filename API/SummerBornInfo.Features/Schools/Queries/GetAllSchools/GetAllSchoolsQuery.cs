@@ -2,7 +2,7 @@ namespace SummerBornInfo.Features.Schools.Queries.GetAllSchools;
 
 public sealed record GetAllSchoolsQuery(
     Guid? Cursor = null,
-    int PageSize = 100
+    int? PageSize = null
 )
 {
     public const int DefaultPageSize = 100;

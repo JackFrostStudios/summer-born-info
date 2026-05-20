@@ -101,6 +101,26 @@ public sealed class GetAllSchoolsTests(
     }
 
     [Fact]
+    public async Task GivenPageSizeIsOmitted_WhenGetAllSchools_ThenReturnsDefaultPageSize()
+    {
+        var schools = CreateSequentialSchools(count: 101).ToArray();
+
+        await SeedSchoolsAsync(schools);
+
+        var client = Factory.CreateClient();
+        var response = await client.GetAsync("/api/schools", TestContext.Current.CancellationToken);
+
+        _ = response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<GetAllSchoolsResponse>(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(result);
+        Assert.Equal(100, result.Schools.Count);
+        Assert.Equal(schools[0].Id, result.Schools[0].Id);
+        Assert.Equal(schools[99].Id, result.Schools[^1].Id);
+        Assert.Equal(schools[99].Id, result.NextCursor);
+    }
+
+    [Fact]
     public async Task GivenRequestedPageSizeExceedsMaximum_WhenGetAllSchools_ThenReturnsAtMostTwoHundredSchools()
     {
         var schools = CreateSequentialSchools(count: 201).ToArray();

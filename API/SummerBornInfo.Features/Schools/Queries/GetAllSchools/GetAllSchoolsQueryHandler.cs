@@ -6,7 +6,8 @@ public sealed class GetAllSchoolsQueryHandler(ApplicationDbContext context)
 
     public async Task<(List<SchoolResponse> Schools, Guid? NextCursor)> ExecuteAsync(GetAllSchoolsQuery request, CancellationToken cancellationToken)
     {
-        var pageSize = Math.Min(request.PageSize, GetAllSchoolsQuery.MaximumPageSize);
+        var requestedPageSize = request.PageSize ?? GetAllSchoolsQuery.DefaultPageSize;
+        var pageSize = Math.Min(requestedPageSize, GetAllSchoolsQuery.MaximumPageSize);
 
         var query = _context.Schools
             .AsNoTracking();

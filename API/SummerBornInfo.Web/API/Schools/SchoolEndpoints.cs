@@ -15,7 +15,7 @@ public static class SchoolEndpoints
     {
         _ = builder.MapGet("/", async (GetAllSchoolsQueryHandler handler, Guid? cursor, int? pageSize, CancellationToken cancellationToken) =>
         {
-            GetAllSchoolsQuery query = new(cursor, pageSize ?? GetAllSchoolsQuery.DefaultPageSize);
+            GetAllSchoolsQuery query = new(cursor, pageSize);
             (var schools, var nextCursor) = await handler.ExecuteAsync(query, cancellationToken);
             return Results.Ok(new { schools, nextCursor });
         });
