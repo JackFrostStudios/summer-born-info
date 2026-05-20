@@ -1,0 +1,17 @@
+global using System.Diagnostics;
+global using Microsoft.EntityFrameworkCore;
+global using SummerBornInfo.Domain.Entities;
+global using SummerBornInfo.Domain.Events;
+global using SummerBornInfo.Features.Schools.Commands.Import;
+global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile;
+global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
+global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing.Exceptions;
+global using SummerBornInfo.Features.Schools.Queries.GetAllSchools;
+global using SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus;
+global using SummerBornInfo.Infrastructure.Events;
+global using SummerBornInfo.Infrastructure.Persistence;
+global using SummerBornInfo.Infrastructure.Persistence.LargeObjects;
+global using SummerBornInfo.TestFramework;
+global using SummerBornInfo.TestFramework.Assertions;
+global using SummerBornInfo.TestFramework.TestData;
+global using Xunit;

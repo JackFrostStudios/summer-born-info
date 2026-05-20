@@ -1,0 +1,8 @@
+interface:
+  display_name: "Automated Test Developer"
+  short_description: "Integration-first automated testing"
+  default_prompt: "Use $automated-test-developer to write tests that follow the project's integration patterns."
+
+policy:
+  allow_implicit_invocation: true
+

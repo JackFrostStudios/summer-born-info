@@ -1,0 +1,160 @@
+root = true
+
+[*]
+indent_style = space
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+dotnet_analyzer_diagnostic.severity = error
+dotnet_analyzer_diagnostic.category-Style.severity = error
+
+[*.cs]
+indent_size = 4
+dotnet_sort_system_directives_first = true
+
+# Don't use this. qualifier
+dotnet_style_qualification_for_field = false:error
+dotnet_style_qualification_for_property = false:error
+
+# use int x = .. over Int32
+dotnet_style_predefined_type_for_locals_parameters_members = true:error
+
+# use int.MaxValue over Int32.MaxValue
+dotnet_style_predefined_type_for_member_access = true:error
+
+# Require var all the time.
+csharp_style_var_for_built_in_types = true:error
+csharp_style_var_when_type_is_apparent = true:error
+csharp_style_var_elsewhere = true:error
+
+# Disallow throw expressions.
+csharp_style_throw_expression = false:error
+
+# Newline settings
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types = true
+
+# Namespace settings
+csharp_style_namespace_declarations = file_scoped
+
+# Brace settings
+csharp_prefer_braces = true # Prefer curly braces even for one line of code
+
+# name all constant fields using PascalCase
+dotnet_naming_rule.constant_fields_should_be_pascal_case.symbols  = constant_fields
+dotnet_naming_rule.constant_fields_should_be_pascal_case.style    = pascal_case_style
+dotnet_naming_symbols.constant_fields.applicable_kinds   = field
+dotnet_naming_symbols.constant_fields.required_modifiers = const
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+
+# internal and private fields should be _camelCase
+dotnet_naming_rule.camel_case_for_private_internal_fields.symbols  = private_internal_fields
+dotnet_naming_rule.camel_case_for_private_internal_fields.style    = camel_case_underscore_style
+dotnet_naming_symbols.private_internal_fields.applicable_kinds = field
+dotnet_naming_symbols.private_internal_fields.applicable_accessibilities = private, internal
+dotnet_naming_style.camel_case_underscore_style.required_prefix = _
+dotnet_naming_style.camel_case_underscore_style.capitalization = camel_case
+
+[*.{xml,config,*proj,nuspec,props,resx,targets,yml,tasks}]
+indent_size = 2
+
+# Xml config files
+[*.{props,targets,ruleset,config,nuspec,resx,vsixmanifest,vsct}]
+indent_size = 2
+
+[*.json]
+indent_size = 2
+
+[*.{ps1,psm1}]
+indent_size = 4
+
+[*.sh]
+indent_size = 4
+end_of_line = lf
+
+[*.{cs,vb}]
+# Rule configuration
+# CA1822: Make member static
+dotnet_code_quality.CA1822.api_surface = private, internal
+
+# IDE0036: Order modifiers
+csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:error
+
+# IDE0060: Remove unused parameter
+dotnet_code_quality_unused_parameters = non_public
+
+# IDE2000: Disallow multiple blank lines
+dotnet_style_allow_multiple_blank_lines_experimental = false
+
+# Disabled Rules
+# IDE0046: Use conditional expression for return
+dotnet_diagnostic.IDE0046.severity = none
+
+# CA2007: Do not directly await a Task
+dotnet_diagnostic.CA2007.severity = none
+
+# CS1591: Missing XML comment for publicly visible type or member 'Type_or_Member'
+dotnet_diagnostic.CS1591.severity = none
+
+# MA0004: Use Task.ConfigureAwait
+dotnet_diagnostic.MA0004.severity = none
+
+# MA0165: Make interpolated string
+dotnet_diagnostic.MA0165.severity = none
+
+# MA0038: Make method static (deprecated, use CA1822 instead)
+dotnet_diagnostic.MA0038.severity = none
+
+# Top Level Files
+[SummerBornInfo.AppHost/AppHost.cs]
+# MA0036: Make class static
+dotnet_diagnostic.MA0036.severity = none
+
+[SummerBornInfo.Web/Program.cs]
+# MA0036: Make class static
+dotnet_diagnostic.MA0036.severity = none
+
+# Test projects
+[*Tests/**/*.cs]
+# CA1707: Identifiers should not contain underscores
+dotnet_diagnostic.CA1707.severity = none
+
+# Test projects (root-level files)
+[*Tests/*.cs]
+# CA1707: Identifiers should not contain underscores
+dotnet_diagnostic.CA1707.severity = none
+
+[**/EventQueue.cs]
+# CA1711: Identifiers should not have incorrect suffix
+dotnet_diagnostic.CA1711.severity = none
+
+[**/IEventQueue.cs]
+# CA1711: Identifiers should not have incorrect suffix
+dotnet_diagnostic.CA1711.severity = none
+
+[**/TestEventQueue.cs]
+# CA1711: Identifiers should not have incorrect suffix
+dotnet_diagnostic.CA1711.severity = none
+
+[**/AppHost.cs]
+# MA0048: File name must match type name
+dotnet_diagnostic.MA0048.severity = none
+
+# Allow long methods for EF Core configuration.
+[*SummerBornInfo.Infrastructure/Persistence/Configuration/*.cs]
+# MA0051: Method is too long
+dotnet_diagnostic.MA0051.severity = none
+
+# Verify settings
+[**/*.{txt,xml,json}]
+charset = "utf-8-bom"
+end_of_line = lf
+indent_size = unset
+indent_style = unset
+insert_final_newline = false
+tab_width = unset
+trim_trailing_whitespace = false

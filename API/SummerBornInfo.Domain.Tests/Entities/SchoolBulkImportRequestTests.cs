@@ -1,0 +1,201 @@
+namespace SummerBornInfo.Domain.Tests.Entities;
+
+public sealed class SchoolBulkImportRequestTests
+{
+    [Fact]
+    public void SchoolBulkImportRequest_ShouldInitalizeWithRequiredProperties()
+    {
+        // Arrange
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
+        {
+            ContentId = 1,
+        };
+
+        // Act & Assert
+        Assert.Equal(1u, schoolBulkImportRequest.ContentId);
+        Assert.Equal(0, schoolBulkImportRequest.LinesProcessed);
+        Assert.Equal(SchoolBulkImportStatus.Pending, schoolBulkImportRequest.Status);
+        Assert.Empty(schoolBulkImportRequest.Failures);
+    }
+
+    [Fact]
+    public void SchoolBulkImportRequest_ShouldGenerateId()
+    {
+        // Arrange
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
+        {
+            ContentId = 1,
+        };
+
+        // Act & Assert
+        Assert.NotEqual(Guid.Empty, schoolBulkImportRequest.Id);
+    }
+
+    [Fact]
+    public void GivenPendingRequest_WhenProcessingStarted_ThenStatusIsProcessing()
+    {
+        // Arrange
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
+        {
+            ContentId = 1,
+        };
+
+        // Act
+        var started = schoolBulkImportRequest.ProcessingStarted();
+
+        // Assert
+        Assert.True(started);
+        Assert.Equal(SchoolBulkImportStatus.Processing, schoolBulkImportRequest.Status);
+    }
+
+    [Fact]
+    public void GivenCompletedRequest_WhenProcessingStarted_ThenStatusIsUnchanged()
+    {
+        // Arrange
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
+        {
+            ContentId = 1,
+        };
+        _ = schoolBulkImportRequest.ProcessingStarted();
+        schoolBulkImportRequest.ProcessingComplete();
+
+        // Act
+        var started = schoolBulkImportRequest.ProcessingStarted();
+
+        // Assert
+        Assert.False(started);
+        Assert.Equal(SchoolBulkImportStatus.Completed, schoolBulkImportRequest.Status);
+    }
+
+    [Fact]
+    public void GivenProcessedRows_WhenUpdatingProgress_ThenProcessedLineCountIncrements()
+    {
+        // Arrange
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
+        {
+            ContentId = 1,
+        };
+
+        // Act
+        schoolBulkImportRequest.UpdateProgress(2, errorMessage: null);
+        schoolBulkImportRequest.UpdateProgress(3, errorMessage: null);
+
+        // Assert
+        Assert.Equal(2, schoolBulkImportRequest.LinesProcessed);
+        Assert.Empty(schoolBulkImportRequest.Failures);
+    }
+
+    [Fact]
+    public void GivenRowFailure_WhenUpdatingProgress_ThenFailureIsRecorded()
+    {
+        // Arrange
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
+        {
+            ContentId = 1,
+        };
+
+        // Act
+        schoolBulkImportRequest.UpdateProgress(3, "Missing URN");
+
+        // Assert
+        _ = Assert.Single(schoolBulkImportRequest.Failures);
+        Assert.Equal(3, schoolBulkImportRequest.Failures[0].LineNumber);
+        Assert.Equal("Missing URN", schoolBulkImportRequest.Failures[0].ErrorMessage);
+    }
+
+    [Fact]
+    public void GivenExistingFailureForRow_WhenUpdatingProgress_ThenErrorDetailsAreOverwritten()
+    {
+        // Arrange
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
+        {
+            ContentId = 1,
+        };
+        schoolBulkImportRequest.UpdateProgress(3, "Missing URN");
+
+        // Act
+        schoolBulkImportRequest.UpdateProgress(3, "URN must be numeric");
+
+        // Assert
+        Assert.Equal(2, schoolBulkImportRequest.LinesProcessed);
+        _ = Assert.Single(schoolBulkImportRequest.Failures);
+        Assert.Equal("URN must be numeric", schoolBulkImportRequest.Failures[0].ErrorMessage);
+    }
+
+    [Fact]
+    public void GivenProcessedRequestWithoutFailures_WhenProcessingCompletes_ThenStatusIsCompleted()
+    {
+        // Arrange
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
+        {
+            ContentId = 1,
+        };
+        _ = schoolBulkImportRequest.ProcessingStarted();
+        schoolBulkImportRequest.UpdateProgress(2, errorMessage: null);
+
+        // Act
+        schoolBulkImportRequest.ProcessingComplete();
+
+        // Assert
+        Assert.Equal(SchoolBulkImportStatus.Completed, schoolBulkImportRequest.Status);
+    }
+
+    [Fact]
+    public void GivenProcessedRequestWithFailures_WhenProcessingCompletes_ThenStatusIsCompletedWithFailures()
+    {
+        // Arrange
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
+        {
+            ContentId = 1,
+        };
+        _ = schoolBulkImportRequest.ProcessingStarted();
+        schoolBulkImportRequest.UpdateProgress(3, "Missing URN");
+
+        // Act
+        schoolBulkImportRequest.ProcessingComplete();
+
+        // Assert
+        Assert.Equal(SchoolBulkImportStatus.CompletedWithFailures, schoolBulkImportRequest.Status);
+    }
+
+    [Fact]
+    public void GivenProcessingRequest_WhenProcessingFails_ThenStatusIsFailed()
+    {
+        // Arrange
+        SchoolBulkImportRequest schoolBulkImportRequest = new()
+        {
+            ContentId = 1,
+        };
+        _ = schoolBulkImportRequest.ProcessingStarted();
+
+        // Act
+        schoolBulkImportRequest.ProcessingFailed();
+
+        // Assert
+        Assert.Equal(SchoolBulkImportStatus.Failed, schoolBulkImportRequest.Status);
+    }
+
+    [Fact]
+    public void SchoolBulkImportRequest_ShouldNotExposePublicSettersForMutableImportState()
+    {
+        // Act
+        var linesProcessedSetter = typeof(SchoolBulkImportRequest).GetProperty(nameof(SchoolBulkImportRequest.LinesProcessed))!.SetMethod;
+        var statusSetter = typeof(SchoolBulkImportRequest).GetProperty(nameof(SchoolBulkImportRequest.Status))!.SetMethod;
+        var failuresSetter = typeof(SchoolBulkImportRequest).GetProperty(nameof(SchoolBulkImportRequest.Failures))!.SetMethod;
+
+        // Assert
+        Assert.False(linesProcessedSetter?.IsPublic ?? false);
+        Assert.False(statusSetter?.IsPublic ?? false);
+        Assert.Null(failuresSetter);
+    }
+
+    [Fact]
+    public void SchoolBulkImportFailure_ShouldGenerateId()
+    {
+        // Arrange
+        SchoolBulkImportFailure failure = new(2, "Unable to parse row");
+
+        // Act & Assert
+        Assert.NotEqual(Guid.Empty, failure.Id);
+    }
+}

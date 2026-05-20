@@ -1,0 +1,8 @@
+interface:
+  display_name: "Architect"
+  short_description: "Code placement and project structure"
+  default_prompt: "Use $architect to decide where new code belongs and how to wire it into this project."
+
+policy:
+  allow_implicit_invocation: true
+

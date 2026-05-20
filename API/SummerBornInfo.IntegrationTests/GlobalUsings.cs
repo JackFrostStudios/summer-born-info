@@ -1,0 +1,16 @@
+global using System.Reflection;
+global using System.Text;
+global using Bogus;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Logging;
+global using Npgmq;
+global using Npgsql;
+global using NpgsqlTypes;
+global using SummerBornInfo.Domain.Entities;
+global using SummerBornInfo.Infrastructure.Events;
+global using SummerBornInfo.Infrastructure.Persistence;
+global using SummerBornInfo.TestFramework.Events;
+global using SummerBornInfo.TestFramework.Logging;
+global using SummerBornInfo.TestFramework.TestData.Exceptions;
+global using Testcontainers.PostgreSql;
+global using Xunit;

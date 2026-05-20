@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Sep" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SummerBornInfo.Domain\SummerBornInfo.Domain.csproj" />
+    <ProjectReference Include="..\SummerBornInfo.Infrastructure\SummerBornInfo.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

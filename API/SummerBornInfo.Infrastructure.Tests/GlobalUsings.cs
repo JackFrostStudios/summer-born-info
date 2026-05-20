@@ -1,0 +1,10 @@
+global using System.Diagnostics.CodeAnalysis;
+global using Microsoft.EntityFrameworkCore;
+global using SummerBornInfo.Domain.Entities;
+global using SummerBornInfo.Infrastructure.Events;
+global using SummerBornInfo.Infrastructure.Persistence.LargeObjects;
+global using SummerBornInfo.TestFramework;
+global using SummerBornInfo.TestFramework.Assertions;
+global using SummerBornInfo.TestFramework.Events;
+global using SummerBornInfo.TestFramework.TestData;
+global using Xunit;
