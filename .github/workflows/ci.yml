@@ -38,7 +38,7 @@ jobs:
           --no-build
           --report-xunit-trx
           --coverlet
-          --coverlet-exclude-assemblies-without-sources MissingAny
+          --coverlet-exclude-assemblies-without-sources MissingAll
           --coverlet-output-format cobertura
       - name: Merge Coverage Reports
         run: dotnet coverage merge --reports "**/coverage.cobertura.xml" -f cobertura -o coverage-results/coverage.xml
