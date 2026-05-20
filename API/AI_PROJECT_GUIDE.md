@@ -47,4 +47,5 @@ This document is the compact source of truth for the repository layout and the c
 - Assert on outputs and system state rather than internal method calls.
 
 ## Running tests
-- dotnet test commands must be run from the API folder as the working directory, otherwise global.json configuration is not loaded and tests aren't identified.
+
+- `dotnet test` commands must be run from the `API` folder as the working directory, otherwise `global.json` configuration is not loaded and tests aren't identified.
