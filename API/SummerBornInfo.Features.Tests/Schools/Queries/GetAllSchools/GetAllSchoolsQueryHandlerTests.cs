@@ -26,7 +26,7 @@ public sealed class GetAllSchoolsQueryHandlerTests(
 
         // Act
         var result = await handler.ExecuteAsync(
-            new GetAllSchoolsQuery(pageSize: 2),
+            new GetAllSchoolsQuery(PageSize: 2),
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -60,7 +60,7 @@ public sealed class GetAllSchoolsQueryHandlerTests(
 
         // Act
         var result = await handler.ExecuteAsync(
-            new GetAllSchoolsQuery(pageSize: 2),
+            new GetAllSchoolsQuery(PageSize: 2),
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -94,7 +94,7 @@ public sealed class GetAllSchoolsQueryHandlerTests(
 
         // Act
         var result = await handler.ExecuteAsync(
-            new GetAllSchoolsQuery(cursor: firstSchool.Id, pageSize: 5),
+            new GetAllSchoolsQuery(Cursor: firstSchool.Id, PageSize: 5),
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -117,7 +117,7 @@ public sealed class GetAllSchoolsQueryHandlerTests(
             new GetAllSchoolsQuery(),
             TestContext.Current.CancellationToken);
         var maximumPageResult = await handler.ExecuteAsync(
-            new GetAllSchoolsQuery(pageSize: 500),
+            new GetAllSchoolsQuery(PageSize: 500),
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -139,11 +139,12 @@ public sealed class GetAllSchoolsQueryHandlerTests(
         for (var index = 1; index <= count; index++)
         {
             var indexText = index.ToString("D12", System.Globalization.CultureInfo.InvariantCulture);
+            var nameText = index.ToString("D3", System.Globalization.CultureInfo.InvariantCulture);
             yield return CreateSchool(
                 id: new Guid($"00000000-0000-0000-0000-{indexText}"),
                 urn: 100000 + index,
                 establishmentNumber: 3000 + index,
-                name: $"School {index:D3}");
+                name: $"School {nameText}");
         }
     }
 
@@ -165,7 +166,9 @@ public sealed class GetAllSchoolsQueryHandlerTests(
                 AddressThree = null,
                 Town = "Leeds",
                 County = "West Yorkshire",
-                PostCode = $"LS1 {(urn % 10).ToString(System.Globalization.CultureInfo.InvariantCulture)}AA",
+                PostCode = string.Create(
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    $"LS1 {urn % 10}AA"),
             },
             OpenDate = new DateOnly(2010, 9, 1),
             CloseDate = null,
