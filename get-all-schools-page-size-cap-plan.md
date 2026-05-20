@@ -1,0 +1,1 @@
+- [x] Add the smallest useful web integration test covering that `GET /api/schools` caps `pageSize` at 200, then run the targeted test and mark this step complete.

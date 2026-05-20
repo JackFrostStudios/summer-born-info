@@ -100,6 +100,26 @@ public sealed class GetAllSchoolsTests(
         Assert.Null(secondPage.NextCursor);
     }
 
+    [Fact]
+    public async Task GivenRequestedPageSizeExceedsMaximum_WhenGetAllSchools_ThenReturnsAtMostTwoHundredSchools()
+    {
+        var schools = CreateSequentialSchools(count: 201).ToArray();
+
+        await SeedSchoolsAsync(schools);
+
+        var client = Factory.CreateClient();
+        var response = await client.GetAsync("/api/schools?pageSize=500", TestContext.Current.CancellationToken);
+
+        _ = response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<GetAllSchoolsResponse>(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(result);
+        Assert.Equal(200, result.Schools.Count);
+        Assert.Equal(schools[0].Id, result.Schools[0].Id);
+        Assert.Equal(schools[199].Id, result.Schools[^1].Id);
+        Assert.Equal(schools[199].Id, result.NextCursor);
+    }
+
     private async Task SeedSchoolsAsync(params School[] schools)
     {
         await using var scope = Factory.Services.CreateAsyncScope();
@@ -160,6 +180,32 @@ public sealed class GetAllSchoolsTests(
             postCode: "BD1 3CC",
             openDate: new DateOnly(2016, 9, 1),
             closeDate: null);
+    }
+
+    private static IEnumerable<School> CreateSequentialSchools(int count)
+    {
+        for (var index = 1; index <= count; index++)
+        {
+            var indexText = index.ToString("D12", System.Globalization.CultureInfo.InvariantCulture);
+            var nameText = index.ToString("D3", System.Globalization.CultureInfo.InvariantCulture);
+            var streetText = index.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            var postCodeSuffix = (index % 10).ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+            yield return CreateSchool(
+                id: new Guid($"00000000-0000-0000-0000-{indexText}"),
+                urn: 100000 + index,
+                ukprn: 200000 + index,
+                establishmentNumber: 3000 + index,
+                name: $"School {nameText}",
+                street: $"{streetText} Test Street",
+                locality: "Central",
+                addressThree: null,
+                town: "Leeds",
+                county: "West Yorkshire",
+                postCode: $"LS1 {postCodeSuffix}AA",
+                openDate: new DateOnly(2010, 9, 1).AddDays(index),
+                closeDate: null);
+        }
     }
 
     private static School CreateSchool(
