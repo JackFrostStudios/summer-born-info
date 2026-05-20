@@ -1,1 +1,3 @@
-- [x] Add the smallest useful web integration test covering that `GET /api/schools` caps `pageSize` at 200, then run the targeted test and mark this step complete.
+- [x] Add the smallest useful web integration test covering that `GET /api/schools` caps `pageSize` at 200.
+- [x] Clamp the effective `GetAllSchools` page size to a maximum of 200 in production code.
+- [x] Run `dotnet test .\SummerBornInfo.Web.Tests\SummerBornInfo.Web.Tests.csproj -- --filter-class SummerBornInfo.Web.Tests.API.Schools.GetAllSchoolsTests` from `API`.

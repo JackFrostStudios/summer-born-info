@@ -6,6 +6,8 @@ public sealed class GetAllSchoolsQueryHandler(ApplicationDbContext context)
 
     public async Task<(List<SchoolResponse> Schools, Guid? NextCursor)> ExecuteAsync(GetAllSchoolsQuery request, CancellationToken cancellationToken)
     {
+        var pageSize = Math.Min(request.PageSize, GetAllSchoolsQuery.MaximumPageSize);
+
         var query = _context.Schools
             .AsNoTracking();
 
@@ -18,11 +20,11 @@ public sealed class GetAllSchoolsQueryHandler(ApplicationDbContext context)
 
         // Take one extra to determine if there's a next page
         var schools = await query
-            .Take(request.PageSize + 1)
+            .Take(pageSize + 1)
             .ToListAsync(cancellationToken);
 
-        var hasMore = schools.Count > request.PageSize;
-        var schoolsToReturn = hasMore ? [.. schools.Take(request.PageSize)] : schools;
+        var hasMore = schools.Count > pageSize;
+        var schoolsToReturn = hasMore ? [.. schools.Take(pageSize)] : schools;
 
         var schoolResponses = schoolsToReturn.Select(SchoolResponse.FromEntity).ToList();
 
