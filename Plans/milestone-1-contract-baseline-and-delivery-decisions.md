@@ -207,13 +207,13 @@ The following items remain intentionally deferred for later milestone planning r
 
 ## 11. Completion Checklist
 
-- [ ] The milestone 1 plan exists in `Plans/` and traces clearly back to the roadmap milestone.
-- [ ] A markdown contract baseline document exists for admin access, school search, URN lookup, radius search, and CSA Application Review workflows.
-- [ ] The contract baseline defines stable request and response schemas for each in-scope operation.
-- [ ] The CSA Application Review contract includes `name`, `applicationSuccessful`, and free-text comment fields.
-- [ ] Protected operations are clearly described as admin-authenticated and aligned to ASP.NET Core Identity as the implementation direction.
-- [ ] The contract distinguishes free-text school search, exact URN lookup, and radius-based search as separate capabilities.
-- [ ] Validation and baseline error expectations are documented for major failure paths that affect UI or implementation planning.
-- [ ] Deferred implementation decisions are listed explicitly so later milestones can resolve them deliberately.
-- [ ] Follow-on milestone inputs are recorded for Milestones 2 through 6, including the expectation that implementation produces the generated OpenAPI output later.
-- [ ] The milestone output is considered stable enough for downstream implementation plans and UI contract discussions.
+- [x] The milestone 1 plan exists in `Plans/` and traces clearly back to the roadmap milestone.
+- [x] A markdown contract baseline document exists for admin access, school search, URN lookup, radius search, and CSA Application Review workflows.
+- [x] The contract baseline defines stable request and response schemas for each in-scope operation.
+- [x] The CSA Application Review contract includes `name`, `applicationSuccessful`, and free-text comment fields.
+- [x] Protected operations are clearly described as admin-authenticated and aligned to ASP.NET Core Identity as the implementation direction.
+- [x] The contract distinguishes free-text school search, exact URN lookup, and radius-based search as separate capabilities.
+- [x] Validation and baseline error expectations are documented for major failure paths that affect UI or implementation planning.
+- [x] Deferred implementation decisions are listed explicitly so later milestones can resolve them deliberately.
+- [x] Follow-on milestone inputs are recorded for Milestones 2 through 6, including the expectation that implementation produces the generated OpenAPI output later.
+- [x] The milestone output is considered stable enough for downstream implementation plans and UI contract discussions.
