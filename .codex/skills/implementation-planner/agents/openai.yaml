@@ -1,0 +1,4 @@
+interface:
+  display_name: "Implementation Planner"
+  short_description: "Roadmap items to delivery-ready plans"
+  default_prompt: "Use $implementation-planner to turn a roadmap item into a delivery-ready implementation plan or refine an existing plan until it is implementation ready."
