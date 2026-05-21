@@ -25,3 +25,4 @@ Provide the smallest amount of context that still leads to a good decision.
 ## Canonical Project Guide
 
 - Use [AI_PROJECT_GUIDE.md](AI_PROJECT_GUIDE.md) as the source of truth for solution layout and common .NET conventions.
+- Any project structure change must be reflected in [AI_PROJECT_GUIDE.md](AI_PROJECT_GUIDE.md) as part of the same work. This includes adding new projects, deleting projects, renaming projects, or other solution layout changes.
