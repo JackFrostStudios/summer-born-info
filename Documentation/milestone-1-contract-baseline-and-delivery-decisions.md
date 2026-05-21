@@ -100,7 +100,7 @@ Query parameters:
 | Name | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `q` | string | Yes | Free-text search term. Must not be blank. |
-| `cursor` | string | No | Opaque continuation token from a previous response. Must not be blank when supplied. |
+| `cursor` | string | No | Continuation value from a previous response. Must not be blank when supplied. |
 | `limit` | integer | No | Optional positive result limit. If supplied, must be within the supported maximum. |
 
 Response:
@@ -130,7 +130,7 @@ Response:
 Validation and failure expectations:
 
 - Blank or missing `q` returns `400 Bad Request`.
-- Blank, malformed, or expired `cursor` values return `400 Bad Request`.
+- Blank or invalid `cursor` values return `400 Bad Request`.
 - Invalid `limit` values return `400 Bad Request`.
 - No matches return `200 OK` with `"items": []`, `"nextCursor": null`, and `"hasMore": false`.
 
@@ -138,7 +138,7 @@ Baseline notes:
 
 - Matching targets school `name` and address or postcode fields only.
 - Results are ranked, but the ranking algorithm is deferred.
-- Pagination uses an opaque cursor over the returned ranked order; cursor contents are not part of the public contract.
+- Pagination uses cursor-based continuation over the returned ranked order.
 
 ### 5.2 Public Exact URN Lookup
 
@@ -200,7 +200,7 @@ Query parameters:
 | `latitude` | number | Yes | Must be within `-90` to `90`. |
 | `longitude` | number | Yes | Must be within `-180` to `180`. |
 | `radiusMiles` | number | Yes | Positive search radius in miles. |
-| `cursor` | string | No | Opaque continuation token from a previous response. Must not be blank when supplied. |
+| `cursor` | string | No | Continuation value from a previous response. Must not be blank when supplied. |
 | `limit` | integer | No | Optional positive result limit. If supplied, must be within the supported maximum. |
 
 Response:
@@ -232,7 +232,7 @@ Validation and failure expectations:
 - Missing `latitude`, `longitude`, or `radiusMiles` returns `400 Bad Request`.
 - Out-of-range coordinates return `400 Bad Request`.
 - Zero or negative `radiusMiles` returns `400 Bad Request`.
-- Blank, malformed, or expired `cursor` values return `400 Bad Request`.
+- Blank or invalid `cursor` values return `400 Bad Request`.
 - Invalid `limit` values return `400 Bad Request`.
 - No matches return `200 OK` with `"items": []`, `"nextCursor": null`, and `"hasMore": false`.
 
@@ -240,7 +240,7 @@ Baseline notes:
 
 - Radius-from-point is the only required geospatial mode in the initial release.
 - The fixed contract unit is miles to avoid a baseline-level unit negotiation decision.
-- Pagination uses an opaque cursor over the returned ordered result set; cursor contents are not part of the public contract.
+- Pagination uses cursor-based continuation over the returned ordered result set.
 
 ### 5.4 Public CSA Application Review Submission
 
@@ -326,7 +326,7 @@ Query parameters:
 
 | Name | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `cursor` | string | No | Opaque continuation token from a previous response. Must not be blank when supplied. |
+| `cursor` | string | No | Continuation value from a previous response. Must not be blank when supplied. |
 | `limit` | integer | No | Optional positive result limit. If supplied, must be within the supported maximum. |
 
 Response:
@@ -353,7 +353,7 @@ Response:
 Validation and failure expectations:
 
 - Unknown `schoolId` returns `404 Not Found`.
-- Blank, malformed, or expired `cursor` values return `400 Bad Request`.
+- Blank or invalid `cursor` values return `400 Bad Request`.
 - Invalid `limit` values return `400 Bad Request`.
 - No public comments return `200 OK` with `"items": []`, `"nextCursor": null`, and `"hasMore": false`.
 
@@ -361,7 +361,7 @@ Baseline notes:
 
 - This endpoint returns only comments that are publicly visible after moderation.
 - Internal moderation status is not exposed in this public list response.
-- Pagination order must be stable for cursor traversal; the cursor is opaque and not client-generated.
+- Pagination order must be stable for cursor traversal.
 
 ### 5.6 Public Comment Report Submission
 
@@ -529,7 +529,7 @@ The following decisions are intentionally not settled by this baseline and must 
 
 - exact ASP.NET Core Identity setup, persistence, admin bootstrap, and sign-in flow;
 - search ranking implementation details;
-- maximum cursor page size, cursor lifetime or expiry behaviour, filtering rules, and optional sort modes beyond the baseline query shape;
+- exact cursor format, traversal method, maximum cursor page size, cursor lifetime or expiry behaviour, filtering rules, and optional sort modes beyond the baseline query shape;
 - geospatial storage and query implementation;
 - maximum supported radius and handling for schools with missing location data;
 - exact URN format validation constraints beyond requiring an exact route identifier;

@@ -157,7 +157,7 @@ The following decisions are intentionally out of scope for this milestone and mu
 - what rate-limiting and bot protection mechanisms are used;
 - how report handling works after receipt, including expanded reason taxonomy, duplicate handling, and reporter anonymity or storage design;
 - whether moderation supports approve or reject only, or richer state transitions;
-- maximum cursor page size, cursor lifetime or expiry behaviour, filtering rules, and sorting rules beyond the baseline contract.
+- exact cursor format, traversal method, maximum cursor page size, cursor lifetime or expiry behaviour, filtering rules, and sorting rules beyond the baseline contract.
 
 ### Constraints
 
