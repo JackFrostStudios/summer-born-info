@@ -15,6 +15,7 @@ This baseline is intentionally concrete at the HTTP contract layer and intention
 - Admin-protected operations must be implemented using ASP.NET Core Identity as the agreed authentication direction.
 - Free-text search, exact URN lookup, and radius-based school discovery are separate capabilities and must remain separate in the contract.
 - The initial public CSA Application Review contract must include `name`, `applicationSuccessful`, and a free-text `comment`.
+- `schoolId` is the canonical school resource identifier carried by school response objects and used for school-specific POST operations.
 
 ## 3. In-Scope Contract Surface
 
@@ -25,6 +26,8 @@ This baseline covers:
 - public school retrieval by exact URN;
 - public school discovery by radius-from-point query;
 - public CSA Application Review submission for a specific school;
+- public retrieval of comments for a specific school;
+- public reporting of a specific comment for a specific school;
 - shared validation and error response expectations used by those operations.
 
 This baseline does not define full auth flows, persistence design, ranking internals, abuse-protection internals, or operational rollout details.
@@ -35,8 +38,10 @@ This baseline does not define full auth flows, persistence design, ranking inter
 
 - Public school routes are rooted under `/api/schools`.
 - Admin-only routes are rooted under `/api/admin`.
-- School association for review submission is carried by route parameter rather than an optional body field.
-- URN is the baseline public school identifier for lookup and review association.
+- `schoolId` is the canonical school resource identifier used in school-specific POST routes and returned by school response objects.
+- Exact URN lookup remains a separate public GET capability for callers that start from a URN rather than a `schoolId`.
+- School association for review submission and reporting is carried by route parameter rather than an optional body field.
+- Public comments are the moderated CSA Application Reviews exposed for school-specific display.
 
 ### 4.2 Shared School Model
 
@@ -44,7 +49,8 @@ This baseline does not define full auth flows, persistence design, ranking inter
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `urn` | string | Yes | Exact school identifier used by URN lookup and review association. |
+| `schoolId` | string | Yes | Canonical school resource identifier used in school-specific POST routes. |
+| `urn` | string | Yes | Exact school identifier exposed for dedicated URN lookup and external reference. |
 | `name` | string | Yes | School display name. |
 | `addressLine1` | string | Yes | Primary address line. |
 | `addressLine2` | string | No | Optional secondary address line. |
@@ -105,6 +111,7 @@ Response:
 {
   "items": [
     {
+      "schoolId": "sch_123",
       "urn": "123456",
       "name": "Example Primary School",
       "addressLine1": "1 High Street",
@@ -151,6 +158,7 @@ Response:
 
 ```json
 {
+  "schoolId": "sch_123",
   "urn": "123456",
   "name": "Example Primary School",
   "addressLine1": "1 High Street",
@@ -166,6 +174,10 @@ Validation and failure expectations:
 
 - Invalid URN format returns `400 Bad Request`.
 - Unknown URN returns `404 Not Found`.
+
+Baseline notes:
+
+- URN is the lookup input for this specific operation, but the returned school resource still includes the canonical `schoolId`.
 
 ### 5.3 Public Radius-Based School Search
 
@@ -195,6 +207,7 @@ Response:
 {
   "items": [
     {
+      "schoolId": "sch_123",
       "urn": "123456",
       "name": "Example Primary School",
       "addressLine1": "1 High Street",
@@ -222,7 +235,7 @@ Baseline notes:
 
 ### 5.4 Public CSA Application Review Submission
 
-`POST /api/schools/{urn}/csa-application-reviews`
+`POST /api/schools/{schoolId}/csa-application-reviews`
 
 Purpose:
 Create a CSA Application Review associated with a specific school.
@@ -234,7 +247,7 @@ Route parameters:
 
 | Name | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `urn` | string | Yes | Exact school URN for the reviewed school. |
+| `schoolId` | string | Yes | Canonical school identifier for the reviewed school. |
 
 Request body:
 
@@ -261,7 +274,7 @@ Response:
 ```json
 {
   "id": "rev_123",
-  "urn": "123456",
+  "schoolId": "sch_123",
   "name": "Parent A",
   "applicationSuccessful": true,
   "comment": "Our application was accepted after appeal and the school was responsive.",
@@ -276,15 +289,126 @@ Validation and failure expectations:
 - Blank `name` returns `400 Bad Request`.
 - Missing `applicationSuccessful` returns `400 Bad Request`.
 - Blank `comment` returns `400 Bad Request`.
-- Unknown school URN returns `404 Not Found`.
+- Unknown `schoolId` returns `404 Not Found`.
 
 Baseline notes:
 
-- The route carries the school association so the body cannot drift from the target school.
+- The route carries the school association by `schoolId` so the body cannot drift from the target school.
 - Public submission is synchronous at contract level with `201 Created`.
 - Abuse protection is required later, but its mechanism is deferred.
 
-### 5.5 Admin Review Moderation
+### 5.5 Public School Comment Retrieval
+
+`GET /api/schools/{schoolId}/csa-application-reviews`
+
+Purpose:
+Return publicly visible comments for one school.
+
+Authentication:
+Public.
+
+Route parameters:
+
+| Name | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `schoolId` | string | Yes | Canonical school identifier. |
+
+Query parameters:
+
+| Name | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `page` | integer | No | Optional positive page number when paging is implemented. |
+| `pageSize` | integer | No | Optional positive page size when paging is implemented. |
+
+Response:
+
+`200 OK`
+
+```json
+{
+  "items": [
+    {
+      "id": "rev_123",
+      "schoolId": "sch_123",
+      "name": "Parent A",
+      "applicationSuccessful": true,
+      "comment": "Our application was accepted after appeal and the school was responsive.",
+      "submittedAtUtc": "2026-05-21T10:30:00Z"
+    }
+  ]
+}
+```
+
+Validation and failure expectations:
+
+- Unknown `schoolId` returns `404 Not Found`.
+- Invalid `page` or `pageSize` values return `400 Bad Request`.
+- No public comments return `200 OK` with `"items": []`.
+
+Baseline notes:
+
+- This endpoint returns only comments that are publicly visible after moderation.
+- Internal moderation status is not exposed in this public list response.
+
+### 5.6 Public Comment Report Submission
+
+`POST /api/schools/{schoolId}/csa-application-reviews/{reviewId}/reports`
+
+Purpose:
+Allow a public caller to report a specific visible comment for review.
+
+Authentication:
+Public.
+
+Route parameters:
+
+| Name | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `schoolId` | string | Yes | Canonical school identifier. |
+| `reviewId` | string | Yes | Review identifier scoped to the school. |
+
+Request body:
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `reason` | string | Yes | Initial baseline values are `spam`, `abusive`, `privacy`, or `other`. |
+| `details` | string | No | Optional supporting detail. Required when `reason` is `other`. |
+
+Example request:
+
+```json
+{
+  "reason": "spam",
+  "details": "Repeated promotional content."
+}
+```
+
+Response:
+
+`202 Accepted`
+
+```json
+{
+  "reviewId": "rev_123",
+  "status": "reportAccepted",
+  "reportedAtUtc": "2026-05-21T11:00:00Z"
+}
+```
+
+Validation and failure expectations:
+
+- Malformed request bodies return `400 Bad Request`.
+- Missing or unsupported `reason` returns `400 Bad Request`.
+- Blank `details` when `reason` is `other` returns `400 Bad Request`.
+- Unknown `schoolId` returns `404 Not Found`.
+- Unknown `reviewId`, a review that does not belong to the supplied school, or a non-reportable review returns `404 Not Found`.
+
+Baseline notes:
+
+- Reporting is public and separate from admin moderation actions.
+- The contract only fixes submission and acceptance behaviour; downstream moderation workflow remains flexible.
+
+### 5.7 Admin Review Moderation
 
 `POST /api/admin/csa-application-reviews/{reviewId}/moderation`
 
@@ -341,7 +465,7 @@ Baseline notes:
 - The baseline fixes approve or reject as the minimum moderation action set.
 - Richer moderation states remain a later decision.
 
-### 5.6 Admin School Import Trigger
+### 5.8 Admin School Import Trigger
 
 `POST /api/admin/school-imports`
 
@@ -382,6 +506,7 @@ Baseline notes:
 - Protected operations must explicitly document both `401 Unauthorized` and `403 Forbidden` outcomes.
 - Public operations must clearly distinguish invalid input from valid-but-empty result sets.
 - Search and lookup operations must not silently fall back from one lookup mode to another.
+- School response objects must include `schoolId` even when the caller reached the resource by URN lookup.
 - Later generated OpenAPI output must preserve the same field names and required-field expectations defined here unless a later milestone deliberately revises the contract.
 - Contract-level auth expectations reference ASP.NET Core Identity, but Milestone 1 does not define bootstrap, persistence, seeding, or login endpoint details.
 
@@ -397,7 +522,8 @@ The following decisions are intentionally not settled by this baseline and must 
 - exact URN format validation constraints beyond requiring an exact route identifier;
 - final length and content rules for `name` and `comment`;
 - richer moderation state transitions beyond `approve` and `reject`;
-- rate limiting, CAPTCHA or equivalent bot protection, reporting, and flagging implementation details;
+- report reason taxonomy expansion, duplicate-report handling, reporter anonymity or storage design, and moderation workflow after report receipt;
+- rate limiting, CAPTCHA or equivalent bot protection, and related abuse-control implementation details;
 - distribution workflow for generated OpenAPI outside the running API project once implementation is complete.
 
 ## 8. Downstream Milestone Inputs
@@ -412,7 +538,7 @@ The following decisions are intentionally not settled by this baseline and must 
 
 - Implement `GET /api/schools/search` and `GET /api/schools/{urn}` to the request, response, and error contracts defined here.
 - Validate search behaviour against the required searchable fields: school name and address or postcode.
-- Keep URN lookup distinct from free-text search in both route design and generated OpenAPI.
+- Keep URN lookup distinct from free-text search in both route design and generated OpenAPI while returning `schoolId` in school schemas.
 
 ### Milestone 4: Spatial School Search Support
 
@@ -422,15 +548,18 @@ The following decisions are intentionally not settled by this baseline and must 
 
 ### Milestone 5: CSA Application Review Submission and Moderation
 
-- Implement public review submission using the baseline `name`, `applicationSuccessful`, and `comment` fields.
+- Implement public review submission at `POST /api/schools/{schoolId}/csa-application-reviews` using the baseline `name`, `applicationSuccessful`, and `comment` fields.
+- Implement public comment retrieval at `GET /api/schools/{schoolId}/csa-application-reviews`, returning only publicly visible comments.
+- Implement public comment reporting at `POST /api/schools/{schoolId}/csa-application-reviews/{reviewId}/reports`.
 - Implement admin moderation using the baseline moderation endpoint and minimum decision set.
+- Validate school and review mismatch cases plus invalid report payload failure paths.
 - Add abuse-control measures without breaking the baseline request and response surface unless a deliberate contract revision is approved.
 
 ### Milestone 6: Contract Stabilization for UI Handoff
 
 - Validate the combined implemented surface against this markdown baseline.
 - Resolve any remaining contract ambiguities before UI handoff.
-- Ensure the generated OpenAPI output from the API project matches the implemented routes, schemas, and major error behaviours expected by this baseline.
+- Ensure the generated OpenAPI output from the API project matches the implemented routes, `schoolId`-bearing schemas, and major error behaviours expected by this baseline.
 
 ## 9. Stability Statement
 

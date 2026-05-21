@@ -30,11 +30,12 @@ Confirmed inputs from user clarification:
 This milestone includes:
 
 - defining the initial API resource and endpoint boundaries for:
-  admin access, school search, exact URN lookup, radius-based school lookup, and CSA Application Reviews;
+  admin access, school search, exact URN lookup, radius-based school lookup, and CSA Application Review submission, retrieval, reporting, and moderation;
 - documenting the request and response shapes that later implementation milestones must expose through generated OpenAPI output;
 - defining validation and error-handling expectations at contract level where the UI or later implementation work depends on them;
 - recording the agreed architectural direction that later milestones must honour:
   generated OpenAPI as the eventual publication mechanism and ASP.NET Core Identity for admin authentication;
+- defining `schoolId` as the canonical school identifier in shared response schemas and school-specific POST routes while keeping URN as a distinct exact-lookup capability;
 - identifying which parts of the contract are baseline-ready now versus which implementation decisions remain intentionally deferred;
 - producing follow-on implementation inputs for Milestones 2 through 6.
 
@@ -55,7 +56,7 @@ This milestone does not include:
 
 Given milestone 1 has been completed before feature implementation  
 When a consumer reads the markdown contract baseline  
-Then the document describes the initial surface for admin-protected operations, school search, URN lookup, radius search, and CSA Application Reviews  
+Then the document describes the initial surface for admin-protected operations, school search, URN lookup, radius search, and CSA Application Review submission, retrieval, reporting, and moderation  
 And each operation has stable request and response expectations with field names, required fields, and validation notes  
 And later implementation milestones can translate that baseline into generated OpenAPI output without rediscovering the intended API shape.
 
@@ -67,7 +68,23 @@ Then the request model clearly requires association with a specific school
 And the review payload includes `name`, `applicationSuccessful`, and a free-text comment field  
 And the contract describes expected validation failures for missing or invalid inputs.
 
-### Scenario 3: An admin-protected operation is described in the contract
+### Scenario 3: A public user retrieves comments for a school
+
+Given the contract baseline includes public comment retrieval  
+When a caller inspects the markdown contract definition for school-specific comments  
+Then the contract defines a public endpoint that returns comments for one school  
+And the response shape is stable enough for UI comment-list rendering  
+And the contract makes clear that only publicly visible comments are returned.
+
+### Scenario 4: A public user reports a specific comment
+
+Given the contract baseline includes public comment reporting  
+When a caller inspects the markdown contract definition for reporting a comment  
+Then the contract defines a public endpoint that targets a specific school and comment  
+And the request shape includes a report reason with validation rules  
+And the contract defines failure behaviour for invalid payloads and mismatched school or review identifiers.
+
+### Scenario 5: An admin-protected operation is described in the contract
 
 Given a contract operation covers school import or review moderation  
 When the operation is defined in the markdown contract baseline  
@@ -75,7 +92,7 @@ Then it is clearly marked as requiring authenticated admin access
 And the contract documents the expected unauthenticated and unauthorized response outcomes  
 And the implementation direction references ASP.NET Core Identity without requiring milestone 1 to complete the full auth build.
 
-### Scenario 4: A caller searches for schools by text
+### Scenario 6: A caller searches for schools by text
 
 Given the baseline contract includes school discovery  
 When a caller inspects the search operation in the markdown contract baseline  
@@ -83,34 +100,36 @@ Then the contract makes clear that free-text matching targets school name and ad
 And the operation response shape is stable enough for the UI team to build list and result-detail flows  
 And any baseline query parameters, paging behaviour, or sorting assumptions are explicit rather than implied.
 
-### Scenario 5: A caller retrieves a school by URN
+### Scenario 7: A caller retrieves a school by URN
 
 Given the contract baseline defines school lookup  
 When a caller inspects the markdown contract baseline  
 Then exact-match URN retrieval is represented as a distinct operation from free-text search  
-And the contract defines the success and not-found behaviours clearly enough for downstream implementation and UI consumption.
+And the contract defines the success and not-found behaviours clearly enough for downstream implementation and UI consumption  
+And the returned school schema still includes the canonical `schoolId`.
 
-### Scenario 6: A caller inspects radius-based discovery support
+### Scenario 8: A caller inspects radius-based discovery support
 
 Given the contract baseline includes map and proximity support  
 When a caller inspects the markdown contract definition for geographic school discovery  
 Then the radius-from-point operation exposes the required coordinate and distance inputs  
-And the response contract is suitable for map-oriented UI work  
+And the response contract is suitable for map-oriented UI work and includes the school identifier needed by later actions  
 And any unsupported or invalid query combinations are documented through validation or error responses.
 
-### Scenario 7: A later milestone plan consumes this milestone output
+### Scenario 9: A later milestone plan consumes this milestone output
 
 Given a follow-on milestone plan is created for auth, search, spatial search, or reviews  
 When that plan references milestone 1  
-Then the contract baseline provides enough endpoint, schema, and validation clarity that the later plan can focus on implementation decisions and delivery sequencing rather than rediscovering the public API shape.
+Then the contract baseline provides enough endpoint, schema, and validation clarity that the later plan can focus on implementation decisions and delivery sequencing rather than rediscovering the public API shape  
+And later milestones inherit the `schoolId` response and school-specific POST-route expectations from the baseline.
 
 ## 6. Deliverables
 
 1. A milestone plan document in `Plans/` that captures the contract baseline intent, confirmed decisions, deferred decisions, and milestone exit criteria.
 2. A markdown contract baseline document that defines the planned endpoint and schema coverage for:
-   admin-protected operations, school search, URN lookup, radius search, and CSA Application Review submission and moderation.
-3. Contract definitions for the initial CSA Application Review models, including `name`, `applicationSuccessful`, and free-text comment fields, plus school association requirements.
-4. Contract definitions for school discovery operations, including separate shapes for free-text search, exact URN lookup, and radius-from-point queries.
+   admin-protected operations, school search, URN lookup, radius search, and CSA Application Review submission, retrieval, reporting, and moderation.
+3. Contract definitions for the initial CSA Application Review models, including `name`, `applicationSuccessful`, and free-text comment fields, plus school association requirements and public retrieval/reporting endpoints.
+4. Contract definitions for school discovery operations, including separate shapes for free-text search, exact URN lookup, and radius-from-point queries, with `schoolId` included in all school response objects.
 5. Contract-level security expectations for protected operations, documenting admin authentication requirements and expected `401` and `403` style behaviours.
 6. A documented list of implementation decisions intentionally deferred to Milestones 2 through 5, so later work does not treat milestone 1 as approval for hidden architecture choices.
 7. Follow-on planning notes or explicit backlog inputs for each downstream milestone showing which parts of the contract baseline they are expected to implement and validate before generated OpenAPI output is considered complete.
@@ -135,7 +154,8 @@ The following decisions are intentionally out of scope for this milestone and mu
 - exact ASP.NET Core Identity setup details, including persistence, bootstrap, admin user seeding, and endpoint flow;
 - how search ranking is implemented;
 - how spatial data is stored and queried;
-- what rate-limiting, bot protection, and reporting mechanisms are used;
+- what rate-limiting and bot protection mechanisms are used;
+- how report handling works after receipt, including expanded reason taxonomy, duplicate handling, and reporter anonymity or storage design;
 - whether moderation supports approve or reject only, or richer state transitions;
 - final pagination, filtering, and sorting rules where not required to stabilise the baseline contract.
 
@@ -150,9 +170,9 @@ The following decisions are intentionally out of scope for this milestone and mu
 1. Confirm milestone inputs.
    This is complete based on roadmap review and user clarification.
 2. Define baseline resource boundaries and endpoint inventory.
-   Identify the minimum operations and schema families needed for the initial UI contract.
+   Identify the minimum operations and schema families needed for the initial UI contract, including the canonical school identifier and school-specific POST routes.
 3. Define schema and validation expectations.
-   Capture required fields, lookup semantics, security expectations, and error outcomes that later implementation must expose in generated OpenAPI output.
+   Capture required fields, lookup semantics, `schoolId` usage, security expectations, and error outcomes that later implementation must expose in generated OpenAPI output.
 4. Produce the markdown contract baseline artifact.
    Document the endpoint inventory, request and response shapes, and deferred decisions in a form that implementation milestones can follow.
 5. Produce downstream milestone inputs.
@@ -161,9 +181,9 @@ The following decisions are intentionally out of scope for this milestone and mu
 Dependencies on later milestones:
 
 - Milestone 2 implements ASP.NET Core Identity and protected-operation enforcement against the milestone 1 contract.
-- Milestone 3 implements free-text search and URN lookup against the milestone 1 contract.
+- Milestone 3 implements free-text search and URN lookup against the milestone 1 contract while returning `schoolId` in school schemas.
 - Milestone 4 implements location storage and radius search against the milestone 1 contract.
-- Milestone 5 implements review submission, moderation, and abuse controls against the milestone 1 contract.
+- Milestone 5 implements review submission, public comment retrieval, comment reporting, moderation, and abuse controls against the milestone 1 contract.
 - Milestone 6 validates the combined surface and resolves final contract gaps for UI handoff.
 
 ## 9. Risks and Mitigations
@@ -203,17 +223,20 @@ The following items remain intentionally deferred for later milestone planning r
 - geospatial persistence/query technology;
 - operational approach for rate limiting and bot protection;
 - any additional review fields beyond the initial three-field baseline;
+- final public report-processing workflow after a report is accepted;
 - exact publication or distribution workflow for the generated OpenAPI artifact outside the running API project once implementation is complete.
 
 ## 11. Completion Checklist
 
 - [x] The milestone 1 plan exists in `Plans/` and traces clearly back to the roadmap milestone.
 - [x] A markdown contract baseline document exists for admin access, school search, URN lookup, radius search, and CSA Application Review workflows.
-- [x] The contract baseline defines stable request and response schemas for each in-scope operation.
+- [x] The contract baseline defines stable request and response schemas for each in-scope operation, including `schoolId` on all school response objects.
 - [x] The CSA Application Review contract includes `name`, `applicationSuccessful`, and free-text comment fields.
 - [x] Protected operations are clearly described as admin-authenticated and aligned to ASP.NET Core Identity as the implementation direction.
-- [x] The contract distinguishes free-text school search, exact URN lookup, and radius-based search as separate capabilities.
+- [x] The contract distinguishes free-text school search, exact URN lookup, and radius-based search as separate capabilities, while keeping school-specific POST routes based on `schoolId`.
 - [x] Validation and baseline error expectations are documented for major failure paths that affect UI or implementation planning.
 - [x] Deferred implementation decisions are listed explicitly so later milestones can resolve them deliberately.
 - [x] Follow-on milestone inputs are recorded for Milestones 2 through 6, including the expectation that implementation produces the generated OpenAPI output later.
+- [x] The contract includes a public school-specific comment retrieval endpoint.
+- [x] The contract includes a public comment reporting endpoint with validation and error expectations.
 - [x] The milestone output is considered stable enough for downstream implementation plans and UI contract discussions.
