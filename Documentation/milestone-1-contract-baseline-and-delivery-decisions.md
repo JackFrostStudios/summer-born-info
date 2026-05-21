@@ -100,8 +100,8 @@ Query parameters:
 | Name | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `q` | string | Yes | Free-text search term. Must not be blank. |
-| `page` | integer | No | Optional positive page number when paging is implemented. |
-| `pageSize` | integer | No | Optional positive page size when paging is implemented. |
+| `cursor` | string | No | Opaque continuation token from a previous response. Must not be blank when supplied. |
+| `limit` | integer | No | Optional positive result limit. If supplied, must be within the supported maximum. |
 
 Response:
 
@@ -121,20 +121,24 @@ Response:
       "latitude": 51.501,
       "longitude": -0.141
     }
-  ]
+  ],
+  "nextCursor": "eyJsYXN0U2Nob29sSWQiOiJzY2hfMTIzIn0",
+  "hasMore": true
 }
 ```
 
 Validation and failure expectations:
 
 - Blank or missing `q` returns `400 Bad Request`.
-- Invalid `page` or `pageSize` values return `400 Bad Request`.
-- No matches return `200 OK` with `"items": []`.
+- Blank, malformed, or expired `cursor` values return `400 Bad Request`.
+- Invalid `limit` values return `400 Bad Request`.
+- No matches return `200 OK` with `"items": []`, `"nextCursor": null`, and `"hasMore": false`.
 
 Baseline notes:
 
 - Matching targets school `name` and address or postcode fields only.
 - Results are ranked, but the ranking algorithm is deferred.
+- Pagination uses an opaque cursor over the returned ranked order; cursor contents are not part of the public contract.
 
 ### 5.2 Public Exact URN Lookup
 
@@ -196,8 +200,8 @@ Query parameters:
 | `latitude` | number | Yes | Must be within `-90` to `90`. |
 | `longitude` | number | Yes | Must be within `-180` to `180`. |
 | `radiusMiles` | number | Yes | Positive search radius in miles. |
-| `page` | integer | No | Optional positive page number when paging is implemented. |
-| `pageSize` | integer | No | Optional positive page size when paging is implemented. |
+| `cursor` | string | No | Opaque continuation token from a previous response. Must not be blank when supplied. |
+| `limit` | integer | No | Optional positive result limit. If supplied, must be within the supported maximum. |
 
 Response:
 
@@ -217,7 +221,9 @@ Response:
       "latitude": 51.501,
       "longitude": -0.141
     }
-  ]
+  ],
+  "nextCursor": "eyJsYXN0U2Nob29sSWQiOiJzY2hfMTIzIn0",
+  "hasMore": true
 }
 ```
 
@@ -226,12 +232,15 @@ Validation and failure expectations:
 - Missing `latitude`, `longitude`, or `radiusMiles` returns `400 Bad Request`.
 - Out-of-range coordinates return `400 Bad Request`.
 - Zero or negative `radiusMiles` returns `400 Bad Request`.
-- No matches return `200 OK` with `"items": []`.
+- Blank, malformed, or expired `cursor` values return `400 Bad Request`.
+- Invalid `limit` values return `400 Bad Request`.
+- No matches return `200 OK` with `"items": []`, `"nextCursor": null`, and `"hasMore": false`.
 
 Baseline notes:
 
 - Radius-from-point is the only required geospatial mode in the initial release.
 - The fixed contract unit is miles to avoid a baseline-level unit negotiation decision.
+- Pagination uses an opaque cursor over the returned ordered result set; cursor contents are not part of the public contract.
 
 ### 5.4 Public CSA Application Review Submission
 
@@ -317,8 +326,8 @@ Query parameters:
 
 | Name | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `page` | integer | No | Optional positive page number when paging is implemented. |
-| `pageSize` | integer | No | Optional positive page size when paging is implemented. |
+| `cursor` | string | No | Opaque continuation token from a previous response. Must not be blank when supplied. |
+| `limit` | integer | No | Optional positive result limit. If supplied, must be within the supported maximum. |
 
 Response:
 
@@ -335,20 +344,24 @@ Response:
       "comment": "Our application was accepted after appeal and the school was responsive.",
       "submittedAtUtc": "2026-05-21T10:30:00Z"
     }
-  ]
+  ],
+  "nextCursor": "eyJsYXN0UmV2aWV3SWQiOiJyZXZfMTIzIn0",
+  "hasMore": true
 }
 ```
 
 Validation and failure expectations:
 
 - Unknown `schoolId` returns `404 Not Found`.
-- Invalid `page` or `pageSize` values return `400 Bad Request`.
-- No public comments return `200 OK` with `"items": []`.
+- Blank, malformed, or expired `cursor` values return `400 Bad Request`.
+- Invalid `limit` values return `400 Bad Request`.
+- No public comments return `200 OK` with `"items": []`, `"nextCursor": null`, and `"hasMore": false`.
 
 Baseline notes:
 
 - This endpoint returns only comments that are publicly visible after moderation.
 - Internal moderation status is not exposed in this public list response.
+- Pagination order must be stable for cursor traversal; the cursor is opaque and not client-generated.
 
 ### 5.6 Public Comment Report Submission
 
@@ -516,7 +529,7 @@ The following decisions are intentionally not settled by this baseline and must 
 
 - exact ASP.NET Core Identity setup, persistence, admin bootstrap, and sign-in flow;
 - search ranking implementation details;
-- search paging limits, filtering rules, and optional sort modes beyond the baseline query shape;
+- maximum cursor page size, cursor lifetime or expiry behaviour, filtering rules, and optional sort modes beyond the baseline query shape;
 - geospatial storage and query implementation;
 - maximum supported radius and handling for schools with missing location data;
 - exact URN format validation constraints beyond requiring an exact route identifier;

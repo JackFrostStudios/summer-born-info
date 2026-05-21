@@ -98,7 +98,7 @@ Given the baseline contract includes school discovery
 When a caller inspects the search operation in the markdown contract baseline  
 Then the contract makes clear that free-text matching targets school name and address or postcode fields  
 And the operation response shape is stable enough for the UI team to build list and result-detail flows  
-And any baseline query parameters, paging behaviour, or sorting assumptions are explicit rather than implied.
+And any baseline query parameters, cursor-pagination behaviour, or sorting assumptions are explicit rather than implied.
 
 ### Scenario 7: A caller retrieves a school by URN
 
@@ -157,7 +157,7 @@ The following decisions are intentionally out of scope for this milestone and mu
 - what rate-limiting and bot protection mechanisms are used;
 - how report handling works after receipt, including expanded reason taxonomy, duplicate handling, and reporter anonymity or storage design;
 - whether moderation supports approve or reject only, or richer state transitions;
-- final pagination, filtering, and sorting rules where not required to stabilise the baseline contract.
+- maximum cursor page size, cursor lifetime or expiry behaviour, filtering rules, and sorting rules beyond the baseline contract.
 
 ### Constraints
 
@@ -172,7 +172,7 @@ The following decisions are intentionally out of scope for this milestone and mu
 2. Define baseline resource boundaries and endpoint inventory.
    Identify the minimum operations and schema families needed for the initial UI contract, including the canonical school identifier and school-specific POST routes.
 3. Define schema and validation expectations.
-   Capture required fields, lookup semantics, `schoolId` usage, security expectations, and error outcomes that later implementation must expose in generated OpenAPI output.
+   Capture required fields, lookup semantics, `schoolId` usage, cursor-pagination expectations, security expectations, and error outcomes that later implementation must expose in generated OpenAPI output.
 4. Produce the markdown contract baseline artifact.
    Document the endpoint inventory, request and response shapes, and deferred decisions in a form that implementation milestones can follow.
 5. Produce downstream milestone inputs.
@@ -182,7 +182,7 @@ Dependencies on later milestones:
 
 - Milestone 2 implements ASP.NET Core Identity and protected-operation enforcement against the milestone 1 contract.
 - Milestone 3 implements free-text search and URN lookup against the milestone 1 contract while returning `schoolId` in school schemas.
-- Milestone 4 implements location storage and radius search against the milestone 1 contract.
+- Milestone 4 implements location storage and radius search against the milestone 1 contract, including the baseline cursor-pagination behaviour for collection responses.
 - Milestone 5 implements review submission, public comment retrieval, comment reporting, moderation, and abuse controls against the milestone 1 contract.
 - Milestone 6 validates the combined surface and resolves final contract gaps for UI handoff.
 
