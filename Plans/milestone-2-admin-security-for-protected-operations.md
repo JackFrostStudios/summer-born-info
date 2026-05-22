@@ -213,6 +213,83 @@ Dependency notes:
 - Milestone 5 depends on the moderation endpoint protection added here, but not necessarily on full moderation workflow implementation.
 - The custom `/api/admin/auth/*` wrapper should be in place before OpenAPI verification so the generated contract reflects the intended public surface rather than framework internals.
 
+### Sequential Task Breakdown
+
+Deliver the milestone as the following one-task-at-a-time sequence, with one git commit after each completed task:
+
+1. Task 1: Identity persistence foundation
+
+- Add ASP.NET Core Identity package references, user and role types, and persistence wiring in the existing database context.
+- Outcome: the solution can store identity users and roles without yet exposing auth routes.
+- Commit boundary: persistence and schema wiring only.
+
+2. Task 2: Authentication and authorization registration
+
+- Register cookie authentication, authorization, and the milestone admin policy or role rule in the API startup path.
+- Outcome: the application can evaluate authenticated versus admin-only access once protected endpoints are added.
+- Commit boundary: service registration and middleware pipeline only.
+
+3. Task 3: Project-specific admin auth endpoints
+
+- Implement `/api/admin/auth/sign-in` and `/api/admin/auth/sign-out` using ASP.NET Core Identity without exposing framework-default Identity endpoints.
+- Outcome: admins have the minimum contract needed to establish and end an authenticated session.
+- Commit boundary: auth endpoint contract and handler implementation only.
+
+4. Task 4: Development admin bootstrap
+
+- Add startup-time development upsert for the configured admin account using `AdminUserEmail` and `AdminUserPassword` from `dotnet user-secrets`.
+- Outcome: local and test environments have a deterministic first admin path.
+- Commit boundary: development bootstrap behaviour only.
+
+5. Task 5: Production bootstrap artifact
+
+- Add the checked-in SQL bootstrap script under the repo-root `ProductionScripts` folder for initial admin creation and role assignment.
+- Outcome: non-development environments have a documented first-admin provisioning path.
+- Commit boundary: production bootstrap artifact and any directly supporting documentation only.
+
+6. Task 6: School import route protection and alignment
+
+- Move the import trigger contract to `POST /api/admin/school-imports` and remove or retire the old public route from the supported contract.
+- Outcome: school import is admin-protected and aligned with the Milestone 1 route contract.
+- Commit boundary: school import route alignment and protection only.
+
+7. Task 7: Moderation endpoint protection shell
+
+- Add `POST /api/admin/csa-application-reviews/{reviewId}/moderation` as an admin-protected endpoint shell that matches the agreed contract.
+- Outcome: the protected moderation surface exists even if deeper workflow behaviour is deferred to Milestone 5.
+- Commit boundary: moderation endpoint shell and authorization only.
+
+8. Task 8: OpenAPI and error metadata
+
+- Add or refine security scheme configuration plus explicit `401` and `403` response metadata for protected admin operations.
+- Outcome: generated OpenAPI clearly describes protected routes and failure modes.
+- Commit boundary: OpenAPI and response metadata only.
+
+9. Task 9: Integration test coverage
+
+- Add integration tests for unauthenticated, non-admin, and admin access paths, plus auth endpoint and OpenAPI coverage.
+- Outcome: the milestone behaviour is regression-protected at the HTTP contract level.
+- Commit boundary: automated verification only, unless a minimal production fix is required to make the tests pass.
+
+10. Task 10: Operational documentation
+
+- Update local and deployment-facing documentation for auth setup, development secrets, and production bootstrap usage.
+- Outcome: contributors and operators can execute the supported bootstrap and sign-in flows without tribal knowledge.
+- Commit boundary: documentation only.
+
+### Task State Checklist
+
+- [ ] Task 1 complete: Identity persistence foundation committed.
+- [ ] Task 2 complete: Authentication and authorization registration committed.
+- [ ] Task 3 complete: Project-specific admin auth endpoints committed.
+- [ ] Task 4 complete: Development admin bootstrap committed.
+- [ ] Task 5 complete: Production bootstrap artifact committed.
+- [ ] Task 6 complete: School import route protection and alignment committed.
+- [ ] Task 7 complete: Moderation endpoint protection shell committed.
+- [ ] Task 8 complete: OpenAPI and error metadata committed.
+- [ ] Task 9 complete: Integration test coverage committed.
+- [ ] Task 10 complete: Operational documentation committed.
+
 ## 9. Risks and Mitigations
 
 - Cookie contract risk:
