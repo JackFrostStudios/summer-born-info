@@ -68,12 +68,16 @@ Without these capabilities, the UI cannot be developed against a dependable cont
 
 - Type:
   Discovery and decision
+- Status:
+  Complete on 2026-05-22
 - Objective:
   Align the initial API contract scope, confirm resource shapes and endpoint boundaries, and resolve the main delivery choices that affect later work.
 - Target window:
   Early roadmap phase
 - Dependencies:
   Confirmed roadmap scope and agreement on API-first delivery
+- Output:
+  [Milestone 1 Contract Baseline and Delivery Decisions](C:\Projects\summer-born-info\Documentation\milestone-1-contract-baseline-and-delivery-decisions.md)
 - Exit criteria:
   A documented contract baseline exists for admin access, school search, school lookup, location queries, and CSA Application Reviews; unresolved implementation choices are reduced to a manageable set of explicit decisions.
 
@@ -145,15 +149,15 @@ Without these capabilities, the UI cannot be developed against a dependable cont
 ## Dependencies
 
 - Existing school import capability and source data quality, because school discovery and location support depend on reliable school records.
-- A chosen approach for admin authentication and authorization, because protected workflows cannot be finalized without it.
+- Implementation of the chosen ASP.NET Core Identity approach for admin authentication and authorization, because protected workflows cannot be finalized without it.
 - A storage and query approach that can support location data and radius-based search.
-- Agreement on how the API contract will be documented and shared with the UI project.
+- A workable distribution approach for generated OpenAPI output so the UI project can consume the implemented contract.
 
 ## Risks and Mitigations
 
 - Security implementation risk:
-  Authentication and authorization details are still undecided.
-  Mitigation: force an early implementation decision and validate it against established security practices before protected endpoints proliferate.
+  The authentication direction is agreed, but the detailed ASP.NET Core Identity setup and admin bootstrap flow still need careful execution.
+  Mitigation: validate the chosen implementation against established security practices before protected endpoints proliferate.
 - Search relevance risk:
   Ranked free-text matching may require iteration to produce useful results for real school names and address data.
   Mitigation: define a minimal relevance target early and validate against representative imported data.
@@ -169,9 +173,6 @@ Without these capabilities, the UI cannot be developed against a dependable cont
 
 ## Open Questions
 
-- What form should the API contract take for UI handoff, for example OpenAPI-first, implementation-first with generated docs, or another documented contract approach?
-- What review fields should a CSA Application Review include in the initial release, for example narrative text only or additional structured outcomes such as decision result or timeline?
-- Should moderation support only approve/reject style actions initially, or also include temporary hiding, editing notes, and bulk triage operations?
 - What minimum school location source will be used if imported school data does not already provide a directly usable latitude/longitude representation?
 - What user-visible behaviour should apply when reviews are flagged or moderated, for example immediate hiding versus queued review?
 
@@ -186,8 +187,6 @@ Without these capabilities, the UI cannot be developed against a dependable cont
 
 ## Next Steps
 
-- Confirm the preferred API contract publishing approach for the UI team.
-- Decide the admin authentication and authorization approach before implementation begins.
-- Define the initial request and response models for school search, school location search, and CSA Application Reviews.
+- Use the Milestone 1 contract baseline as the reference input for Milestones 2 through 6 implementation planning and delivery.
 - Identify the source and storage approach for school spatial data if the current import pipeline does not already provide the necessary shape.
 - Break the roadmap milestones into implementation plans within the API solution once contract decisions are agreed.
