@@ -1,6 +1,15 @@
 namespace SummerBornInfo.Infrastructure.Persistence;
 
-public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    : IdentityDbContext<
+        ApplicationUser,
+        ApplicationRole,
+        Guid,
+        IdentityUserClaim<Guid>,
+        IdentityUserRole<Guid>,
+        IdentityUserLogin<Guid>,
+        IdentityRoleClaim<Guid>,
+        IdentityUserToken<Guid>>(options)
 {
     public DbSet<School> Schools => Set<School>();
     public DbSet<SchoolAddress> SchoolAddresses => Set<SchoolAddress>();
@@ -12,10 +21,11 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
     public DbSet<SchoolBulkImportRequest> SchoolBulkImportRequests => Set<SchoolBulkImportRequest>();
     public DbSet<SchoolBulkImportFailure> SchoolBulkImportFailures => Set<SchoolBulkImportFailure>();
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        _ = modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(builder);
+        builder.ConfigureIdentityPersistence();
+        _ = builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 
     public NpgsqlConnection GetNpgsqlConnection()
