@@ -1,7 +1,9 @@
+using SummerBornInfo.Web.OpenApi;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options => options.AddAdminSecurityMetadata());
 builder.Services.Configure<SchoolBulkImportWorkerOptions>(builder.Configuration.GetSection(SchoolBulkImportWorkerOptions.SectionName));
 builder.Services.Configure<DevelopmentAdminBootstrapOptions>(builder.Configuration);
 
