@@ -288,7 +288,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 - [x] Task 7 complete: Moderation endpoint protection shell committed.
 - [x] Task 8 complete: OpenAPI and error metadata committed.
 - [x] Task 9 complete: Integration test coverage committed.
-- [ ] Task 10 complete: Operational documentation committed.
+- [x] Task 10 complete: Operational documentation committed.
 
 ## 9. Risks and Mitigations
 
@@ -339,4 +339,4 @@ This plan is implementation-ready for Milestone 2 with the core contract, bootst
 - [ ] Protected endpoints return `403` for authenticated non-admin callers.
 - [x] Generated OpenAPI output shows the selected security scheme and protected-operation metadata.
 - [x] Integration tests cover unauthenticated, non-admin, and admin access paths.
-- [ ] Local/deployment documentation explains auth setup and first-admin bootstrap.
+- [x] Local/deployment documentation explains auth setup and first-admin bootstrap.

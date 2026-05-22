@@ -20,7 +20,7 @@ The platform aims to:
 
 ## Getting Started
 
-For API setup, local running, testing, and development guidance, see [API/README.md](./API/README.md).
+For API setup, local running, testing, development guidance, and the Milestone 2 admin auth/bootstrap flow, see [API/README.md](./API/README.md).
 
 ## Contributing
 
