@@ -16,7 +16,7 @@ public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context, IL
 
         return new ImportSchoolsResponse(
             schoolBulkImportRequest.Id,
-            ImportSchoolsResponse.QueuedStatus);
+            schoolBulkImportRequest.Status.ToString());
     }
 
     private async Task<SchoolBulkImportRequest> SaveNewSchoolBulkImportRequestAsync(uint largeObjectId, CancellationToken cancellationToken)

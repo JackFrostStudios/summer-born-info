@@ -18,7 +18,7 @@ public sealed class GetSchoolBulkImportStatusQueryHandler(ApplicationDbContext c
 
         return new GetSchoolBulkImportStatusResponse
         {
-            SchoolBulkImportRequestId = importRequest.Id,
+            Id = importRequest.Id,
             Status = importRequest.Status.ToString(),
             LinesProcessed = importRequest.LinesProcessed,
             Failures = [

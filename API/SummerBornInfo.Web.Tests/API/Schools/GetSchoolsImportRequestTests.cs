@@ -38,7 +38,7 @@ public sealed class GetSchoolsImportRequestTests(
 
         var result = await response.Content.ReadFromJsonAsync<GetSchoolBulkImportStatusResponse>(TestContext.Current.CancellationToken);
         Assert.NotNull(result);
-        Assert.Equal(requestId, result.SchoolBulkImportRequestId);
+        Assert.Equal(requestId, result.Id);
         Assert.Equal("CompletedWithFailures", result.Status);
         Assert.Equal(2, result.LinesProcessed);
         Assert.Equal(2, result.Failures.Count);

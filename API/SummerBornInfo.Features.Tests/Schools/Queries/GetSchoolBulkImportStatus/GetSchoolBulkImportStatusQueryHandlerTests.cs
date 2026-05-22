@@ -46,7 +46,7 @@ public sealed class GetSchoolBulkImportStatusQueryHandlerTests(
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(request.Id, result.SchoolBulkImportRequestId);
+        Assert.Equal(request.Id, result.Id);
         Assert.Equal(nameof(SchoolBulkImportStatus.CompletedWithFailures), result.Status);
         Assert.Equal(2, result.LinesProcessed);
         Assert.Equal([2, 10], [.. result.Failures.Select(x => x.LineNumber)]);

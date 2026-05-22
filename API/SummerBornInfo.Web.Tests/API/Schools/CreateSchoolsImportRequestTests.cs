@@ -46,10 +46,10 @@ public sealed class CreateSchoolsImportRequestTests(
         Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
         var importResponse = await response.Content.ReadFromJsonAsync<ImportSchoolsResponse>(TestContext.Current.CancellationToken);
         Assert.NotNull(importResponse);
-        Assert.NotEqual(Guid.Empty, importResponse.ImportRequestId);
-        Assert.Equal(ImportSchoolsResponse.QueuedStatus, importResponse.Status);
+        Assert.NotEqual(Guid.Empty, importResponse.Id);
+        Assert.Equal("Pending", importResponse.Status);
 
-        var request = await WaitForImportRequestAsync(importResponse.ImportRequestId, TestContext.Current.CancellationToken);
+        var request = await WaitForImportRequestAsync(importResponse.Id, TestContext.Current.CancellationToken);
         Assert.NotNull(request);
         Assert.Equal(2, request.LinesProcessed);
         Assert.Equal(SchoolBulkImportStatus.Completed, request.Status);
