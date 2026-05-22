@@ -7,7 +7,6 @@ public static class SchoolEndpoints
         var schools = endpoints.MapGroup("/api/schools");
 
         _ = schools.MapGetAllSchools()
-            .MapCreateSchoolsImportRequest()
             .MapGetSchoolsImportRequest();
     }
 
@@ -20,28 +19,6 @@ public static class SchoolEndpoints
             return Results.Ok(new { schools, nextCursor });
         });
 
-        return builder;
-    }
-
-    private static RouteGroupBuilder MapCreateSchoolsImportRequest(this RouteGroupBuilder builder)
-    {
-        _ = builder.MapPost("/import", async (HttpRequest req, Stream csvFile, ImportSchoolsCommandHandler handler, CancellationToken cancellationToken) =>
-        {
-            var maxMessageSize = 100000 * 1024;
-            if (req.ContentLength is not null && req.ContentLength > maxMessageSize)
-            {
-                return Results.BadRequest("CSV file is too large.");
-            }
-            if (csvFile == null || req.ContentLength == 0)
-            {
-                return Results.BadRequest("CSV file is required");
-            }
-
-            ImportSchoolsCommand command = new(csvFile);
-            var result = await handler.ExecuteAsync(command, cancellationToken);
-            return Results.Ok(result);
-        })
-            .WithMetadata(new RequestSizeLimitAttribute(100000 * 1024));
         return builder;
     }
 

@@ -14,7 +14,9 @@ public sealed class ImportSchoolsCommandHandler(ApplicationDbContext context, IL
 
         await efTransaction.CommitAsync(cancellationToken);
 
-        return new ImportSchoolsResponse(schoolBulkImportRequest.Id);
+        return new ImportSchoolsResponse(
+            schoolBulkImportRequest.Id,
+            ImportSchoolsResponse.QueuedStatus);
     }
 
     private async Task<SchoolBulkImportRequest> SaveNewSchoolBulkImportRequestAsync(uint largeObjectId, CancellationToken cancellationToken)

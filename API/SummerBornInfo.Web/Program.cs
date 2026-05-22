@@ -59,6 +59,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.RegisterAdminAuthEndpoints();
+app.RegisterAdminSchoolImportEndpoints();
 app.RegisterSchoolEndpoints();
 
 await app.RunAsync();
