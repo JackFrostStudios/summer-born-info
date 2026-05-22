@@ -335,8 +335,8 @@ This plan is implementation-ready for Milestone 2 with the core contract, bootst
 - [x] `POST /api/admin/school-imports` exists and requires admin authorization.
 - [x] The unauthenticated public school import trigger route is removed, redirected, or otherwise no longer part of the supported contract.
 - [x] `POST /api/admin/csa-application-reviews/{reviewId}/moderation` exists and requires admin authorization.
-- [ ] Protected endpoints return `401` for unauthenticated callers.
-- [ ] Protected endpoints return `403` for authenticated non-admin callers.
+- [x] Protected endpoints return `401` for unauthenticated callers.
+- [x] Protected endpoints return `403` for authenticated non-admin callers.
 - [x] Generated OpenAPI output shows the selected security scheme and protected-operation metadata.
 - [x] Integration tests cover unauthenticated, non-admin, and admin access paths.
 - [x] Local/deployment documentation explains auth setup and first-admin bootstrap.
