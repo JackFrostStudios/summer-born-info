@@ -3,6 +3,7 @@ global using Microsoft.AspNetCore.Authentication.Cookies;
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.Hosting;
 global using Npgmq;
 global using SummerBornInfo.AppHost.ServiceDefaults;

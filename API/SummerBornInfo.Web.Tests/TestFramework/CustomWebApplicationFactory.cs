@@ -1,11 +1,25 @@
 namespace SummerBornInfo.Web.Tests.TestFramework;
 
-public sealed class CustomWebApplicationFactory(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : WebApplicationFactory<Program>, IAsyncLifetime
+public sealed class CustomWebApplicationFactory(
+    IntegrationTestDatabaseServerFixture testDatabaseServerFixture,
+    ITestOutputHelper testOutputHelper,
+    IReadOnlyDictionary<string, string?>? configurationValues = null) : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly IntegrationTestDatabaseInstanceFixture integrationTestDatabaseInstanceFixture = new(testDatabaseServerFixture);
+    private readonly IReadOnlyDictionary<string, string?> configurationValues = configurationValues ?? new Dictionary<string, string?>(StringComparer.Ordinal);
+
+    internal string DatabaseConnectionString => integrationTestDatabaseInstanceFixture.DatabaseConnectionString;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        if (configurationValues.Count > 0)
+        {
+            _ = builder.ConfigureAppConfiguration((context, configurationBuilder) =>
+            {
+                _ = configurationBuilder.AddInMemoryCollection(configurationValues);
+            });
+        }
+
         _ = builder.ConfigureServices(services =>
         {
             // Remove the existing DbContext registration

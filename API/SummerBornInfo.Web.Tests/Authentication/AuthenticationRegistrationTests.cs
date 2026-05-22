@@ -11,6 +11,7 @@ public sealed class AuthenticationRegistrationTests(
         await using var scope = Factory.Services.CreateAsyncScope();
         var serviceProvider = scope.ServiceProvider;
 
+        Assert.NotNull(serviceProvider.GetService<IDevelopmentAdminBootstrapper>());
         Assert.NotNull(serviceProvider.GetService<UserManager<ApplicationUser>>());
         Assert.NotNull(serviceProvider.GetService<SignInManager<ApplicationUser>>());
         Assert.NotNull(serviceProvider.GetService<RoleManager<ApplicationRole>>());
