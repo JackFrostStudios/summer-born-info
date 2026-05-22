@@ -1,0 +1,7 @@
+interface:
+  display_name: "Roadmap Author"
+  short_description: "Requirements probing and milestone roadmaps"
+  default_prompt: "Use $roadmap-author to probe for high-level requirements and produce roadmap documents with clear milestones, dependencies, risks, and open questions."
+
+policy:
+  allow_implicit_invocation: true
