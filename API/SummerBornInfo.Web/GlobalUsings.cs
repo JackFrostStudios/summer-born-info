@@ -15,6 +15,7 @@ global using SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus;
 global using SummerBornInfo.Infrastructure.Events;
 global using SummerBornInfo.Infrastructure.Persistence;
 global using SummerBornInfo.Infrastructure.Persistence.LargeObjects;
+global using SummerBornInfo.Web.API.Admin.Auth;
 global using SummerBornInfo.Web.Authentication;
 global using SummerBornInfo.Web.API.Schools;
 global using SummerBornInfo.Web.Authorization;

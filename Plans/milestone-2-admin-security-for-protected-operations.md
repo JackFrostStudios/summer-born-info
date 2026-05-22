@@ -281,7 +281,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 
 - [x] Task 1 complete: Identity persistence foundation committed.
 - [x] Task 2 complete: Authentication and authorization registration committed.
-- [ ] Task 3 complete: Project-specific admin auth endpoints committed.
+- [x] Task 3 complete: Project-specific admin auth endpoints committed.
 - [ ] Task 4 complete: Development admin bootstrap committed.
 - [ ] Task 5 complete: Production bootstrap artifact committed.
 - [ ] Task 6 complete: School import route protection and alignment committed.
@@ -329,7 +329,7 @@ This plan is implementation-ready for Milestone 2 with the core contract, bootst
 - [x] ASP.NET Core Identity packages and persistence are added to the API solution.
 - [x] The application database can store identity users and roles.
 - [x] Cookie authentication and authorization are registered in `API/SummerBornInfo.Web/Program.cs`.
-- [ ] Project-specific admin auth endpoints exist under `/api/admin/auth/*`, are limited to sign-in and sign-out, and do not expose registration or other unintended framework routes.
+- [x] Project-specific admin auth endpoints exist under `/api/admin/auth/*`, are limited to sign-in and sign-out, and do not expose registration or other unintended framework routes.
 - [ ] A development admin user is upserted at server start from `dotnet user-secrets` keys `AdminUserEmail` and `AdminUserPassword`.
 - [ ] A checked-in production SQL script exists under the repo-root `ProductionScripts` folder to create the initial admin user and role assignment.
 - [ ] `POST /api/admin/school-imports` exists and requires admin authorization.

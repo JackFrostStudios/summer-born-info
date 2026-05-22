@@ -54,6 +54,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.RegisterAdminAuthEndpoints();
 app.RegisterSchoolEndpoints();
 
 await app.RunAsync();
