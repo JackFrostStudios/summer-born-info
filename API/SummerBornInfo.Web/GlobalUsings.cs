@@ -1,3 +1,6 @@
+global using Microsoft.AspNetCore.Authentication;
+global using Microsoft.AspNetCore.Authentication.Cookies;
+global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting;
@@ -12,5 +15,7 @@ global using SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus;
 global using SummerBornInfo.Infrastructure.Events;
 global using SummerBornInfo.Infrastructure.Persistence;
 global using SummerBornInfo.Infrastructure.Persistence.LargeObjects;
+global using SummerBornInfo.Web.Authentication;
 global using SummerBornInfo.Web.API.Schools;
+global using SummerBornInfo.Web.Authorization;
 global using SummerBornInfo.Web.BackgroundServices;

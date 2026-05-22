@@ -6,6 +6,20 @@ builder.Services.Configure<SchoolBulkImportWorkerOptions>(builder.Configuration.
 
 var connectionString = builder.Configuration.GetConnectionString("SummerbornInfo");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services
+    .AddIdentity<ApplicationUser, ApplicationRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Events.OnRedirectToLogin = ApiCookieAuthenticationEvents.RedirectToUnauthorizedAsync;
+    options.Events.OnRedirectToAccessDenied = ApiCookieAuthenticationEvents.RedirectToForbiddenAsync;
+});
+builder.Services
+    .AddAuthorizationBuilder()
+    .AddPolicy(
+        AdminAuthorizationPolicyNames.Admin,
+        policy => policy.RequireRole(ApplicationRoleNames.Admin));
 
 builder.Services.AddScoped<ImportSchoolsCommandHandler>();
 builder.Services.AddScoped<IProcessImportFileCommandHandler, ProcessImportFileCommandHandler>();
@@ -37,6 +51,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.RegisterSchoolEndpoints();
 
