@@ -285,7 +285,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 - [x] Task 4 complete: Development admin bootstrap committed.
 - [x] Task 5 complete: Production bootstrap artifact committed.
 - [x] Task 6 complete: School import route protection and alignment committed.
-- [ ] Task 7 complete: Moderation endpoint protection shell committed.
+- [x] Task 7 complete: Moderation endpoint protection shell committed.
 - [ ] Task 8 complete: OpenAPI and error metadata committed.
 - [ ] Task 9 complete: Integration test coverage committed.
 - [ ] Task 10 complete: Operational documentation committed.
@@ -334,7 +334,7 @@ This plan is implementation-ready for Milestone 2 with the core contract, bootst
 - [x] A checked-in production SQL script exists under the repo-root `ProductionScripts` folder to create the initial admin user and role assignment.
 - [x] `POST /api/admin/school-imports` exists and requires admin authorization.
 - [x] The unauthenticated public school import trigger route is removed, redirected, or otherwise no longer part of the supported contract.
-- [ ] `POST /api/admin/csa-application-reviews/{reviewId}/moderation` exists and requires admin authorization.
+- [x] `POST /api/admin/csa-application-reviews/{reviewId}/moderation` exists and requires admin authorization.
 - [ ] Protected endpoints return `401` for unauthenticated callers.
 - [ ] Protected endpoints return `403` for authenticated non-admin callers.
 - [ ] Generated OpenAPI output shows the selected security scheme and protected-operation metadata.

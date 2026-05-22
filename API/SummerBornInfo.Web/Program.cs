@@ -23,6 +23,7 @@ builder.Services
         policy => policy.RequireRole(ApplicationRoleNames.Admin));
 
 builder.Services.AddScoped<IDevelopmentAdminBootstrapper, DevelopmentAdminBootstrapper>();
+builder.Services.AddScoped<ModerateCsaApplicationReviewCommandHandler>();
 builder.Services.AddScoped<ImportSchoolsCommandHandler>();
 builder.Services.AddScoped<IProcessImportFileCommandHandler, ProcessImportFileCommandHandler>();
 builder.Services.AddScoped<GetAllSchoolsQueryHandler>();
@@ -59,6 +60,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.RegisterAdminAuthEndpoints();
+app.RegisterAdminCsaApplicationReviewModerationEndpoints();
 app.RegisterAdminSchoolImportEndpoints();
 app.RegisterSchoolEndpoints();
 
