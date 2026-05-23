@@ -15,7 +15,7 @@ This baseline is intentionally concrete at the HTTP contract layer and intention
 - Admin-protected operations must be implemented using ASP.NET Core Identity as the agreed authentication direction.
 - Free-text search, exact URN lookup, and radius-based school discovery are separate capabilities and must remain separate in the contract.
 - The initial public CSA Application Review contract must include `name`, `applicationSuccessful`, and a free-text `comment`.
-- `schoolId` is the canonical school resource identifier carried by school response objects and used for school-specific POST operations.
+- `Id` is the canonical resource identifier carried by API response objects, while school-specific POST operations continue to use `schoolId` route parameters.
 
 ## 3. In-Scope Contract Surface
 
@@ -38,7 +38,7 @@ This baseline does not define full auth flows, persistence design, ranking inter
 
 - Public school routes are rooted under `/api/schools`.
 - Admin-only routes are rooted under `/api/admin`.
-- `schoolId` is the canonical school resource identifier used in school-specific POST routes and returned by school response objects.
+- `Id` is the canonical school resource identifier returned by school response objects, while school-specific POST routes continue to use `schoolId`.
 - Exact URN lookup remains a separate public GET capability for callers that start from a URN rather than a `schoolId`.
 - School association for review submission and reporting is carried by route parameter rather than an optional body field.
 - Public comments are the moderated CSA Application Reviews exposed for school-specific display.
@@ -49,7 +49,7 @@ This baseline does not define full auth flows, persistence design, ranking inter
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `schoolId` | string | Yes | Canonical school resource identifier used in school-specific POST routes. |
+| `id` | string | Yes | Canonical school resource identifier used in response payloads. |
 | `urn` | string | Yes | Exact school identifier exposed for dedicated URN lookup and external reference. |
 | `name` | string | Yes | School display name. |
 | `addressLine1` | string | Yes | Primary address line. |
@@ -111,7 +111,7 @@ Response:
 {
   "items": [
     {
-      "schoolId": "sch_123",
+      "id": "sch_123",
       "urn": "123456",
       "name": "Example Primary School",
       "addressLine1": "1 High Street",
@@ -162,7 +162,7 @@ Response:
 
 ```json
 {
-  "schoolId": "sch_123",
+  "id": "sch_123",
   "urn": "123456",
   "name": "Example Primary School",
   "addressLine1": "1 High Street",
@@ -181,7 +181,7 @@ Validation and failure expectations:
 
 Baseline notes:
 
-- URN is the lookup input for this specific operation, but the returned school resource still includes the canonical `schoolId`.
+- URN is the lookup input for this specific operation, but the returned school resource still includes the canonical `Id`.
 
 ### 5.3 Public Radius-Based School Search
 
@@ -211,7 +211,7 @@ Response:
 {
   "items": [
     {
-      "schoolId": "sch_123",
+      "id": "sch_123",
       "urn": "123456",
       "name": "Example Primary School",
       "addressLine1": "1 High Street",
@@ -402,7 +402,7 @@ Response:
 
 ```json
 {
-  "reviewId": "rev_123",
+  "id": "rev_123",
   "status": "reportAccepted",
   "reportedAtUtc": "2026-05-21T11:00:00Z"
 }
@@ -499,7 +499,7 @@ Response:
 
 ```json
 {
-  "importRequestId": "imp_123",
+  "id": "imp_123",
   "status": "queued"
 }
 ```
@@ -519,7 +519,7 @@ Baseline notes:
 - Protected operations must explicitly document both `401 Unauthorized` and `403 Forbidden` outcomes.
 - Public operations must clearly distinguish invalid input from valid-but-empty result sets.
 - Search and lookup operations must not silently fall back from one lookup mode to another.
-- School response objects must include `schoolId` even when the caller reached the resource by URN lookup.
+- School response objects must include `Id` even when the caller reached the resource by URN lookup.
 - Later generated OpenAPI output must preserve the same field names and required-field expectations defined here unless a later milestone deliberately revises the contract.
 - Contract-level auth expectations reference ASP.NET Core Identity, but Milestone 1 does not define bootstrap, persistence, seeding, or login endpoint details.
 
@@ -551,7 +551,7 @@ The following decisions are intentionally not settled by this baseline and must 
 
 - Implement `GET /api/schools/search` and `GET /api/schools/{urn}` to the request, response, and error contracts defined here.
 - Validate search behaviour against the required searchable fields: school name and address or postcode.
-- Keep URN lookup distinct from free-text search in both route design and generated OpenAPI while returning `schoolId` in school schemas.
+- Keep URN lookup distinct from free-text search in both route design and generated OpenAPI while returning `Id` in school schemas.
 
 ### Milestone 4: Spatial School Search Support
 
@@ -572,7 +572,7 @@ The following decisions are intentionally not settled by this baseline and must 
 
 - Validate the combined implemented surface against this markdown baseline.
 - Resolve any remaining contract ambiguities before UI handoff.
-- Ensure the generated OpenAPI output from the API project matches the implemented routes, `schoolId`-bearing schemas, and major error behaviours expected by this baseline.
+- Ensure the generated OpenAPI output from the API project matches the implemented routes, `Id`-bearing schemas, and major error behaviours expected by this baseline.
 
 ## 9. Stability Statement
 

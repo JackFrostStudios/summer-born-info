@@ -6,10 +6,29 @@ public sealed class GetSchoolsImportRequestTests(
     : WebIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
     [Fact]
-    public async Task GivenSchoolBulkImportRequest_WhenGetStatusByRequestId_ThenReturnsExpectedPayload()
+    public async Task GivenUnauthenticatedCaller_WhenGetStatusByRequestId_ThenReturnsUnauthorized()
     {
-        // Arrange
         var client = Factory.CreateClient();
+
+        var response = await client.GetAsync($"/api/admin/school-imports/{Guid.CreateVersion7()}", TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GivenAuthenticatedNonAdminCaller_WhenGetStatusByRequestId_ThenReturnsForbidden()
+    {
+        var client = await CreateAuthenticatedTestClientAsync("volunteer@example.com", "P@ssword123!");
+
+        var response = await client.GetAsync($"/api/admin/school-imports/{Guid.CreateVersion7()}", TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GivenAuthenticatedAdminCaller_WhenSchoolBulkImportRequestExists_ThenReturnsExpectedPayload()
+    {
+        var client = await CreateAdminTestClientAsync("admin@example.com", "P@ssword123!");
         var requestId = Guid.CreateVersion7();
 
         await using (var scope = Factory.Services.CreateAsyncScope())
@@ -30,10 +49,8 @@ public sealed class GetSchoolsImportRequestTests(
             _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         }
 
-        // Act
-        var response = await client.GetAsync($"/api/schools/import/{requestId}", TestContext.Current.CancellationToken);
+        var response = await client.GetAsync($"/api/admin/school-imports/{requestId}", TestContext.Current.CancellationToken);
 
-        // Assert
         _ = response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadFromJsonAsync<GetSchoolBulkImportStatusResponse>(TestContext.Current.CancellationToken);
@@ -47,10 +64,9 @@ public sealed class GetSchoolsImportRequestTests(
     }
 
     [Fact]
-    public async Task GivenSchoolBulkImportRequest_WhenGetStatusByRequestId_ThenExcludesContentIdFromPayload()
+    public async Task GivenAuthenticatedAdminCaller_WhenGetStatusByRequestId_ThenExcludesContentIdFromPayload()
     {
-        // Arrange
-        var client = Factory.CreateClient();
+        var client = await CreateAdminTestClientAsync("admin@example.com", "P@ssword123!");
         var requestId = Guid.CreateVersion7();
 
         await using (var scope = Factory.Services.CreateAsyncScope())
@@ -66,10 +82,8 @@ public sealed class GetSchoolsImportRequestTests(
             _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         }
 
-        // Act
-        var response = await client.GetAsync($"/api/schools/import/{requestId}", TestContext.Current.CancellationToken);
+        var response = await client.GetAsync($"/api/admin/school-imports/{requestId}", TestContext.Current.CancellationToken);
 
-        // Assert
         _ = response.EnsureSuccessStatusCode();
 
         var rawPayload = await response.Content.ReadFromJsonAsync<Dictionary<string, object?>>(TestContext.Current.CancellationToken);
@@ -78,23 +92,19 @@ public sealed class GetSchoolsImportRequestTests(
     }
 
     [Fact]
-    public async Task GivenMissingSchoolBulkImportRequest_WhenGetStatusByRequestId_ThenReturnsNotFound()
+    public async Task GivenAuthenticatedAdminCaller_WhenSchoolBulkImportRequestMissing_ThenReturnsNotFound()
     {
-        // Arrange
-        var client = Factory.CreateClient();
+        var client = await CreateAdminTestClientAsync("admin@example.com", "P@ssword123!");
 
-        // Act
-        var response = await client.GetAsync($"/api/schools/import/{Guid.CreateVersion7()}", TestContext.Current.CancellationToken);
+        var response = await client.GetAsync($"/api/admin/school-imports/{Guid.CreateVersion7()}", TestContext.Current.CancellationToken);
 
-        // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
-    public async Task GivenSchoolBulkImportRequestWithoutFailures_WhenGetStatusByRequestId_ThenReturnsEmptyFailuresArray()
+    public async Task GivenAuthenticatedAdminCaller_WhenSchoolBulkImportRequestHasNoFailures_ThenReturnsEmptyFailuresArray()
     {
-        // Arrange
-        var client = Factory.CreateClient();
+        var client = await CreateAdminTestClientAsync("admin@example.com", "P@ssword123!");
         var requestId = Guid.CreateVersion7();
 
         await using (var scope = Factory.Services.CreateAsyncScope())
@@ -114,10 +124,8 @@ public sealed class GetSchoolsImportRequestTests(
             _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         }
 
-        // Act
-        var response = await client.GetAsync($"/api/schools/import/{requestId}", TestContext.Current.CancellationToken);
+        var response = await client.GetAsync($"/api/admin/school-imports/{requestId}", TestContext.Current.CancellationToken);
 
-        // Assert
         _ = response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadFromJsonAsync<GetSchoolBulkImportStatusResponse>(TestContext.Current.CancellationToken);
@@ -131,10 +139,9 @@ public sealed class GetSchoolsImportRequestTests(
     [InlineData(SchoolBulkImportStatus.Completed)]
     [InlineData(SchoolBulkImportStatus.CompletedWithFailures)]
     [InlineData(SchoolBulkImportStatus.Failed)]
-    public async Task GivenSchoolBulkImportRequestInAnyStatus_WhenGetStatusByRequestId_ThenReturnsOk(SchoolBulkImportStatus status)
+    public async Task GivenAuthenticatedAdminCaller_WhenSchoolBulkImportRequestInAnyStatus_ThenReturnsOk(SchoolBulkImportStatus status)
     {
-        // Arrange
-        var client = Factory.CreateClient();
+        var client = await CreateAdminTestClientAsync("admin@example.com", "P@ssword123!");
         var requestId = Guid.CreateVersion7();
 
         await using (var scope = Factory.Services.CreateAsyncScope())
@@ -145,10 +152,8 @@ public sealed class GetSchoolsImportRequestTests(
             _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         }
 
-        // Act
-        var response = await client.GetAsync($"/api/schools/import/{requestId}", TestContext.Current.CancellationToken);
+        var response = await client.GetAsync($"/api/admin/school-imports/{requestId}", TestContext.Current.CancellationToken);
 
-        // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 

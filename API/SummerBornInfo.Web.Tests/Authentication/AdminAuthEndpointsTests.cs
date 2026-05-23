@@ -10,7 +10,7 @@ public sealed class AdminAuthEndpointsTests(
     {
         const string email = "admin@example.com";
         const string password = "P@ssword123!";
-        await SeedUserAsync(email, password, isAdmin: true);
+        _ = await SeedUserAsync(email, password, isAdmin: true);
         var cookieName = await GetApplicationCookieNameAsync();
 
         var client = Factory.CreateClient(new WebApplicationFactoryClientOptions
@@ -31,7 +31,7 @@ public sealed class AdminAuthEndpointsTests(
     public async Task GivenInvalidCredentials_WhenSignInPosted_ThenReturnsUnauthorizedWithoutAuthenticationCookie()
     {
         const string email = "admin@example.com";
-        await SeedUserAsync(email, "P@ssword123!", isAdmin: true);
+        _ = await SeedUserAsync(email, "P@ssword123!", isAdmin: true);
         var cookieName = await GetApplicationCookieNameAsync();
 
         var client = Factory.CreateClient();
@@ -49,7 +49,7 @@ public sealed class AdminAuthEndpointsTests(
     {
         const string email = "volunteer@example.com";
         const string password = "P@ssword123!";
-        await SeedUserAsync(email, password, isAdmin: false);
+        _ = await SeedUserAsync(email, password, isAdmin: false);
         var cookieName = await GetApplicationCookieNameAsync();
 
         var client = Factory.CreateClient();
@@ -67,7 +67,7 @@ public sealed class AdminAuthEndpointsTests(
     {
         const string email = "admin@example.com";
         const string password = "P@ssword123!";
-        await SeedUserAsync(email, password, isAdmin: true);
+        _ = await SeedUserAsync(email, password, isAdmin: true);
         var cookieName = await GetApplicationCookieNameAsync();
 
         var client = Factory.CreateClient(new WebApplicationFactoryClientOptions
@@ -91,66 +91,6 @@ public sealed class AdminAuthEndpointsTests(
 
         var setCookieHeader = GetAuthenticationCookieHeader(signOutResponse, cookieName);
         Assert.Contains("expires=", setCookieHeader, StringComparison.OrdinalIgnoreCase);
-    }
-
-    private async Task SeedUserAsync(string email, string password, bool isAdmin)
-    {
-        await using var scope = Factory.Services.CreateAsyncScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        var user = CreateUser(email, password);
-        _ = dbContext.Users.Add(user);
-
-        if (isAdmin)
-        {
-            var role = CreateAdminRole();
-            _ = dbContext.Roles.Add(role);
-            _ = dbContext.UserRoles.Add(new IdentityUserRole<Guid>
-            {
-                UserId = user.Id,
-                RoleId = role.Id,
-            });
-        }
-
-        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
-    }
-
-    private async Task<string> GetApplicationCookieNameAsync()
-    {
-        await using var scope = Factory.Services.CreateAsyncScope();
-        var optionsMonitor = scope.ServiceProvider.GetRequiredService<IOptionsMonitor<CookieAuthenticationOptions>>();
-        var cookieName = optionsMonitor.Get(IdentityConstants.ApplicationScheme).Cookie.Name;
-
-        return cookieName ?? throw new InvalidOperationException("Application cookie name is not configured.");
-    }
-
-    private static ApplicationUser CreateUser(string email, string password)
-    {
-        var user = new ApplicationUser
-        {
-            Id = Guid.NewGuid(),
-            Email = email,
-            NormalizedEmail = email.ToUpperInvariant(),
-            UserName = email,
-            NormalizedUserName = email.ToUpperInvariant(),
-            EmailConfirmed = true,
-            SecurityStamp = Guid.NewGuid().ToString("N"),
-            ConcurrencyStamp = Guid.NewGuid().ToString("N"),
-        };
-
-        user.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(user, password);
-        return user;
-    }
-
-    private static ApplicationRole CreateAdminRole()
-    {
-        return new ApplicationRole
-        {
-            Id = Guid.NewGuid(),
-            Name = ApplicationRoleNames.Admin,
-            NormalizedName = ApplicationRoleNames.Admin.ToUpperInvariant(),
-            ConcurrencyStamp = Guid.NewGuid().ToString("N"),
-        };
     }
 
     private static void AssertAuthenticationCookieWasSet(HttpResponseMessage response, string cookieName)

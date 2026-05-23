@@ -222,16 +222,16 @@ Resolved route clarification:
 
 ## 11. Completion Checklist
 
-- [ ] All currently implemented API response DTOs use `Id` rather than prefixed identifier field names.
-- [ ] HTTP-level tests for implemented APIs assert the `Id` convention consistently.
-- [ ] Milestone 1 plan language no longer describes `schoolId` or any other prefixed name as the canonical response identifier.
-- [ ] Milestone 1 contract documentation uses `Id` in response schema tables and examples where the payload represents an entity identifier.
-- [ ] Any remaining `schoolId`, `reviewId`, or `importRequestId` references in milestone documentation are limited to route parameters or other cases where they are intentionally not response fields.
-- [ ] School import status retrieval is protected by admin authentication and authorization.
-- [ ] School import status retrieval is supported at `GET /api/admin/school-imports/{requestId}`.
-- [ ] Unauthenticated import-status requests return `401 Unauthorized`.
-- [ ] Authenticated non-admin import-status requests return `403 Forbidden`.
-- [ ] Authenticated admin import-status requests still return the expected success payload and omit `ContentId`.
-- [ ] Reusable seeded-user and authenticated-client helpers exist in `WebIntegrationTestBase`.
-- [ ] Duplicated authentication helper code is removed from the affected web test classes.
-- [ ] Automated tests cover the protected import-status behaviour and pass with the refactored shared helper approach.
+- [x] All currently implemented API response DTOs use `Id` rather than prefixed identifier field names.
+- [x] HTTP-level tests for implemented APIs assert the `Id` convention consistently.
+- [x] Milestone 1 plan language no longer describes `schoolId` or any other prefixed name as the canonical response identifier.
+- [x] Milestone 1 contract documentation uses `Id` in response schema tables and examples where the payload represents an entity identifier.
+- [x] Any remaining `schoolId`, `reviewId`, or `importRequestId` references in milestone documentation are limited to route parameters or other cases where they are intentionally not response fields.
+- [x] School import status retrieval is protected by admin authentication and authorization.
+- [x] School import status retrieval is supported at `GET /api/admin/school-imports/{requestId}`.
+- [x] Unauthenticated import-status requests return `401 Unauthorized`.
+- [x] Authenticated non-admin import-status requests return `403 Forbidden`.
+- [x] Authenticated admin import-status requests still return the expected success payload and omit `ContentId`.
+- [x] Reusable seeded-user and authenticated-client helpers exist in `WebIntegrationTestBase`.
+- [x] Duplicated authentication helper code is removed from the affected web test classes.
+- [x] Automated tests cover the protected import-status behaviour and pass with the refactored shared helper approach.

@@ -65,15 +65,6 @@ public sealed class OpenApiSecurityDocumentTests(
         return await JsonDocument.ParseAsync(contentStream, cancellationToken: TestContext.Current.CancellationToken);
     }
 
-    private async Task<string> GetApplicationCookieNameAsync()
-    {
-        await using var scope = Factory.Services.CreateAsyncScope();
-        var optionsMonitor = scope.ServiceProvider.GetRequiredService<IOptionsMonitor<CookieAuthenticationOptions>>();
-        var cookieName = optionsMonitor.Get(IdentityConstants.ApplicationScheme).Cookie.Name;
-
-        return cookieName ?? throw new InvalidOperationException("Application cookie name is not configured.");
-    }
-
     private static JsonElement GetPostOperation(JsonDocument document, string path)
     {
         return document.RootElement

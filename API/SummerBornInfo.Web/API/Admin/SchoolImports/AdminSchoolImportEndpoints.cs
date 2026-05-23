@@ -9,7 +9,8 @@ public static class AdminSchoolImportEndpoints
         var schoolImports = endpoints.MapGroup("/api/admin/school-imports")
             .RequireAuthorization(AdminAuthorizationPolicyNames.Admin);
 
-        _ = schoolImports.MapCreateSchoolImportRequest();
+        _ = schoolImports.MapCreateSchoolImportRequest()
+            .MapGetSchoolImportStatus();
     }
 
     private static RouteGroupBuilder MapCreateSchoolImportRequest(this RouteGroupBuilder builder)
@@ -31,6 +32,21 @@ public static class AdminSchoolImportEndpoints
             return Results.Accepted(uri: null, value: result);
         })
             .WithMetadata(new RequestSizeLimitAttribute(MaxMessageSizeBytes));
+
+        return builder;
+    }
+
+    private static RouteGroupBuilder MapGetSchoolImportStatus(this RouteGroupBuilder builder)
+    {
+        _ = builder.MapGet("/{requestId:guid}", async (GetSchoolBulkImportStatusQueryHandler handler, Guid requestId, CancellationToken cancellationToken) =>
+        {
+            GetSchoolBulkImportStatusQuery query = new(requestId);
+            var result = await handler.ExecuteAsync(query, cancellationToken);
+
+            return result is null
+                ? Results.NotFound()
+                : Results.Ok(result);
+        });
 
         return builder;
     }

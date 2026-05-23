@@ -1,7 +1,7 @@
 namespace SummerBornInfo.Features.CsaApplicationReviews.Commands.Moderate;
 
 public sealed record ModerateCsaApplicationReviewResponse(
-    string ReviewId,
+    string Id,
     string Status,
     DateTime ModeratedAtUtc,
     string? ModeratorNote)

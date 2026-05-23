@@ -6,8 +6,7 @@ public static class SchoolEndpoints
     {
         var schools = endpoints.MapGroup("/api/schools");
 
-        _ = schools.MapGetAllSchools()
-            .MapGetSchoolsImportRequest();
+        _ = schools.MapGetAllSchools();
     }
 
     private static RouteGroupBuilder MapGetAllSchools(this RouteGroupBuilder builder)
@@ -21,19 +20,4 @@ public static class SchoolEndpoints
 
         return builder;
     }
-
-    private static RouteGroupBuilder MapGetSchoolsImportRequest(this RouteGroupBuilder builder)
-    {
-        _ = builder.MapGet("/import/{requestId:guid}", async (GetSchoolBulkImportStatusQueryHandler handler, Guid requestId, CancellationToken cancellationToken) =>
-        {
-            GetSchoolBulkImportStatusQuery query = new(requestId);
-            var result = await handler.ExecuteAsync(query, cancellationToken);
-
-            return result is null
-                ? Results.NotFound()
-                : Results.Ok(result);
-        });
-        return builder;
-    }
-
 }
