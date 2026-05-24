@@ -1,5 +1,3 @@
-using SummerBornInfo.Web.OpenApi;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();

@@ -1,4 +1,4 @@
-namespace SummerBornInfo.Infrastructure.Persistence;
+namespace SummerBornInfo.Infrastructure.Persistence.IdentityManagement;
 
 public static class ApplicationRoleNames
 {

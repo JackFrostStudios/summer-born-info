@@ -11,4 +11,5 @@ global using NpgsqlTypes;
 global using SummerBornInfo.Domain.Entities;
 global using SummerBornInfo.Infrastructure.Persistence;
 global using SummerBornInfo.Infrastructure.Persistence.Configuration;
+global using SummerBornInfo.Infrastructure.Persistence.IdentityManagement;
 global using SummerBornInfo.Infrastructure.Persistence.LargeObjects.Exceptions;

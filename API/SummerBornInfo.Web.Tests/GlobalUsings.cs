@@ -21,6 +21,7 @@ global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile;
 global using SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus.Response;
 global using SummerBornInfo.Infrastructure.Events;
 global using SummerBornInfo.Infrastructure.Persistence;
+global using SummerBornInfo.Infrastructure.Persistence.IdentityManagement;
 global using SummerBornInfo.TestFramework;
 global using SummerBornInfo.TestFramework.Logging;
 global using SummerBornInfo.TestFramework.TestData;
