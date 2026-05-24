@@ -5,6 +5,7 @@
 - [Introduction](#introduction)
 - [Architecture](#architecture)
 - [Getting Started](#getting-started)
+- [Admin Authentication and Bootstrap](#admin-authentication-and-bootstrap)
 - [Testing](#testing)
 - [Development](#development)
 
@@ -45,6 +46,67 @@ If you prefer the command line, you can run the app host from the `API` folder w
 ```bash
 dotnet run --project SummerBornInfo.AppHost/SummerBornInfo.AppHost.AppHost/SummerBornInfo.AppHost.csproj
 ```
+
+## Admin Authentication and Bootstrap
+
+Milestone 2 introduces cookie-based admin authentication for protected API operations. The supported admin auth contract is intentionally limited to project-specific endpoints under `/api/admin/auth/*`:
+
+- `POST /api/admin/auth/sign-in`
+- `POST /api/admin/auth/sign-out`
+
+The sign-in endpoint accepts an email/password payload, validates that the user is in the `Admin` role, and issues the ASP.NET Core Identity application cookie on success. Invalid credentials return `401 Unauthorized`. Valid credentials for a non-admin user return `403 Forbidden`. Sign-out clears the same cookie and returns `204 No Content`.
+
+Protected Milestone 2 admin operations remain under `/api/admin`, including:
+
+- `POST /api/admin/school-imports`
+- `POST /api/admin/csa-application-reviews/{reviewId}/moderation`
+
+The moderation route is intentionally only a protected contract shell at this stage. The deeper moderation business workflow remains deferred to Milestone 5.
+
+### Local development bootstrap
+
+Local development uses startup-time admin upsert in Development. Configure the initial admin account with `dotnet user-secrets` against the web project:
+
+```bash
+dotnet user-secrets --project SummerBornInfo.Web/SummerBornInfo.Web.csproj set AdminUserEmail admin@example.com
+dotnet user-secrets --project SummerBornInfo.Web/SummerBornInfo.Web.csproj set AdminUserPassword "Choose-a-strong-dev-password"
+```
+
+When the app starts in Development, it upserts that user, ensures the password matches the configured value, and assigns the `Admin` role. Both `AdminUserEmail` and `AdminUserPassword` must be supplied together when either is configured.
+
+After the app is running, sign in by posting JSON to `/api/admin/auth/sign-in`:
+
+```json
+{
+  "email": "admin@example.com",
+  "password": "Choose-a-strong-dev-password"
+}
+```
+
+Use a client that preserves cookies if you want to call protected admin endpoints in the same session.
+
+### Production bootstrap
+
+For non-development environments, the checked-in bootstrap artifact is [ProductionScripts/bootstrap-initial-admin.sql](../ProductionScripts/bootstrap-initial-admin.sql). Operators should run it with `psql` after the Milestone 2 identity schema exists.
+
+The script requires:
+
+- `admin_email`
+- `admin_password_hash`
+
+Optional:
+
+- `admin_role_name` which defaults to `Admin`
+
+Example:
+
+```bash
+psql "$DATABASE_URL" -v admin_email='admin@example.com' -v admin_password_hash='AQAAAAIAAYagAAAA...' -f ProductionScripts/bootstrap-initial-admin.sql
+```
+
+Important operational note: the script expects a precomputed ASP.NET Core Identity password hash. Operators should generate that hash from trusted application code or another trusted .NET environment and supply the resulting hash value to the script. The SQL script does not generate passwords or hashes itself.
+
+The script is designed to be safely re-run. It creates missing role, user, and membership rows, normalizes the relevant key fields, and does not overwrite an existing non-null password hash for a matched user.
 
 ## Testing
 

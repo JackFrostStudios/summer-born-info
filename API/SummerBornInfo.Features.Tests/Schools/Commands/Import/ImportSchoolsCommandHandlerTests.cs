@@ -15,10 +15,10 @@ public sealed class ImportSchoolsCommandHandlerTests(IntegrationTestDatabaseServ
         var result = await handler.ExecuteAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.NotEqual(Guid.Empty, result.SchoolBulkImportRequestId);
+        Assert.NotEqual(Guid.Empty, result.Id);
 
         var dbContext = CreateDbContext();
-        var savedImportRequest = await dbContext.SchoolBulkImportRequests.FindAsync([result.SchoolBulkImportRequestId], cancellationToken: TestContext.Current.CancellationToken);
+        var savedImportRequest = await dbContext.SchoolBulkImportRequests.FindAsync([result.Id], cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(savedImportRequest);
         await LargeObjectAssertions.AssertLargeObjectExistsAsync(savedImportRequest.ContentId, IntegrationTestDatabaseInstanceFixture.DatabaseConnectionString, TestContext.Current.CancellationToken);

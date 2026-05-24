@@ -1,0 +1,4 @@
+interface:
+  display_name: "Implement Plan"
+  short_description: "Execute Plans folder implementation plans"
+  default_prompt: "Use $implement-plan to implement a delivery-ready plan from the Plans folder step by step, updating plan progress, validating each slice, and finishing with checklist and review passes."

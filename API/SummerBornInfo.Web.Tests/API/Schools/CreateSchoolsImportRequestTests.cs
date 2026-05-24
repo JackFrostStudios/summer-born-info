@@ -6,23 +6,44 @@ public sealed class CreateSchoolsImportRequestTests(
     : WebIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
     [Fact]
-    public async Task GivenImportRequest_WhenPosted_ThenBackgroundWorkerProcessesTheFile()
+    public async Task GivenUnauthenticatedCaller_WhenSchoolImportPosted_ThenReturnsUnauthorized()
     {
-        // Arrange
         var client = Factory.CreateClient();
-        await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
-        using StreamContent content = new(csvStream);
-        content.Headers.ContentType = new MediaTypeHeaderValue("text/csv");
+        using var content = CreateImportContent();
 
-        // Act
-        var response = await client.PostAsync("/api/schools/import", content, TestContext.Current.CancellationToken);
+        var response = await client.PostAsync("/api/admin/school-imports", content, TestContext.Current.CancellationToken);
 
-        // Assert
-        _ = response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.Equal(0, await GetImportRequestCountAsync(TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task GivenAuthenticatedNonAdminCaller_WhenSchoolImportPosted_ThenReturnsForbidden()
+    {
+        var client = await CreateAuthenticatedTestClientAsync("volunteer@example.com", "P@ssword123!");
+        using var content = CreateImportContent();
+
+        var response = await client.PostAsync("/api/admin/school-imports", content, TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+        Assert.Equal(0, await GetImportRequestCountAsync(TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task GivenAuthenticatedAdminCaller_WhenSchoolImportPosted_ThenReturnsAcceptedAndBackgroundWorkerProcessesTheFile()
+    {
+        var client = await CreateAdminTestClientAsync("admin@example.com", "P@ssword123!");
+        using var content = CreateImportContent();
+
+        var response = await client.PostAsync("/api/admin/school-imports", content, TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
         var importResponse = await response.Content.ReadFromJsonAsync<ImportSchoolsResponse>(TestContext.Current.CancellationToken);
         Assert.NotNull(importResponse);
+        Assert.NotEqual(Guid.Empty, importResponse.Id);
+        Assert.Equal("Pending", importResponse.Status);
 
-        var request = await WaitForImportRequestAsync(importResponse.SchoolBulkImportRequestId, TestContext.Current.CancellationToken);
+        var request = await WaitForImportRequestAsync(importResponse.Id, TestContext.Current.CancellationToken);
         Assert.NotNull(request);
         Assert.Equal(2, request.LinesProcessed);
         Assert.Equal(SchoolBulkImportStatus.Completed, request.Status);
@@ -32,6 +53,20 @@ public sealed class CreateSchoolsImportRequestTests(
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         var schools = await dbContext.Schools.ToListAsync(TestContext.Current.CancellationToken);
         Assert.Equal(2, schools.Count);
+    }
+
+    private static StreamContent CreateImportContent()
+    {
+        StreamContent content = new(ExampleImportFile.GetExampleImportFileContent());
+        content.Headers.ContentType = new MediaTypeHeaderValue("text/csv");
+        return content;
+    }
+
+    private async Task<int> GetImportRequestCountAsync(CancellationToken cancellationToken)
+    {
+        await using var scope = Factory.Services.CreateAsyncScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        return await dbContext.SchoolBulkImportRequests.CountAsync(cancellationToken);
     }
 
     private async Task<SchoolBulkImportRequest?> WaitForImportRequestAsync(Guid requestId, CancellationToken cancellationToken)
