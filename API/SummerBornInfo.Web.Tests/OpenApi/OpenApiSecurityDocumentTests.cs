@@ -1,6 +1,3 @@
-using System.Text.Json;
-using SummerBornInfo.Web.OpenApi;
-
 namespace SummerBornInfo.Web.Tests.OpenApi;
 
 public sealed class OpenApiSecurityDocumentTests(

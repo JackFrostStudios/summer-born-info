@@ -1,6 +1,7 @@
 global using System.Net;
 global using System.Net.Http.Headers;
 global using System.Net.Http.Json;
+global using System.Text.Json;
 global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Authentication.Cookies;
 global using Microsoft.AspNetCore.Authorization;
@@ -28,5 +29,6 @@ global using SummerBornInfo.TestFramework.TestData;
 global using SummerBornInfo.Web.Authentication;
 global using SummerBornInfo.Web.Authorization;
 global using SummerBornInfo.Web.BackgroundServices;
+global using SummerBornInfo.Web.OpenApi;
 global using SummerBornInfo.Web.Tests.TestFramework;
 global using Xunit;
