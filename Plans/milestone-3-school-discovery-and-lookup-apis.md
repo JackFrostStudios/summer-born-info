@@ -402,7 +402,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 
 - [x] Task 1 complete: Discovery contract alignment on the existing route.
 - [x] Task 2 complete: PostgreSQL search foundation.
-- [ ] Task 3 pending: AppHost and Testcontainer PostgreSQL support.
+- [x] Task 3 complete: AppHost and Testcontainer PostgreSQL support.
 - [ ] Task 4 pending: Full response contract preservation.
 - [ ] Task 5 pending: Exact URN lookup implementation.
 - [ ] Task 6 pending: Free-text search implementation.
@@ -467,9 +467,9 @@ This plan is delivery-ready for Milestone 3 with the search technology now fixed
 - [ ] Search storage uses stored generated search columns on `school`, including a weighted `search_vector` and normalized trigram helper columns required by the chosen query design.
 - [ ] Search normalization rules are explicitly implemented in SQL generation expressions, including postcode whitespace removal and lowercase trigram normalization.
 - [ ] Required `GIN` and `gin_trgm_ops` indexes exist for the generated full-text and trigram search columns.
-- [ ] The Aspire AppHost PostgreSQL environment supports the required full-text and `pg_trgm` extension setup.
-- [ ] The Testcontainer PostgreSQL environment supports the required full-text and `pg_trgm` extension setup.
-- [ ] A shared PostgreSQL bootstrap component owns `pg_trgm` creation and validation in both environments before `EnsureCreatedAsync`.
+- [x] The Aspire AppHost PostgreSQL environment supports the required full-text and `pg_trgm` extension setup.
+- [x] The Testcontainer PostgreSQL environment supports the required full-text and `pg_trgm` extension setup.
+- [x] A shared PostgreSQL bootstrap component owns `pg_trgm` creation and validation in both environments before `EnsureCreatedAsync`.
 - [ ] The chosen text-search technology is documented with rationale.
 - [ ] The generated `search_vector` uses PostgreSQL's `simple` text search configuration.
 - [ ] Free-text discovery uses `plainto_tsquery` for the primary full-text query contract.

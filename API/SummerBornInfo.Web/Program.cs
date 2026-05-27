@@ -42,7 +42,7 @@ if (app.Environment.IsDevelopment())
 {
     await using var scope = app.Services.CreateAsyncScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    _ = await dbContext.Database.EnsureCreatedAsync(app.Lifetime.ApplicationStopping);
+    await PostgreSqlDatabaseBootstrapper.EnsureApplicationDatabaseAsync(dbContext, app.Lifetime.ApplicationStopping);
     var developmentAdminBootstrapper = scope.ServiceProvider.GetRequiredService<IDevelopmentAdminBootstrapper>();
     await developmentAdminBootstrapper.UpsertAsync(app.Lifetime.ApplicationStopping);
     NpgmqClient npgmq = new(connectionString: dbContext.Database.GetConnectionString() ?? throw new InvalidOperationException("Db Connection string is null"));

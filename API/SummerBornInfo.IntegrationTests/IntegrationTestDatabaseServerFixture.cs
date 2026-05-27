@@ -26,10 +26,8 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
         var templateDatabaseConnectionString = ConnectionString.Replace("Database=postgres", $"Database={TemplateDataBaseName}", StringComparison.Ordinal);
         templateDatabaseConnectionString += ";Pooling=false";
 
-        ApplicationDbContext db = new(new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(templateDatabaseConnectionString).Options);
-        _ = await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
-
-        _ = await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
+        await using ApplicationDbContext db = new(new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(templateDatabaseConnectionString).Options);
+        await PostgreSqlDatabaseBootstrapper.EnsureApplicationDatabaseAsync(db, TestContext.Current.CancellationToken);
         NpgmqClient npgmq = new(connectionString: db.Database.GetConnectionString() ?? throw new InvalidOperationException("Db Connection string is null"));
         await npgmq.InitAsync(TestContext.Current.CancellationToken);
         await npgmq.CreateQueueAsync(EventQueue.SchoolBulkImport.Name, TestContext.Current.CancellationToken);
