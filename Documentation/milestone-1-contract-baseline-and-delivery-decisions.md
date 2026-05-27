@@ -13,7 +13,9 @@ This baseline is intentionally concrete at the HTTP contract layer and intention
 - The published API contract will ultimately be generated from the ASP.NET Core API project rather than maintained as a separate hand-authored contract artifact.
 - Milestone 1 delivers this markdown baseline so later milestones can implement toward a stable surface before generated OpenAPI exists.
 - Admin-protected operations must be implemented using ASP.NET Core Identity as the agreed authentication direction.
-- Free-text search, exact URN lookup, and radius-based school discovery are separate capabilities and must remain separate in the contract.
+- The public schools collection contract is rooted at `GET /api/schools`, uses the current paged collection response shape, and remains the baseline response model for downstream school discovery work.
+- Exact URN lookup and radius-based school discovery remain separate capabilities from the main schools collection contract.
+- School discovery text search will use a PostgreSQL hybrid approach that combines full-text search with `pg_trgm` similarity support.
 - The initial public CSA Application Review contract must include `name`, `applicationSuccessful`, and a free-text `comment`.
 - `Id` is the canonical resource identifier carried by API response objects, while school-specific POST operations continue to use `schoolId` route parameters.
 
@@ -22,7 +24,7 @@ This baseline is intentionally concrete at the HTTP contract layer and intention
 This baseline covers:
 
 - admin-protected operations for school imports and CSA Application Review moderation;
-- public school discovery by free-text search;
+- public school collection and discovery through the main schools GET route;
 - public school retrieval by exact URN;
 - public school discovery by radius-from-point query;
 - public CSA Application Review submission for a specific school;
@@ -39,30 +41,55 @@ This baseline does not define full auth flows, persistence design, ranking inter
 - Public school routes are rooted under `/api/schools`.
 - Admin-only routes are rooted under `/api/admin`.
 - `Id` is the canonical school resource identifier returned by school response objects, while school-specific POST routes continue to use `schoolId`.
-- Exact URN lookup remains a separate public GET capability for callers that start from a URN rather than a `schoolId`.
+- Exact URN lookup remains a separate public GET capability for callers that start from a URN rather than the main schools collection route.
 - School association for review submission and reporting is carried by route parameter rather than an optional body field.
 - Public comments are the moderated CSA Application Reviews exposed for school-specific display.
 
 ### 4.2 Shared School Model
 
-`SchoolSummary`
+`SchoolAddress`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `street` | string | No | First address line when present in imported data. |
+| `locality` | string | No | Optional locality value. |
+| `addressThree` | string | No | Optional third address line. |
+| `town` | string | Yes | Town or city value. |
+| `county` | string | No | Optional county value. |
+| `postCode` | string | Yes | Postcode value used in school display and search. |
+
+`LookupValue`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `id` | string | Yes | Canonical identifier for the lookup row. |
+| `code` | string | Yes | External or imported code for the lookup row. |
+| `name` | string | Yes | Display name for the lookup row. |
+
+`SchoolResponse`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `id` | string | Yes | Canonical school resource identifier used in response payloads. |
-| `urn` | string | Yes | Exact school identifier exposed for dedicated URN lookup and external reference. |
+| `urn` | integer | Yes | Exact school identifier used for dedicated URN lookup and external reference. |
+| `ukprn` | integer | No | Optional UK Provider Reference Number when present in source data. |
+| `establishmentNumber` | integer | Yes | Establishment number from imported source data. |
 | `name` | string | Yes | School display name. |
-| `addressLine1` | string | Yes | Primary address line. |
-| `addressLine2` | string | No | Optional secondary address line. |
-| `townOrCity` | string | Yes | Town or city used in result display. |
-| `postcode` | string | Yes | Postcode shown in search and lookup results. |
-| `latitude` | number | No | Present when location data is available for map-oriented use. |
-| `longitude` | number | No | Present when location data is available for map-oriented use. |
+| `address` | `SchoolAddress` | Yes | Structured school address. |
+| `openDate` | string (`date`) | No | School open date when known. |
+| `closeDate` | string (`date`) | No | School close date when known. |
+| `phaseOfEducation` | `LookupValue` | Yes | Phase of education lookup. |
+| `localAuthority` | `LookupValue` | Yes | Local authority lookup. |
+| `establishmentType` | `LookupValue` | Yes | Establishment type lookup. |
+| `establishmentGroup` | `LookupValue` | Yes | Establishment group lookup. |
+| `establishmentStatus` | `LookupValue` | Yes | Establishment status lookup. |
 
-`SchoolDetail`
+`GetSchoolsResponse`
 
-- The Milestone 1 baseline keeps `SchoolDetail` aligned to `SchoolSummary`.
-- Later milestones may expand the detail shape only when the generated OpenAPI contract and consumers can absorb the change deliberately.
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `schools` | array of `SchoolResponse` | Yes | Current page of schools. |
+| `nextCursor` | string | No | Continuation token for the next page. `null` when there is no next page. |
 
 ### 4.3 Shared Error Model
 
@@ -80,17 +107,17 @@ Baseline rules:
 - `401 Unauthorized` is used when a protected endpoint is called without a valid authenticated admin identity.
 - `403 Forbidden` is used when a caller is authenticated but is not authorized for the admin operation.
 - `404 Not Found` is used when a requested school or review does not exist.
-- Valid search requests that return no matches still return `200 OK` with an empty `items` array.
+- Valid school discovery requests that return no matches still return `200 OK` with an empty `schools` array.
 - `429 Too Many Requests` is reserved for later abuse-protection implementation and is not required to be implemented in Milestone 1.
 
 ## 5. Endpoint Inventory
 
-### 5.1 Public Free-Text School Search
+### 5.1 Public Schools Collection and Discovery
 
-`GET /api/schools/search`
+`GET /api/schools`
 
 Purpose:
-Return ranked school matches using free-text matching against school name and address or postcode fields.
+Return a paged collection of schools using the current schools response contract. This route is the baseline public schools GET surface and is the route Milestone 3 extends for school discovery behaviour.
 
 Authentication:
 Public.
@@ -99,9 +126,9 @@ Query parameters:
 
 | Name | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `q` | string | Yes | Free-text search term. Must not be blank. |
-| `cursor` | string | No | Continuation value from a previous response. Must not be blank when supplied. |
-| `limit` | integer | No | Optional positive result limit. If supplied, must be within the supported maximum. |
+| `q` | string | No | Optional free-text search term used for discovery behaviour once Milestone 3 is implemented. Must not be blank when supplied. |
+| `cursor` | string | No | Continuation value from a previous response. The current implementation uses school `Id` cursor semantics. Must not be blank when supplied. |
+| `pageSize` | integer | No | Optional positive result limit. If supplied, must be within the supported maximum. |
 
 Response:
 
@@ -109,36 +136,67 @@ Response:
 
 ```json
 {
-  "items": [
+  "schools": [
     {
-      "id": "sch_123",
-      "urn": "123456",
-      "name": "Example Primary School",
-      "addressLine1": "1 High Street",
-      "addressLine2": null,
-      "townOrCity": "Exampletown",
-      "postcode": "AB1 2CD",
-      "latitude": 51.501,
-      "longitude": -0.141
+      "id": "00000000-0000-0000-0000-000000000001",
+      "urn": 100001,
+      "ukprn": 200001,
+      "establishmentNumber": 3001,
+      "name": "Northbridge Primary",
+      "address": {
+        "street": "1 Market Street",
+        "locality": "Old Town",
+        "addressThree": "Suite A",
+        "town": "Leeds",
+        "county": "West Yorkshire",
+        "postCode": "LS1 1AA"
+      },
+      "openDate": "2010-09-01",
+      "closeDate": null,
+      "phaseOfEducation": {
+        "id": "11111111-1111-1111-1111-111111111111",
+        "code": "PRIMARY-100001",
+        "name": "Primary 100001"
+      },
+      "localAuthority": {
+        "id": "22222222-2222-2222-2222-222222222222",
+        "code": "LA-100001",
+        "name": "Local Authority 100001"
+      },
+      "establishmentType": {
+        "id": "33333333-3333-3333-3333-333333333333",
+        "code": "COMM-100001",
+        "name": "Community school 100001"
+      },
+      "establishmentGroup": {
+        "id": "44444444-4444-4444-4444-444444444444",
+        "code": "GROUP-100001",
+        "name": "Local authority maintained schools 100001"
+      },
+      "establishmentStatus": {
+        "id": "55555555-5555-5555-5555-555555555555",
+        "code": "OPEN-100001",
+        "name": "Open 100001"
+      }
     }
   ],
-  "nextCursor": "eyJsYXN0U2Nob29sSWQiOiJzY2hfMTIzIn0",
-  "hasMore": true
+  "nextCursor": "00000000-0000-0000-0000-000000000001"
 }
 ```
 
 Validation and failure expectations:
 
-- Blank or missing `q` returns `400 Bad Request`.
+- Blank `q` returns `400 Bad Request` when search behaviour is invoked.
 - Blank or invalid `cursor` values return `400 Bad Request`.
-- Invalid `limit` values return `400 Bad Request`.
-- No matches return `200 OK` with `"items": []`, `"nextCursor": null`, and `"hasMore": false`.
+- Invalid `pageSize` values return `400 Bad Request`.
+- No matches return `200 OK` with `"schools": []` and `"nextCursor": null`.
 
 Baseline notes:
 
-- Matching targets school `name` and address or postcode fields only.
-- Results are ranked, but the ranking algorithm is deferred.
-- Pagination uses cursor-based continuation over the returned ranked order.
+- The response shape for the schools collection is the current API contract and should remain the baseline shape for downstream discovery work.
+- Milestone 3 adds or refines discovery behaviour on this route, including free-text matching against school `name` and address or postcode fields.
+- The chosen text-search approach for school discovery is PostgreSQL full-text search combined with `pg_trgm` similarity support so the implementation can balance relevance, partial matching, and typo tolerance without introducing a separate search service.
+- The current implementation uses school `Id` cursor pagination with default page size `100` and maximum page size `200`.
 
 ### 5.2 Public Exact URN Lookup
 
@@ -162,15 +220,46 @@ Response:
 
 ```json
 {
-  "id": "sch_123",
-  "urn": "123456",
-  "name": "Example Primary School",
-  "addressLine1": "1 High Street",
-  "addressLine2": null,
-  "townOrCity": "Exampletown",
-  "postcode": "AB1 2CD",
-  "latitude": 51.501,
-  "longitude": -0.141
+  "id": "00000000-0000-0000-0000-000000000001",
+  "urn": 100001,
+  "ukprn": 200001,
+  "establishmentNumber": 3001,
+  "name": "Northbridge Primary",
+  "address": {
+    "street": "1 Market Street",
+    "locality": "Old Town",
+    "addressThree": "Suite A",
+    "town": "Leeds",
+    "county": "West Yorkshire",
+    "postCode": "LS1 1AA"
+  },
+  "openDate": "2010-09-01",
+  "closeDate": null,
+  "phaseOfEducation": {
+    "id": "11111111-1111-1111-1111-111111111111",
+    "code": "PRIMARY-100001",
+    "name": "Primary 100001"
+  },
+  "localAuthority": {
+    "id": "22222222-2222-2222-2222-222222222222",
+    "code": "LA-100001",
+    "name": "Local Authority 100001"
+  },
+  "establishmentType": {
+    "id": "33333333-3333-3333-3333-333333333333",
+    "code": "COMM-100001",
+    "name": "Community school 100001"
+  },
+  "establishmentGroup": {
+    "id": "44444444-4444-4444-4444-444444444444",
+    "code": "GROUP-100001",
+    "name": "Local authority maintained schools 100001"
+  },
+  "establishmentStatus": {
+    "id": "55555555-5555-5555-5555-555555555555",
+    "code": "OPEN-100001",
+    "name": "Open 100001"
+  }
 }
 ```
 
@@ -181,7 +270,7 @@ Validation and failure expectations:
 
 Baseline notes:
 
-- URN is the lookup input for this specific operation, but the returned school resource still includes the canonical `Id`.
+- URN is the lookup input for this specific operation, but the returned school resource still uses the same full `SchoolResponse` shape as the main schools GET contract.
 
 ### 5.3 Public Radius-Based School Search
 
@@ -201,7 +290,7 @@ Query parameters:
 | `longitude` | number | Yes | Must be within `-180` to `180`. |
 | `radiusMiles` | number | Yes | Positive search radius in miles. |
 | `cursor` | string | No | Continuation value from a previous response. Must not be blank when supplied. |
-| `limit` | integer | No | Optional positive result limit. If supplied, must be within the supported maximum. |
+| `pageSize` | integer | No | Optional positive result limit. If supplied, must be within the supported maximum. |
 
 Response:
 
@@ -209,21 +298,51 @@ Response:
 
 ```json
 {
-  "items": [
+  "schools": [
     {
-      "id": "sch_123",
-      "urn": "123456",
-      "name": "Example Primary School",
-      "addressLine1": "1 High Street",
-      "addressLine2": null,
-      "townOrCity": "Exampletown",
-      "postcode": "AB1 2CD",
-      "latitude": 51.501,
-      "longitude": -0.141
+      "id": "00000000-0000-0000-0000-000000000001",
+      "urn": 100001,
+      "ukprn": 200001,
+      "establishmentNumber": 3001,
+      "name": "Northbridge Primary",
+      "address": {
+        "street": "1 Market Street",
+        "locality": "Old Town",
+        "addressThree": "Suite A",
+        "town": "Leeds",
+        "county": "West Yorkshire",
+        "postCode": "LS1 1AA"
+      },
+      "openDate": "2010-09-01",
+      "closeDate": null,
+      "phaseOfEducation": {
+        "id": "11111111-1111-1111-1111-111111111111",
+        "code": "PRIMARY-100001",
+        "name": "Primary 100001"
+      },
+      "localAuthority": {
+        "id": "22222222-2222-2222-2222-222222222222",
+        "code": "LA-100001",
+        "name": "Local Authority 100001"
+      },
+      "establishmentType": {
+        "id": "33333333-3333-3333-3333-333333333333",
+        "code": "COMM-100001",
+        "name": "Community school 100001"
+      },
+      "establishmentGroup": {
+        "id": "44444444-4444-4444-4444-444444444444",
+        "code": "GROUP-100001",
+        "name": "Local authority maintained schools 100001"
+      },
+      "establishmentStatus": {
+        "id": "55555555-5555-5555-5555-555555555555",
+        "code": "OPEN-100001",
+        "name": "Open 100001"
+      }
     }
   ],
-  "nextCursor": "eyJsYXN0U2Nob29sSWQiOiJzY2hfMTIzIn0",
-  "hasMore": true
+  "nextCursor": "00000000-0000-0000-0000-000000000001"
 }
 ```
 
@@ -233,14 +352,14 @@ Validation and failure expectations:
 - Out-of-range coordinates return `400 Bad Request`.
 - Zero or negative `radiusMiles` returns `400 Bad Request`.
 - Blank or invalid `cursor` values return `400 Bad Request`.
-- Invalid `limit` values return `400 Bad Request`.
-- No matches return `200 OK` with `"items": []`, `"nextCursor": null`, and `"hasMore": false`.
+- Invalid `pageSize` values return `400 Bad Request`.
+- No matches return `200 OK` with `"schools": []` and `"nextCursor": null`.
 
 Baseline notes:
 
 - Radius-from-point is the only required geospatial mode in the initial release.
 - The fixed contract unit is miles to avoid a baseline-level unit negotiation decision.
-- Pagination uses cursor-based continuation over the returned ordered result set.
+- Pagination uses the same collection response shape as `GET /api/schools`.
 
 ### 5.4 Public CSA Application Review Submission
 
@@ -528,8 +647,7 @@ Baseline notes:
 The following decisions are intentionally not settled by this baseline and must be handled by later milestones:
 
 - exact ASP.NET Core Identity setup, persistence, admin bootstrap, and sign-in flow;
-- search ranking implementation details;
-- exact cursor format, traversal method, maximum cursor page size, cursor lifetime or expiry behaviour, filtering rules, and optional sort modes beyond the baseline query shape;
+- exact search ranking implementation details, including how ranked pagination resumes while preserving the existing schools GET contract;
 - geospatial storage and query implementation;
 - maximum supported radius and handling for schools with missing location data;
 - exact URN format validation constraints beyond requiring an exact route identifier;
@@ -549,9 +667,11 @@ The following decisions are intentionally not settled by this baseline and must 
 
 ### Milestone 3: School Discovery and Lookup APIs
 
-- Implement `GET /api/schools/search` and `GET /api/schools/{urn}` to the request, response, and error contracts defined here.
+- Implement school discovery using the chosen PostgreSQL hybrid search approach that combines full-text search with `pg_trgm` similarity support.
+- Extend `GET /api/schools` with the required school discovery behaviour while preserving the current collection response shape.
+- Implement `GET /api/schools/{urn}` using the same full school response shape used by the main schools GET contract.
 - Validate search behaviour against the required searchable fields: school name and address or postcode.
-- Keep URN lookup distinct from free-text search in both route design and generated OpenAPI while returning `Id` in school schemas.
+- Keep URN lookup distinct from collection discovery in both route design and generated OpenAPI while returning `Id` in school schemas.
 
 ### Milestone 4: Spatial School Search Support
 
