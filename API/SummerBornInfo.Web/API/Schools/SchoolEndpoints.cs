@@ -20,15 +20,21 @@ public static class SchoolEndpoints
     private static RouteGroupBuilder MapSearchSchools(this RouteGroupBuilder builder)
     {
         _ = builder.MapGet("/search", async (
+            HttpContext httpContext,
             GetAllSchoolsQueryHandler handler,
+            SummerBornInfo.Features.Schools.Queries.GetSchoolByUrn.GetSchoolByUrnQueryHandler getSchoolByUrnHandler,
             string? q,
-            int? urn,
+            string? urn,
             Guid? cursor,
             int? pageSize,
             CancellationToken cancellationToken) =>
         {
             _ = q;
-            _ = urn;
+
+            if (httpContext.Request.Query.ContainsKey("urn"))
+            {
+                return await GetSchoolByUrnAsync(getSchoolByUrnHandler, urn, cancellationToken);
+            }
 
             return await GetSchoolsAsync(handler, cursor, pageSize, cancellationToken);
         });
@@ -45,5 +51,19 @@ public static class SchoolEndpoints
         GetAllSchoolsQuery query = new(cursor, pageSize);
         var response = await handler.ExecuteAsync(query, cancellationToken);
         return Results.Ok(response);
+    }
+
+    private static async Task<IResult> GetSchoolByUrnAsync(
+        SummerBornInfo.Features.Schools.Queries.GetSchoolByUrn.GetSchoolByUrnQueryHandler handler,
+        string? urn,
+        CancellationToken cancellationToken)
+    {
+        if (!SummerBornInfo.Features.Schools.Queries.GetSchoolByUrn.GetSchoolByUrnQueryValidator.TryValidate(urn, out var query))
+        {
+            return Results.BadRequest("URN must be a valid integer.");
+        }
+
+        var response = await handler.ExecuteAsync(query, cancellationToken);
+        return response is null ? Results.NotFound() : Results.Ok(response);
     }
 }

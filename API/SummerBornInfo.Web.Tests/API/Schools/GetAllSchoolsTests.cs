@@ -143,8 +143,7 @@ public sealed class GetAllSchoolsTests(
     [Theory]
     [InlineData("/api/schools/search?pageSize=10")]
     [InlineData("/api/schools/search?q=amber&pageSize=10")]
-    [InlineData("/api/schools/search?urn=100010&pageSize=10")]
-    public async Task GivenDedicatedSchoolSearchRoute_WhenRequested_ThenReturnsCollectionResponseShape(string requestUri)
+    public async Task GivenDedicatedSchoolSearchRouteWithoutUrn_WhenRequested_ThenReturnsCollectionResponseShape(string requestUri)
     {
         var expectedSchool = CreateAmberHillSchool();
 
