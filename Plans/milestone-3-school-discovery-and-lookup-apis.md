@@ -171,6 +171,7 @@ And `400` and `404` responses are visible where the contract requires them.
 
 - Use PostgreSQL full-text search as the primary tokenized discovery mechanism across school name and address text.
 - Add `pg_trgm` support for similarity-based matching, typo tolerance, and fragment matching where full-text search alone would be too brittle.
+- Optimize the storage model for search-read performance by materializing search artifacts as stored generated columns on `school` rather than relying only on expression indexes.
 - Update the Aspire AppHost PostgreSQL setup so local development environments have the required extension support enabled.
 - Update the Testcontainer-based integration environment so test databases initialize with the required extension support enabled.
 - Document the chosen hybrid approach and why it was selected over simpler SQL matching and heavier dedicated-search infrastructure.
@@ -187,6 +188,15 @@ And `400` and `404` responses are visible where the contract requires them.
 - Add a dedicated `Features/Schools/Queries/SearchSchools` slice with request model, handler, and response mapping.
 - Expose the public search route at `GET /api/schools/search`, with free-text and exact-URN input carried through query parameters on that route.
 - Implement matching over school `Name`, `Address.Street`, `Address.Locality`, `Address.AddressThree`, `Address.Town`, `Address.County`, and `Address.PostCode`.
+- Store the search inputs on the shared `school` table as generated search columns:
+  - a weighted `search_vector` generated `tsvector` column covering `Name`, `Street`, `Locality`, `AddressThree`, `Town`, `County`, and `PostCode`;
+  - a `search_name_normalized` generated text column for trigram matching over normalized school names;
+  - a `search_postcode_normalized` generated text column for trigram matching over normalized postcodes;
+  - a `search_address_normalized` generated text column for trigram matching over normalized address fragments if representative tests show address-fragment quality needs it.
+- Normalize generated search columns in SQL so the indexing rules are deterministic and shared by all callers:
+  - use `coalesce(..., '')` for nullable source fields;
+  - use lowercase normalization for trigram-targeted text;
+  - normalize postcodes by lowercasing and removing whitespace before indexing and comparison.
 - Build ranking from the chosen PostgreSQL hybrid approach so it favors stronger matches such as:
   - high-confidence full-text matches on school name ahead of weaker address-only matches;
   - exact or prefix-like school-name matches boosted ahead of looser matches where appropriate;
@@ -254,6 +264,18 @@ Implementation decisions:
 - Expose free-text discovery and exact URN lookup through `GET /api/schools/search` rather than overloading `GET /api/schools`.
 - Use PostgreSQL full-text search as the primary ranking basis over normalized school name and address text.
 - Use `pg_trgm` similarity to supplement full-text search for fragment and typo-tolerant matching.
+- Materialize search storage on the shared `school` table using stored generated columns rather than expression indexes alone.
+- Create a generated `search_vector` `tsvector` column that combines:
+  - `Name` with the highest full-text weight;
+  - `Town` and `PostCode` with a medium weight;
+  - `Street`, `Locality`, `AddressThree`, and `County` with a lower weight.
+- Create generated normalized text columns for school-name and postcode trigram search, and add a generated normalized combined-address column if representative search cases need it for acceptable address-fragment quality.
+- Keep normalization in SQL generation expressions instead of query-time-only normalization or EF-only conventions so indexed values are deterministic and reusable across queries and tests.
+- Create these indexes as the Milestone 3 baseline:
+  - `GIN` on `search_vector`;
+  - `GIN` with `gin_trgm_ops` on `search_name_normalized`;
+  - `GIN` with `gin_trgm_ops` on `search_postcode_normalized`;
+  - `GIN` with `gin_trgm_ops` on `search_address_normalized` if that column is included.
 - Change free-text school-discovery pagination on `GET /api/schools/search` from raw school identifiers to opaque encoded cursor tokens carried in the existing `cursor` and `nextCursor` fields.
 - Ensure both the Aspire AppHost PostgreSQL instance and the Testcontainer PostgreSQL instance support the required full-text and `pg_trgm` extension setup.
 - Preserve the current `GET /api/schools` route and response shape rather than introducing a second collection shape for the same resource.
@@ -263,6 +285,8 @@ Rationale:
 - keeping `URN` integer-backed avoids unnecessary persistence churn and aligns with the corrected baseline contract;
 - the PostgreSQL hybrid approach gives materially better discovery quality than a simplistic SQL `LIKE` query while staying inside the current infrastructure stack;
 - adding `pg_trgm` avoids the brittleness of full-text-only search for short school names, postcode fragments, and misspelled queries;
+- stored generated search columns favor read performance and predictable index usage over a leaner schema, which is the right trade for a public search endpoint;
+- keeping normalization in generated SQL columns avoids duplicated query-time transformations and makes test and production ranking behavior easier to keep aligned;
 - separating `GET /api/schools/search` from `GET /api/schools` makes the discovery behaviour, validation, and cursor contract explicit instead of mode-switching the collection route;
 - opaque cursor tokens fit ranked keyset pagination better than raw entity identifiers because continuation depends on a query-specific ordering tuple rather than on `Id` alone;
 - preserving the existing collection route and schema avoids contract churn for downstream consumers while still allowing Milestone 3 to add discovery behaviour.
@@ -369,7 +393,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 
 - Search technology risk:
   PostgreSQL full-text plus `pg_trgm` adds indexing and ranking complexity that can still be misconfigured or under-tuned.
-  Mitigation: document the chosen approach, add representative search-case coverage, and keep normalization and ranking rules explicit in implementation.
+  Mitigation: document the generated-column storage model, add representative search-case coverage, and keep normalization, weighting, and index rules explicit in implementation.
 
 - Environment parity risk:
   The search implementation may work against one PostgreSQL environment but fail in local development or integration tests if the required extensions are not provisioned consistently.
@@ -397,6 +421,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 - The current `GET /api/schools` list endpoint is part of the supported public contract and must be preserved.
 - Milestone 3 will expose free-text discovery on `GET /api/schools/search` rather than overloading `GET /api/schools`.
 - Milestone 3 will use PostgreSQL full-text search combined with `pg_trgm` similarity support rather than a simplistic SQL-based search approach.
+- Milestone 3 will optimize search-read performance with stored generated search columns on `school`, led by a generated weighted `search_vector` plus generated normalized trigram helper columns.
 - Milestone 3 will change free-text school-discovery cursor values on `GET /api/schools/search` from raw school identifiers to opaque encoded continuation tokens while preserving the existing `cursor` query parameter name and `{ schools, nextCursor }` response wrapper.
 - The working page-size defaults for discovery should remain aligned with the existing values of `100` default and `200` maximum unless implementation evidence shows the baseline needs revision.
 
@@ -409,6 +434,9 @@ This plan is delivery-ready for Milestone 3 with the search technology now fixed
 - [ ] `GET /api/schools/search?urn=...` exists as the exact URN lookup shape and remains a distinct capability from plain collection discovery.
 - [ ] Search matches school name and address or postcode fields.
 - [ ] PostgreSQL full-text search plus `pg_trgm` support is implemented or configured as the foundation for text discovery.
+- [ ] Search storage uses stored generated search columns on `school`, including a weighted `search_vector` and normalized trigram helper columns required by the chosen query design.
+- [ ] Search normalization rules are explicitly implemented in SQL generation expressions, including postcode whitespace removal and lowercase trigram normalization.
+- [ ] Required `GIN` and `gin_trgm_ops` indexes exist for the generated full-text and trigram search columns.
 - [ ] The Aspire AppHost PostgreSQL environment supports the required full-text and `pg_trgm` extension setup.
 - [ ] The Testcontainer PostgreSQL environment supports the required full-text and `pg_trgm` extension setup.
 - [ ] The chosen text-search technology is documented with rationale.

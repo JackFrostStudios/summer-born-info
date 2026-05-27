@@ -143,6 +143,8 @@ Related references:
 
 ## 2. Search Storage and Index Design
 
+Status: resolved on 2026-05-27.
+
 The plan selects PostgreSQL full text search plus `pg_trgm`, but it does not yet define the actual database artifacts needed to support that choice.
 
 The unresolved question is:
@@ -164,6 +166,93 @@ The plan should explicitly name:
 - the normalization rules applied before indexing;
 - the fields that get trigram indexes;
 - the specific index types to create.
+
+### Research Findings and Potential Solutions
+
+Relevant external references used for this issue:
+
+- PostgreSQL supports either expression indexes or a separate stored generated `tsvector` column, and notes that the separate-column approach avoids repeating the text-search configuration in queries and avoids redoing `to_tsvector` to verify matches: [PostgreSQL 16 docs, text search tables and indexes](https://www.postgresql.org/docs/16/textsearch-tables.html)
+- PostgreSQL generated columns are stored values computed on write and updated automatically when the row changes: [PostgreSQL 18 docs, generated columns](https://www.postgresql.org/docs/current/ddl-generated-columns.html)
+- PostgreSQL `GIN` is the preferred full-text index type for `tsvector`: [PostgreSQL 18 docs, preferred index types for text search](https://www.postgresql.org/docs/current/textsearch-indexes.html)
+- `pg_trgm` supports both `GIN` and `GiST` operator classes for similarity and fragment matching, with `gin_trgm_ops` being a straightforward fit for fast indexed similarity filtering: [PostgreSQL 17 docs, `pg_trgm`](https://www.postgresql.org/docs/17/pgtrgm.html)
+- Npgsql supports both generated `tsvector` columns and PostgreSQL-specific index methods and operator classes in EF configuration: [Npgsql full text search docs](https://www.npgsql.org/efcore/mapping/full-text-search.html), [Npgsql index modeling docs](https://www.npgsql.org/efcore/modeling/indexes.html)
+
+#### Option 1. Stored generated search columns on `school`
+
+Implementation shape:
+
+- Add all Milestone 3 search artifacts to the existing shared `school` table because both `School` and `SchoolAddress` already map there.
+- Create a stored generated `search_vector` `tsvector` column that combines:
+  - `Name` with the highest full-text weight;
+  - `Town` and `PostCode` with a medium weight;
+  - `Street`, `Locality`, `AddressThree`, and `County` with a lower weight.
+- Create stored generated normalized text columns for trigram search:
+  - `search_name_normalized`;
+  - `search_postcode_normalized`;
+  - `search_address_normalized` if representative search tests show combined-address fragment search needs dedicated support.
+- Apply normalization in SQL generation expressions so indexed values are deterministic:
+  - `coalesce(..., '')` for nullable text;
+  - lowercase normalization for trigram-targeted text;
+  - postcode normalization by lowercasing and removing whitespace before indexing and comparison.
+- Create the baseline indexes:
+  - `GIN` on `search_vector`;
+  - `GIN` with `gin_trgm_ops` on `search_name_normalized`;
+  - `GIN` with `gin_trgm_ops` on `search_postcode_normalized`;
+  - `GIN` with `gin_trgm_ops` on `search_address_normalized` if that column is included.
+
+Benefits:
+
+- Best fit for the stated Milestone 3 priority of search-read performance.
+- Keeps query logic simpler and more predictable because search expressions are materialized once on write rather than reconstructed on every query.
+- Matches PostgreSQL guidance that the separate-column approach avoids repeating text-search configuration in queries and avoids redoing `to_tsvector` for match verification.
+- Works cleanly with the existing shared-table mapping because the search artifacts live exactly where the searchable fields already live.
+- Gives the plan a precise, testable definition of normalization, weighting, and required indexes.
+
+Limitations:
+
+- Adds extra stored columns and indexes to the `school` table, increasing schema surface area.
+- Increases insert and update cost because generated values and indexes must be maintained whenever a searchable field changes.
+- Requires deliberate EF mapping decisions for generated columns that are persistence details rather than domain concepts.
+
+Assessment:
+
+- This is the recommended option and should be treated as the Milestone 3 requirement because the user has chosen search performance over minimal schema churn.
+
+#### Option 2. Expression indexes only
+
+Implementation shape:
+
+- Keep the schema lean and create indexes directly on `to_tsvector(...)` and normalized text expressions instead of storing generated helper columns.
+
+Benefits:
+
+- Fewer new columns to add and map.
+- Lower visible schema churn in the `school` table.
+
+Limitations:
+
+- Weaker fit for a performance-first search requirement.
+- More fragile because the query shape and configuration must stay aligned with the expression index definition.
+- PostgreSQL documentation notes practical advantages for the separate-column approach in both query simplicity and search execution.
+
+Assessment:
+
+- This remains viable, but it is no longer the right choice for Milestone 3 given the explicit performance requirement.
+
+#### Recommended Direction for Milestone 3
+
+Recommended choice:
+
+- Adopt Option 1 and update the milestone plan to require stored generated search columns on `school`, led by a weighted `search_vector` and normalized trigram helper columns.
+
+Suggested plan wording change:
+
+- Replace the open storage-design wording with an explicit requirement that Milestone 3 uses stored generated search columns on `school` for best search-read performance.
+- Record the exact full-text fields, normalization rules, trigram-targeted fields, and required `GIN` / `gin_trgm_ops` indexes in the milestone plan.
+
+Resolution status:
+
+- Resolved on 2026-05-27: Milestone 3 should optimize for best search-read performance and therefore use Option 1, the stored generated search-column model.
 
 Related references:
 
@@ -232,8 +321,9 @@ Related references:
 Milestone 3 still needs explicit answers for:
 
 - the search cursor format and ranked resume strategy;
-- the database storage and index design for full text and trigram support;
 - the exact full text and trigram query semantics;
 - the environment bootstrap path that creates and verifies required PostgreSQL extensions.
 
-Until those decisions are recorded, the search-related tasks in the milestone plan still require implementation-time design choices rather than straightforward execution.
+Issue 2 is now resolved: Milestone 3 will optimize for best search-read performance by using stored generated search columns on `school`, including a weighted `search_vector` and normalized trigram helper columns with explicit `GIN` and `gin_trgm_ops` indexes.
+
+Until those remaining decisions are recorded, the search-related tasks in the milestone plan still require some implementation-time design choices rather than straightforward execution.
