@@ -21,7 +21,7 @@ public static class SchoolEndpoints
     {
         _ = builder.MapGet("/search", async (
             HttpContext httpContext,
-            GetAllSchoolsQueryHandler handler,
+            SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler searchSchoolsHandler,
             SummerBornInfo.Features.Schools.Queries.GetSchoolByUrn.GetSchoolByUrnQueryHandler getSchoolByUrnHandler,
             string? q,
             string? urn,
@@ -29,14 +29,22 @@ public static class SchoolEndpoints
             int? pageSize,
             CancellationToken cancellationToken) =>
         {
-            _ = q;
+            _ = cursor;
 
-            if (httpContext.Request.Query.ContainsKey("urn"))
+            var hasUrn = httpContext.Request.Query.ContainsKey("urn");
+            var hasQuery = httpContext.Request.Query.ContainsKey("q");
+
+            if (hasUrn && hasQuery)
+            {
+                return Results.BadRequest("Specify exactly one of q or urn.");
+            }
+
+            if (hasUrn)
             {
                 return await GetSchoolByUrnAsync(getSchoolByUrnHandler, urn, cancellationToken);
             }
 
-            return await GetSchoolsAsync(handler, cursor, pageSize, cancellationToken);
+            return await SearchSchoolsAsync(searchSchoolsHandler, q, pageSize, cancellationToken);
         });
 
         return builder;
@@ -65,5 +73,20 @@ public static class SchoolEndpoints
 
         var response = await handler.ExecuteAsync(query, cancellationToken);
         return response is null ? Results.NotFound() : Results.Ok(response);
+    }
+
+    private static async Task<IResult> SearchSchoolsAsync(
+        SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler handler,
+        string? q,
+        int? pageSize,
+        CancellationToken cancellationToken)
+    {
+        if (!SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryValidator.TryValidate(q, pageSize, out var query))
+        {
+            return Results.BadRequest("q must be at least 4 non-whitespace characters.");
+        }
+
+        var response = await handler.ExecuteAsync(query, cancellationToken);
+        return Results.Ok(response);
     }
 }

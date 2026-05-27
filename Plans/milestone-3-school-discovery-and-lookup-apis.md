@@ -405,7 +405,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 - [x] Task 3 complete: AppHost and Testcontainer PostgreSQL support.
 - [x] Task 4 complete: Full response contract preservation.
 - [x] Task 5 complete: Exact URN lookup implementation.
-- [ ] Task 6 pending: Free-text search implementation.
+- [x] Task 6 complete: Free-text search implementation.
 - [ ] Task 7 pending: Search pagination and cursor validation.
 - [ ] Task 8 pending: OpenAPI and error metadata.
 - [ ] Task 9 pending: Integration test coverage.
@@ -462,8 +462,8 @@ This plan is delivery-ready for Milestone 3 with the search technology now fixed
 - [ ] `GET /api/schools` remains the public schools collection route and matches the corrected Milestone 1 request and response contract.
 - [ ] `GET /api/schools/search` exists as the public school discovery route and matches the corrected Milestone 1 request and response contract.
 - [ ] `GET /api/schools/search?urn=...` exists as the exact URN lookup shape and remains a distinct capability from plain collection discovery.
-- [ ] Search matches school name and address or postcode fields.
-- [ ] PostgreSQL full-text search plus `pg_trgm` support is implemented or configured as the foundation for text discovery.
+- [x] Search matches school name and address or postcode fields.
+- [x] PostgreSQL full-text search plus `pg_trgm` support is implemented or configured as the foundation for text discovery.
 - [ ] Search storage uses stored generated search columns on `school`, including a weighted `search_vector` and normalized trigram helper columns required by the chosen query design.
 - [ ] Search normalization rules are explicitly implemented in SQL generation expressions, including postcode whitespace removal and lowercase trigram normalization.
 - [ ] Required `GIN` and `gin_trgm_ops` indexes exist for the generated full-text and trigram search columns.
@@ -471,13 +471,13 @@ This plan is delivery-ready for Milestone 3 with the search technology now fixed
 - [x] The Testcontainer PostgreSQL environment supports the required full-text and `pg_trgm` extension setup.
 - [x] A shared PostgreSQL bootstrap component owns `pg_trgm` creation and validation in both environments before `EnsureCreatedAsync`.
 - [ ] The chosen text-search technology is documented with rationale.
-- [ ] The generated `search_vector` uses PostgreSQL's `simple` text search configuration.
-- [ ] Free-text discovery uses `plainto_tsquery` for the primary full-text query contract.
-- [ ] Fragment-oriented trigram discovery uses `word_similarity`-style matching consistently across implementation and tests.
-- [ ] Search returns ranked results using deterministic ordering.
-- [ ] Search returns `200 OK` with an empty `schools` collection when no schools match.
-- [ ] Blank `q` returns `400 Bad Request` when search behaviour is invoked.
-- [ ] Free-text search terms shorter than 4 characters return `400 Bad Request`.
+- [x] The generated `search_vector` uses PostgreSQL's `simple` text search configuration.
+- [x] Free-text discovery uses `plainto_tsquery` for the primary full-text query contract.
+- [x] Fragment-oriented trigram discovery uses `word_similarity`-style matching consistently across implementation and tests.
+- [x] Search returns ranked results using deterministic ordering.
+- [x] Search returns `200 OK` with an empty `schools` collection when no schools match.
+- [x] Blank `q` returns `400 Bad Request` when search behaviour is invoked.
+- [x] Free-text search terms shorter than 4 characters return `400 Bad Request`.
 - [ ] Free-text search continuation uses opaque encoded cursor values in the existing `cursor` and `nextCursor` fields.
 - [ ] Invalid, undecodable, or incompatible search cursor values return `400 Bad Request`.
 - [ ] Invalid `pageSize` values return `400 Bad Request`.

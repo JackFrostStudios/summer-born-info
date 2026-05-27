@@ -27,6 +27,7 @@ builder.Services.AddScoped<ModerateCsaApplicationReviewCommandHandler>();
 builder.Services.AddScoped<ImportSchoolsCommandHandler>();
 builder.Services.AddScoped<IProcessImportFileCommandHandler, ProcessImportFileCommandHandler>();
 builder.Services.AddScoped<GetAllSchoolsQueryHandler>();
+builder.Services.AddScoped<SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler>();
 builder.Services.AddScoped<SummerBornInfo.Features.Schools.Queries.GetSchoolByUrn.GetSchoolByUrnQueryHandler>();
 builder.Services.AddScoped<GetSchoolBulkImportStatusQueryHandler>();
 builder.Services.AddScoped<ISchoolsImporter, SchoolsImporter<ApplicationDbContext>>();
