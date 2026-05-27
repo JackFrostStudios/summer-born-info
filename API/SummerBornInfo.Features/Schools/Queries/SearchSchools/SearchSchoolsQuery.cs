@@ -2,6 +2,7 @@ namespace SummerBornInfo.Features.Schools.Queries.SearchSchools;
 
 public sealed record SearchSchoolsQuery(
     string SearchText,
+    string? Cursor = null,
     int? PageSize = null)
 {
     public const int DefaultPageSize = 100;

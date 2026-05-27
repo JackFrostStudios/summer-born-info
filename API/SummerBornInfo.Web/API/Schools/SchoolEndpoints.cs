@@ -25,12 +25,10 @@ public static class SchoolEndpoints
             SummerBornInfo.Features.Schools.Queries.GetSchoolByUrn.GetSchoolByUrnQueryHandler getSchoolByUrnHandler,
             string? q,
             string? urn,
-            Guid? cursor,
+            string? cursor,
             int? pageSize,
             CancellationToken cancellationToken) =>
         {
-            _ = cursor;
-
             var hasUrn = httpContext.Request.Query.ContainsKey("urn");
             var hasQuery = httpContext.Request.Query.ContainsKey("q");
 
@@ -44,7 +42,7 @@ public static class SchoolEndpoints
                 return await GetSchoolByUrnAsync(getSchoolByUrnHandler, urn, cancellationToken);
             }
 
-            return await SearchSchoolsAsync(searchSchoolsHandler, q, pageSize, cancellationToken);
+            return await SearchSchoolsAsync(searchSchoolsHandler, q, cursor, pageSize, cancellationToken);
         });
 
         return builder;
@@ -78,12 +76,13 @@ public static class SchoolEndpoints
     private static async Task<IResult> SearchSchoolsAsync(
         SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler handler,
         string? q,
+        string? cursor,
         int? pageSize,
         CancellationToken cancellationToken)
     {
-        if (!SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryValidator.TryValidate(q, pageSize, out var query))
+        if (!SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryValidator.TryValidate(q, cursor, pageSize, out var query))
         {
-            return Results.BadRequest("q must be at least 4 non-whitespace characters.");
+            return Results.BadRequest("q must be at least 4 non-whitespace characters, pageSize must be between 1 and 200, and cursor must be a valid search continuation token.");
         }
 
         var response = await handler.ExecuteAsync(query, cancellationToken);

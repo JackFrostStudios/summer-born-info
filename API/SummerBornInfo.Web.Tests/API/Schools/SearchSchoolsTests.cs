@@ -46,6 +46,37 @@ public sealed class SearchSchoolsTests(
         Assert.Null(result.NextCursor);
     }
 
+    [Fact]
+    public async Task GivenMoreRankedMatchesThanPageSize_WhenGetSchoolsSearch_ThenReturnsStableContinuationAcrossPages()
+    {
+        var (firstSchool, secondSchool, thirdSchool) = CreateAmberPaginationSchools();
+
+        await SeedSchoolsAsync(thirdSchool, firstSchool, secondSchool);
+
+        var client = Factory.CreateClient();
+        var firstResponse = await client.GetAsync("/api/schools/search?q=amber&pageSize=2", TestContext.Current.CancellationToken);
+
+        _ = firstResponse.EnsureSuccessStatusCode();
+        var firstPage = await firstResponse.Content.ReadFromJsonAsync<SchoolsResponse>(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(firstPage);
+        Assert.Equal([firstSchool.Id, secondSchool.Id], [.. firstPage.Schools.Select(x => x.Id)]);
+        Assert.NotNull(firstPage.NextCursor);
+        Assert.DoesNotContain(firstPage.Schools[1].Id.ToString(), firstPage.NextCursor, StringComparison.OrdinalIgnoreCase);
+
+        var secondResponse = await client.GetAsync(
+            $"/api/schools/search?q=amber&pageSize=2&cursor={Uri.EscapeDataString(firstPage.NextCursor)}",
+            TestContext.Current.CancellationToken);
+
+        _ = secondResponse.EnsureSuccessStatusCode();
+        var secondPage = await secondResponse.Content.ReadFromJsonAsync<SchoolsResponse>(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(secondPage);
+        var remainingSchool = Assert.Single(secondPage.Schools);
+        Assert.Equal(thirdSchool.Id, remainingSchool.Id);
+        Assert.Null(secondPage.NextCursor);
+    }
+
     [Theory]
     [InlineData("market street", "00000000-0000-0000-0000-000000000010")]
     [InlineData("hu12bb", "00000000-0000-0000-0000-000000000020")]
@@ -123,6 +154,9 @@ public sealed class SearchSchoolsTests(
     [InlineData("/api/schools/search?q=   ")]
     [InlineData("/api/schools/search?q=abc")]
     [InlineData("/api/schools/search?q=amber&urn=123456")]
+    [InlineData("/api/schools/search?q=amber&pageSize=0")]
+    [InlineData("/api/schools/search?q=amber&pageSize=201")]
+    [InlineData("/api/schools/search?q=amber&cursor=not-a-valid-cursor")]
     public async Task GivenSearchInputIsInvalid_WhenGetSchoolsSearch_ThenReturnsBadRequest(string requestUri)
     {
         var client = Factory.CreateClient();
@@ -130,6 +164,111 @@ public sealed class SearchSchoolsTests(
         var response = await client.GetAsync(requestUri, TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GivenCursorDoesNotMatchQuery_WhenGetSchoolsSearch_ThenReturnsBadRequest()
+    {
+        await SeedSchoolsAsync(CreateCursorCompatibilitySchools());
+
+        var client = Factory.CreateClient();
+        var firstResponse = await client.GetAsync("/api/schools/search?q=amber&pageSize=1", TestContext.Current.CancellationToken);
+
+        _ = firstResponse.EnsureSuccessStatusCode();
+        var firstPage = await firstResponse.Content.ReadFromJsonAsync<SchoolsResponse>(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(firstPage);
+        Assert.NotNull(firstPage.NextCursor);
+
+        var incompatibleResponse = await client.GetAsync(
+            $"/api/schools/search?q=cedar&pageSize=1&cursor={Uri.EscapeDataString(firstPage.NextCursor)}",
+            TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.BadRequest, incompatibleResponse.StatusCode);
+    }
+
+    private static (School FirstSchool, School SecondSchool, School ThirdSchool) CreateAmberPaginationSchools()
+    {
+        return (
+            CreateSchool(
+                id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+                urn: 100010,
+                ukprn: 200010,
+                establishmentNumber: 3010,
+                name: "Amber Alpha School",
+                street: "1 Cedar Road",
+                locality: "Northside",
+                addressThree: null,
+                town: "York",
+                county: "North Yorkshire",
+                postCode: "YO1 1AA"),
+            CreateSchool(
+                id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+                urn: 100020,
+                ukprn: 200020,
+                establishmentNumber: 3020,
+                name: "Amber Beta School",
+                street: "2 Cedar Road",
+                locality: "Northside",
+                addressThree: null,
+                town: "York",
+                county: "North Yorkshire",
+                postCode: "YO1 1AB"),
+            CreateSchool(
+                id: Guid.Parse("00000000-0000-0000-0000-000000000030"),
+                urn: 100030,
+                ukprn: 200030,
+                establishmentNumber: 3030,
+                name: "Amber Gamma School",
+                street: "3 Cedar Road",
+                locality: "Northside",
+                addressThree: null,
+                town: "York",
+                county: "North Yorkshire",
+                postCode: "YO1 1AC"));
+    }
+
+    private static School[] CreateCursorCompatibilitySchools()
+    {
+        return
+        [
+            CreateSchool(
+                id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+                urn: 100010,
+                ukprn: 200010,
+                establishmentNumber: 3010,
+                name: "Amber Hill School",
+                street: "10 Cedar Road",
+                locality: "Northside",
+                addressThree: null,
+                town: "York",
+                county: "North Yorkshire",
+                postCode: "YO1 1AA"),
+            CreateSchool(
+                id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+                urn: 100020,
+                ukprn: 200020,
+                establishmentNumber: 3020,
+                name: "Amber Valley School",
+                street: "20 Cedar Road",
+                locality: "Northside",
+                addressThree: null,
+                town: "York",
+                county: "North Yorkshire",
+                postCode: "YO1 1AB"),
+            CreateSchool(
+                id: Guid.Parse("00000000-0000-0000-0000-000000000030"),
+                urn: 100030,
+                ukprn: 200030,
+                establishmentNumber: 3030,
+                name: "Cedar Park School",
+                street: "30 Oak Road",
+                locality: "Westside",
+                addressThree: null,
+                town: "Leeds",
+                county: "West Yorkshire",
+                postCode: "LS1 2BB"),
+        ];
     }
 
     private async Task SeedSchoolsAsync(params School[] schools)

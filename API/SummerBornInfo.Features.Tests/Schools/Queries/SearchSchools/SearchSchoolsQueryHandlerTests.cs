@@ -121,6 +121,78 @@ public sealed class SearchSchoolsQueryHandlerTests(
         Assert.Null(result.NextCursor);
     }
 
+    [Fact]
+    public async Task GivenMoreRankedMatchesThanPageSize_WhenExecuteAsync_ThenReturnsStableContinuationCursor()
+    {
+        var (firstSchool, secondSchool, thirdSchool) = CreateAmberPaginationSchools();
+
+        await SeedSchoolsAsync(thirdSchool, firstSchool, secondSchool);
+
+        var handler = new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler(CreateDbContext());
+
+        var firstPage = await handler.ExecuteAsync(
+            new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQuery("amber", PageSize: 2),
+            TestContext.Current.CancellationToken);
+
+        Assert.Equal([firstSchool.Id, secondSchool.Id], [.. firstPage.Schools.Select(x => x.Id)]);
+        Assert.NotNull(firstPage.NextCursor);
+
+        Assert.True(
+            SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsCursor.TryDecode(
+                firstPage.NextCursor,
+                "amber",
+                out _));
+
+        var secondPage = await handler.ExecuteAsync(
+            new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQuery(
+                "amber",
+                Cursor: firstPage.NextCursor,
+                PageSize: 2),
+            TestContext.Current.CancellationToken);
+
+        var remainingSchool = Assert.Single(secondPage.Schools);
+        Assert.Equal(thirdSchool.Id, remainingSchool.Id);
+        Assert.Null(secondPage.NextCursor);
+    }
+
+    private static (School FirstSchool, School SecondSchool, School ThirdSchool) CreateAmberPaginationSchools()
+    {
+        return (
+            CreateSchool(
+                id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+                urn: 100010,
+                establishmentNumber: 3010,
+                name: "Amber Alpha School",
+                street: "1 Cedar Road",
+                locality: "Northside",
+                addressThree: null,
+                town: "York",
+                county: "North Yorkshire",
+                postCode: "YO1 1AA"),
+            CreateSchool(
+                id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+                urn: 100020,
+                establishmentNumber: 3020,
+                name: "Amber Beta School",
+                street: "2 Cedar Road",
+                locality: "Northside",
+                addressThree: null,
+                town: "York",
+                county: "North Yorkshire",
+                postCode: "YO1 1AB"),
+            CreateSchool(
+                id: Guid.Parse("00000000-0000-0000-0000-000000000030"),
+                urn: 100030,
+                establishmentNumber: 3030,
+                name: "Amber Gamma School",
+                street: "3 Cedar Road",
+                locality: "Northside",
+                addressThree: null,
+                town: "York",
+                county: "North Yorkshire",
+                postCode: "YO1 1AC"));
+    }
+
     private async Task SeedSchoolsAsync(params School[] schools)
     {
         var dbContext = CreateDbContext();
