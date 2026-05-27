@@ -3,6 +3,84 @@ namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
     [Fact]
+    public void GivenSchoolPersistenceModel_WhenGeneratingCreateScript_ThenSearchFoundationIsIncluded()
+    {
+        // Arrange
+        using var dbContext = CreateDbContext();
+
+        // Act
+        var createScript = dbContext.Database.GenerateCreateScript();
+
+        // Assert
+        Assert.Contains("CREATE EXTENSION IF NOT EXISTS pg_trgm;", createScript, StringComparison.Ordinal);
+        Assert.Contains("search_vector", createScript, StringComparison.Ordinal);
+        Assert.Contains("GENERATED ALWAYS AS", createScript, StringComparison.Ordinal);
+        Assert.Contains(@"to_tsvector('simple', coalesce(""Name"", ''))", createScript, StringComparison.Ordinal);
+        Assert.Contains(@"lower(coalesce(""Name"", ''))", createScript, StringComparison.Ordinal);
+        Assert.Contains(@"replace(lower(coalesce(""PostCode"", '')), ' ', '')", createScript, StringComparison.Ordinal);
+        Assert.Contains("search_address_normalized", createScript, StringComparison.Ordinal);
+        Assert.Contains("ix_school_search_vector", createScript, StringComparison.Ordinal);
+        Assert.Contains("ix_school_search_name_normalized", createScript, StringComparison.Ordinal);
+        Assert.Contains("ix_school_search_postcode_normalized", createScript, StringComparison.Ordinal);
+        Assert.Contains("ix_school_search_address_normalized", createScript, StringComparison.Ordinal);
+        Assert.Contains("USING gin", createScript, StringComparison.Ordinal);
+        Assert.Contains("gin_trgm_ops", createScript, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task GivenPersistedSchool_WhenReadingGeneratedSearchColumns_ThenNormalizedValuesAreStored()
+    {
+        // Arrange
+        var dbContext = CreateDbContext();
+        var school = SchoolFactory.GetSchool();
+        school.Name = "St Example Academy";
+        school.Address.Street = "10 Market Road";
+        school.Address.Locality = "Old Quarter";
+        school.Address.AddressThree = null;
+        school.Address.Town = "Leeds";
+        school.Address.County = "West Yorkshire";
+        school.Address.PostCode = "LS1 2AB";
+
+        _ = dbContext.Schools.Add(school);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        await using var command = dbContext.GetNpgsqlConnection().CreateCommand();
+        command.CommandText =
+            "SELECT " +
+            "search_name_normalized, " +
+            "search_postcode_normalized, " +
+            "search_address_normalized, " +
+            "search_vector::text " +
+            "FROM school " +
+            "WHERE \"Id\" = @id";
+        _ = command.Parameters.AddWithValue("id", school.Id);
+
+        if (command.Connection?.State != System.Data.ConnectionState.Open)
+        {
+            await command.Connection!.OpenAsync(TestContext.Current.CancellationToken);
+        }
+
+        // Act
+        await using var reader = await command.ExecuteReaderAsync(TestContext.Current.CancellationToken);
+        Assert.True(await reader.ReadAsync(TestContext.Current.CancellationToken));
+
+        var searchNameNormalized = reader.GetString(0);
+        var searchPostcodeNormalized = reader.GetString(1);
+        var searchAddressNormalized = reader.GetString(2);
+        var searchVector = reader.GetString(3);
+
+        // Assert
+        Assert.Equal("st example academy", searchNameNormalized);
+        Assert.Equal("ls12ab", searchPostcodeNormalized);
+        Assert.Equal("10 market road old quarter  leeds west yorkshire ls1 2ab", searchAddressNormalized);
+        Assert.Contains("'st'", searchVector, StringComparison.Ordinal);
+        Assert.Contains("'example'", searchVector, StringComparison.Ordinal);
+        Assert.Contains("'academy'", searchVector, StringComparison.Ordinal);
+        Assert.Contains("'ls1'", searchVector, StringComparison.Ordinal);
+        Assert.Contains("'2ab'", searchVector, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task GivenNewSchool_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange

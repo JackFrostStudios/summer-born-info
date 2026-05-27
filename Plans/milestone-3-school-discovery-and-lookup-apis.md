@@ -401,7 +401,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 ### Task State Checklist
 
 - [x] Task 1 complete: Discovery contract alignment on the existing route.
-- [ ] Task 2 pending: PostgreSQL search foundation.
+- [x] Task 2 complete: PostgreSQL search foundation.
 - [ ] Task 3 pending: AppHost and Testcontainer PostgreSQL support.
 - [ ] Task 4 pending: Full response contract preservation.
 - [ ] Task 5 pending: Exact URN lookup implementation.
