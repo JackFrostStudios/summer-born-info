@@ -14,6 +14,7 @@ This baseline is intentionally concrete at the HTTP contract layer and intention
 - Milestone 1 delivers this markdown baseline so later milestones can implement toward a stable surface before generated OpenAPI exists.
 - Admin-protected operations must be implemented using ASP.NET Core Identity as the agreed authentication direction.
 - The public schools collection contract is rooted at `GET /api/schools`, uses the current paged collection response shape, and remains the baseline response model for downstream school discovery work.
+- Free-text school discovery is exposed separately at `GET /api/schools/search` so its ranked-search and cursor behaviour can differ cleanly from the plain collection route.
 - Exact URN lookup and radius-based school discovery remain separate capabilities from the main schools collection contract.
 - School discovery text search will use a PostgreSQL hybrid approach that combines full-text search with `pg_trgm` similarity support.
 - The initial public CSA Application Review contract must include `name`, `applicationSuccessful`, and a free-text `comment`.
@@ -41,6 +42,7 @@ This baseline does not define full auth flows, persistence design, ranking inter
 - Public school routes are rooted under `/api/schools`.
 - Admin-only routes are rooted under `/api/admin`.
 - `Id` is the canonical school resource identifier returned by school response objects, while school-specific POST routes continue to use `schoolId`.
+- Free-text school discovery is a distinct public GET route at `/api/schools/search` rather than a mode of the main schools collection route.
 - Exact URN lookup remains a separate public GET capability for callers that start from a URN rather than the main schools collection route.
 - School association for review submission and reporting is carried by route parameter rather than an optional body field.
 - Public comments are the moderated CSA Application Reviews exposed for school-specific display.
@@ -89,7 +91,7 @@ This baseline does not define full auth flows, persistence design, ranking inter
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `schools` | array of `SchoolResponse` | Yes | Current page of schools. |
-| `nextCursor` | string | No | Continuation token for the next page. `null` when there is no next page. |
+| `nextCursor` | string | No | Continuation token for the next page. `null` when there is no next page. Its format is route- and mode-specific. |
 
 ### 4.3 Shared Error Model
 
@@ -112,12 +114,12 @@ Baseline rules:
 
 ## 5. Endpoint Inventory
 
-### 5.1 Public Schools Collection and Discovery
+### 5.1 Public Schools Collection
 
 `GET /api/schools`
 
 Purpose:
-Return a paged collection of schools using the current schools response contract. This route is the baseline public schools GET surface and is the route Milestone 3 extends for school discovery behaviour.
+Return a paged collection of schools using the current schools response contract.
 
 Authentication:
 Public.
@@ -126,8 +128,7 @@ Query parameters:
 
 | Name | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `q` | string | No | Optional free-text search term used for discovery behaviour once Milestone 3 is implemented. Must not be blank when supplied. |
-| `cursor` | string | No | Continuation value from a previous response. The current implementation uses school `Id` cursor semantics. Must not be blank when supplied. |
+| `cursor` | string | No | Continuation value from a previous response. Must not be blank when supplied. |
 | `pageSize` | integer | No | Optional positive result limit. If supplied, must be within the supported maximum. |
 
 Response:
@@ -186,19 +187,101 @@ Response:
 
 Validation and failure expectations:
 
-- Blank `q` returns `400 Bad Request` when search behaviour is invoked.
+- Blank or invalid `cursor` values return `400 Bad Request`.
+- Invalid `pageSize` values return `400 Bad Request`.
+
+Baseline notes:
+
+- The response shape for the schools collection is the current API contract and should remain the baseline shape for downstream discovery work.
+- Milestone 3 preserves this route for plain collection traversal and introduces a separate free-text discovery route at `GET /api/schools/search`.
+- The working page-size defaults for this route remain `100` by default and `200` maximum unless a later milestone deliberately revises them.
+
+### 5.2 Public School Discovery Search
+
+`GET /api/schools/search`
+
+Purpose:
+Return ranked school matches for free-text discovery across school name and address or postcode fields.
+
+Authentication:
+Public.
+
+Query parameters:
+
+| Name | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `q` | string | Yes | Free-text search term. Must not be blank. |
+| `cursor` | string | No | Opaque continuation value from a previous search response. Must not be blank when supplied. Clients must treat the value as server-generated and immutable. |
+| `pageSize` | integer | No | Optional positive result limit. If supplied, must be within the supported maximum. |
+
+Response:
+
+`200 OK`
+
+```json
+{
+  "schools": [
+    {
+      "id": "00000000-0000-0000-0000-000000000001",
+      "urn": 100001,
+      "ukprn": 200001,
+      "establishmentNumber": 3001,
+      "name": "Northbridge Primary",
+      "address": {
+        "street": "1 Market Street",
+        "locality": "Old Town",
+        "addressThree": "Suite A",
+        "town": "Leeds",
+        "county": "West Yorkshire",
+        "postCode": "LS1 1AA"
+      },
+      "openDate": "2010-09-01",
+      "closeDate": null,
+      "phaseOfEducation": {
+        "id": "11111111-1111-1111-1111-111111111111",
+        "code": "PRIMARY-100001",
+        "name": "Primary 100001"
+      },
+      "localAuthority": {
+        "id": "22222222-2222-2222-2222-222222222222",
+        "code": "LA-100001",
+        "name": "Local Authority 100001"
+      },
+      "establishmentType": {
+        "id": "33333333-3333-3333-3333-333333333333",
+        "code": "COMM-100001",
+        "name": "Community school 100001"
+      },
+      "establishmentGroup": {
+        "id": "44444444-4444-4444-4444-444444444444",
+        "code": "GROUP-100001",
+        "name": "Local authority maintained schools 100001"
+      },
+      "establishmentStatus": {
+        "id": "55555555-5555-5555-5555-555555555555",
+        "code": "OPEN-100001",
+        "name": "Open 100001"
+      }
+    }
+  ],
+  "nextCursor": "eyJ2IjoxLCJtb2RlIjoic2Nob29scy1zZWFyY2giLCJsYXN0SWQiOiIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDEifQ"
+}
+```
+
+Validation and failure expectations:
+
+- Blank `q` returns `400 Bad Request`.
 - Blank or invalid `cursor` values return `400 Bad Request`.
 - Invalid `pageSize` values return `400 Bad Request`.
 - No matches return `200 OK` with `"schools": []` and `"nextCursor": null`.
 
 Baseline notes:
 
-- The response shape for the schools collection is the current API contract and should remain the baseline shape for downstream discovery work.
-- Milestone 3 adds or refines discovery behaviour on this route, including free-text matching against school `name` and address or postcode fields.
+- This route is the dedicated free-text school discovery surface.
 - The chosen text-search approach for school discovery is PostgreSQL full-text search combined with `pg_trgm` similarity support so the implementation can balance relevance, partial matching, and typo tolerance without introducing a separate search service.
-- The current implementation uses school `Id` cursor pagination with default page size `100` and maximum page size `200`.
+- Search cursors on this route are intentionally opaque and may encode the ranked resume boundary needed by the server.
 
-### 5.2 Public Exact URN Lookup
+### 5.3 Public Exact URN Lookup
 
 `GET /api/schools/{urn}`
 
@@ -272,7 +355,7 @@ Baseline notes:
 
 - URN is the lookup input for this specific operation, but the returned school resource still uses the same full `SchoolResponse` shape as the main schools GET contract.
 
-### 5.3 Public Radius-Based School Search
+### 5.4 Public Radius-Based School Search
 
 `GET /api/schools/nearby`
 
@@ -361,7 +444,7 @@ Baseline notes:
 - The fixed contract unit is miles to avoid a baseline-level unit negotiation decision.
 - Pagination uses the same collection response shape as `GET /api/schools`.
 
-### 5.4 Public CSA Application Review Submission
+### 5.5 Public CSA Application Review Submission
 
 `POST /api/schools/{schoolId}/csa-application-reviews`
 
@@ -425,7 +508,7 @@ Baseline notes:
 - Public submission is synchronous at contract level with `201 Created`.
 - Abuse protection is required later, but its mechanism is deferred.
 
-### 5.5 Public School Comment Retrieval
+### 5.6 Public School Comment Retrieval
 
 `GET /api/schools/{schoolId}/csa-application-reviews`
 
@@ -482,7 +565,7 @@ Baseline notes:
 - Internal moderation status is not exposed in this public list response.
 - Pagination order must be stable for cursor traversal.
 
-### 5.6 Public Comment Report Submission
+### 5.7 Public Comment Report Submission
 
 `POST /api/schools/{schoolId}/csa-application-reviews/{reviewId}/reports`
 
@@ -540,7 +623,7 @@ Baseline notes:
 - Reporting is public and separate from admin moderation actions.
 - The contract only fixes submission and acceptance behaviour; downstream moderation workflow remains flexible.
 
-### 5.7 Admin Review Moderation
+### 5.8 Admin Review Moderation
 
 `POST /api/admin/csa-application-reviews/{reviewId}/moderation`
 
@@ -597,7 +680,7 @@ Baseline notes:
 - The baseline fixes approve or reject as the minimum moderation action set.
 - Richer moderation states remain a later decision.
 
-### 5.8 Admin School Import Trigger
+### 5.9 Admin School Import Trigger
 
 `POST /api/admin/school-imports`
 
@@ -647,7 +730,7 @@ Baseline notes:
 The following decisions are intentionally not settled by this baseline and must be handled by later milestones:
 
 - exact ASP.NET Core Identity setup, persistence, admin bootstrap, and sign-in flow;
-- exact search ranking implementation details, including how ranked pagination resumes while preserving the existing schools GET contract;
+- exact search ranking implementation details, excluding the agreed decision that free-text school-discovery pagination on `GET /api/schools/search?q=...` uses opaque cursor tokens in the existing `cursor` and `nextCursor` contract fields;
 - geospatial storage and query implementation;
 - maximum supported radius and handling for schools with missing location data;
 - exact URN format validation constraints beyond requiring an exact route identifier;
@@ -668,7 +751,8 @@ The following decisions are intentionally not settled by this baseline and must 
 ### Milestone 3: School Discovery and Lookup APIs
 
 - Implement school discovery using the chosen PostgreSQL hybrid search approach that combines full-text search with `pg_trgm` similarity support.
-- Extend `GET /api/schools` with the required school discovery behaviour while preserving the current collection response shape.
+- Preserve `GET /api/schools` as the plain collection route while adding `GET /api/schools/search` for free-text school discovery.
+- Implement opaque cursor-token pagination for free-text discovery on `GET /api/schools/search`, preserving the existing `cursor` query parameter name and `nextCursor` response field while changing the value format away from raw school identifiers.
 - Implement `GET /api/schools/{urn}` using the same full school response shape used by the main schools GET contract.
 - Validate search behaviour against the required searchable fields: school name and address or postcode.
 - Keep URN lookup distinct from collection discovery in both route design and generated OpenAPI while returning `Id` in school schemas.
