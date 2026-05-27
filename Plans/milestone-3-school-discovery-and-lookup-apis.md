@@ -18,7 +18,7 @@ Current implementation context on 2026-05-25:
 - `API/SummerBornInfo.Features/Schools/Queries/GetAllSchools/Response/SchoolResponse.cs` already defines the full school result shape that the corrected Milestone 1 baseline now treats as the contract for public school responses.
 - `API/SummerBornInfo.Domain/Entities/School.cs` stores `URN` as an `int`, which aligns with the current `GET /api/schools` result contract and can be reused for exact URN lookup.
 - The current school entity does not yet store latitude or longitude, so Milestone 3 should preserve the existing full school response contract rather than introducing new spatial fields before Milestone 4.
-- The local Aspire AppHost and the integration-test Testcontainer setup will need to ensure PostgreSQL instances support the extensions and initialization required for full-text and `pg_trgm`-backed search.
+- The local Aspire AppHost and the integration-test Testcontainer setup will use a shared PostgreSQL bootstrap path in application code to create and validate required extensions before `EnsureCreatedAsync` runs.
 
 ## 2. Roadmap Source or Existing Plan Context
 
@@ -177,6 +177,7 @@ And `400` and `404` responses are visible where the contract requires them.
 - Optimize the storage model for search-read performance by materializing search artifacts as stored generated columns on `school` rather than relying only on expression indexes.
 - Update the Aspire AppHost PostgreSQL setup so local development environments have the required extension support enabled.
 - Update the Testcontainer-based integration environment so test databases initialize with the required extension support enabled.
+- Make a shared PostgreSQL bootstrap component the owner of extension creation and validation in both environments, running before `EnsureCreatedAsync`.
 - Document the chosen hybrid approach and why it was selected over simpler SQL matching and heavier dedicated-search infrastructure.
 
 3. Full school response contract preservation
@@ -295,6 +296,7 @@ Implementation decisions:
   - `GIN` with `gin_trgm_ops` on `search_address_normalized` if that column is included.
 - Change free-text school-discovery pagination on `GET /api/schools/search` from raw school identifiers to opaque encoded cursor tokens carried in the existing `cursor` and `nextCursor` fields.
 - Ensure both the Aspire AppHost PostgreSQL instance and the Testcontainer PostgreSQL instance support the required full-text and `pg_trgm` extension setup.
+- Create a shared PostgreSQL bootstrap component that runs idempotent extension-creation SQL and validation before `EnsureCreatedAsync` in both development startup and the integration-test fixture.
 - Preserve the current `GET /api/schools` route and response shape rather than introducing a second collection shape for the same resource.
 
 Rationale:
@@ -311,12 +313,14 @@ Rationale:
 - separating `GET /api/schools/search` from `GET /api/schools` makes the discovery behaviour, validation, and cursor contract explicit instead of mode-switching the collection route;
 - opaque cursor tokens fit ranked keyset pagination better than raw entity identifiers because continuation depends on a query-specific ordering tuple rather than on `Id` alone;
 - preserving the existing collection route and schema avoids contract churn for downstream consumers while still allowing Milestone 3 to add discovery behaviour.
+- using a shared application/test bootstrap component for `pg_trgm` creation fits the current `EnsureCreated`-based setup better than container-only initialization and gives local development and integration tests one parity-preserving ownership path.
 
 ## 8. Dependencies and Sequencing
 
 1. Confirm the corrected Milestone 1 route and response contract for `GET /api/schools` and `GET /api/schools/search`, including exact URN lookup on the search route.
 2. Add the PostgreSQL full-text plus `pg_trgm` search foundation.
 3. Update the Aspire AppHost and Testcontainer environments to support the required PostgreSQL extensions.
+   This task includes adding the shared bootstrap component and ensuring it runs before `EnsureCreatedAsync` in both paths.
 4. Extend the current school endpoint registration with collection discovery behaviour and URN lookup.
 5. Add the exact URN lookup slice and validation path.
 6. Add the free-text search slice, ranking rules, and cursor support behind the dedicated search route.
@@ -349,6 +353,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 
 - Update the Aspire AppHost PostgreSQL provisioning and the Testcontainer-based test environment so both support the extensions or initialization required by the chosen search approach.
 - Outcome: local development and automated tests run against PostgreSQL environments that can execute the full-text plus `pg_trgm` search implementation.
+- Outcome: both environments use the same bootstrap code to create and validate `pg_trgm` before schema creation depends on it.
 - Commit boundary: local/test environment support only.
 
 4. Task 4: Full response contract preservation
@@ -418,7 +423,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 
 - Environment parity risk:
   The search implementation may work against one PostgreSQL environment but fail in local development or integration tests if the required extensions are not provisioned consistently.
-  Mitigation: make AppHost and Testcontainer support first-class milestone tasks and verify search behaviour against both environments.
+  Mitigation: make AppHost and Testcontainer support first-class milestone tasks, route both through the same bootstrap component before `EnsureCreatedAsync`, and verify search behaviour against both environments.
 
 - Pagination compatibility risk:
   Ranked results can conflict with raw-identifier cursor semantics because continuation logic relies on more ordering context than a bare school `Id` can express.
@@ -448,6 +453,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 - Milestone 3 will use `word_similarity`-style trigram matching for fragment-oriented discovery support.
 - Milestone 3 will reject free-text search terms shorter than 4 characters with `400 Bad Request`.
 - The working page-size defaults for discovery should remain aligned with the existing values of `100` default and `200` maximum unless implementation evidence shows the baseline needs revision.
+- Milestone 3 will use a shared application/test PostgreSQL bootstrap step to create and validate `pg_trgm` before `EnsureCreatedAsync` in both local Aspire-backed development and the Testcontainer integration-test flow.
 
 This plan is delivery-ready for Milestone 3 with the search technology now fixed to a PostgreSQL full-text plus `pg_trgm` hybrid approach.
 
@@ -463,6 +469,7 @@ This plan is delivery-ready for Milestone 3 with the search technology now fixed
 - [ ] Required `GIN` and `gin_trgm_ops` indexes exist for the generated full-text and trigram search columns.
 - [ ] The Aspire AppHost PostgreSQL environment supports the required full-text and `pg_trgm` extension setup.
 - [ ] The Testcontainer PostgreSQL environment supports the required full-text and `pg_trgm` extension setup.
+- [ ] A shared PostgreSQL bootstrap component owns `pg_trgm` creation and validation in both environments before `EnsureCreatedAsync`.
 - [ ] The chosen text-search technology is documented with rationale.
 - [ ] The generated `search_vector` uses PostgreSQL's `simple` text search configuration.
 - [ ] Free-text discovery uses `plainto_tsquery` for the primary full-text query contract.

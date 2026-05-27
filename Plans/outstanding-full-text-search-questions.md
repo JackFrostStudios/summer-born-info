@@ -599,6 +599,8 @@ Related references:
 
 ## 4. Extension and Environment Bootstrap Ownership
 
+Status: resolved on 2026-05-27.
+
 The plan says the Aspire AppHost and Testcontainer environments must support the required PostgreSQL extensions, but it does not yet assign clear ownership for creating and validating them.
 
 The unresolved question is:
@@ -617,6 +619,111 @@ The plan should specify the exact bootstrap path for:
 - integration tests using the PostgreSQL Testcontainer;
 - any validation step that proves required extensions exist before search tests run.
 
+### Research Findings and Potential Solutions
+
+Current implementation context in this repository:
+
+- [API/SummerBornInfo.Web/Program.cs](C:\Projects\summer-born-info\API\SummerBornInfo.Web\Program.cs#L45) currently calls `EnsureCreatedAsync` during development startup, so any required PostgreSQL extensions must exist before the application relies on generated columns, trigram operators, or related search artifacts.
+- [API/SummerBornInfo.IntegrationTests/IntegrationTestDatabaseServerFixture.cs](C:\Projects\summer-born-info\API\SummerBornInfo.IntegrationTests\IntegrationTestDatabaseServerFixture.cs#L21) currently creates the template database through application code and also relies on `EnsureCreatedAsync`, which means the test path has the same ordering requirement.
+- [API/SummerBornInfo.AppHost/AppHost.cs](C:\Projects\summer-born-info\API\SummerBornInfo.AppHost\AppHost.cs#L5) provisions the PostgreSQL container, but it does not currently own schema or extension initialization logic beyond standing up the server.
+
+#### Option 1. Shared application/test bootstrap step
+
+Implementation shape:
+
+- Add a shared PostgreSQL bootstrap component in the API infrastructure layer that is responsible for ensuring required extensions exist before schema creation depends on them.
+- Have that component connect to the target database and run idempotent SQL such as `CREATE EXTENSION IF NOT EXISTS pg_trgm`.
+- Invoke the component from both:
+  - local development startup in `Program.cs` before `EnsureCreatedAsync`;
+  - the integration-test database fixture before `EnsureCreatedAsync` creates the template database schema.
+- Add an explicit validation query after bootstrap, such as checking `pg_extension`, so startup and tests fail early if the extension was not created successfully.
+
+Benefits:
+
+- Fits the current repository shape because both local development and integration tests already perform database bootstrap in application code.
+- Creates a single, reusable ownership point for extension initialization and validation instead of splitting the logic across container setup scripts.
+- Keeps local and test environment behaviour aligned because both paths call the same bootstrap code in the same order.
+- Makes the milestone's ordering requirement explicit: extension bootstrap first, then `EnsureCreated`, then any queue or seed initialization.
+
+Limitations:
+
+- Application and test startup now own part of database infrastructure provisioning, which some teams prefer to keep outside runtime code.
+- The bootstrap connection still requires sufficient privileges to create extensions in the target database.
+- The shared bootstrap code must be careful to run against the intended database in the test template-database flow.
+
+Assessment:
+
+- This is the best fit for Milestone 3 because it solves the immediate delivery risk without forcing a broader change away from the current `EnsureCreated`-based setup.
+
+#### Option 2. Container-owned initialization
+
+Implementation shape:
+
+- Configure the Aspire PostgreSQL container and the PostgreSQL Testcontainer to run initialization SQL that creates `pg_trgm` before the application connects.
+- Keep application startup focused on `EnsureCreatedAsync` and higher-level schema or queue setup.
+
+Benefits:
+
+- Keeps infrastructure provisioning separated from application startup logic.
+- Makes extension creation independent of application bootstrap ordering once the container is running.
+
+Limitations:
+
+- Requires parallel container initialization behaviour in Aspire and Testcontainers, which is more work to keep aligned.
+- Pushes an important Milestone 3 dependency into environment-specific setup rather than the shared application/test bootstrap path.
+- Makes failures less obvious to contributors because the extension bootstrap is no longer visible in the code path that creates the database schema.
+
+Assessment:
+
+- Viable, but weaker than Option 1 for this repository because the current bootstrap responsibility already lives in startup code rather than container init assets.
+
+#### Option 3. Migrations-driven extension provisioning
+
+Implementation shape:
+
+- Move Milestone 3 search prerequisites into migrations or another ordered database deployment path.
+- Create required extensions and search artifacts as part of that migration flow instead of the current `EnsureCreated` path.
+
+Benefits:
+
+- Strong long-term database ownership model.
+- Aligns extension creation with other schema changes such as generated columns and indexes.
+
+Limitations:
+
+- Requires a broader provisioning-model change than Milestone 3 currently needs.
+- Does not fit the current local development and integration-test bootstrap model without additional refactoring.
+
+Assessment:
+
+- Better as a future platform change than as the immediate Milestone 3 answer.
+
+#### Recommended Direction for Milestone 3
+
+Recommended choice:
+
+- Adopt Option 1 and make a shared application/test bootstrap step the owner of PostgreSQL extension creation and validation.
+
+Decision details to record in the milestone plan:
+
+- Local Aspire-backed development:
+  - development startup must invoke the shared PostgreSQL bootstrapper before `EnsureCreatedAsync`;
+  - the bootstrapper must create `pg_trgm` with idempotent SQL and validate that it exists before search-dependent schema creation continues.
+- Integration tests using the PostgreSQL Testcontainer:
+  - the integration-test fixture must invoke the same shared PostgreSQL bootstrapper before `EnsureCreatedAsync` creates the template database schema;
+  - extension validation must happen in the fixture so search tests fail fast if the environment is missing prerequisites.
+- Parity verification:
+  - both startup paths must call the same bootstrap code rather than duplicate raw SQL in separate files;
+  - automated integration coverage should exercise at least one search path that depends on `pg_trgm`, proving the required extension exists before search tests run.
+
+Suggested plan wording change:
+
+- Replace general statements about AppHost and Testcontainer support with an explicit requirement that a shared PostgreSQL bootstrap component owns `pg_trgm` creation and validation in both local development startup and the integration-test fixture, and that this bootstrap runs before `EnsureCreatedAsync`.
+
+Resolution status:
+
+- Resolved on 2026-05-27: Milestone 3 will use a shared application/test PostgreSQL bootstrap step to create and validate `pg_trgm` before `EnsureCreatedAsync` in both local Aspire-backed development and the Testcontainer integration-test flow.
+
 Related references:
 
 - [Plans/milestone-3-school-discovery-and-lookup-apis.md](C:\Projects\summer-born-info\Plans\milestone-3-school-discovery-and-lookup-apis.md#L169)
@@ -632,9 +739,9 @@ Related references:
 Milestone 3 still needs explicit answers for:
 
 - the search cursor format and ranked resume strategy;
-- the environment bootstrap path that creates and verifies required PostgreSQL extensions.
 
 Issue 2 is now resolved: Milestone 3 will optimize for best search-read performance by using stored generated search columns on `school`, including a weighted `search_vector` and normalized trigram helper columns with explicit `GIN` and `gin_trgm_ops` indexes.
 Issue 3 is now resolved: Milestone 3 will use PostgreSQL's `simple` text search configuration, `plainto_tsquery`, `word_similarity`-style trigram matching, and reject free-text search terms shorter than 4 characters.
+Issue 4 is now resolved: Milestone 3 will use a shared application/test PostgreSQL bootstrap step to create and validate `pg_trgm` before `EnsureCreatedAsync` in both local Aspire-backed development and the Testcontainer integration-test flow.
 
 Until those remaining decisions are recorded, the search-related tasks in the milestone plan still require some implementation-time design choices rather than straightforward execution.
