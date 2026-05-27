@@ -14,8 +14,8 @@ This baseline is intentionally concrete at the HTTP contract layer and intention
 - Milestone 1 delivers this markdown baseline so later milestones can implement toward a stable surface before generated OpenAPI exists.
 - Admin-protected operations must be implemented using ASP.NET Core Identity as the agreed authentication direction.
 - The public schools collection contract is rooted at `GET /api/schools`, uses the current paged collection response shape, and remains the baseline response model for downstream school discovery work.
-- Free-text school discovery is exposed separately at `GET /api/schools/search` so its ranked-search and cursor behaviour can differ cleanly from the plain collection route.
-- Exact URN lookup and radius-based school discovery remain separate capabilities from the main schools collection contract.
+- School discovery is exposed separately at `GET /api/schools/search` so its ranked-search, exact-URN lookup, and cursor behaviour can differ cleanly from the plain collection route.
+- Radius-based school discovery remains a separate capability from the main schools collection contract.
 - School discovery text search will use a PostgreSQL hybrid approach that combines full-text search with `pg_trgm` similarity support.
 - The initial public CSA Application Review contract must include `name`, `applicationSuccessful`, and a free-text `comment`.
 - `Id` is the canonical resource identifier carried by API response objects, while school-specific POST operations continue to use `schoolId` route parameters.
@@ -26,7 +26,7 @@ This baseline covers:
 
 - admin-protected operations for school imports and CSA Application Review moderation;
 - public school collection and discovery through the main schools GET route;
-- public school retrieval by exact URN;
+- public school retrieval by exact URN through the search route;
 - public school discovery by radius-from-point query;
 - public CSA Application Review submission for a specific school;
 - public retrieval of comments for a specific school;
@@ -42,8 +42,8 @@ This baseline does not define full auth flows, persistence design, ranking inter
 - Public school routes are rooted under `/api/schools`.
 - Admin-only routes are rooted under `/api/admin`.
 - `Id` is the canonical school resource identifier returned by school response objects, while school-specific POST routes continue to use `schoolId`.
-- Free-text school discovery is a distinct public GET route at `/api/schools/search` rather than a mode of the main schools collection route.
-- Exact URN lookup remains a separate public GET capability for callers that start from a URN rather than the main schools collection route.
+- School discovery is a distinct public GET route at `/api/schools/search` rather than a mode of the main schools collection route.
+- Exact URN lookup is handled through the public search route for callers that start from a URN rather than from free-text input.
 - School association for review submission and reporting is carried by route parameter rather than an optional body field.
 - Public comments are the moderated CSA Application Reviews exposed for school-specific display.
 
@@ -73,7 +73,7 @@ This baseline does not define full auth flows, persistence design, ranking inter
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `id` | string | Yes | Canonical school resource identifier used in response payloads. |
-| `urn` | integer | Yes | Exact school identifier used for dedicated URN lookup and external reference. |
+| `urn` | integer | Yes | Exact school identifier used for exact-URN lookup and external reference. |
 | `ukprn` | integer | No | Optional UK Provider Reference Number when present in source data. |
 | `establishmentNumber` | integer | Yes | Establishment number from imported source data. |
 | `name` | string | Yes | School display name. |
@@ -201,7 +201,7 @@ Baseline notes:
 `GET /api/schools/search`
 
 Purpose:
-Return ranked school matches for free-text discovery across school name and address or postcode fields.
+Return school discovery results using either free-text matching across school name and address or postcode fields, or exact lookup by URN.
 
 Authentication:
 Public.
@@ -210,7 +210,8 @@ Query parameters:
 
 | Name | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `q` | string | Yes | Free-text search term. Must not be blank. |
+| `q` | string | No | Free-text search term. Must not be blank when supplied. Mutually exclusive with `urn`. |
+| `urn` | integer | No | Exact school URN. Mutually exclusive with `q`. |
 | `cursor` | string | No | Opaque continuation value from a previous search response. Must not be blank when supplied. Clients must treat the value as server-generated and immutable. |
 | `pageSize` | integer | No | Optional positive result limit. If supplied, must be within the supported maximum. |
 
@@ -270,32 +271,36 @@ Response:
 
 Validation and failure expectations:
 
+- Supplying neither `q` nor `urn` returns `400 Bad Request`.
+- Supplying both `q` and `urn` returns `400 Bad Request`.
 - Blank `q` returns `400 Bad Request`.
+- Invalid URN format returns `400 Bad Request`.
 - Blank or invalid `cursor` values return `400 Bad Request`.
 - Invalid `pageSize` values return `400 Bad Request`.
 - No matches return `200 OK` with `"schools": []` and `"nextCursor": null`.
+- Unknown URN returns `404 Not Found`.
 
 Baseline notes:
 
-- This route is the dedicated free-text school discovery surface.
+- This route is the dedicated school discovery surface.
 - The chosen text-search approach for school discovery is PostgreSQL full-text search combined with `pg_trgm` similarity support so the implementation can balance relevance, partial matching, and typo tolerance without introducing a separate search service.
-- Search cursors on this route are intentionally opaque and may encode the ranked resume boundary needed by the server.
+- Search cursors on this route are intentionally opaque and may encode the ranked resume boundary needed by the server for free-text traversal.
 
 ### 5.3 Public Exact URN Lookup
 
-`GET /api/schools/{urn}`
+`GET /api/schools/search?urn={urn}`
 
 Purpose:
-Return one school by exact URN as a distinct capability from free-text search.
+Return one school by exact URN through the school search route as a distinct capability from free-text discovery.
 
 Authentication:
 Public.
 
-Route parameters:
+Query parameters:
 
 | Name | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `urn` | string | Yes | Exact school URN. |
+| `urn` | integer | Yes | Exact school URN. |
 
 Response:
 
@@ -354,6 +359,7 @@ Validation and failure expectations:
 Baseline notes:
 
 - URN is the lookup input for this specific operation, but the returned school resource still uses the same full `SchoolResponse` shape as the main schools GET contract.
+- This capability shares the `/api/schools/search` route with free-text discovery but uses explicit query validation so callers must choose either free-text search or exact URN lookup.
 
 ### 5.4 Public Radius-Based School Search
 
@@ -733,7 +739,7 @@ The following decisions are intentionally not settled by this baseline and must 
 - exact search ranking implementation details, excluding the agreed decision that free-text school-discovery pagination on `GET /api/schools/search?q=...` uses opaque cursor tokens in the existing `cursor` and `nextCursor` contract fields;
 - geospatial storage and query implementation;
 - maximum supported radius and handling for schools with missing location data;
-- exact URN format validation constraints beyond requiring an exact route identifier;
+- exact URN format validation constraints beyond requiring an exact query identifier;
 - final length and content rules for `name` and `comment`;
 - richer moderation state transitions beyond `approve` and `reject`;
 - report reason taxonomy expansion, duplicate-report handling, reporter anonymity or storage design, and moderation workflow after report receipt;
@@ -751,11 +757,11 @@ The following decisions are intentionally not settled by this baseline and must 
 ### Milestone 3: School Discovery and Lookup APIs
 
 - Implement school discovery using the chosen PostgreSQL hybrid search approach that combines full-text search with `pg_trgm` similarity support.
-- Preserve `GET /api/schools` as the plain collection route while adding `GET /api/schools/search` for free-text school discovery.
+- Preserve `GET /api/schools` as the plain collection route while using `GET /api/schools/search` for both free-text school discovery and exact URN lookup.
 - Implement opaque cursor-token pagination for free-text discovery on `GET /api/schools/search`, preserving the existing `cursor` query parameter name and `nextCursor` response field while changing the value format away from raw school identifiers.
-- Implement `GET /api/schools/{urn}` using the same full school response shape used by the main schools GET contract.
+- Implement exact URN lookup on `GET /api/schools/search?urn=...` using the same full school response shape used by the main schools GET contract.
 - Validate search behaviour against the required searchable fields: school name and address or postcode.
-- Keep URN lookup distinct from collection discovery in both route design and generated OpenAPI while returning `Id` in school schemas.
+- Keep URN lookup distinct from free-text discovery in request validation and generated OpenAPI while returning `Id` in school schemas.
 
 ### Milestone 4: Spatial School Search Support
 

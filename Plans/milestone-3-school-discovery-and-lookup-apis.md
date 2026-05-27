@@ -4,10 +4,10 @@
 
 This plan turns Milestone 3 from the roadmap into delivery-ready work for the public school discovery surface.
 
-The implementation goal is to preserve `GET /api/schools` as the public paged collection route while adding a separate free-text discovery route for the Milestone 1 school discovery contract by delivering:
+The implementation goal is to preserve `GET /api/schools` as the public paged collection route while using a separate discovery route for the Milestone 1 school discovery contract by delivering:
 
 - search behaviour on `GET /api/schools/search` for school discovery across school name and address or postcode fields;
-- `GET /api/schools/{urn}` for exact URN lookup as a distinct capability;
+- `GET /api/schools/search?urn=...` for exact URN lookup as a distinct query mode on the discovery route;
 - the expected `400 Bad Request`, `404 Not Found`, and empty-result behaviours;
 - generated OpenAPI output that is stable enough for downstream UI development.
 
@@ -33,8 +33,8 @@ Milestone 1 baseline source:
 Milestone 1 defines the downstream expectations that this milestone must implement:
 
 - `GET /api/schools` is the baseline public schools collection route and keeps the current full `{ schools, nextCursor }` result shape for plain collection traversal;
-- `GET /api/schools/search` is the public free-text school discovery route and uses the same full `{ schools, nextCursor }` result shape for ranked search results;
-- `GET /api/schools/{urn}` is the public exact URN lookup route and remains distinct from the collection route;
+- `GET /api/schools/search` is the public school discovery route and uses the same full `{ schools, nextCursor }` result shape for ranked search results;
+- `GET /api/schools/search?urn=...` is the public exact URN lookup route shape and remains distinct from the collection route;
 - discovery matching on `GET /api/schools/search` targets school `name` and address or postcode fields only;
 - blank or invalid search input returns `400 Bad Request` on the search route;
 - valid discovery requests with no matches return `200 OK` with an empty `schools` collection;
@@ -52,9 +52,9 @@ Milestone 3 builds on the same solution structure and OpenAPI expectations estab
 This milestone includes:
 
 - implementing the chosen PostgreSQL full-text plus `pg_trgm` hybrid search approach for useful school discovery quality;
-- adding the public free-text discovery route at `GET /api/schools/search`;
-- implementing the public exact URN lookup route at `GET /api/schools/{urn}`;
-- adding request validation for search term, cursor, page size, and URN format;
+- adding the public school discovery route at `GET /api/schools/search`;
+- implementing exact URN lookup on `GET /api/schools/search?urn=...`;
+- adding request validation for search term, URN input, cursor, page size, and mutually exclusive discovery modes;
 - preserving the current full school DTO and collection wrapper contract for both collection discovery and URN lookup;
 - defining a deterministic ranked search strategy that works against imported school data without breaking the existing collection contract;
 - preserving the existing `cursor` parameter name and `pageSize` query contract on the new search route while making ranked discovery pagination deterministic;
@@ -107,9 +107,9 @@ Then the API returns `200 OK`
 And the response contains `"schools": []`  
 And `nextCursor` is `null`.
 
-### Scenario 4: Invalid search input returns `400`
+### Scenario 4: Invalid discovery input returns `400`
 
-Given the caller supplies only whitespace for `q`, supplies an invalid cursor, or supplies an unsupported `pageSize`  
+Given the caller supplies only whitespace for `q`, supplies both `q` and `urn`, supplies neither `q` nor `urn`, supplies an invalid cursor, or supplies an unsupported `pageSize`  
 When `GET /api/schools/search` is called  
 Then the API returns `400 Bad Request`  
 And the error response follows the shared baseline error shape  
@@ -127,7 +127,7 @@ And the cursor value is treated as an opaque server-generated continuation token
 ### Scenario 6: Exact URN lookup returns one school
 
 Given a school exists with URN `123456`  
-When `GET /api/schools/123456` is called  
+When `GET /api/schools/search?urn=123456` is called  
 Then the API returns `200 OK`  
 And the response uses the same full school result shape as `GET /api/schools`  
 And the response still includes canonical `id` in addition to the URN.
@@ -135,25 +135,26 @@ And the response still includes canonical `id` in addition to the URN.
 ### Scenario 7: Unknown or invalid URN returns the correct failure mode
 
 Given the caller supplies a syntactically invalid URN value  
-When `GET /api/schools/{urn}` is called  
+When `GET /api/schools/search?urn=invalid` is called  
 Then the API returns `400 Bad Request`.
 
 Given the caller supplies a valid URN format that does not exist  
-When `GET /api/schools/{urn}` is called  
+When `GET /api/schools/search?urn=999999` is called  
 Then the API returns `404 Not Found`.
 
 ### Scenario 8: Route design keeps lookup distinct from other discovery routes
 
 Given the API exposes both the main schools collection route and the URN lookup route  
-When the router evaluates `/api/schools` and `/api/schools/{urn}`  
+When the router evaluates `/api/schools` and `/api/schools/search`  
 Then the collection route remains the canonical public schools GET surface  
-And URN lookup does not alter the collection route contract.
+And URN lookup does not alter the collection route contract
+And the discovery route uses explicit query validation so free-text search and URN lookup do not overlap ambiguously.
 
 ### Scenario 9: OpenAPI output is ready for UI consumption
 
 Given the API runs with OpenAPI enabled  
 When the generated document is inspected  
-Then it exposes `GET /api/schools` and `GET /api/schools/{urn}` with the expected query or route parameters  
+Then it exposes `GET /api/schools` with the expected query parameters  
 And it exposes `GET /api/schools/search` with the expected query parameters  
 And the school collection and school lookup schemas match the agreed field names and requiredness  
 And `400` and `404` responses are visible where the contract requires them.
@@ -164,7 +165,7 @@ And `400` and `404` responses are visible where the contract requires them.
 
 - Preserve `GET /api/schools` as the canonical public schools GET route.
 - Keep public school discovery grouped under `/api/schools`.
-- Keep the collection route focused on plain collection traversal and add `GET /api/schools/search` as the dedicated free-text discovery endpoint.
+- Keep the collection route focused on plain collection traversal and use `GET /api/schools/search` as the dedicated discovery endpoint for both free-text and exact-URN lookup.
 
 2. Search technology foundation
 
@@ -184,7 +185,7 @@ And `400` and `404` responses are visible where the contract requires them.
 4. Free-text search query slice
 
 - Add a dedicated `Features/Schools/Queries/SearchSchools` slice with request model, handler, and response mapping.
-- Expose the public search route at `GET /api/schools/search`, with search input carried through query parameters on that route.
+- Expose the public search route at `GET /api/schools/search`, with free-text and exact-URN input carried through query parameters on that route.
 - Implement matching over school `Name`, `Address.Street`, `Address.Locality`, `Address.AddressThree`, `Address.Town`, `Address.County`, and `Address.PostCode`.
 - Build ranking from the chosen PostgreSQL hybrid approach so it favors stronger matches such as:
   - high-confidence full-text matches on school name ahead of weaker address-only matches;
@@ -196,13 +197,13 @@ And `400` and `404` responses are visible where the contract requires them.
 5. Exact URN lookup query slice
 
 - Add a dedicated `Features/Schools/Queries/GetSchoolByUrn` slice.
-- Validate the route value before querying the database.
+- Validate the `urn` query value before querying the database.
 - Return the same full school response shape used by `GET /api/schools`.
 - Return `404` when no matching school exists and do not fall back to collection discovery behaviour.
 
 6. Discovery validation and pagination support
 
-- Add validation rules for non-blank `q`, non-blank and decodable opaque search cursors, and supported positive `pageSize` values on `GET /api/schools/search`.
+- Add validation rules for mutually exclusive `q` and `urn`, non-blank `q`, valid `urn`, non-blank and decodable opaque search cursors, and supported positive `pageSize` values on `GET /api/schools/search`.
 - Standardize Milestone 3 pagination on the existing defaults unless implementation evidence requires a change:
   - default page size `100`;
   - maximum page size `200`.
@@ -241,7 +242,7 @@ And `400` and `404` responses are visible where the contract requires them.
 Confirmed decisions:
 
 - Keep school discovery public under `/api/schools`.
-- Keep the main schools collection route, free-text search route, and exact URN lookup as separate capabilities.
+- Keep the main schools collection route separate from the discovery route, with exact URN lookup exposed as a distinct query mode on that discovery route.
 - Keep the response contract aligned with the full current school result shape.
 - Leave location persistence and nearby search for Milestone 4.
 - Use PostgreSQL full-text search combined with `pg_trgm` similarity support for Milestone 3 text discovery.
@@ -250,7 +251,7 @@ Implementation decisions:
 
 - Preserve `School.URN` as an integer in the current domain, persistence, and HTTP response contracts.
 - Implement collection discovery and URN lookup as separate vertical slices under `API/SummerBornInfo.Features/Schools/Queries`.
-- Expose free-text discovery through `GET /api/schools/search` rather than overloading `GET /api/schools`.
+- Expose free-text discovery and exact URN lookup through `GET /api/schools/search` rather than overloading `GET /api/schools`.
 - Use PostgreSQL full-text search as the primary ranking basis over normalized school name and address text.
 - Use `pg_trgm` similarity to supplement full-text search for fragment and typo-tolerant matching.
 - Change free-text school-discovery pagination on `GET /api/schools/search` from raw school identifiers to opaque encoded cursor tokens carried in the existing `cursor` and `nextCursor` fields.
@@ -262,13 +263,13 @@ Rationale:
 - keeping `URN` integer-backed avoids unnecessary persistence churn and aligns with the corrected baseline contract;
 - the PostgreSQL hybrid approach gives materially better discovery quality than a simplistic SQL `LIKE` query while staying inside the current infrastructure stack;
 - adding `pg_trgm` avoids the brittleness of full-text-only search for short school names, postcode fragments, and misspelled queries;
-- separating `GET /api/schools/search` from `GET /api/schools` makes the ranked-search behaviour, validation, and cursor contract explicit instead of mode-switching a single route;
+- separating `GET /api/schools/search` from `GET /api/schools` makes the discovery behaviour, validation, and cursor contract explicit instead of mode-switching the collection route;
 - opaque cursor tokens fit ranked keyset pagination better than raw entity identifiers because continuation depends on a query-specific ordering tuple rather than on `Id` alone;
 - preserving the existing collection route and schema avoids contract churn for downstream consumers while still allowing Milestone 3 to add discovery behaviour.
 
 ## 8. Dependencies and Sequencing
 
-1. Confirm the corrected Milestone 1 route and response contract for `GET /api/schools`, `GET /api/schools/search`, and `GET /api/schools/{urn}`.
+1. Confirm the corrected Milestone 1 route and response contract for `GET /api/schools` and `GET /api/schools/search`, including exact URN lookup on the search route.
 2. Add the PostgreSQL full-text plus `pg_trgm` search foundation.
 3. Update the Aspire AppHost and Testcontainer environments to support the required PostgreSQL extensions.
 4. Extend the current school endpoint registration with collection discovery behaviour and URN lookup.
@@ -289,7 +290,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 
 1. Task 1: Discovery contract alignment on the existing route
 
-- Align the endpoint plan to the corrected baseline so `GET /api/schools` remains the public collection route, `GET /api/schools/search` is the dedicated search route, and `GET /api/schools/{urn}` is the separate lookup route.
+- Align the endpoint plan to the corrected baseline so `GET /api/schools` remains the public collection route and `GET /api/schools/search` is the dedicated discovery route for both free-text and URN lookup.
 - Outcome: the public route surface matches the corrected roadmap contract before search internals are finalized.
 - Commit boundary: endpoint registration and route contract wiring only.
 
@@ -382,9 +383,9 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
   The discovery implementation could accidentally blur the contract boundary between plain collection traversal and ranked search.
   Mitigation: treat `GET /api/schools`, `GET /api/schools/search`, and the shared full DTO as first-class deliverables with explicit tests and OpenAPI coverage.
 
-- URN route risk:
-  `GET /api/schools/{urn}` still needs to coexist cleanly with the collection route and any future literal child routes.
-  Mitigation: constrain or order routes deliberately and add tests proving lookup does not swallow future route expansions.
+- Discovery mode risk:
+  Sharing `GET /api/schools/search` between free-text discovery and exact URN lookup could create ambiguous or weakly validated request combinations.
+  Mitigation: require exactly one of `q` or `urn`, document the rule in OpenAPI, and add tests covering invalid mixed-mode requests.
 
 - Data-shape risk:
   Some imported school records may have missing street or optional address fields.
@@ -404,8 +405,8 @@ This plan is delivery-ready for Milestone 3 with the search technology now fixed
 ## 11. Completion Checklist
 
 - [ ] `GET /api/schools` remains the public schools collection route and matches the corrected Milestone 1 request and response contract.
-- [ ] `GET /api/schools/search` exists as the public free-text school discovery route and matches the corrected Milestone 1 request and response contract.
-- [ ] `GET /api/schools/{urn}` exists and remains a distinct capability from collection discovery.
+- [ ] `GET /api/schools/search` exists as the public school discovery route and matches the corrected Milestone 1 request and response contract.
+- [ ] `GET /api/schools/search?urn=...` exists as the exact URN lookup shape and remains a distinct capability from plain collection discovery.
 - [ ] Search matches school name and address or postcode fields.
 - [ ] PostgreSQL full-text search plus `pg_trgm` support is implemented or configured as the foundation for text discovery.
 - [ ] The Aspire AppHost PostgreSQL environment supports the required full-text and `pg_trgm` extension setup.
@@ -423,6 +424,6 @@ This plan is delivery-ready for Milestone 3 with the search technology now fixed
 - [ ] Discovery responses include canonical `id`.
 - [ ] Discovery responses expose `urn` as the agreed integer HTTP contract field.
 - [ ] The existing `GET /api/schools` contract remains part of the supported public API surface.
-- [ ] Generated OpenAPI output documents the collection discovery and URN lookup routes with their expected parameters and error responses.
+- [ ] Generated OpenAPI output documents the collection route and discovery route with their expected parameters and error responses.
 - [ ] Integration tests cover successful and failing search and URN lookup behaviours.
 - [ ] API documentation reflects the supported school discovery surface.
