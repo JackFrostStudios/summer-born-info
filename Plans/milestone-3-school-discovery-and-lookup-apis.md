@@ -403,7 +403,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 - [x] Task 1 complete: Discovery contract alignment on the existing route.
 - [x] Task 2 complete: PostgreSQL search foundation.
 - [x] Task 3 complete: AppHost and Testcontainer PostgreSQL support.
-- [ ] Task 4 pending: Full response contract preservation.
+- [x] Task 4 complete: Full response contract preservation.
 - [ ] Task 5 pending: Exact URN lookup implementation.
 - [ ] Task 6 pending: Free-text search implementation.
 - [ ] Task 7 pending: Search pagination and cursor validation.

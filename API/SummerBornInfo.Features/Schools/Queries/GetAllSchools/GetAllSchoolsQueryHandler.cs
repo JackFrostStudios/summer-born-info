@@ -4,7 +4,7 @@ public sealed class GetAllSchoolsQueryHandler(ApplicationDbContext context)
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<(List<SchoolResponse> Schools, Guid? NextCursor)> ExecuteAsync(GetAllSchoolsQuery request, CancellationToken cancellationToken)
+    public async Task<SchoolsResponse> ExecuteAsync(GetAllSchoolsQuery request, CancellationToken cancellationToken)
     {
         var requestedPageSize = request.PageSize ?? GetAllSchoolsQuery.DefaultPageSize;
         var pageSize = Math.Min(requestedPageSize, GetAllSchoolsQuery.MaximumPageSize);
@@ -35,6 +35,6 @@ public sealed class GetAllSchoolsQueryHandler(ApplicationDbContext context)
             nextCursor = schoolsToReturn[^1].Id;
         }
 
-        return (schoolResponses, nextCursor);
+        return SchoolsResponse.Create(schoolResponses, nextCursor);
     }
 }

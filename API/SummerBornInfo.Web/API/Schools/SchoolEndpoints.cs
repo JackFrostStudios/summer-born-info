@@ -43,7 +43,7 @@ public static class SchoolEndpoints
         CancellationToken cancellationToken)
     {
         GetAllSchoolsQuery query = new(cursor, pageSize);
-        (var schools, var nextCursor) = await handler.ExecuteAsync(query, cancellationToken);
-        return Results.Ok(new { schools, nextCursor });
+        var response = await handler.ExecuteAsync(query, cancellationToken);
+        return Results.Ok(response);
     }
 }
