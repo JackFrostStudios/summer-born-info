@@ -407,7 +407,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 - [x] Task 5 complete: Exact URN lookup implementation.
 - [x] Task 6 complete: Free-text search implementation.
 - [ ] Task 7 pending: Search pagination and cursor validation.
-- [ ] Task 8 pending: OpenAPI and error metadata.
+- [x] Task 8 complete: OpenAPI and error metadata.
 - [ ] Task 9 pending: Integration test coverage.
 - [ ] Task 10 pending: Documentation alignment.
 
@@ -487,6 +487,6 @@ This plan is delivery-ready for Milestone 3 with the search technology now fixed
 - [ ] Discovery responses include canonical `id`.
 - [ ] Discovery responses expose `urn` as the agreed integer HTTP contract field.
 - [ ] The existing `GET /api/schools` contract remains part of the supported public API surface.
-- [ ] Generated OpenAPI output documents the collection route and discovery route with their expected parameters and error responses.
+- [x] Generated OpenAPI output documents the collection route and discovery route with their expected parameters and error responses.
 - [ ] Integration tests cover successful and failing search and URN lookup behaviours.
 - [ ] API documentation reflects the supported school discovery surface.
