@@ -140,6 +140,28 @@ public sealed class GetAllSchoolsTests(
         Assert.Equal(schools[199].Id, result.NextCursor);
     }
 
+    [Theory]
+    [InlineData("/api/schools/search?pageSize=10")]
+    [InlineData("/api/schools/search?q=amber&pageSize=10")]
+    [InlineData("/api/schools/search?urn=100010&pageSize=10")]
+    public async Task GivenDedicatedSchoolSearchRoute_WhenRequested_ThenReturnsCollectionResponseShape(string requestUri)
+    {
+        var expectedSchool = CreateAmberHillSchool();
+
+        await SeedSchoolsAsync(expectedSchool);
+
+        var client = Factory.CreateClient();
+        var response = await client.GetAsync(requestUri, TestContext.Current.CancellationToken);
+
+        _ = response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<GetAllSchoolsResponse>(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(result);
+        var school = Assert.Single(result.Schools);
+        Assert.Equal(expectedSchool.Id, school.Id);
+        Assert.Null(result.NextCursor);
+    }
+
     private async Task SeedSchoolsAsync(params School[] schools)
     {
         await using var scope = Factory.Services.CreateAsyncScope();
