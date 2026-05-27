@@ -89,6 +89,9 @@ And `nextCursor`, when present for free-text search results, is a server-generat
 Given the current schools dataset includes realistic school names and address fragments  
 When `GET /api/schools/search` is implemented using PostgreSQL full-text search combined with `pg_trgm` similarity support  
 Then search quality supports tokenized school-name discovery plus partial, fragment, and typo-tolerant matching for realistic user input  
+And the implementation uses PostgreSQL's `simple` text search configuration with `plainto_tsquery` for full-text matching  
+And trigram fragment matching uses `word_similarity`-style rules  
+And search terms shorter than 4 characters return `400 Bad Request` rather than attempting fuzzy discovery  
 And the chosen technology is recorded with rationale in the milestone documentation.
 
 ### Scenario 2: Search matches address and postcode fields
@@ -109,7 +112,7 @@ And `nextCursor` is `null`.
 
 ### Scenario 4: Invalid discovery input returns `400`
 
-Given the caller supplies only whitespace for `q`, supplies both `q` and `urn`, supplies neither `q` nor `urn`, supplies an invalid cursor, or supplies an unsupported `pageSize`  
+Given the caller supplies only whitespace for `q`, supplies a search term shorter than 4 characters, supplies both `q` and `urn`, supplies neither `q` nor `urn`, supplies an invalid cursor, or supplies an unsupported `pageSize`  
 When `GET /api/schools/search` is called  
 Then the API returns `400 Bad Request`  
 And the error response follows the shared baseline error shape  
@@ -197,10 +200,20 @@ And `400` and `404` responses are visible where the contract requires them.
   - use `coalesce(..., '')` for nullable source fields;
   - use lowercase normalization for trigram-targeted text;
   - normalize postcodes by lowercasing and removing whitespace before indexing and comparison.
+- Implement full-text query semantics explicitly:
+  - use PostgreSQL's `simple` text search configuration for the generated `search_vector`;
+  - build the full-text query with `plainto_tsquery`;
+  - treat surviving full-text terms as an implicit `AND` query.
+- Implement trigram fragment matching explicitly:
+  - use `word_similarity`-style matching for fragment-oriented school-name, address, and postcode discovery;
+  - keep the trigram operator family consistent across implementation and tests so fragment behaviour is not left to interpretation.
+- Handle short search input explicitly:
+  - reject free-text search terms shorter than 4 characters with `400 Bad Request`;
+  - do not fall back to degraded fuzzy matching for short inputs.
 - Build ranking from the chosen PostgreSQL hybrid approach so it favors stronger matches such as:
   - high-confidence full-text matches on school name ahead of weaker address-only matches;
   - exact or prefix-like school-name matches boosted ahead of looser matches where appropriate;
-  - postcode and address fragment matches supported through trigram similarity where relevant;
+  - postcode and address fragment matches supported through `word_similarity`-style trigram matching where relevant;
   - a stable tie-breaker such as `Id` after ranking and normalized display fields.
 - Keep the ranking approach maintainable so weighting can be tuned later without changing the public route or response contract.
 
@@ -213,7 +226,7 @@ And `400` and `404` responses are visible where the contract requires them.
 
 6. Discovery validation and pagination support
 
-- Add validation rules for mutually exclusive `q` and `urn`, non-blank `q`, valid `urn`, non-blank and decodable opaque search cursors, and supported positive `pageSize` values on `GET /api/schools/search`.
+- Add validation rules for mutually exclusive `q` and `urn`, non-blank `q`, minimum search-term length of 4 characters for free-text discovery, valid `urn`, non-blank and decodable opaque search cursors, and supported positive `pageSize` values on `GET /api/schools/search`.
 - Standardize Milestone 3 pagination on the existing defaults unless implementation evidence requires a change:
   - default page size `100`;
   - maximum page size `200`.
@@ -264,6 +277,10 @@ Implementation decisions:
 - Expose free-text discovery and exact URN lookup through `GET /api/schools/search` rather than overloading `GET /api/schools`.
 - Use PostgreSQL full-text search as the primary ranking basis over normalized school name and address text.
 - Use `pg_trgm` similarity to supplement full-text search for fragment and typo-tolerant matching.
+- Use PostgreSQL's `simple` text search configuration for generated search vectors so school and place-name tokens remain close to their normalized source values.
+- Use `plainto_tsquery` to turn free-text input into the primary full-text query so discovery semantics remain simple and predictable.
+- Use `word_similarity`-style trigram matching for fragment-oriented postcode, address, and partial-name discovery instead of relying on whole-string similarity alone.
+- Reject free-text search terms shorter than 4 characters with `400 Bad Request` instead of attempting degraded fuzzy matching on low-signal inputs.
 - Materialize search storage on the shared `school` table using stored generated columns rather than expression indexes alone.
 - Create a generated `search_vector` `tsvector` column that combines:
   - `Name` with the highest full-text weight;
@@ -285,6 +302,10 @@ Rationale:
 - keeping `URN` integer-backed avoids unnecessary persistence churn and aligns with the corrected baseline contract;
 - the PostgreSQL hybrid approach gives materially better discovery quality than a simplistic SQL `LIKE` query while staying inside the current infrastructure stack;
 - adding `pg_trgm` avoids the brittleness of full-text-only search for short school names, postcode fragments, and misspelled queries;
+- choosing PostgreSQL's `simple` configuration avoids surprising stemming for school names, abbreviations, and place-name tokens that behave more like identifiers than prose;
+- choosing `plainto_tsquery` keeps the public discovery contract narrow and predictable by treating search input as plain text rather than a richer operator grammar;
+- choosing `word_similarity`-style trigram matching better fits address fragments and partial school-name discovery than whole-string similarity;
+- rejecting search strings shorter than 4 characters avoids low-signal fuzzy matching and gives the route a clear, testable boundary for noisy inputs;
 - stored generated search columns favor read performance and predictable index usage over a leaner schema, which is the right trade for a public search endpoint;
 - keeping normalization in generated SQL columns avoids duplicated query-time transformations and makes test and production ranking behavior easier to keep aligned;
 - separating `GET /api/schools/search` from `GET /api/schools` makes the discovery behaviour, validation, and cursor contract explicit instead of mode-switching the collection route;
@@ -423,6 +444,9 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 - Milestone 3 will use PostgreSQL full-text search combined with `pg_trgm` similarity support rather than a simplistic SQL-based search approach.
 - Milestone 3 will optimize search-read performance with stored generated search columns on `school`, led by a generated weighted `search_vector` plus generated normalized trigram helper columns.
 - Milestone 3 will change free-text school-discovery cursor values on `GET /api/schools/search` from raw school identifiers to opaque encoded continuation tokens while preserving the existing `cursor` query parameter name and `{ schools, nextCursor }` response wrapper.
+- Milestone 3 will use PostgreSQL's `simple` text search configuration and `plainto_tsquery` for the full-text portion of school discovery.
+- Milestone 3 will use `word_similarity`-style trigram matching for fragment-oriented discovery support.
+- Milestone 3 will reject free-text search terms shorter than 4 characters with `400 Bad Request`.
 - The working page-size defaults for discovery should remain aligned with the existing values of `100` default and `200` maximum unless implementation evidence shows the baseline needs revision.
 
 This plan is delivery-ready for Milestone 3 with the search technology now fixed to a PostgreSQL full-text plus `pg_trgm` hybrid approach.
@@ -440,9 +464,13 @@ This plan is delivery-ready for Milestone 3 with the search technology now fixed
 - [ ] The Aspire AppHost PostgreSQL environment supports the required full-text and `pg_trgm` extension setup.
 - [ ] The Testcontainer PostgreSQL environment supports the required full-text and `pg_trgm` extension setup.
 - [ ] The chosen text-search technology is documented with rationale.
+- [ ] The generated `search_vector` uses PostgreSQL's `simple` text search configuration.
+- [ ] Free-text discovery uses `plainto_tsquery` for the primary full-text query contract.
+- [ ] Fragment-oriented trigram discovery uses `word_similarity`-style matching consistently across implementation and tests.
 - [ ] Search returns ranked results using deterministic ordering.
 - [ ] Search returns `200 OK` with an empty `schools` collection when no schools match.
 - [ ] Blank `q` returns `400 Bad Request` when search behaviour is invoked.
+- [ ] Free-text search terms shorter than 4 characters return `400 Bad Request`.
 - [ ] Free-text search continuation uses opaque encoded cursor values in the existing `cursor` and `nextCursor` fields.
 - [ ] Invalid, undecodable, or incompatible search cursor values return `400 Bad Request`.
 - [ ] Invalid `pageSize` values return `400 Bad Request`.

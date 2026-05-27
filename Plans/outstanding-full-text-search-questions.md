@@ -265,6 +265,8 @@ Related references:
 
 ## 3. Full Text Query Semantics
 
+Status: resolved on 2026-05-27.
+
 The current plan does not yet define the precise query semantics for the PostgreSQL full text search implementation.
 
 The unresolved questions include:
@@ -278,6 +280,315 @@ The unresolved questions include:
 These choices are important because they directly affect relevance, edge-case behaviour, and the stability of integration tests built around realistic school discovery cases.
 
 The plan should lock down enough of these semantics that two engineers would not produce meaningfully different search behaviour while both claiming to follow the plan.
+
+### Research Findings and Potential Solutions
+
+Relevant external references used for this issue:
+
+- PostgreSQL text-search dictionaries and configurations, including `simple`, stemming dictionaries, and stop-word behaviour: [PostgreSQL 18 docs, text search dictionaries](https://www.postgresql.org/docs/current/textsearch-dictionaries.html)
+- PostgreSQL tsquery constructors, including `plainto_tsquery` and `websearch_to_tsquery`: [PostgreSQL 14 docs, text search controls](https://www.postgresql.org/docs/14/textsearch-controls.html)
+- PostgreSQL trigram similarity operators, thresholds, and short-pattern caveats: [PostgreSQL 17 docs, `pg_trgm`](https://www.postgresql.org/docs/17/pgtrgm.html)
+- Npgsql support for PostgreSQL full-text search configuration and tsquery functions in EF Core: [Npgsql full text search docs](https://www.npgsql.org/efcore/mapping/full-text-search.html)
+
+#### Question A. Which text search configuration should Milestone 3 use?
+
+##### Option A1. Use `pg_catalog.simple`
+
+Implementation shape:
+
+- Build the generated `search_vector` with PostgreSQL's `simple` text search configuration.
+- Keep search lexemes close to their lowercased input tokens rather than applying English stemming rules.
+
+Benefits:
+
+- Preserves original tokens more faithfully, which is attractive for school names, abbreviations, and place names that should not be stemmed aggressively.
+- Reduces the risk of surprising linguistic transformations when users search for proper nouns or domain-specific terms.
+- Keeps integration-test expectations simpler because token matching stays closer to literal normalized words.
+
+Limitations:
+
+- Does not provide stemming, so singular or plural and other inflected variants do not automatically collapse together.
+- Can be less forgiving than an English configuration for natural-language queries.
+- Still depends on explicit stop-word decisions if the implementation introduces them later.
+
+Assessment:
+
+- This is the safer choice if Milestone 3 should optimize for recognisable school and place-name matching over broader natural-language semantics.
+
+##### Option A2. Use `pg_catalog.english`
+
+Implementation shape:
+
+- Build the generated `search_vector` with PostgreSQL's English text search configuration.
+- Accept stemming and stop-word handling as part of the search contract.
+
+Benefits:
+
+- Supports broader natural-language matching because related English word forms can reduce to the same stem.
+- Better fits user-entered descriptive search phrases when meaningful English stemming improves recall.
+- Maps cleanly onto Npgsql's generated-column and tsquery support.
+
+Limitations:
+
+- Can produce less intuitive behaviour for school names, locality names, and abbreviations that are not ordinary prose.
+- Stop-word handling and stemming can make ranking and test expectations harder to reason about.
+- May introduce "helpful but surprising" matches or misses when proper nouns are transformed.
+
+Assessment:
+
+- This is viable if Milestone 3 wants broader English-language recall, but it carries more relevance risk for name-heavy datasets.
+
+##### Option A3. Use a custom configuration
+
+Implementation shape:
+
+- Define a PostgreSQL text search configuration that places a domain-specific dictionary or synonym layer ahead of more general stemming behaviour.
+- Use that custom configuration in the generated `search_vector`.
+
+Benefits:
+
+- Offers the best long-term fit if the project needs domain-specific handling for abbreviations, school terms, or place-name quirks.
+- Allows future synonym handling or protection of known tokens before broader stemming runs.
+- Can preserve important search vocabulary while still benefiting from more general dictionaries later in the pipeline.
+
+Limitations:
+
+- Adds operational and bootstrap complexity that Milestone 3 may not want.
+- Requires more environment setup and parity work across AppHost and Testcontainers.
+- Is harder to justify before representative search failures show the need for it.
+
+Assessment:
+
+- This is probably beyond Milestone 3 unless research cases prove that both `simple` and `english` are materially inadequate.
+
+#### Question B. Which tsquery constructor should Milestone 3 use?
+
+##### Option B1. Use `plainto_tsquery`
+
+Implementation shape:
+
+- Parse the incoming search text with `plainto_tsquery`.
+- Treat surviving terms as an implicit `AND` query for full-text matching.
+
+Benefits:
+
+- Gives the simplest and most predictable contract for a public search endpoint.
+- Avoids exposing special search syntax that the current plan does not mention.
+- Is straightforward to document, test, and implement through Npgsql.
+
+Limitations:
+
+- Does not support quoted phrases, explicit `OR`, or exclusion operators.
+- Can feel stricter than users expect from a general search box.
+- Relies more heavily on trigram support to rescue imperfect or partial input.
+
+Assessment:
+
+- This is the cleanest baseline if Milestone 3 wants a narrow, easy-to-test discovery contract.
+
+##### Option B2. Use `websearch_to_tsquery`
+
+Implementation shape:
+
+- Parse incoming search text with `websearch_to_tsquery`.
+- Support familiar web-style operators such as quoted phrases, `OR`, and `-` exclusion.
+
+Benefits:
+
+- Better matches user expectations for a free-text search box.
+- Accepts raw input safely; PostgreSQL documents that it does not raise syntax errors.
+- Enables richer search behaviour without requiring callers to learn native tsquery syntax.
+
+Limitations:
+
+- Broadens the public contract because operators such as phrases, `OR`, and exclusion become meaningful behaviours to support.
+- Requires additional OpenAPI notes and more extensive integration-test coverage.
+- Makes it easier for two implementations to diverge subtly unless the plan documents examples clearly.
+
+Assessment:
+
+- This is the better fit only if Milestone 3 intentionally wants search-box semantics rather than a simpler token-match contract.
+
+##### Option B3. Hybrid contract: `plainto_tsquery` for full-text matching plus trigram rescue
+
+Implementation shape:
+
+- Use `plainto_tsquery` as the primary full-text query constructor.
+- Rely on `pg_trgm` similarity rules to recover partial, misspelled, or fragment-based queries that the strict full-text clause would miss.
+
+Benefits:
+
+- Keeps the full-text contract simple while still supporting forgiving discovery quality.
+- Fits the current milestone direction of combining PostgreSQL full text search with `pg_trgm`.
+- Is easier to explain than a richer operator grammar while still handling realistic user mistakes.
+
+Limitations:
+
+- Still requires the plan to define when trigram rescue applies and how it influences inclusion and ranking.
+- Does not support phrase or explicit `OR` search unless the contract grows later.
+
+Assessment:
+
+- This is a strong fit if Milestone 3 wants a delivery-ready contract without committing to advanced search syntax.
+
+#### Question C. What trigram threshold or similarity rules should Milestone 3 use?
+
+##### Option C1. Use the default `%` similarity operator and default threshold
+
+Implementation shape:
+
+- Use PostgreSQL trigram similarity with the `%` operator.
+- Rely on the default `pg_trgm.similarity_threshold` unless implementation evidence justifies changing it.
+
+Benefits:
+
+- Simplest to implement and explain.
+- Avoids introducing another tuning parameter into the milestone plan.
+- Uses standard PostgreSQL behaviour with minimal ceremony.
+
+Limitations:
+
+- Leaves a material relevance decision implicit unless the plan records the default threshold value explicitly.
+- Whole-string similarity is not always the best fit for long school names or address fragments.
+- May produce weaker fragment behaviour than the milestone expects.
+
+Assessment:
+
+- This is acceptable as a baseline only if the milestone is comfortable with standard PostgreSQL similarity semantics and records the default threshold explicitly.
+
+##### Option C2. Use `word_similarity`-style matching for fragments
+
+Implementation shape:
+
+- Base trigram matching on `word_similarity` or related operators such as `<%` for fragment-oriented discovery.
+- Tune inclusion and ranking around the best matching continuous extent inside the stored text.
+
+Benefits:
+
+- Better aligned with address fragments and partial school-name searches than whole-string similarity.
+- Fits realistic discovery cases where the query is only one part of a longer school or address value.
+- Gives the plan a more defensible story for fragment matching than a generic `%` rule.
+
+Limitations:
+
+- Still requires the plan to choose an explicit threshold.
+- Adds more complexity to ranking and test expectations than a single default `%` rule.
+- Needs clear route-level documentation so implementers use the same operator family consistently.
+
+Assessment:
+
+- This is likely the strongest candidate if Milestone 3 cares materially about fragment matching quality.
+
+##### Option C3. Use `strict_word_similarity` for tighter word-boundary matching
+
+Implementation shape:
+
+- Base trigram support on `strict_word_similarity` or related operators such as `<<%`.
+- Favor whole-word boundary matches over looser mid-word fragments.
+
+Benefits:
+
+- Reduces noisy partial hits compared with looser trigram similarity.
+- May suit school-name token matching when typo tolerance is needed but arbitrary substrings are too permissive.
+- Can improve precision when fragment overmatching is a concern.
+
+Limitations:
+
+- Is probably too strict for postcode or address-fragment search.
+- Still requires threshold selection and explicit ranking guidance.
+- Risks missing valid partial-input behaviours that the milestone currently wants to support.
+
+Assessment:
+
+- This is better as a precision-oriented fallback than as the default cross-field trigram rule for Milestone 3.
+
+#### Question D. How should very short inputs be handled?
+
+##### Option D1. Reject very short free-text queries with `400 Bad Request`
+
+Implementation shape:
+
+- Define a minimum `q` length for free-text search.
+- Reject shorter values before attempting full-text or trigram matching.
+
+Benefits:
+
+- Gives the strongest protection against noisy fuzzy matching and weak trigram behaviour.
+- Makes the API contract explicit and easy to test.
+- Reduces the risk of broad or expensive low-signal search execution.
+
+Limitations:
+
+- Can be unfriendly for legitimate short school names or postcode fragments.
+- Adds a new validation rule that is not currently part of the Milestone 1 baseline.
+- Requires careful communication so clients understand why some apparently valid inputs are refused.
+
+Assessment:
+
+- This is the safest operational choice, but it is also the most user-visible contract change.
+
+##### Option D2. Allow short inputs but disable trigram rescue below a threshold
+
+Implementation shape:
+
+- Accept short `q` values.
+- Apply stricter matching for short inputs by skipping fuzzy trigram rescue and relying on exact, prefix, postcode-normalized, or full-text logic only.
+
+Benefits:
+
+- Preserves permissive input acceptance for legitimate short queries.
+- Avoids the noisiest fuzzy-matching cases without requiring the route to reject input outright.
+- Gives the milestone a clearer answer to the short-input problem while staying close to current route expectations.
+
+Limitations:
+
+- Requires explicit rules for which matching paths remain enabled for short inputs.
+- Can produce edge cases where longer misspelled input works but short misspelled input does not.
+- Needs careful tests to avoid accidental behaviour drift.
+
+Assessment:
+
+- This is a balanced option if Milestone 3 wants to remain input-friendly while still containing trigram noise.
+
+##### Option D3. Allow short inputs with stricter trigram thresholds
+
+Implementation shape:
+
+- Accept short `q` values.
+- Keep trigram matching enabled, but use stricter thresholds or a stricter trigram operator family for very short inputs.
+
+Benefits:
+
+- Most permissive user experience because short inputs still participate in fuzzy matching.
+- Could preserve useful postcode-fragment or short-name behaviour if tuned carefully.
+
+Limitations:
+
+- Hardest option to make delivery-ready because thresholds and fallback behaviour become highly implementation-sensitive.
+- Highest risk of unintuitive relevance and test instability.
+- Requires representative evidence to justify the chosen thresholds.
+
+Assessment:
+
+- This is feasible, but it pushes too much tuning complexity into Milestone 3 unless the team is prepared to spend time calibrating it.
+
+#### Recommended Direction for Milestone 3
+
+Recommended choice:
+
+- Adopt `pg_catalog.simple` for the generated full-text search vector.
+- Adopt `plainto_tsquery` for the primary full-text query constructor.
+- Adopt `word_similarity`-style trigram matching for fragment-oriented discovery support.
+- Reject free-text search terms shorter than 4 characters with `400 Bad Request`.
+
+Plan impact:
+
+- Point 2's storage and normalization findings close the postcode-normalization part of this issue.
+- The milestone plan should now record these semantics explicitly in the search deliverables, validation rules, behaviour scenarios, and completion checklist so implementation and test behaviour stay aligned.
+
+Resolution status:
+
+- Resolved on 2026-05-27: Milestone 3 should use PostgreSQL's `simple` configuration, `plainto_tsquery`, `word_similarity`-style trigram matching, and a minimum free-text search length of 4 characters.
 
 Related references:
 
@@ -321,9 +632,9 @@ Related references:
 Milestone 3 still needs explicit answers for:
 
 - the search cursor format and ranked resume strategy;
-- the exact full text and trigram query semantics;
 - the environment bootstrap path that creates and verifies required PostgreSQL extensions.
 
 Issue 2 is now resolved: Milestone 3 will optimize for best search-read performance by using stored generated search columns on `school`, including a weighted `search_vector` and normalized trigram helper columns with explicit `GIN` and `gin_trgm_ops` indexes.
+Issue 3 is now resolved: Milestone 3 will use PostgreSQL's `simple` text search configuration, `plainto_tsquery`, `word_similarity`-style trigram matching, and reject free-text search terms shorter than 4 characters.
 
 Until those remaining decisions are recorded, the search-related tasks in the milestone plan still require some implementation-time design choices rather than straightforward execution.
