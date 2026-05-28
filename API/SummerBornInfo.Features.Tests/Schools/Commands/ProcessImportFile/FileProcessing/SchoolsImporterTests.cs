@@ -64,6 +64,34 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         AssertSherborneSchoolImportedCorrectly(sherborneSchool);
     }
 
+    [Fact]
+    public async Task GivenCsvStreamWithValidCoordinates_WhenImportAsync_ThenCanonicalWgs84LocationIsSaved()
+    {
+        // Arrange
+        var dbContext = CreateDbContext();
+        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
+
+        // Act
+        var results = await importer.ImportAsync(_testRequestId, csvStream, TestContext.Current.CancellationToken)
+            .ToListAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(2, results.Count);
+        Assert.All(results, result => Assert.True(result.Succeeded));
+
+        var verifyDbContext = CreateDbContext();
+        var schools = await verifyDbContext.Set<School>()
+            .OrderBy(s => s.URN)
+            .ToListAsync(TestContext.Current.CancellationToken);
+
+        var aldgateSchool = Assert.Single(schools, s => s.URN == 100000);
+        AssertLocationInRange(aldgateSchool.Location, minLongitude: -0.09, maxLongitude: -0.06, minLatitude: 51.50, maxLatitude: 51.53);
+
+        var sherborneSchool = Assert.Single(schools, s => s.URN == 100004);
+        AssertLocationInRange(sherborneSchool.Location, minLongitude: -0.17, maxLongitude: -0.13, minLatitude: 51.53, maxLatitude: 51.56);
+    }
+
     private static void AssertAldgateSchoolImportedCorrectly(School? aldgateSchool)
     {
         Assert.NotNull(aldgateSchool);
@@ -321,6 +349,64 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     }
 
     [Fact]
+    public async Task GivenCsvStreamWithInvalidCoordinates_WhenImportAsync_ThenSchoolIsSavedWithoutLocation()
+    {
+        // Arrange
+        var dbContext = CreateDbContext();
+        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        await using var csvStream = CreateCsvStream(
+            "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\",\"Easting\",\"Northing\"",
+            "\"100000\",\"3614\",\"The Aldgate School\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\",\"invalid\",\"181201\"");
+
+        // Act
+        var results = await importer.ImportAsync(_testRequestId, csvStream, TestContext.Current.CancellationToken)
+            .ToListAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        var result = Assert.Single(results);
+        Assert.True(result.Succeeded);
+
+        var verifyDbContext = CreateDbContext();
+        var school = await verifyDbContext.Set<School>()
+            .SingleAsync(s => s.URN == 100000, TestContext.Current.CancellationToken);
+
+        Assert.Null(school.Location);
+    }
+
+    [Fact]
+    public async Task GivenExistingSchoolWithLocation_WhenReimportedWithoutValidCoordinates_ThenLocationIsCleared()
+    {
+        // Arrange
+        var firstImportDbContext = CreateDbContext();
+        SchoolsImporter<ApplicationDbContext> firstImporter = new(firstImportDbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        await using var firstCsvStream = ExampleImportFile.GetExampleImportFileContent();
+        _ = await firstImporter.ImportAsync(_testRequestId, firstCsvStream, TestContext.Current.CancellationToken)
+            .ToListAsync(TestContext.Current.CancellationToken);
+
+        var secondImportDbContext = CreateDbContext();
+        SchoolsImporter<ApplicationDbContext> secondImporter = new(secondImportDbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        await using var secondCsvStream = CreateCsvStream(
+            "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\",\"Easting\",\"Northing\"",
+            "\"100000\",\"3614\",\"The Aldgate School Updated\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\",\"\",\"\"",
+            "\"100004\",\"1045\",\"Sherborne Nursery School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\",\"528515\",\"184869\"");
+
+        // Act
+        var secondResults = await secondImporter.ImportAsync(_testRequestId, secondCsvStream, TestContext.Current.CancellationToken)
+            .ToListAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(2, secondResults.Count);
+        Assert.All(secondResults, result => Assert.True(result.Succeeded));
+
+        var verifyDbContext = CreateDbContext();
+        var school = await verifyDbContext.Set<School>()
+            .SingleAsync(s => s.URN == 100000, TestContext.Current.CancellationToken);
+
+        Assert.Equal("The Aldgate School Updated", school.Name);
+        Assert.Null(school.Location);
+    }
+
+    [Fact]
     public async Task GivenProcessedRowsToSkip_WhenImportAsync_ThenEarlierRowsAreSkipped()
     {
         // Arrange
@@ -371,6 +457,19 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     private static MemoryStream CreateCsvStream(params string[] lines)
     {
         return new(System.Text.Encoding.UTF8.GetBytes(string.Join(Environment.NewLine, lines)));
+    }
+
+    private static void AssertLocationInRange(
+        NetTopologySuite.Geometries.Point? location,
+        double minLongitude,
+        double maxLongitude,
+        double minLatitude,
+        double maxLatitude)
+    {
+        Assert.NotNull(location);
+        Assert.Equal(4326, location.SRID);
+        Assert.InRange(location.X, minLongitude, maxLongitude);
+        Assert.InRange(location.Y, minLatitude, maxLatitude);
     }
 
     private static Microsoft.Extensions.Logging.Abstractions.NullLogger<T> CreateLogger<T>() where T : class

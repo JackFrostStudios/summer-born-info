@@ -125,6 +125,7 @@ public sealed partial class SchoolsImporter<TContext>(TContext context, ILogger<
         var establishmentGroup = await _groupImporter.UpsertAsync(row.EstablishmentGroupCode, row.EstablishmentGroupName, cancellationToken);
         var establishmentStatus = await _statusImporter.UpsertAsync(row.EstablishmentStatusCode, row.EstablishmentStatusName, cancellationToken);
         var phaseOfEducation = await _phaseImporter.UpsertAsync(row.PhaseOfEducationCode, row.PhaseOfEducationName, cancellationToken);
+        var location = BritishNationalGridLocationConverter.TryConvertToWgs84Point(row.Easting, row.Northing);
 
         var school = await _context.Set<School>()
             .FirstOrDefaultAsync(s => s.URN == row.URN, cancellationToken);
@@ -137,6 +138,7 @@ public sealed partial class SchoolsImporter<TContext>(TContext context, ILogger<
                 EstablishmentNumber = row.EstablishmentNumber,
                 Name = row.EstablishmentName,
                 Address = BuildAddress(row),
+                Location = location,
                 OpenDate = ParseDate(row.OpenDate),
                 CloseDate = ParseDate(row.CloseDate),
                 UKPRN = ParseNullableInt(row.UKPRN),
@@ -156,6 +158,7 @@ public sealed partial class SchoolsImporter<TContext>(TContext context, ILogger<
             school.OpenDate = ParseDate(row.OpenDate);
             school.CloseDate = ParseDate(row.CloseDate);
             school.UKPRN = ParseNullableInt(row.UKPRN);
+            school.Location = location;
 
             school.Address.Street = NullIfEmpty(row.Street);
             school.Address.Locality = NullIfEmpty(row.Locality);
