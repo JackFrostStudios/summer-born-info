@@ -3,7 +3,7 @@ namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
     [Fact]
-    public void GivenSchoolPersistenceModel_WhenGeneratingCreateScript_ThenSearchFoundationIsIncluded()
+    public void GivenSchoolPersistenceModel_WhenGeneratingCreateScript_ThenSearchAndSpatialFoundationIsIncluded()
     {
         // Arrange
         using var dbContext = CreateDbContext();
@@ -13,6 +13,8 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
 
         // Assert
         Assert.Contains("CREATE EXTENSION IF NOT EXISTS pg_trgm;", createScript, StringComparison.Ordinal);
+        Assert.Contains("CREATE EXTENSION IF NOT EXISTS postgis;", createScript, StringComparison.Ordinal);
+        Assert.Contains(@"""Location"" geography (point, 4326)", createScript, StringComparison.Ordinal);
         Assert.Contains("search_vector", createScript, StringComparison.Ordinal);
         Assert.Contains("GENERATED ALWAYS AS", createScript, StringComparison.Ordinal);
         Assert.Contains(@"to_tsvector('simple', coalesce(""Name"", ''))", createScript, StringComparison.Ordinal);
@@ -21,10 +23,12 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         Assert.Contains("search_address_normalized", createScript, StringComparison.Ordinal);
         Assert.Contains("ix_school_urn", createScript, StringComparison.Ordinal);
         Assert.Contains("UNIQUE", createScript, StringComparison.Ordinal);
+        Assert.Contains("ix_school_location", createScript, StringComparison.Ordinal);
         Assert.Contains("ix_school_search_vector", createScript, StringComparison.Ordinal);
         Assert.Contains("ix_school_search_name_normalized", createScript, StringComparison.Ordinal);
         Assert.Contains("ix_school_search_postcode_normalized", createScript, StringComparison.Ordinal);
         Assert.Contains("ix_school_search_address_normalized", createScript, StringComparison.Ordinal);
+        Assert.Contains("USING gist", createScript, StringComparison.Ordinal);
         Assert.Contains("USING gin", createScript, StringComparison.Ordinal);
         Assert.Contains("gin_trgm_ops", createScript, StringComparison.Ordinal);
     }
