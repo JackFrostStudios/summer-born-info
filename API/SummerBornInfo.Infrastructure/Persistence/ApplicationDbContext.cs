@@ -24,6 +24,7 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        _ = builder.HasPostgresExtension("pg_trgm");
         builder.ConfigureIdentityPersistence();
         _ = builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }

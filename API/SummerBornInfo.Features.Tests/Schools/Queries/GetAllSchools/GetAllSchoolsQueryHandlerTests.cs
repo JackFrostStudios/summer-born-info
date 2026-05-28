@@ -35,6 +35,58 @@ public sealed class GetAllSchoolsQueryHandlerTests(
     }
 
     [Fact]
+    public async Task GivenSchoolExists_WhenExecuteAsync_ThenReturnsSharedSchoolResponseShape()
+    {
+        // Arrange
+        var school = CreateSchool(
+            id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+            urn: 100010,
+            establishmentNumber: 3010,
+            name: "Amber Hill School");
+
+        await SeedSchoolsAsync(school);
+
+        var handler = new GetAllSchoolsQueryHandler(CreateDbContext());
+
+        // Act
+        var result = await handler.ExecuteAsync(
+            new GetAllSchoolsQuery(PageSize: 1),
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        var response = Assert.Single(result.Schools);
+        Assert.Equal(school.Id, response.Id);
+        Assert.Equal(school.URN, response.URN);
+        Assert.Equal(school.UKPRN, response.UKPRN);
+        Assert.Equal(school.EstablishmentNumber, response.EstablishmentNumber);
+        Assert.Equal(school.Name, response.Name);
+        Assert.Equal(school.OpenDate, response.OpenDate);
+        Assert.Equal(school.CloseDate, response.CloseDate);
+        Assert.Equal(school.Address.Street, response.Address.Street);
+        Assert.Equal(school.Address.Locality, response.Address.Locality);
+        Assert.Equal(school.Address.AddressThree, response.Address.AddressThree);
+        Assert.Equal(school.Address.Town, response.Address.Town);
+        Assert.Equal(school.Address.County, response.Address.County);
+        Assert.Equal(school.Address.PostCode, response.Address.PostCode);
+        Assert.Equal(school.PhaseOfEducation.Id, response.PhaseOfEducation.Id);
+        Assert.Equal(school.PhaseOfEducation.Code, response.PhaseOfEducation.Code);
+        Assert.Equal(school.PhaseOfEducation.Name, response.PhaseOfEducation.Name);
+        Assert.Equal(school.LocalAuthority.Id, response.LocalAuthority.Id);
+        Assert.Equal(school.LocalAuthority.Code, response.LocalAuthority.Code);
+        Assert.Equal(school.LocalAuthority.Name, response.LocalAuthority.Name);
+        Assert.Equal(school.EstablishmentType.Id, response.EstablishmentType.Id);
+        Assert.Equal(school.EstablishmentType.Code, response.EstablishmentType.Code);
+        Assert.Equal(school.EstablishmentType.Name, response.EstablishmentType.Name);
+        Assert.Equal(school.EstablishmentGroup.Id, response.EstablishmentGroup.Id);
+        Assert.Equal(school.EstablishmentGroup.Code, response.EstablishmentGroup.Code);
+        Assert.Equal(school.EstablishmentGroup.Name, response.EstablishmentGroup.Name);
+        Assert.Equal(school.EstablishmentStatus.Id, response.EstablishmentStatus.Id);
+        Assert.Equal(school.EstablishmentStatus.Code, response.EstablishmentStatus.Code);
+        Assert.Equal(school.EstablishmentStatus.Name, response.EstablishmentStatus.Name);
+        Assert.Null(result.NextCursor);
+    }
+
+    [Fact]
     public async Task GivenMoreSchoolsThanRequestedPageSize_WhenExecuteAsync_ThenReturnsPageAndNextCursorFromLastReturnedSchool()
     {
         // Arrange
@@ -65,7 +117,7 @@ public sealed class GetAllSchoolsQueryHandlerTests(
 
         // Assert
         Assert.Equal([firstSchool.Id, secondSchool.Id], [.. result.Schools.Select(x => x.Id)]);
-        Assert.Equal(secondSchool.Id, result.NextCursor);
+        Assert.Equal(secondSchool.Id.ToString(), result.NextCursor);
     }
 
     [Fact]
@@ -122,9 +174,9 @@ public sealed class GetAllSchoolsQueryHandlerTests(
 
         // Assert
         Assert.Equal(GetAllSchoolsQuery.DefaultPageSize, defaultPageResult.Schools.Count);
-        Assert.Equal(schools[GetAllSchoolsQuery.DefaultPageSize - 1].Id, defaultPageResult.NextCursor);
+        Assert.Equal(schools[GetAllSchoolsQuery.DefaultPageSize - 1].Id.ToString(), defaultPageResult.NextCursor);
         Assert.Equal(GetAllSchoolsQuery.MaximumPageSize, maximumPageResult.Schools.Count);
-        Assert.Equal(schools[GetAllSchoolsQuery.MaximumPageSize - 1].Id, maximumPageResult.NextCursor);
+        Assert.Equal(schools[GetAllSchoolsQuery.MaximumPageSize - 1].Id.ToString(), maximumPageResult.NextCursor);
     }
 
     private async Task SeedSchoolsAsync(params School[] schools)

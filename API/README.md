@@ -5,6 +5,7 @@
 - [Introduction](#introduction)
 - [Architecture](#architecture)
 - [Getting Started](#getting-started)
+- [Public School Discovery](#public-school-discovery)
 - [Admin Authentication and Bootstrap](#admin-authentication-and-bootstrap)
 - [Testing](#testing)
 - [Development](#development)
@@ -46,6 +47,59 @@ If you prefer the command line, you can run the app host from the `API` folder w
 ```bash
 dotnet run --project SummerBornInfo.AppHost/SummerBornInfo.AppHost.AppHost/SummerBornInfo.AppHost.csproj
 ```
+
+## Public School Discovery
+
+Milestone 3 keeps the public school surface grouped under `/api/schools`, but it does not overload the collection route with search modes.
+
+### `GET /api/schools`
+
+Use `GET /api/schools` for plain collection traversal only. It returns the shared collection wrapper:
+
+```json
+{
+  "schools": [
+    {
+      "id": "00000000-0000-0000-0000-000000000001",
+      "urn": 100001,
+      "name": "Northbridge Primary"
+    }
+  ],
+  "nextCursor": "00000000-0000-0000-0000-000000000001"
+}
+```
+
+- `pageSize` is optional and defaults to `100`.
+- Large `pageSize` values are capped to `200` on this collection route.
+- `cursor` continues traversal by school `id`, so the collection cursor is not opaque.
+
+### `GET /api/schools/search?q=...`
+
+Use `GET /api/schools/search` with `q` for free-text school discovery across school name plus address and postcode fields. Successful responses use the same `{ schools, nextCursor }` wrapper as the collection route.
+
+- `q` is required for free-text search, trimmed server-side, and must contain at least 4 non-whitespace characters.
+- `pageSize` is optional and defaults to `100`; values outside `1` to `200` return `400 Bad Request`.
+- `cursor`, when supplied, must be the opaque `nextCursor` returned by an earlier search for the same normalized query text.
+- Search cursors are versioned, query-bound continuation tokens. Callers should treat them as opaque values and not infer ordering from their contents.
+- A valid search with no matches returns `200 OK` with `"schools": []` and `"nextCursor": null`.
+- Supplying blank `q`, a short query, an invalid cursor, or both `q` and `urn` returns `400 Bad Request`.
+
+### `GET /api/schools/search?urn=...`
+
+Use `GET /api/schools/search?urn=...` for exact URN lookup. This is a distinct query mode on the discovery route and returns a single full `SchoolResponse` object rather than the collection wrapper.
+
+- `urn` must be a positive integer or the API returns `400 Bad Request`.
+- Unknown URNs return `404 Not Found`.
+- Do not combine `urn` with `q`; the route requires exactly one discovery mode.
+
+### Search implementation notes
+
+The current search implementation uses PostgreSQL full-text search together with `pg_trgm`:
+
+- full-text ranking uses PostgreSQL's `simple` configuration with `plainto_tsquery`, which keeps school and place-name tokens closer to their source values than stemmed language dictionaries would;
+- trigram matching uses `word_similarity` to support partial-name, address-fragment, postcode-fragment, and mild typo-tolerant discovery that plain full-text search would miss.
+
+This hybrid approach was chosen over plain SQL `LIKE` matching because it gives materially better ranking and fragment matching, and over a separate search service because Milestone 3 can meet its discovery needs within the existing PostgreSQL stack.
 
 ## Admin Authentication and Bootstrap
 

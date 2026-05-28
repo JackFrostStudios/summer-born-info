@@ -4,6 +4,7 @@ global using Microsoft.EntityFrameworkCore;
 global using Npgsql;
 global using SummerBornInfo.Domain.Entities;
 global using SummerBornInfo.Infrastructure.Events;
+global using SummerBornInfo.Infrastructure.Persistence;
 global using SummerBornInfo.Infrastructure.Persistence.IdentityManagement;
 global using SummerBornInfo.Infrastructure.Persistence.LargeObjects;
 global using SummerBornInfo.TestFramework;

@@ -20,6 +20,7 @@ global using SummerBornInfo.Domain.Events;
 global using SummerBornInfo.Features.Schools.Commands.Import;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile;
 global using SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus.Response;
+global using SummerBornInfo.Features.Schools.Queries.Response;
 global using SummerBornInfo.Infrastructure.Events;
 global using SummerBornInfo.Infrastructure.Persistence;
 global using SummerBornInfo.Infrastructure.Persistence.IdentityManagement;

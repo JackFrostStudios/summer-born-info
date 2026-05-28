@@ -29,7 +29,7 @@ public sealed class GetAllSchoolsTests(
         var response = await client.GetAsync("/api/schools?pageSize=10", TestContext.Current.CancellationToken);
 
         _ = response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<GetAllSchoolsResponse>(TestContext.Current.CancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<SchoolsResponse>(TestContext.Current.CancellationToken);
 
         Assert.NotNull(result);
         var school = Assert.Single(result.Schools);
@@ -79,24 +79,24 @@ public sealed class GetAllSchoolsTests(
         var firstResponse = await client.GetAsync("/api/schools?pageSize=2", TestContext.Current.CancellationToken);
 
         _ = firstResponse.EnsureSuccessStatusCode();
-        var firstPage = await firstResponse.Content.ReadFromJsonAsync<GetAllSchoolsResponse>(TestContext.Current.CancellationToken);
+        var firstPage = await firstResponse.Content.ReadFromJsonAsync<SchoolsResponse>(TestContext.Current.CancellationToken);
 
         Assert.NotNull(firstPage);
         Assert.Equal(2, firstPage.Schools.Count);
         Assert.Equal(firstSchool.Id, firstPage.Schools[0].Id);
         Assert.Equal(secondSchool.Id, firstPage.Schools[1].Id);
         Assert.True(firstPage.Schools[0].Id < firstPage.Schools[1].Id);
-        Assert.Equal(secondSchool.Id, firstPage.NextCursor);
+        Assert.Equal(secondSchool.Id.ToString(), firstPage.NextCursor);
 
         var secondResponse = await client.GetAsync($"/api/schools?pageSize=2&cursor={firstPage.NextCursor}", TestContext.Current.CancellationToken);
 
         _ = secondResponse.EnsureSuccessStatusCode();
-        var secondPage = await secondResponse.Content.ReadFromJsonAsync<GetAllSchoolsResponse>(TestContext.Current.CancellationToken);
+        var secondPage = await secondResponse.Content.ReadFromJsonAsync<SchoolsResponse>(TestContext.Current.CancellationToken);
 
         Assert.NotNull(secondPage);
         var remainingSchool = Assert.Single(secondPage.Schools);
         Assert.Equal(thirdSchool.Id, remainingSchool.Id);
-        Assert.True(remainingSchool.Id > firstPage.NextCursor);
+        Assert.Equal(thirdSchool.Id.ToString(), remainingSchool.Id.ToString());
         Assert.Null(secondPage.NextCursor);
     }
 
@@ -111,13 +111,13 @@ public sealed class GetAllSchoolsTests(
         var response = await client.GetAsync("/api/schools", TestContext.Current.CancellationToken);
 
         _ = response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<GetAllSchoolsResponse>(TestContext.Current.CancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<SchoolsResponse>(TestContext.Current.CancellationToken);
 
         Assert.NotNull(result);
         Assert.Equal(100, result.Schools.Count);
         Assert.Equal(schools[0].Id, result.Schools[0].Id);
         Assert.Equal(schools[99].Id, result.Schools[^1].Id);
-        Assert.Equal(schools[99].Id, result.NextCursor);
+        Assert.Equal(schools[99].Id.ToString(), result.NextCursor);
     }
 
     [Fact]
@@ -131,13 +131,13 @@ public sealed class GetAllSchoolsTests(
         var response = await client.GetAsync("/api/schools?pageSize=500", TestContext.Current.CancellationToken);
 
         _ = response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<GetAllSchoolsResponse>(TestContext.Current.CancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<SchoolsResponse>(TestContext.Current.CancellationToken);
 
         Assert.NotNull(result);
         Assert.Equal(200, result.Schools.Count);
         Assert.Equal(schools[0].Id, result.Schools[0].Id);
         Assert.Equal(schools[199].Id, result.Schools[^1].Id);
-        Assert.Equal(schools[199].Id, result.NextCursor);
+        Assert.Equal(schools[199].Id.ToString(), result.NextCursor);
     }
 
     private async Task SeedSchoolsAsync(params School[] schools)
@@ -296,30 +296,4 @@ public sealed class GetAllSchoolsTests(
         };
     }
 
-    private sealed record GetAllSchoolsResponse(List<GetAllSchoolsSchoolResponse> Schools, Guid? NextCursor);
-
-    private sealed record GetAllSchoolsSchoolResponse(
-        Guid Id,
-        int URN,
-        int? UKPRN,
-        int EstablishmentNumber,
-        string Name,
-        GetAllSchoolsSchoolAddressResponse Address,
-        DateOnly? OpenDate,
-        DateOnly? CloseDate,
-        GetAllSchoolsLookupResponse PhaseOfEducation,
-        GetAllSchoolsLookupResponse LocalAuthority,
-        GetAllSchoolsLookupResponse EstablishmentType,
-        GetAllSchoolsLookupResponse EstablishmentGroup,
-        GetAllSchoolsLookupResponse EstablishmentStatus);
-
-    private sealed record GetAllSchoolsSchoolAddressResponse(
-        string? Street,
-        string? Locality,
-        string? AddressThree,
-        string Town,
-        string? County,
-        string PostCode);
-
-    private sealed record GetAllSchoolsLookupResponse(Guid Id, string Code, string Name);
 }

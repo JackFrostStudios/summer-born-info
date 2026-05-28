@@ -27,6 +27,8 @@ builder.Services.AddScoped<ModerateCsaApplicationReviewCommandHandler>();
 builder.Services.AddScoped<ImportSchoolsCommandHandler>();
 builder.Services.AddScoped<IProcessImportFileCommandHandler, ProcessImportFileCommandHandler>();
 builder.Services.AddScoped<GetAllSchoolsQueryHandler>();
+builder.Services.AddScoped<SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler>();
+builder.Services.AddScoped<SummerBornInfo.Features.Schools.Queries.GetSchoolByUrn.GetSchoolByUrnQueryHandler>();
 builder.Services.AddScoped<GetSchoolBulkImportStatusQueryHandler>();
 builder.Services.AddScoped<ISchoolsImporter, SchoolsImporter<ApplicationDbContext>>();
 builder.Services.AddScoped<ILargeObjectWriter, LargeObjectWriter>();
@@ -42,7 +44,7 @@ if (app.Environment.IsDevelopment())
 {
     await using var scope = app.Services.CreateAsyncScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    _ = await dbContext.Database.EnsureCreatedAsync(app.Lifetime.ApplicationStopping);
+    await PostgreSqlDatabaseBootstrapper.EnsureApplicationDatabaseAsync(dbContext, app.Lifetime.ApplicationStopping);
     var developmentAdminBootstrapper = scope.ServiceProvider.GetRequiredService<IDevelopmentAdminBootstrapper>();
     await developmentAdminBootstrapper.UpsertAsync(app.Lifetime.ApplicationStopping);
     NpgmqClient npgmq = new(connectionString: dbContext.Database.GetConnectionString() ?? throw new InvalidOperationException("Db Connection string is null"));
