@@ -345,7 +345,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 ### Task State Checklist
 
 - [x] Task 1 complete: Spatial package and model foundation committed.
-- [ ] Task 2 complete: PostGIS bootstrap support committed.
+- [x] Task 2 complete: PostGIS bootstrap support committed.
 - [ ] Task 3 complete: Spatial schema and indexing committed.
 - [ ] Task 4 complete: Import and location persistence alignment committed.
 - [ ] Task 5 complete: Nearby-search route contract committed.

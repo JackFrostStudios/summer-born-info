@@ -2,8 +2,11 @@ namespace SummerBornInfo.Infrastructure.Persistence;
 
 public static class PostgreSqlDatabaseBootstrapper
 {
-    private const string EnsurePgTrgmExtensionSql = "CREATE EXTENSION IF NOT EXISTS pg_trgm;";
-    private const string ValidatePgTrgmExtensionSql = "SELECT EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'pg_trgm');";
+    private static readonly PostgreSqlExtension[] RequiredExtensions =
+    [
+        new("pg_trgm", "The PostgreSQL pg_trgm extension is required but was not installed."),
+        new("postgis", "The PostgreSQL PostGIS extension is required but was not installed."),
+    ];
 
     public static async Task EnsureApplicationDatabaseAsync(
         ApplicationDbContext dbContext,
@@ -23,16 +26,20 @@ public static class PostgreSqlDatabaseBootstrapper
 
         try
         {
-            _ = await dbContext.Database.ExecuteSqlRawAsync(EnsurePgTrgmExtensionSql, cancellationToken);
-
-            await using var command = dbContext.GetNpgsqlConnection().CreateCommand();
-            command.CommandText = ValidatePgTrgmExtensionSql;
-
-            var pgTrgmExtensionInstalled = (bool?)await command.ExecuteScalarAsync(cancellationToken);
-
-            if (pgTrgmExtensionInstalled != true)
+            foreach (var extension in RequiredExtensions)
             {
-                throw new InvalidOperationException("The PostgreSQL pg_trgm extension is required but was not installed.");
+                await using var command = dbContext.GetNpgsqlConnection().CreateCommand();
+                command.CommandText = $"""CREATE EXTENSION IF NOT EXISTS "{extension.Name}";""";
+                _ = await command.ExecuteNonQueryAsync(cancellationToken);
+
+                command.CommandText = $"""SELECT EXISTS (SELECT 1 FROM pg_extension WHERE extname = '{extension.Name}');""";
+
+                var extensionInstalled = (bool?)await command.ExecuteScalarAsync(cancellationToken);
+
+                if (extensionInstalled != true)
+                {
+                    throw new InvalidOperationException(extension.ValidationFailureMessage);
+                }
             }
         }
         finally
@@ -42,4 +49,6 @@ public static class PostgreSqlDatabaseBootstrapper
 
         _ = await dbContext.Database.EnsureCreatedAsync(cancellationToken);
     }
+
+    private sealed record PostgreSqlExtension(string Name, string ValidationFailureMessage);
 }

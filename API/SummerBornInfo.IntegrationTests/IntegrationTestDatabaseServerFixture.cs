@@ -1,12 +1,18 @@
+using DotNet.Testcontainers.Builders;
+
 namespace SummerBornInfo.TestFramework;
 
 public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
 {
+    private const string PostgreSqlImageName = "summerborninfo-postgres-postgis-pgmq:task-2";
+    private static readonly string PostgreSqlDockerfileDirectory = Path.GetFullPath(
+        Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "SummerBornInfo.AppHost", "Postgres"));
+
     private readonly PostgreSqlContainer _postgreSqlContainer;
 
     public IntegrationTestDatabaseServerFixture()
     {
-        _postgreSqlContainer = new PostgreSqlBuilder("ghcr.io/pgmq/pg18-pgmq:v1.10.0")
+        _postgreSqlContainer = new PostgreSqlBuilder(PostgreSqlImageName)
             .WithUsername("test")
             .WithPassword("test")
             .WithName($"integration_tests_postgresql_db_{Guid.NewGuid()}")
@@ -20,6 +26,15 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
 
     public async ValueTask InitializeAsync()
     {
+        var postgreSqlImage = new ImageFromDockerfileBuilder()
+            .WithDockerfileDirectory(dockerfileDirectory: PostgreSqlDockerfileDirectory)
+            .WithDockerfile(dockerfile: "Dockerfile")
+            .WithName(name: PostgreSqlImageName)
+            .WithDeleteIfExists(deleteIfExists: false)
+            .Build();
+
+        await postgreSqlImage.CreateAsync(TestContext.Current.CancellationToken);
+
         await _postgreSqlContainer.StartAsync(TestContext.Current.CancellationToken);
         ConnectionString = _postgreSqlContainer.GetConnectionString();
 
@@ -31,7 +46,7 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
                 .UseNpgsql(templateDatabaseConnectionString, npgsqlOptions => npgsqlOptions.UseNetTopologySuite())
                 .Options);
         await PostgreSqlDatabaseBootstrapper.EnsureApplicationDatabaseAsync(db, TestContext.Current.CancellationToken);
-        NpgmqClient npgmq = new(connectionString: db.Database.GetConnectionString() ?? throw new InvalidOperationException("Db Connection string is null"));
+        NpgmqClient npgmq = new(connectionString: templateDatabaseConnectionString);
         await npgmq.InitAsync(TestContext.Current.CancellationToken);
         await npgmq.CreateQueueAsync(EventQueue.SchoolBulkImport.Name, TestContext.Current.CancellationToken);
         await npgmq.CreateQueueAsync(TestEventQueue.TestQueue.Name, TestContext.Current.CancellationToken);
