@@ -26,6 +26,10 @@ internal sealed class SchoolConfiguration : IEntityTypeConfiguration<School>
         _ = builder.Property(s => s.URN)
             .IsRequired();
 
+        _ = builder.HasIndex(s => s.URN)
+            .HasDatabaseName("ix_school_urn")
+            .IsUnique();
+
         _ = builder.Property(s => s.EstablishmentNumber)
             .IsRequired();
 

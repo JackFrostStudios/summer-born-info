@@ -19,6 +19,8 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         Assert.Contains(@"lower(coalesce(""Name"", ''))", createScript, StringComparison.Ordinal);
         Assert.Contains(@"replace(lower(coalesce(""PostCode"", '')), ' ', '')", createScript, StringComparison.Ordinal);
         Assert.Contains("search_address_normalized", createScript, StringComparison.Ordinal);
+        Assert.Contains("ix_school_urn", createScript, StringComparison.Ordinal);
+        Assert.Contains("UNIQUE", createScript, StringComparison.Ordinal);
         Assert.Contains("ix_school_search_vector", createScript, StringComparison.Ordinal);
         Assert.Contains("ix_school_search_name_normalized", createScript, StringComparison.Ordinal);
         Assert.Contains("ix_school_search_postcode_normalized", createScript, StringComparison.Ordinal);
@@ -123,6 +125,29 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
 
         Assert.NotNull(savedSchool);
         Assert.Equivalent(school, savedSchool);
+    }
+
+    [Fact]
+    public async Task GivenExistingSchoolUrn_WhenInsertingSecondSchoolWithSameUrn_ThenSaveFails()
+    {
+        // Arrange
+        var dbContext = CreateDbContext();
+        var firstSchool = SchoolFactory.GetSchool();
+        var secondSchool = SchoolFactory.GetSchool();
+        secondSchool.URN = firstSchool.URN;
+
+        _ = dbContext.Schools.Add(firstSchool);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        _ = dbContext.Schools.Add(secondSchool);
+
+        // Act
+        var exception = await Assert.ThrowsAsync<DbUpdateException>(() => dbContext.SaveChangesAsync(TestContext.Current.CancellationToken));
+
+        // Assert
+        var postgresException = Assert.IsType<PostgresException>(exception.InnerException);
+        Assert.Equal(PostgresErrorCodes.UniqueViolation, postgresException.SqlState);
+        Assert.Equal("ix_school_urn", postgresException.ConstraintName);
     }
 
     [Fact]

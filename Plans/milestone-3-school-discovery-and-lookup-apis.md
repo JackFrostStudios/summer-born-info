@@ -486,6 +486,7 @@ This plan is delivery-ready for Milestone 3 with the search technology now fixed
 - [x] Discovery responses use the full Milestone 1 school response shape.
 - [x] Discovery responses include canonical `id`.
 - [x] Discovery responses expose `urn` as the agreed integer HTTP contract field.
+- [x] The `school` table enforces URN uniqueness so exact lookup semantics are backed by the database schema.
 - [x] The existing `GET /api/schools` contract remains part of the supported public API surface.
 - [x] Generated OpenAPI output documents the collection route and discovery route with their expected parameters and error responses.
 - [x] Integration tests cover successful and failing search and URN lookup behaviours.
