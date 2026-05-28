@@ -1,7 +1,3 @@
-using System.Data;
-using Npgsql;
-using NpgsqlTypes;
-
 namespace SummerBornInfo.Features.Schools.Queries.SearchSchools;
 
 public sealed class SearchSchoolsQueryHandler(ApplicationDbContext context)

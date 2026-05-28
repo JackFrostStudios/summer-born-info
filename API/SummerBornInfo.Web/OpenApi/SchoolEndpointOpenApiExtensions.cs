@@ -1,7 +1,3 @@
-using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi;
-using SummerBornInfo.Features.Schools.Queries.GetAllSchools.Response;
-
 namespace SummerBornInfo.Web.OpenApi;
 
 public static class SchoolEndpointOpenApiExtensions

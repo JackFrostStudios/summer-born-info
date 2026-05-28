@@ -1,6 +1,3 @@
-using System.Text;
-using System.Text.Json;
-
 namespace SummerBornInfo.Features.Schools.Queries.SearchSchools;
 
 public sealed record SearchSchoolsCursor(

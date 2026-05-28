@@ -25,8 +25,8 @@ public static class SchoolEndpoints
     {
         _ = builder.MapGet("/search", async (
             HttpContext httpContext,
-            SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler searchSchoolsHandler,
-            SummerBornInfo.Features.Schools.Queries.GetSchoolByUrn.GetSchoolByUrnQueryHandler getSchoolByUrnHandler,
+            SearchSchoolsQueryHandler searchSchoolsHandler,
+            GetSchoolByUrnQueryHandler getSchoolByUrnHandler,
             string? q,
             string? urn,
             string? cursor,
@@ -72,11 +72,11 @@ public static class SchoolEndpoints
     }
 
     private static async Task<IResult> GetSchoolByUrnAsync(
-        SummerBornInfo.Features.Schools.Queries.GetSchoolByUrn.GetSchoolByUrnQueryHandler handler,
+        GetSchoolByUrnQueryHandler handler,
         string? urn,
         CancellationToken cancellationToken)
     {
-        if (!SummerBornInfo.Features.Schools.Queries.GetSchoolByUrn.GetSchoolByUrnQueryValidator.TryValidate(urn, out var query))
+        if (!GetSchoolByUrnQueryValidator.TryValidate(urn, out var query))
         {
             return CreateInvalidDiscoveryRequest("URN must be a valid integer.");
         }
@@ -88,13 +88,13 @@ public static class SchoolEndpoints
     }
 
     private static async Task<IResult> SearchSchoolsAsync(
-        SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler handler,
+        SearchSchoolsQueryHandler handler,
         string? q,
         string? cursor,
         int? pageSize,
         CancellationToken cancellationToken)
     {
-        if (!SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryValidator.TryValidate(q, cursor, pageSize, out var query))
+        if (!SearchSchoolsQueryValidator.TryValidate(q, cursor, pageSize, out var query))
         {
             return CreateInvalidDiscoveryRequest(
                 "q must be at least 4 non-whitespace characters, pageSize must be between 1 and 200, and cursor must be a valid search continuation token.");

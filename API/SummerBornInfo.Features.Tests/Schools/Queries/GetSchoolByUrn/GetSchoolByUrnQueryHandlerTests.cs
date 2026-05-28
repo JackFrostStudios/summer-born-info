@@ -1,5 +1,3 @@
-using SummerBornInfo.Features.Schools.Queries.GetSchoolByUrn;
-
 namespace SummerBornInfo.Features.Tests.Schools.Queries.GetSchoolByUrn;
 
 public sealed class GetSchoolByUrnQueryHandlerTests(

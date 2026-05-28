@@ -1,8 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi;
-
 namespace SummerBornInfo.Web.OpenApi;
 
 public static class AdminSecurityOpenApiOptionsExtensions
