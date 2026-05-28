@@ -1,4 +1,4 @@
-namespace SummerBornInfo.Features.Schools.Queries.GetAllSchools.Response;
+namespace SummerBornInfo.Features.Schools.Queries.Response;
 
 public sealed record SchoolsResponse
 {
