@@ -3,7 +3,7 @@ namespace SummerBornInfo.Web.Tests.API.Schools;
 public sealed class GetAllSchoolsTests(
     IntegrationTestDatabaseServerFixture testDatabaseServerFixture,
     ITestOutputHelper testOutputHelper)
-    : WebIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
+    : SchoolApiIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
     [Fact]
     public async Task GivenSchoolExists_WhenGetAllSchools_ThenReturnsSchoolInformation()
@@ -20,6 +20,8 @@ public sealed class GetAllSchoolsTests(
             town: "Leeds",
             county: "West Yorkshire",
             postCode: "LS1 1AA",
+            latitude: 53.7997,
+            longitude: -1.5492,
             openDate: new DateOnly(2010, 9, 1),
             closeDate: new DateOnly(2024, 7, 31));
 
@@ -34,36 +36,7 @@ public sealed class GetAllSchoolsTests(
         Assert.NotNull(result);
         var school = Assert.Single(result.Schools);
         Assert.Null(result.NextCursor);
-
-        Assert.Equal(expectedSchool.Id, school.Id);
-        Assert.Equal(expectedSchool.URN, school.URN);
-        Assert.Equal(expectedSchool.UKPRN, school.UKPRN);
-        Assert.Equal(expectedSchool.EstablishmentNumber, school.EstablishmentNumber);
-        Assert.Equal(expectedSchool.Name, school.Name);
-        Assert.Equal(expectedSchool.OpenDate, school.OpenDate);
-        Assert.Equal(expectedSchool.CloseDate, school.CloseDate);
-
-        Assert.Equal(expectedSchool.Address.Street, school.Address.Street);
-        Assert.Equal(expectedSchool.Address.Locality, school.Address.Locality);
-        Assert.Equal(expectedSchool.Address.AddressThree, school.Address.AddressThree);
-        Assert.Equal(expectedSchool.Address.Town, school.Address.Town);
-        Assert.Equal(expectedSchool.Address.County, school.Address.County);
-        Assert.Equal(expectedSchool.Address.PostCode, school.Address.PostCode);
-
-        Assert.Equal(expectedSchool.PhaseOfEducation.Id, school.PhaseOfEducation.Id);
-        Assert.Equal(expectedSchool.PhaseOfEducation.Code, school.PhaseOfEducation.Code);
-        Assert.Equal(expectedSchool.PhaseOfEducation.Name, school.PhaseOfEducation.Name);
-
-        Assert.Equal(expectedSchool.LocalAuthority.Id, school.LocalAuthority.Id);
-        Assert.Equal(expectedSchool.LocalAuthority.Code, school.LocalAuthority.Code);
-        Assert.Equal(expectedSchool.LocalAuthority.Name, school.LocalAuthority.Name);
-
-        Assert.Equal(expectedSchool.EstablishmentType.Code, school.EstablishmentType.Code);
-        Assert.Equal(expectedSchool.EstablishmentType.Name, school.EstablishmentType.Name);
-        Assert.Equal(expectedSchool.EstablishmentGroup.Code, school.EstablishmentGroup.Code);
-        Assert.Equal(expectedSchool.EstablishmentGroup.Name, school.EstablishmentGroup.Name);
-        Assert.Equal(expectedSchool.EstablishmentStatus.Code, school.EstablishmentStatus.Code);
-        Assert.Equal(expectedSchool.EstablishmentStatus.Name, school.EstablishmentStatus.Name);
+        SchoolResponseAssertions.AssertMatches(expectedSchool, school);
     }
 
     [Fact]
@@ -162,6 +135,8 @@ public sealed class GetAllSchoolsTests(
             town: "York",
             county: "North Yorkshire",
             postCode: "YO1 1AA",
+            latitude: null,
+            longitude: null,
             openDate: new DateOnly(2012, 9, 1),
             closeDate: null);
     }
@@ -180,6 +155,8 @@ public sealed class GetAllSchoolsTests(
             town: "Hull",
             county: "East Yorkshire",
             postCode: "HU1 2BB",
+            latitude: null,
+            longitude: null,
             openDate: new DateOnly(2014, 9, 1),
             closeDate: null);
     }
@@ -198,6 +175,8 @@ public sealed class GetAllSchoolsTests(
             town: "Bradford",
             county: "West Yorkshire",
             postCode: "BD1 3CC",
+            latitude: null,
+            longitude: null,
             openDate: new DateOnly(2016, 9, 1),
             closeDate: null);
     }
@@ -223,6 +202,8 @@ public sealed class GetAllSchoolsTests(
                 town: "Leeds",
                 county: "West Yorkshire",
                 postCode: $"LS1 {postCodeSuffix}AA",
+                latitude: null,
+                longitude: null,
                 openDate: new DateOnly(2010, 9, 1).AddDays(index),
                 closeDate: null);
         }
@@ -240,6 +221,8 @@ public sealed class GetAllSchoolsTests(
         string town,
         string? county,
         string postCode,
+        double? latitude,
+        double? longitude,
         DateOnly? openDate,
         DateOnly? closeDate)
     {
@@ -286,6 +269,9 @@ public sealed class GetAllSchoolsTests(
                 County = county,
                 PostCode = postCode,
             },
+            Location = latitude.HasValue && longitude.HasValue
+                ? new NetTopologySuite.Geometries.Point(longitude.Value, latitude.Value) { SRID = 4326 }
+                : null,
             OpenDate = openDate,
             CloseDate = closeDate,
             PhaseOfEducation = phaseOfEducation,

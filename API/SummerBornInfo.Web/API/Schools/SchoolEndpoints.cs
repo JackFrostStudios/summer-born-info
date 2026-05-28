@@ -10,6 +10,7 @@ public static class SchoolEndpoints
         var schools = endpoints.MapGroup("/api/schools");
 
         _ = schools.MapGetAllSchools()
+            .MapGetNearbySchools()
             .MapSearchSchools();
     }
 
@@ -60,6 +61,15 @@ public static class SchoolEndpoints
         return builder;
     }
 
+    private static RouteGroupBuilder MapGetNearbySchools(this RouteGroupBuilder builder)
+    {
+        _ = builder.MapGet("/nearby", GetNearbySchoolsAsync)
+            .AddSchoolCollectionOpenApiMetadata()
+            .ProducesProblem(StatusCodes.Status400BadRequest);
+
+        return builder;
+    }
+
     private static async Task<IResult> GetSchoolsAsync(
         GetAllSchoolsQueryHandler handler,
         Guid? cursor,
@@ -102,6 +112,22 @@ public static class SchoolEndpoints
 
         var response = await handler.ExecuteAsync(query, cancellationToken);
         return Results.Ok(response);
+    }
+
+    private static Task<IResult> GetNearbySchoolsAsync(
+        [AsParameters] SummerBornInfo.Features.Schools.Queries.GetNearbySchools.GetNearbySchoolsRequest request)
+    {
+        if (!SummerBornInfo.Features.Schools.Queries.GetNearbySchools.GetNearbySchoolsRequestValidator.TryValidate(request, out _))
+        {
+            return Task.FromResult(CreateInvalidDiscoveryRequest(
+                "latitude must be between -90 and 90, longitude must be between -180 and 180, radiusMiles must be greater than 0 and no more than 100, pageSize must be between 1 and 200, and cursor must be a valid nearby search continuation token."));
+        }
+
+        return Task.FromResult<IResult>(Results.Ok(new SchoolsResponse
+        {
+            Schools = [],
+            NextCursor = null,
+        }));
     }
 
     private static IResult CreateInvalidDiscoveryRequest(string detail)

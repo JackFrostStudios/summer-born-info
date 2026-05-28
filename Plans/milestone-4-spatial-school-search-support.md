@@ -348,7 +348,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 - [x] Task 2 complete: PostGIS bootstrap support committed.
 - [x] Task 3 complete: Spatial schema and indexing committed.
 - [x] Task 4 complete: Import and location persistence alignment committed.
-- [ ] Task 5 complete: Nearby-search route contract committed.
+- [x] Task 5 complete: Nearby-search route contract committed.
 - [ ] Task 6 complete: Nearby-search query implementation committed.
 - [ ] Task 7 complete: Nearby pagination and cursor continuation committed.
 - [ ] Task 8 complete: OpenAPI and error metadata committed.
@@ -401,12 +401,12 @@ This plan is delivery-ready for Milestone 4 with the spatial technology decision
 
 ## 11. Completion Checklist
 
-- [ ] `GET /api/schools/nearby` exists and matches the Milestone 1 request and response contract.
-- [ ] Nearby search validates required `latitude`, `longitude`, and `radiusMiles` inputs.
-- [ ] Nearby search rejects out-of-range latitude and longitude values with `400 Bad Request`.
-- [ ] Nearby search rejects zero or negative `radiusMiles` with `400 Bad Request`.
-- [ ] Nearby search rejects `radiusMiles` values greater than `100` with `400 Bad Request`.
-- [ ] Nearby search rejects invalid `cursor` and `pageSize` values with `400 Bad Request`.
+- [x] `GET /api/schools/nearby` exists and matches the Milestone 1 request and response contract.
+- [x] Nearby search validates required `latitude`, `longitude`, and `radiusMiles` inputs.
+- [x] Nearby search rejects out-of-range latitude and longitude values with `400 Bad Request`.
+- [x] Nearby search rejects zero or negative `radiusMiles` with `400 Bad Request`.
+- [x] Nearby search rejects `radiusMiles` values greater than `100` with `400 Bad Request`.
+- [x] Nearby search rejects invalid `cursor` and `pageSize` values with `400 Bad Request`.
 - [ ] Nearby search returns `200 OK` with an empty `schools` collection and `nextCursor: null` when no schools match.
 - [ ] Nearby search returns only schools within the requested radius.
 - [ ] Nearby search orders results deterministically by ascending distance with a stable tie-breaker.
@@ -421,7 +421,7 @@ This plan is delivery-ready for Milestone 4 with the spatial technology decision
 - [ ] The school spatial column and spatial index exist in the generated schema.
 - [ ] Import or ingestion paths parse `Easting` and `Northing`, convert them to WGS84 longitude and latitude, and persist valid source coordinates into the canonical school location field.
 - [ ] Schools without valid stored coordinates are excluded from nearby results in a documented, predictable way.
-- [ ] The shared public school DTO used by collection, search, URN lookup, and nearby responses includes map-usable latitude and longitude fields.
+- [x] The shared public school DTO used by collection, search, URN lookup, and nearby responses includes map-usable latitude and longitude fields.
 - [ ] Generated OpenAPI output documents `GET /api/schools/nearby` and its validation behaviour.
 - [ ] Integration tests cover successful, empty, invalid-input, and multi-page nearby-search behaviour.
 - [ ] Infrastructure tests cover PostGIS bootstrap and schema artifacts.

@@ -8,6 +8,8 @@ public sealed record SchoolResponse
     public required int EstablishmentNumber { get; init; }
     public required string Name { get; init; }
     public required SchoolAddressResponse Address { get; init; }
+    public required double? Latitude { get; init; }
+    public required double? Longitude { get; init; }
     public required DateOnly? OpenDate { get; init; }
     public required DateOnly? CloseDate { get; init; }
     public required PhaseOfEducationResponse PhaseOfEducation { get; init; }
@@ -25,6 +27,8 @@ public sealed record SchoolResponse
             EstablishmentNumber = school.EstablishmentNumber,
             Name = school.Name,
             Address = SchoolAddressResponse.FromEntity(school.Address),
+            Latitude = school.Location?.Y,
+            Longitude = school.Location?.X,
             OpenDate = school.OpenDate,
             CloseDate = school.CloseDate,
             PhaseOfEducation = PhaseOfEducationResponse.FromEntity(school.PhaseOfEducation),
