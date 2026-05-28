@@ -33,7 +33,9 @@ public sealed class CustomWebApplicationFactory(
             // Add DbContext with TestContainers connection string
             _ = services.AddDbContext<ApplicationDbContext>(optionsBuilder =>
             {
-                _ = optionsBuilder.UseNpgsql(integrationTestDatabaseInstanceFixture.DatabaseConnectionString);
+                _ = optionsBuilder.UseNpgsql(
+                    integrationTestDatabaseInstanceFixture.DatabaseConnectionString,
+                    npgsqlOptions => npgsqlOptions.UseNetTopologySuite());
                 TestEntityFrameworkLoggingConfiguration.AddLoggingToDbContextOptions(optionsBuilder, testOutputHelper);
             });
         });

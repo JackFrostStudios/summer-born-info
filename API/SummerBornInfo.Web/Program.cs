@@ -6,7 +6,7 @@ builder.Services.Configure<SchoolBulkImportWorkerOptions>(builder.Configuration.
 builder.Services.Configure<DevelopmentAdminBootstrapOptions>(builder.Configuration);
 
 var connectionString = builder.Configuration.GetConnectionString("SummerbornInfo");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.UseNetTopologySuite()));
 builder.Services
     .AddIdentity<ApplicationUser, ApplicationRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()

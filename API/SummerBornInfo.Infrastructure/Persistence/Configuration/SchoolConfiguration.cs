@@ -37,6 +37,9 @@ internal sealed class SchoolConfiguration : IEntityTypeConfiguration<School>
             .HasMaxLength(300)
             .IsRequired();
 
+        _ = builder.Property(s => s.Location)
+            .HasColumnType("geography (point, 4326)");
+
         _ = builder.Property<NpgsqlTsVector>("SearchVector")
             .HasColumnName("search_vector")
             .HasColumnType("tsvector")

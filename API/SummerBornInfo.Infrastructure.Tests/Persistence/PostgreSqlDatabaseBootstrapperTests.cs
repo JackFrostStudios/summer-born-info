@@ -13,7 +13,7 @@ public sealed class PostgreSqlDatabaseBootstrapperTests(IntegrationTestDatabaseS
         try
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseNpgsql(connectionString)
+                .UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.UseNetTopologySuite())
                 .Options;
 
             await using (var dbContext = new ApplicationDbContext(options))
