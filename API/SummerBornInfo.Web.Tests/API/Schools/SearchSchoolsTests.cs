@@ -148,6 +148,37 @@ public sealed class SearchSchoolsTests(
         Assert.Null(result.NextCursor);
     }
 
+    [Fact]
+    public async Task GivenMatchingSchoolExists_WhenGetSchoolsSearch_ThenReturnsCollectionWrapperWithFullSchoolShape()
+    {
+        var expectedSchool = CreateSchool(
+            id: Guid.Parse("00000000-0000-0000-0000-000000000040"),
+            urn: 100040,
+            ukprn: 200040,
+            establishmentNumber: 3040,
+            name: "Harbour View Academy",
+            street: "40 Anchor Lane",
+            locality: "Waterfront",
+            addressThree: "Building 4",
+            town: "Liverpool",
+            county: "Merseyside",
+            postCode: "L1 4AB");
+
+        await SeedSchoolsAsync(expectedSchool);
+
+        var client = Factory.CreateClient();
+        var response = await client.GetAsync("/api/schools/search?q=harbour", TestContext.Current.CancellationToken);
+
+        _ = response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<SchoolsResponse>(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(result);
+        Assert.Null(result.NextCursor);
+
+        var school = Assert.Single(result.Schools);
+        SchoolResponseAssertions.AssertMatches(expectedSchool, school);
+    }
+
     [Theory]
     [InlineData("/api/schools/search")]
     [InlineData("/api/schools/search?q=")]

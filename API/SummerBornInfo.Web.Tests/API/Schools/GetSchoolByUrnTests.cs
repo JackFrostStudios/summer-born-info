@@ -21,17 +21,7 @@ public sealed class GetSchoolByUrnTests(
         var result = await response.Content.ReadFromJsonAsync<SchoolResponse>(TestContext.Current.CancellationToken);
 
         Assert.NotNull(result);
-        Assert.Equal(expectedSchool.Id, result.Id);
-        Assert.Equal(expectedSchool.URN, result.URN);
-        Assert.Equal(expectedSchool.UKPRN, result.UKPRN);
-        Assert.Equal(expectedSchool.EstablishmentNumber, result.EstablishmentNumber);
-        Assert.Equal(expectedSchool.Name, result.Name);
-        Assert.Equal(expectedSchool.Address.Street, result.Address.Street);
-        Assert.Equal(expectedSchool.Address.Locality, result.Address.Locality);
-        Assert.Equal(expectedSchool.Address.AddressThree, result.Address.AddressThree);
-        Assert.Equal(expectedSchool.Address.Town, result.Address.Town);
-        Assert.Equal(expectedSchool.Address.County, result.Address.County);
-        Assert.Equal(expectedSchool.Address.PostCode, result.Address.PostCode);
+        SchoolResponseAssertions.AssertMatches(expectedSchool, result);
     }
 
     [Theory]

@@ -134,4 +134,5 @@ public sealed class SchoolEndpointsOpenApiDocumentTests(
             Assert.Contains(expectedProperty, requiredProperties);
         }
     }
+
 }
