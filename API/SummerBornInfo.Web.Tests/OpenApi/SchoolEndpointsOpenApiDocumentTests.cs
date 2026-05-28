@@ -6,7 +6,7 @@ public sealed class SchoolEndpointsOpenApiDocumentTests(
     : WebIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
     [Fact]
-    public async Task GivenSchoolsCollectionOperation_WhenFetchedFromOpenApi_ThenParametersAndBadRequestMetadataArePresent()
+    public async Task GivenSchoolsCollectionOperation_WhenFetchedFromOpenApi_ThenParametersAndResponseMetadataMatchImplementedBehavior()
     {
         using var document = await GetOpenApiDocumentAsync();
         var getOperation = GetOperation(document, "/api/schools", "get");
@@ -20,7 +20,7 @@ public sealed class SchoolEndpointsOpenApiDocumentTests(
 
         var responses = getOperation.GetProperty("responses");
         Assert.True(responses.TryGetProperty("200", out var okResponse));
-        Assert.True(responses.TryGetProperty("400", out _));
+        Assert.False(responses.TryGetProperty("400", out _));
 
         var schemaReference = okResponse.GetProperty("content")
             .GetProperty("application/json")
@@ -48,8 +48,11 @@ public sealed class SchoolEndpointsOpenApiDocumentTests(
 
         var responses = getOperation.GetProperty("responses");
         Assert.True(responses.TryGetProperty("200", out var okResponse));
-        Assert.True(responses.TryGetProperty("400", out _));
-        Assert.True(responses.TryGetProperty("404", out _));
+        Assert.True(responses.TryGetProperty("400", out var badRequestResponse));
+        Assert.True(responses.TryGetProperty("404", out var notFoundResponse));
+
+        AssertProblemResponseSchema(badRequestResponse);
+        AssertProblemResponseSchema(notFoundResponse);
 
         var oneOfSchemas = okResponse.GetProperty("content")
             .GetProperty("application/json")
@@ -133,6 +136,18 @@ public sealed class SchoolEndpointsOpenApiDocumentTests(
         {
             Assert.Contains(expectedProperty, requiredProperties);
         }
+    }
+
+    private static void AssertProblemResponseSchema(JsonElement response)
+    {
+        var content = response.GetProperty("content")
+            .GetProperty("application/problem+json");
+        var schemaReference = content
+            .GetProperty("schema")
+            .GetProperty("$ref")
+            .GetString();
+
+        Assert.Equal("#/components/schemas/ProblemDetails", schemaReference);
     }
 
 }

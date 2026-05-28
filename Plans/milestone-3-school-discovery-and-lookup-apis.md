@@ -409,7 +409,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 - [x] Task 7 complete: Search pagination and cursor validation.
 - [x] Task 8 complete: OpenAPI and error metadata.
 - [x] Task 9 complete: Integration test coverage.
-- [ ] Task 10 pending: Documentation alignment.
+- [x] Task 10 complete: Documentation alignment.
 
 ## 9. Risks and Mitigations
 
@@ -459,18 +459,18 @@ This plan is delivery-ready for Milestone 3 with the search technology now fixed
 
 ## 11. Completion Checklist
 
-- [ ] `GET /api/schools` remains the public schools collection route and matches the corrected Milestone 1 request and response contract.
-- [ ] `GET /api/schools/search` exists as the public school discovery route and matches the corrected Milestone 1 request and response contract.
-- [ ] `GET /api/schools/search?urn=...` exists as the exact URN lookup shape and remains a distinct capability from plain collection discovery.
+- [x] `GET /api/schools` remains the public schools collection route and matches the corrected Milestone 1 request and response contract.
+- [x] `GET /api/schools/search` exists as the public school discovery route and matches the corrected Milestone 1 request and response contract.
+- [x] `GET /api/schools/search?urn=...` exists as the exact URN lookup shape and remains a distinct capability from plain collection discovery.
 - [x] Search matches school name and address or postcode fields.
 - [x] PostgreSQL full-text search plus `pg_trgm` support is implemented or configured as the foundation for text discovery.
-- [ ] Search storage uses stored generated search columns on `school`, including a weighted `search_vector` and normalized trigram helper columns required by the chosen query design.
-- [ ] Search normalization rules are explicitly implemented in SQL generation expressions, including postcode whitespace removal and lowercase trigram normalization.
-- [ ] Required `GIN` and `gin_trgm_ops` indexes exist for the generated full-text and trigram search columns.
+- [x] Search storage uses stored generated search columns on `school`, including a weighted `search_vector` and normalized trigram helper columns required by the chosen query design.
+- [x] Search normalization rules are explicitly implemented in SQL generation expressions, including postcode whitespace removal and lowercase trigram normalization.
+- [x] Required `GIN` and `gin_trgm_ops` indexes exist for the generated full-text and trigram search columns.
 - [x] The Aspire AppHost PostgreSQL environment supports the required full-text and `pg_trgm` extension setup.
 - [x] The Testcontainer PostgreSQL environment supports the required full-text and `pg_trgm` extension setup.
 - [x] A shared PostgreSQL bootstrap component owns `pg_trgm` creation and validation in both environments before `EnsureCreatedAsync`.
-- [ ] The chosen text-search technology is documented with rationale.
+- [x] The chosen text-search technology is documented with rationale.
 - [x] The generated `search_vector` uses PostgreSQL's `simple` text search configuration.
 - [x] Free-text discovery uses `plainto_tsquery` for the primary full-text query contract.
 - [x] Fragment-oriented trigram discovery uses `word_similarity`-style matching consistently across implementation and tests.
@@ -478,15 +478,15 @@ This plan is delivery-ready for Milestone 3 with the search technology now fixed
 - [x] Search returns `200 OK` with an empty `schools` collection when no schools match.
 - [x] Blank `q` returns `400 Bad Request` when search behaviour is invoked.
 - [x] Free-text search terms shorter than 4 characters return `400 Bad Request`.
-- [ ] Free-text search continuation uses opaque encoded cursor values in the existing `cursor` and `nextCursor` fields.
-- [ ] Invalid, undecodable, or incompatible search cursor values return `400 Bad Request`.
-- [ ] Invalid `pageSize` values return `400 Bad Request`.
-- [ ] Invalid URN input returns `400 Bad Request`.
-- [ ] Unknown URN values return `404 Not Found`.
-- [ ] Discovery responses use the full Milestone 1 school response shape.
-- [ ] Discovery responses include canonical `id`.
-- [ ] Discovery responses expose `urn` as the agreed integer HTTP contract field.
-- [ ] The existing `GET /api/schools` contract remains part of the supported public API surface.
+- [x] Free-text search continuation uses opaque encoded cursor values in the existing `cursor` and `nextCursor` fields.
+- [x] Invalid, undecodable, or incompatible search cursor values return `400 Bad Request`.
+- [x] Invalid `pageSize` values return `400 Bad Request`.
+- [x] Invalid URN input returns `400 Bad Request`.
+- [x] Unknown URN values return `404 Not Found`.
+- [x] Discovery responses use the full Milestone 1 school response shape.
+- [x] Discovery responses include canonical `id`.
+- [x] Discovery responses expose `urn` as the agreed integer HTTP contract field.
+- [x] The existing `GET /api/schools` contract remains part of the supported public API surface.
 - [x] Generated OpenAPI output documents the collection route and discovery route with their expected parameters and error responses.
 - [x] Integration tests cover successful and failing search and URN lookup behaviours.
-- [ ] API documentation reflects the supported school discovery surface.
+- [x] API documentation reflects the supported school discovery surface.

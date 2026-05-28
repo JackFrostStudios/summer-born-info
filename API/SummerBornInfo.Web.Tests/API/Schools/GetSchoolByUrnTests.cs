@@ -28,6 +28,9 @@ public sealed class GetSchoolByUrnTests(
     [InlineData("/api/schools/search?urn=abc")]
     [InlineData("/api/schools/search?urn=")]
     [InlineData("/api/schools/search?urn=0")]
+    [InlineData("/api/schools/search?urn=123456&cursor=bad")]
+    [InlineData("/api/schools/search?urn=123456&pageSize=0")]
+    [InlineData("/api/schools/search?urn=123456&cursor=bad&pageSize=0")]
     public async Task GivenUrnIsInvalid_WhenGetSchoolByUrn_ThenReturnsBadRequest(string requestUri)
     {
         var client = Factory.CreateClient();
@@ -35,6 +38,10 @@ public sealed class GetSchoolByUrnTests(
         var response = await client.GetAsync(requestUri, TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        await AssertProblemDetailsAsync(
+            response,
+            HttpStatusCode.BadRequest,
+            "Invalid school discovery request.");
     }
 
     [Fact]
@@ -46,6 +53,10 @@ public sealed class GetSchoolByUrnTests(
         var response = await client.GetAsync("/api/schools/search?urn=999999", TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        await AssertProblemDetailsAsync(
+            response,
+            HttpStatusCode.NotFound,
+            "School not found.");
     }
 
     private async Task SeedSchoolsAsync(params School[] schools)
@@ -54,5 +65,20 @@ public sealed class GetSchoolByUrnTests(
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         dbContext.Schools.AddRange(schools);
         _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+    }
+
+    private static async Task AssertProblemDetailsAsync(
+        HttpResponseMessage response,
+        HttpStatusCode expectedStatusCode,
+        string expectedTitle)
+    {
+        Assert.Equal("application/problem+json", response.Content.Headers.ContentType?.MediaType);
+
+        var problem = await response.Content.ReadFromJsonAsync<Microsoft.AspNetCore.Mvc.ProblemDetails>(
+            TestContext.Current.CancellationToken);
+
+        Assert.NotNull(problem);
+        Assert.Equal((int)expectedStatusCode, problem.Status);
+        Assert.Equal(expectedTitle, problem.Title);
     }
 }

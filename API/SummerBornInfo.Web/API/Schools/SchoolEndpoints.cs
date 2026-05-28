@@ -2,6 +2,9 @@ namespace SummerBornInfo.Web.API.Schools;
 
 public static class SchoolEndpoints
 {
+    private const string InvalidDiscoveryRequestTitle = "Invalid school discovery request.";
+    private const string SchoolNotFoundTitle = "School not found.";
+
     public static void RegisterSchoolEndpoints(this IEndpointRouteBuilder endpoints)
     {
         var schools = endpoints.MapGroup("/api/schools");
@@ -35,7 +38,14 @@ public static class SchoolEndpoints
 
             if (hasUrn && hasQuery)
             {
-                return Results.BadRequest("Specify exactly one of q or urn.");
+                return CreateInvalidDiscoveryRequest(
+                    "Specify exactly one of q or urn.");
+            }
+
+            if (hasUrn && (cursor is not null || pageSize is not null))
+            {
+                return CreateInvalidDiscoveryRequest(
+                    "cursor and pageSize are not supported when looking up a school by urn.");
             }
 
             if (hasUrn)
@@ -68,11 +78,13 @@ public static class SchoolEndpoints
     {
         if (!SummerBornInfo.Features.Schools.Queries.GetSchoolByUrn.GetSchoolByUrnQueryValidator.TryValidate(urn, out var query))
         {
-            return Results.BadRequest("URN must be a valid integer.");
+            return CreateInvalidDiscoveryRequest("URN must be a valid integer.");
         }
 
         var response = await handler.ExecuteAsync(query, cancellationToken);
-        return response is null ? Results.NotFound() : Results.Ok(response);
+        return response is null
+            ? CreateSchoolNotFound("No school was found for the supplied URN.")
+            : Results.Ok(response);
     }
 
     private static async Task<IResult> SearchSchoolsAsync(
@@ -84,10 +96,27 @@ public static class SchoolEndpoints
     {
         if (!SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryValidator.TryValidate(q, cursor, pageSize, out var query))
         {
-            return Results.BadRequest("q must be at least 4 non-whitespace characters, pageSize must be between 1 and 200, and cursor must be a valid search continuation token.");
+            return CreateInvalidDiscoveryRequest(
+                "q must be at least 4 non-whitespace characters, pageSize must be between 1 and 200, and cursor must be a valid search continuation token.");
         }
 
         var response = await handler.ExecuteAsync(query, cancellationToken);
         return Results.Ok(response);
+    }
+
+    private static IResult CreateInvalidDiscoveryRequest(string detail)
+    {
+        return Results.Problem(
+            detail: detail,
+            statusCode: StatusCodes.Status400BadRequest,
+            title: InvalidDiscoveryRequestTitle);
+    }
+
+    private static IResult CreateSchoolNotFound(string detail)
+    {
+        return Results.Problem(
+            detail: detail,
+            statusCode: StatusCodes.Status404NotFound,
+            title: SchoolNotFoundTitle);
     }
 }

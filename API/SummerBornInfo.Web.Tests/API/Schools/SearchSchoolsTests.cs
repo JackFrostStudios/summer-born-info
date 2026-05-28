@@ -121,6 +121,35 @@ public sealed class SearchSchoolsTests(
     }
 
     [Fact]
+    public async Task GivenTypoTolerantNameMatch_WhenGetSchoolsSearch_ThenReturnsMatchingSchool()
+    {
+        var expectedSchool = CreateSchool(
+            id: Guid.Parse("00000000-0000-0000-0000-000000000050"),
+            urn: 100050,
+            ukprn: 200050,
+            establishmentNumber: 3050,
+            name: "Amber Hill School",
+            street: "50 Cedar Road",
+            locality: "Northside",
+            addressThree: null,
+            town: "York",
+            county: "North Yorkshire",
+            postCode: "YO1 1AD");
+
+        await SeedSchoolsAsync(expectedSchool);
+
+        var client = Factory.CreateClient();
+        var response = await client.GetAsync("/api/schools/search?q=ambr", TestContext.Current.CancellationToken);
+
+        _ = response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<SchoolsResponse>(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(result);
+        var school = Assert.Single(result.Schools);
+        Assert.Equal(expectedSchool.Id, school.Id);
+    }
+
+    [Fact]
     public async Task GivenNoSchoolsMatch_WhenGetSchoolsSearch_ThenReturnsEmptyPage()
     {
         await SeedSchoolsAsync(
@@ -195,6 +224,7 @@ public sealed class SearchSchoolsTests(
         var response = await client.GetAsync(requestUri, TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        await AssertProblemDetailsAsync(response);
     }
 
     [Fact]
@@ -216,6 +246,7 @@ public sealed class SearchSchoolsTests(
             TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.BadRequest, incompatibleResponse.StatusCode);
+        await AssertProblemDetailsAsync(incompatibleResponse);
     }
 
     private static (School FirstSchool, School SecondSchool, School ThirdSchool) CreateAmberPaginationSchools()
@@ -369,5 +400,17 @@ public sealed class SearchSchoolsTests(
                 Name = $"Open {urnText}",
             },
         };
+    }
+
+    private static async Task AssertProblemDetailsAsync(HttpResponseMessage response)
+    {
+        Assert.Equal("application/problem+json", response.Content.Headers.ContentType?.MediaType);
+
+        var problem = await response.Content.ReadFromJsonAsync<Microsoft.AspNetCore.Mvc.ProblemDetails>(
+            TestContext.Current.CancellationToken);
+
+        Assert.NotNull(problem);
+        Assert.Equal(StatusCodes.Status400BadRequest, problem.Status);
+        Assert.Equal("Invalid school discovery request.", problem.Title);
     }
 }

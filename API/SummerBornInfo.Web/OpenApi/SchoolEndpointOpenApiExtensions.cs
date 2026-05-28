@@ -9,8 +9,7 @@ public static class SchoolEndpointOpenApiExtensions
     public static RouteHandlerBuilder AddSchoolCollectionOpenApiMetadata(this RouteHandlerBuilder builder)
     {
         return builder
-            .Produces<SchoolsResponse>(StatusCodes.Status200OK)
-            .ProducesProblem(StatusCodes.Status400BadRequest);
+            .Produces<SchoolsResponse>(StatusCodes.Status200OK);
     }
 
     public static RouteHandlerBuilder AddSchoolSearchOpenApiMetadata(this RouteHandlerBuilder builder)
