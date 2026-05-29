@@ -59,6 +59,8 @@ public sealed class GetNearbySchoolsTests(
 
         Assert.NotNull(result);
         Assert.Equal([scenario.ClosestSchool.Id, scenario.TiedSecondSchool.Id], [.. result.Schools.Select(school => school.Id)]);
+        SchoolResponseAssertions.AssertMatches(scenario.ClosestSchool, result.Schools[0]);
+        SchoolResponseAssertions.AssertMatches(scenario.TiedSecondSchool, result.Schools[1]);
         Assert.All(result.Schools, school => Assert.NotNull(school.Latitude));
         Assert.DoesNotContain(result.Schools, school => school.Id == scenario.MissingLocationSchool.Id);
         Assert.DoesNotContain(result.Schools, school => school.Id == scenario.OutsideRadiusSchool.Id);
@@ -98,6 +100,7 @@ public sealed class GetNearbySchoolsTests(
 
         Assert.NotNull(secondPage);
         Assert.Equal([scenario.TiedThirdSchool.Id], [.. secondPage.Schools.Select(school => school.Id)]);
+        SchoolResponseAssertions.AssertMatches(scenario.TiedThirdSchool, Assert.Single(secondPage.Schools));
         Assert.Null(secondPage.NextCursor);
     }
 
@@ -119,6 +122,7 @@ public sealed class GetNearbySchoolsTests(
 
     [Theory]
     [InlineData("/api/schools/nearby?latitude=53.8009&longitude=-1.5491&radiusMiles=5&pageSize=10&cursor={0}")]
+    [InlineData("/api/schools/nearby?latitude=53.8008&longitude=-1.5492&radiusMiles=5&pageSize=10&cursor={0}")]
     [InlineData("/api/schools/nearby?latitude=53.8008&longitude=-1.5491&radiusMiles=6&pageSize=10&cursor={0}")]
     [InlineData("/api/schools/nearby?latitude=53.8008&longitude=-1.5491&radiusMiles=5&pageSize=9&cursor={0}")]
     public async Task GivenNearbyCursorReplayIsIncompatible_WhenGetNearbySchools_ThenReturnsBadRequest(string requestUriTemplate)
@@ -138,6 +142,9 @@ public sealed class GetNearbySchoolsTests(
     }
 
     [Theory]
+    [InlineData("/api/schools/nearby?longitude=-1.5491&radiusMiles=5")]
+    [InlineData("/api/schools/nearby?latitude=53.8008&radiusMiles=5")]
+    [InlineData("/api/schools/nearby?latitude=53.8008&longitude=-1.5491")]
     [InlineData("/api/schools/nearby")]
     [InlineData("/api/schools/nearby?latitude=91&longitude=-1.5491&radiusMiles=5")]
     [InlineData("/api/schools/nearby?latitude=-91&longitude=-1.5491&radiusMiles=5")]

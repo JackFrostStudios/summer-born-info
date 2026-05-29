@@ -352,7 +352,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 - [x] Task 6 complete: Nearby-search query implementation committed.
 - [x] Task 7 complete: Nearby pagination and cursor continuation committed.
 - [x] Task 8 complete: OpenAPI and error metadata committed.
-- [ ] Task 9 complete: Integration and infrastructure verification committed.
+- [x] Task 9 complete: Integration and infrastructure verification committed.
 - [ ] Task 10 complete: Documentation alignment committed.
 
 ## 9. Risks and Mitigations
@@ -412,17 +412,17 @@ This plan is delivery-ready for Milestone 4 with the spatial technology decision
 - [x] Nearby search orders results deterministically by ascending distance with a stable tie-breaker.
 - [x] Nearby-search pagination uses opaque cursor values in the existing `cursor` and `nextCursor` contract fields.
 - [x] Nearby-search cursors are rejected when replayed against incompatible `latitude`, `longitude`, `radiusMiles`, or paging inputs.
-- [ ] Schools persist a canonical PostGIS-backed point location suitable for radius queries.
-- [ ] EF Core maps the school location through `NetTopologySuite`.
-- [ ] The application database model declares the `postgis` extension requirement.
-- [ ] The shared PostgreSQL bootstrap component creates and validates both `pg_trgm` and `postgis`.
-- [ ] The local development PostgreSQL environment supports the spatial extension before schema creation.
-- [ ] The integration-test PostgreSQL environment supports the spatial extension before schema creation.
-- [ ] The school spatial column and spatial index exist in the generated schema.
+- [x] Schools persist a canonical PostGIS-backed point location suitable for radius queries.
+- [x] EF Core maps the school location through `NetTopologySuite`.
+- [x] The application database model declares the `postgis` extension requirement.
+- [x] The shared PostgreSQL bootstrap component creates and validates both `pg_trgm` and `postgis`.
+- [x] The local development PostgreSQL environment supports the spatial extension before schema creation.
+- [x] The integration-test PostgreSQL environment supports the spatial extension before schema creation.
+- [x] The school spatial column and spatial index exist in the generated schema.
 - [ ] Import or ingestion paths parse `Easting` and `Northing`, convert them to WGS84 longitude and latitude, and persist valid source coordinates into the canonical school location field.
 - [ ] Schools without valid stored coordinates are excluded from nearby results in a documented, predictable way.
 - [x] The shared public school DTO used by collection, search, URN lookup, and nearby responses includes map-usable latitude and longitude fields.
 - [x] Generated OpenAPI output documents `GET /api/schools/nearby` and its validation behaviour.
-- [ ] Integration tests cover successful, empty, invalid-input, and multi-page nearby-search behaviour.
-- [ ] Infrastructure tests cover PostGIS bootstrap and schema artifacts.
+- [x] Integration tests cover successful, empty, invalid-input, and multi-page nearby-search behaviour.
+- [x] Infrastructure tests cover PostGIS bootstrap and schema artifacts.
 - [ ] API documentation reflects the supported nearby-search surface and spatial technology choice.

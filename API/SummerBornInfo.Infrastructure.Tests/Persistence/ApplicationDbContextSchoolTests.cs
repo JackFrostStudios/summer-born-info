@@ -87,6 +87,29 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
     }
 
     [Fact]
+    public async Task GivenSchoolHasLocation_WhenPersisted_ThenSpatialPointRoundTripsThroughPostGisMapping()
+    {
+        // Arrange
+        var dbContext = CreateDbContext();
+        var school = SchoolFactory.GetSchool();
+        school.Location = new NetTopologySuite.Geometries.Point(-1.5491d, 53.8008d) { SRID = 4326 };
+
+        // Act
+        _ = dbContext.Schools.Add(school);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        dbContext.ChangeTracker.Clear();
+        var savedSchool = await dbContext.Schools.FindAsync([school.Id], TestContext.Current.CancellationToken);
+
+        Assert.NotNull(savedSchool);
+        Assert.NotNull(savedSchool.Location);
+        Assert.Equal(4326, savedSchool.Location.SRID);
+        Assert.Equal(school.Location.X, savedSchool.Location.X, precision: 6);
+        Assert.Equal(school.Location.Y, savedSchool.Location.Y, precision: 6);
+    }
+
+    [Fact]
     public async Task GivenNewSchool_WhenInsertingToDatabase_ThenRecordCanBeRetrieved()
     {
         // Arrange

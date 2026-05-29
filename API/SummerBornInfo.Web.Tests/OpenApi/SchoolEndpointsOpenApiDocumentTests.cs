@@ -162,6 +162,10 @@ public sealed class SchoolEndpointsOpenApiDocumentTests(
         Assert.Equal("#/components/schemas/SchoolAddressResponse", addressProperty.GetProperty("$ref").GetString());
         Assert.True(schoolResponseProperties.TryGetProperty("urn", out _));
         Assert.True(schoolResponseProperties.TryGetProperty("ukprn", out _));
+        Assert.True(schoolResponseProperties.TryGetProperty("latitude", out var latitudeProperty));
+        Assert.True(schoolResponseProperties.TryGetProperty("longitude", out var longitudeProperty));
+        AssertSchemaType(latitudeProperty, "number");
+        AssertSchemaType(longitudeProperty, "number");
     }
 
     private async Task<JsonDocument> GetOpenApiDocumentAsync()
