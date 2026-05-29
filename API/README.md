@@ -50,7 +50,7 @@ dotnet run --project SummerBornInfo.AppHost/SummerBornInfo.AppHost.AppHost/Summe
 
 ## Public School Discovery
 
-Milestone 3 keeps the public school surface grouped under `/api/schools`, but it does not overload the collection route with search modes.
+The public school surface stays grouped under `/api/schools`, with separate routes for collection traversal, text discovery, exact URN lookup, and nearby search.
 
 ### `GET /api/schools`
 
@@ -62,7 +62,9 @@ Use `GET /api/schools` for plain collection traversal only. It returns the share
     {
       "id": "00000000-0000-0000-0000-000000000001",
       "urn": 100001,
-      "name": "Northbridge Primary"
+      "name": "Northbridge Primary",
+      "latitude": 53.8008,
+      "longitude": -1.5491
     }
   ],
   "nextCursor": "00000000-0000-0000-0000-000000000001"
@@ -84,6 +86,22 @@ Use `GET /api/schools/search` with `q` for free-text school discovery across sch
 - A valid search with no matches returns `200 OK` with `"schools": []` and `"nextCursor": null`.
 - Supplying blank `q`, a short query, an invalid cursor, or both `q` and `urn` returns `400 Bad Request`.
 
+### `GET /api/schools/nearby?latitude=...&longitude=...&radiusMiles=...`
+
+Use `GET /api/schools/nearby` for radius-based school discovery around a caller-supplied point. Successful responses use the same `{ schools, nextCursor }` wrapper as the collection and free-text search routes.
+
+- `latitude`, `longitude`, and `radiusMiles` are required.
+- `latitude` must be between `-90` and `90`.
+- `longitude` must be between `-180` and `180`.
+- `radiusMiles` must be greater than `0` and no more than `100`.
+- `pageSize` is optional and must be between `1` and `200` when supplied.
+- `cursor`, when supplied, must be the opaque `nextCursor` returned by an earlier nearby search for the same `latitude`, `longitude`, `radiusMiles`, and compatible paging inputs.
+- Nearby cursors are bound to the original search inputs. Replaying a cursor against a different point, radius, or incompatible page size returns `400 Bad Request`.
+- A valid nearby search with no matches returns `200 OK` with `"schools": []` and `"nextCursor": null`.
+- Nearby results exclude schools that do not have a persisted canonical location, so a school can appear in collection or text-search results without appearing in nearby results.
+
+Nearby responses reuse the shared `SchoolResponse` shape returned by the other public school GET routes. That DTO now includes `latitude` and `longitude` when the school has a persisted canonical location, and `null` values when it does not.
+
 ### `GET /api/schools/search?urn=...`
 
 Use `GET /api/schools/search?urn=...` for exact URN lookup. This is a distinct query mode on the discovery route and returns a single full `SchoolResponse` object rather than the collection wrapper.
@@ -100,6 +118,16 @@ The current search implementation uses PostgreSQL full-text search together with
 - trigram matching uses `word_similarity` to support partial-name, address-fragment, postcode-fragment, and mild typo-tolerant discovery that plain full-text search would miss.
 
 This hybrid approach was chosen over plain SQL `LIKE` matching because it gives materially better ranking and fragment matching, and over a separate search service because Milestone 3 can meet its discovery needs within the existing PostgreSQL stack.
+
+### Nearby search implementation notes
+
+Nearby search uses PostgreSQL `PostGIS` together with EF Core `NetTopologySuite`.
+
+- Each school's canonical search location is stored as a PostGIS-backed `geography(Point, 4326)` value.
+- Imported `Easting` and `Northing` values are converted to WGS84 longitude and latitude before that canonical point is persisted.
+- The API exposes those persisted coordinates back through the shared `SchoolResponse` contract as `latitude` and `longitude`; it does not expose raw spatial database types.
+- Radius filtering and distance ordering run in PostgreSQL rather than in application memory, which keeps the nearby route aligned with the repository's PostgreSQL-first search approach.
+- Schools without a persisted canonical location are intentionally excluded from nearby results instead of being assigned guessed coordinates at query time.
 
 ## Admin Authentication and Bootstrap
 
