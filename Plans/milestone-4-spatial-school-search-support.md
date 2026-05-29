@@ -351,7 +351,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 - [x] Task 5 complete: Nearby-search route contract committed.
 - [x] Task 6 complete: Nearby-search query implementation committed.
 - [x] Task 7 complete: Nearby pagination and cursor continuation committed.
-- [ ] Task 8 complete: OpenAPI and error metadata committed.
+- [x] Task 8 complete: OpenAPI and error metadata committed.
 - [ ] Task 9 complete: Integration and infrastructure verification committed.
 - [ ] Task 10 complete: Documentation alignment committed.
 
@@ -422,7 +422,7 @@ This plan is delivery-ready for Milestone 4 with the spatial technology decision
 - [ ] Import or ingestion paths parse `Easting` and `Northing`, convert them to WGS84 longitude and latitude, and persist valid source coordinates into the canonical school location field.
 - [ ] Schools without valid stored coordinates are excluded from nearby results in a documented, predictable way.
 - [x] The shared public school DTO used by collection, search, URN lookup, and nearby responses includes map-usable latitude and longitude fields.
-- [ ] Generated OpenAPI output documents `GET /api/schools/nearby` and its validation behaviour.
+- [x] Generated OpenAPI output documents `GET /api/schools/nearby` and its validation behaviour.
 - [ ] Integration tests cover successful, empty, invalid-input, and multi-page nearby-search behaviour.
 - [ ] Infrastructure tests cover PostGIS bootstrap and schema artifacts.
 - [ ] API documentation reflects the supported nearby-search surface and spatial technology choice.

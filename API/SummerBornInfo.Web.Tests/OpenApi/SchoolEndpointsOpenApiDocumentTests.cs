@@ -3,7 +3,7 @@ namespace SummerBornInfo.Web.Tests.OpenApi;
 public sealed class SchoolEndpointsOpenApiDocumentTests(
     IntegrationTestDatabaseServerFixture testDatabaseServerFixture,
     ITestOutputHelper testOutputHelper)
-    : WebIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
+    : SummerBornInfo.Web.Tests.API.Schools.SchoolApiIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
     [Fact]
     public async Task GivenSchoolsCollectionOperation_WhenFetchedFromOpenApi_ThenParametersAndResponseMetadataMatchImplementedBehavior()
@@ -62,6 +62,64 @@ public sealed class SchoolEndpointsOpenApiDocumentTests(
             .ToArray();
 
         Assert.Equal(2, oneOfSchemas.Length);
+    }
+
+    [Fact]
+    public async Task GivenNearbySchoolOperation_WhenFetchedFromOpenApi_ThenParametersAndResponseMetadataMatchContract()
+    {
+        using var document = await GetOpenApiDocumentAsync();
+        var getOperation = GetOperation(document, "/api/schools/nearby", "get");
+        var parameters = getOperation.GetProperty("parameters")
+            .EnumerateArray()
+            .ToArray();
+
+        AssertParameter(
+            parameters,
+            "latitude",
+            "query",
+            isRequired: true,
+            schemaType: "number",
+            descriptionContains: "-90");
+        AssertParameter(
+            parameters,
+            "longitude",
+            "query",
+            isRequired: true,
+            schemaType: "number",
+            descriptionContains: "-180");
+        AssertParameter(
+            parameters,
+            "radiusMiles",
+            "query",
+            isRequired: true,
+            schemaType: "number",
+            descriptionContains: "100");
+        AssertParameter(
+            parameters,
+            "cursor",
+            "query",
+            isRequired: false,
+            schemaType: "string",
+            descriptionContains: "opaque");
+        AssertParameter(
+            parameters,
+            "pageSize",
+            "query",
+            isRequired: false,
+            schemaType: "integer",
+            descriptionContains: "200");
+
+        var responses = getOperation.GetProperty("responses");
+        Assert.True(responses.TryGetProperty("200", out var okResponse));
+        Assert.True(responses.TryGetProperty("400", out var badRequestResponse));
+        Assert.False(responses.TryGetProperty("404", out _));
+
+        var schema = okResponse.GetProperty("content")
+            .GetProperty("application/json")
+            .GetProperty("schema");
+
+        AssertSchoolsResponseSchema(schema);
+        AssertProblemResponseSchema(badRequestResponse);
     }
 
     [Fact]
@@ -150,4 +208,68 @@ public sealed class SchoolEndpointsOpenApiDocumentTests(
         Assert.Equal("#/components/schemas/ProblemDetails", schemaReference);
     }
 
+    private static void AssertSchoolsResponseSchema(JsonElement schema)
+    {
+        if (schema.TryGetProperty("$ref", out var schemaReference))
+        {
+            Assert.Equal("#/components/schemas/SchoolsResponse", schemaReference.GetString());
+            return;
+        }
+
+        if (schema.TryGetProperty("allOf", out var allOfSchemas))
+        {
+            var referencedSchema = allOfSchemas
+                .EnumerateArray()
+                .FirstOrDefault(item => item.TryGetProperty("$ref", out _));
+
+            if (referencedSchema.ValueKind != JsonValueKind.Undefined)
+            {
+                Assert.Equal("#/components/schemas/SchoolsResponse", referencedSchema.GetProperty("$ref").GetString());
+                return;
+            }
+        }
+
+        var properties = schema.GetProperty("properties");
+        Assert.True(properties.TryGetProperty("schools", out var schoolsProperty));
+        Assert.True(properties.TryGetProperty("nextCursor", out _));
+        Assert.True(schoolsProperty.TryGetProperty("type", out var schoolsType));
+        Assert.Equal("array", schoolsType.GetString());
+    }
+
+    private static void AssertParameter(
+        JsonElement[] parameters,
+        string name,
+        string location,
+        bool isRequired,
+        string schemaType,
+        string descriptionContains)
+    {
+        var parameter = parameters.Single(parameter =>
+            string.Equals(parameter.GetProperty("name").GetString(), name, StringComparison.Ordinal));
+
+        Assert.Equal(location, parameter.GetProperty("in").GetString());
+        var actualIsRequired = parameter.TryGetProperty("required", out var requiredProperty)
+            && requiredProperty.GetBoolean();
+        Assert.Equal(isRequired, actualIsRequired);
+        Assert.Contains(
+            descriptionContains,
+            parameter.GetProperty("description").GetString(),
+            StringComparison.OrdinalIgnoreCase);
+        AssertSchemaType(parameter.GetProperty("schema"), schemaType);
+    }
+
+    private static void AssertSchemaType(JsonElement schema, string expectedType)
+    {
+        var typeProperty = schema.GetProperty("type");
+
+        if (typeProperty.ValueKind == JsonValueKind.String)
+        {
+            Assert.Equal(expectedType, typeProperty.GetString());
+            return;
+        }
+
+        Assert.Contains(
+            typeProperty.EnumerateArray().Select(item => item.GetString()),
+            typeName => string.Equals(typeName, expectedType, StringComparison.Ordinal));
+    }
 }

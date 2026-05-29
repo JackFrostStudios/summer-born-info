@@ -64,8 +64,7 @@ public static class SchoolEndpoints
     private static RouteGroupBuilder MapGetNearbySchools(this RouteGroupBuilder builder)
     {
         _ = builder.MapGet("/nearby", GetNearbySchoolsAsync)
-            .AddSchoolCollectionOpenApiMetadata()
-            .ProducesProblem(StatusCodes.Status400BadRequest);
+            .AddNearbySchoolOpenApiMetadata();
 
         return builder;
     }
