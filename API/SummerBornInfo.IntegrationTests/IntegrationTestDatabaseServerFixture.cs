@@ -1,10 +1,11 @@
 using DotNet.Testcontainers.Builders;
-
+using System.Diagnostics.CodeAnalysis;
 namespace SummerBornInfo.TestFramework;
 
 public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
 {
     private const string PostgreSqlImageName = "summerborninfo-postgres-postgis-pgmq:task-2";
+    private const string PostgreSqlImageBuildMutexName = @"Global\summerborninfo-postgres-postgis-pgmq-task-2-build";
     private static readonly string PostgreSqlDockerfileDirectory = Path.GetFullPath(
         Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "SummerBornInfo.AppHost", "Postgres"));
 
@@ -33,7 +34,9 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
             .WithDeleteIfExists(deleteIfExists: false)
             .Build();
 
-        await postgreSqlImage.CreateAsync(TestContext.Current.CancellationToken);
+        await CreatePostgreSqlImageAsync(
+            createImageAsync: ct => postgreSqlImage.CreateAsync(ct),
+            TestContext.Current.CancellationToken);
 
         await _postgreSqlContainer.StartAsync(TestContext.Current.CancellationToken);
         ConnectionString = _postgreSqlContainer.GetConnectionString();
@@ -62,5 +65,49 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
     public async ValueTask DisposeAsync()
     {
         await _postgreSqlContainer.DisposeAsync();
+    }
+
+    // Visual Studio can start multiple test hosts in parallel, and Testcontainers packages the shared
+    // Docker build context through one temp archive path, so concurrent image creation races on that file.
+    private static async Task CreatePostgreSqlImageAsync(Func<CancellationToken, Task> createImageAsync, CancellationToken cancellationToken)
+    {
+        await Task.Run(() =>
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            using var mutex = new Mutex(initiallyOwned: false, PostgreSqlImageBuildMutexName);
+            var acquired = false;
+
+            try
+            {
+                try
+                {
+                    acquired = mutex.WaitOne(TimeSpan.FromMinutes(2));
+                }
+                catch (AbandonedMutexException)
+                {
+                    acquired = true;
+                }
+
+                if (!acquired)
+                {
+                    throw new TimeoutException("Timed out waiting to acquire the PostgreSQL test image build mutex.");
+                }
+
+                RunImageCreationSynchronously(createImageAsync, cancellationToken);
+            }
+            finally
+            {
+                if (acquired)
+                {
+                    mutex.ReleaseMutex();
+                }
+            }
+        }, cancellationToken);
+    }
+
+    [SuppressMessage("Usage", "MA0042:Prefer using 'await'", Justification = "Named mutex ownership is thread-affine, so acquire, build, and release must stay on the same worker thread.")]
+    private static void RunImageCreationSynchronously(Func<CancellationToken, Task> createImageAsync, CancellationToken cancellationToken)
+    {
+        createImageAsync(cancellationToken).GetAwaiter().GetResult();
     }
 }
