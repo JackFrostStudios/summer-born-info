@@ -296,10 +296,10 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         var dbContext = CreateDbContext();
         SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
         await using var csvStream = CreateCsvStream(
-            "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\"",
-            "\"100000\",\"3614\",\"The Aldgate School\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\"",
-            "\"INVALID\",\"1045\",\"Broken School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\"",
-            "\"100004\",\"1045\",\"Sherborne Nursery School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\"");
+            "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\",\"Easting\",\"Northing\"",
+            "\"100000\",\"3614\",\"The Aldgate School\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\",\"533523\",\"181201\"",
+            "\"INVALID\",\"1045\",\"Broken School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\",\"528515\",\"184869\"",
+            "\"100004\",\"1045\",\"Sherborne Nursery School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\",\"528515\",\"184869\"");
 
         // Act
         var results = await importer.ImportAsync(_testRequestId, csvStream, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
@@ -335,8 +335,8 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         var dbContext = CreateDbContext();
         SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
         await using var csvStream = CreateCsvStream(
-            "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\"",
-            "\"INVALID\",\"1045\",\"Broken School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\"");
+            "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\",\"Easting\",\"Northing\"",
+            "\"INVALID\",\"1045\",\"Broken School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\",\"528515\",\"184869\"");
 
         // Act
         var results = await importer.ImportAsync(_testRequestId, csvStream, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
@@ -374,7 +374,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     }
 
     [Fact]
-    public async Task GivenExistingSchoolWithLocation_WhenReimportedWithoutValidCoordinates_ThenLocationIsCleared()
+    public async Task GivenExistingSchoolsWithLocation_WhenReimportedWithoutUsableCoordinates_ThenExistingLocationsArePreserved()
     {
         // Arrange
         var firstImportDbContext = CreateDbContext();
@@ -388,7 +388,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         await using var secondCsvStream = CreateCsvStream(
             "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\",\"Easting\",\"Northing\"",
             "\"100000\",\"3614\",\"The Aldgate School Updated\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\",\"\",\"\"",
-            "\"100004\",\"1045\",\"Sherborne Nursery School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\",\"528515\",\"184869\"");
+            "\"100004\",\"1045\",\"Sherborne Nursery School Updated\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\",\"invalid\",\"184869\"");
 
         // Act
         var secondResults = await secondImporter.ImportAsync(_testRequestId, secondCsvStream, TestContext.Current.CancellationToken)
@@ -399,11 +399,43 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         Assert.All(secondResults, result => Assert.True(result.Succeeded));
 
         var verifyDbContext = CreateDbContext();
-        var school = await verifyDbContext.Set<School>()
-            .SingleAsync(s => s.URN == 100000, TestContext.Current.CancellationToken);
+        var schools = await verifyDbContext.Set<School>()
+            .OrderBy(s => s.URN)
+            .ToListAsync(TestContext.Current.CancellationToken);
 
-        Assert.Equal("The Aldgate School Updated", school.Name);
-        Assert.Null(school.Location);
+        var aldgateSchool = Assert.Single(schools, s => s.URN == 100000);
+        Assert.Equal("The Aldgate School Updated", aldgateSchool.Name);
+        AssertLocationInRange(aldgateSchool.Location, minLongitude: -0.09, maxLongitude: -0.06, minLatitude: 51.50, maxLatitude: 51.53);
+
+        var sherborneSchool = Assert.Single(schools, s => s.URN == 100004);
+        Assert.Equal("Sherborne Nursery School Updated", sherborneSchool.Name);
+        AssertLocationInRange(sherborneSchool.Location, minLongitude: -0.17, maxLongitude: -0.13, minLatitude: 51.53, maxLatitude: 51.56);
+    }
+
+    [Fact]
+    public async Task GivenCsvStreamMissingCoordinateColumns_WhenImportAsync_ThenRowParsingFails()
+    {
+        // Arrange
+        var dbContext = CreateDbContext();
+        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        await using var csvStream = CreateCsvStream(
+            "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\"",
+            "\"100000\",\"3614\",\"The Aldgate School\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\"");
+
+        // Act
+        var results = await importer.ImportAsync(_testRequestId, csvStream, TestContext.Current.CancellationToken)
+            .ToListAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        var failure = Assert.Single(results);
+        Assert.False(failure.Succeeded);
+        Assert.Equal(2, failure.LineNumber);
+        Assert.NotNull(failure.ErrorMessage);
+        Assert.Contains("Unable to parse CSV row.", failure.ErrorMessage, StringComparison.Ordinal);
+        Assert.Contains("Easting", failure.ErrorMessage, StringComparison.Ordinal);
+
+        var verifyDbContext = CreateDbContext();
+        Assert.Empty(await verifyDbContext.Set<School>().ToListAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]

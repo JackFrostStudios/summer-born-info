@@ -53,8 +53,8 @@ internal sealed record SchoolCsvFields
             Town = ParseString(row, "Town"),
             County = ParseString(row, "County (name)"),
             Postcode = ParseString(row, "Postcode"),
-            Easting = ParseOptionalString(row, "Easting"),
-            Northing = ParseOptionalString(row, "Northing"),
+            Easting = ParseString(row, "Easting"),
+            Northing = ParseString(row, "Northing"),
         };
     }
 
@@ -66,17 +66,5 @@ internal sealed record SchoolCsvFields
     private static string ParseString(SepReader.Row row, string columnName)
     {
         return row[$"\"{columnName}\""].ToString().Replace("\"", string.Empty, StringComparison.Ordinal);
-    }
-
-    private static string ParseOptionalString(SepReader.Row row, string columnName)
-    {
-        try
-        {
-            return ParseString(row, columnName);
-        }
-        catch
-        {
-            return string.Empty;
-        }
     }
 }

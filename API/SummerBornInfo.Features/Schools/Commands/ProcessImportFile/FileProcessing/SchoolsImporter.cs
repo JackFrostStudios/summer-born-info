@@ -158,7 +158,7 @@ public sealed partial class SchoolsImporter<TContext>(TContext context, ILogger<
             school.OpenDate = ParseDate(row.OpenDate);
             school.CloseDate = ParseDate(row.CloseDate);
             school.UKPRN = ParseNullableInt(row.UKPRN);
-            school.Location = location;
+            school.Location = location ?? school.Location;
 
             school.Address.Street = NullIfEmpty(row.Street);
             school.Address.Locality = NullIfEmpty(row.Locality);
