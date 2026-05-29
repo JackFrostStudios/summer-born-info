@@ -374,7 +374,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     }
 
     [Fact]
-    public async Task GivenExistingSchoolsWithLocation_WhenReimportedWithoutUsableCoordinates_ThenExistingLocationsArePreserved()
+    public async Task GivenExistingSchoolsWithLocation_WhenReimportedWithoutUsableCoordinates_ThenExistingLocationsAreCleared()
     {
         // Arrange
         var firstImportDbContext = CreateDbContext();
@@ -405,11 +405,11 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
 
         var aldgateSchool = Assert.Single(schools, s => s.URN == 100000);
         Assert.Equal("The Aldgate School Updated", aldgateSchool.Name);
-        AssertLocationInRange(aldgateSchool.Location, minLongitude: -0.09, maxLongitude: -0.06, minLatitude: 51.50, maxLatitude: 51.53);
+        Assert.Null(aldgateSchool.Location);
 
         var sherborneSchool = Assert.Single(schools, s => s.URN == 100004);
         Assert.Equal("Sherborne Nursery School Updated", sherborneSchool.Name);
-        AssertLocationInRange(sherborneSchool.Location, minLongitude: -0.17, maxLongitude: -0.13, minLatitude: 51.53, maxLatitude: 51.56);
+        Assert.Null(sherborneSchool.Location);
     }
 
     [Fact]

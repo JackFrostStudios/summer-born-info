@@ -125,6 +125,7 @@ Nearby search uses PostgreSQL `PostGIS` together with EF Core `NetTopologySuite`
 
 - Each school's canonical search location is stored as a PostGIS-backed `geography(Point, 4326)` value.
 - Imported `Easting` and `Northing` values are converted to WGS84 longitude and latitude before that canonical point is persisted.
+- If a later import row has blank or invalid `Easting` or `Northing` values, the stored canonical location is cleared rather than leaving stale coordinates in place.
 - The API exposes those persisted coordinates back through the shared `SchoolResponse` contract as `latitude` and `longitude`; it does not expose raw spatial database types.
 - Radius filtering and distance ordering run in PostgreSQL rather than in application memory, which keeps the nearby route aligned with the repository's PostgreSQL-first search approach.
 - Schools without a persisted canonical location are intentionally excluded from nearby results instead of being assigned guessed coordinates at query time.

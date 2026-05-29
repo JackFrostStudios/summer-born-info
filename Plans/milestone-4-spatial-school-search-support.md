@@ -166,7 +166,7 @@ And the response schema matches the agreed school collection wrapper and full sc
 - Extend the domain and persistence model to carry a canonical stored school point location.
 - Decide how source coordinates are mapped into that location during school import.
 - Parse source `Easting` and `Northing` values from the import feed and convert British National Grid coordinates to WGS84 longitude and latitude before persisting the canonical point location.
-- Reject or skip invalid coordinate source values rather than persisting malformed points.
+- Treat invalid or blank coordinate source values as unusable and avoid persisting malformed points; when a re-import does not provide a usable location, the canonical stored location is cleared.
 - Expose public latitude and longitude fields in the shared school response DTO used by all public school GET routes so downstream map UI work can place markers without reverse-engineering internal spatial storage.
 
 5. Nearby-search query slice
@@ -359,7 +359,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 
 - Spatial source-data risk:
   Nearby-search quality depends on imported schools having valid and sufficiently complete coordinates.
-  Mitigation: make missing-location behaviour explicit, reject malformed coordinates during import, and make British National Grid to WGS84 conversion an explicit tested part of the import path rather than an implied follow-up.
+  Mitigation: make missing-location behaviour explicit, avoid persisting malformed coordinates during import, and make British National Grid to WGS84 conversion an explicit tested part of the import path rather than an implied follow-up.
 
 - Extension parity risk:
   Spatial work can pass in one PostgreSQL environment and fail in another if `postgis` is not provisioned consistently.
