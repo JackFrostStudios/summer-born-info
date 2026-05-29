@@ -5,6 +5,8 @@ public sealed class CustomWebApplicationFactory(
     ITestOutputHelper testOutputHelper,
     IReadOnlyDictionary<string, string?>? configurationValues = null) : WebApplicationFactory<Program>, IAsyncLifetime
 {
+    private const string SummerBornInfoConnectionStringEnvironmentVariableName = "ConnectionStrings__SummerbornInfo";
+    private static readonly Lock HostStartupEnvironmentLock = new();
     private readonly IntegrationTestDatabaseInstanceFixture integrationTestDatabaseInstanceFixture = new(testDatabaseServerFixture);
     private readonly IReadOnlyDictionary<string, string?> configurationValues = configurationValues ?? new Dictionary<string, string?>(StringComparer.Ordinal);
 
@@ -54,14 +56,36 @@ public sealed class CustomWebApplicationFactory(
             new MediaTypeWithQualityHeaderValue("application/json"));
     }
 
+    protected override IHost CreateHost(IHostBuilder builder)
+    {
+        lock (HostStartupEnvironmentLock)
+        {
+            var originalConnectionString = Environment.GetEnvironmentVariable(SummerBornInfoConnectionStringEnvironmentVariableName);
+
+            try
+            {
+                Environment.SetEnvironmentVariable(
+                    SummerBornInfoConnectionStringEnvironmentVariableName,
+                    integrationTestDatabaseInstanceFixture.DatabaseConnectionString);
+
+                return base.CreateHost(builder);
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable(
+                    SummerBornInfoConnectionStringEnvironmentVariableName,
+                    originalConnectionString);
+            }
+        }
+    }
+
     public async ValueTask InitializeAsync()
     {
         await integrationTestDatabaseInstanceFixture.InitializeAsync();
-        Environment.SetEnvironmentVariable("ConnectionStrings__SummerbornInfo", integrationTestDatabaseInstanceFixture.DatabaseConnectionString);
     }
+
     public override async ValueTask DisposeAsync()
     {
-        Environment.SetEnvironmentVariable("ConnectionStrings__SummerbornInfo", value: null);
         await integrationTestDatabaseInstanceFixture.DisposeAsync();
         await base.DisposeAsync();
     }
