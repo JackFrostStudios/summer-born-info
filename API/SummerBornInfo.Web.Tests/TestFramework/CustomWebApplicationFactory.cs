@@ -12,13 +12,15 @@ public sealed class CustomWebApplicationFactory(
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        if (configurationValues.Count > 0)
+        _ = builder.ConfigureAppConfiguration((context, configurationBuilder) =>
         {
-            _ = builder.ConfigureAppConfiguration((context, configurationBuilder) =>
+            var testConfigurationValues = new Dictionary<string, string?>(configurationValues, StringComparer.Ordinal)
             {
-                _ = configurationBuilder.AddInMemoryCollection(configurationValues);
-            });
-        }
+                ["ConnectionStrings:SummerbornInfo"] = integrationTestDatabaseInstanceFixture.DatabaseConnectionString,
+            };
+
+            _ = configurationBuilder.AddInMemoryCollection(testConfigurationValues);
+        });
 
         _ = builder.ConfigureServices(services =>
         {
@@ -55,9 +57,11 @@ public sealed class CustomWebApplicationFactory(
     public async ValueTask InitializeAsync()
     {
         await integrationTestDatabaseInstanceFixture.InitializeAsync();
+        Environment.SetEnvironmentVariable("ConnectionStrings__SummerbornInfo", integrationTestDatabaseInstanceFixture.DatabaseConnectionString);
     }
     public override async ValueTask DisposeAsync()
     {
+        Environment.SetEnvironmentVariable("ConnectionStrings__SummerbornInfo", value: null);
         await integrationTestDatabaseInstanceFixture.DisposeAsync();
         await base.DisposeAsync();
     }
