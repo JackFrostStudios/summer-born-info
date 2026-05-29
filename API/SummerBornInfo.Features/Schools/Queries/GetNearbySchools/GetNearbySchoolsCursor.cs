@@ -4,13 +4,34 @@ public sealed record GetNearbySchoolsCursor(
     double Latitude,
     double Longitude,
     double RadiusMiles,
-    int? PageSize)
+    int PageSize,
+    double DistanceMeters,
+    Guid SchoolId)
 {
     private const int CurrentVersion = 1;
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true,
     };
+
+    public static string Encode(GetNearbySchoolsCursor cursor)
+    {
+        var payload = new CursorPayload(
+            CurrentVersion,
+            cursor.Latitude,
+            cursor.Longitude,
+            cursor.RadiusMiles,
+            cursor.PageSize,
+            cursor.DistanceMeters,
+            cursor.SchoolId);
+        var json = JsonSerializer.Serialize(payload);
+        var bytes = Encoding.UTF8.GetBytes(json);
+
+        return Convert.ToBase64String(bytes)
+            .TrimEnd('=')
+            .Replace('+', '-')
+            .Replace('/', '_');
+    }
 
     public static bool TryDecode(string? encodedCursor, out GetNearbySchoolsCursor cursor)
     {
@@ -55,11 +76,22 @@ public sealed record GetNearbySchoolsCursor(
             return false;
         }
 
+        if (payload.PageSize <= 0
+            || double.IsNaN(payload.DistanceMeters)
+            || double.IsInfinity(payload.DistanceMeters)
+            || payload.DistanceMeters < 0
+            || payload.SchoolId == Guid.Empty)
+        {
+            return false;
+        }
+
         cursor = new GetNearbySchoolsCursor(
             payload.Latitude,
             payload.Longitude,
             payload.RadiusMiles,
-            payload.PageSize);
+            payload.PageSize,
+            payload.DistanceMeters,
+            payload.SchoolId);
 
         return true;
     }
@@ -69,5 +101,7 @@ public sealed record GetNearbySchoolsCursor(
         double Latitude,
         double Longitude,
         double RadiusMiles,
-        int? PageSize);
+        int PageSize,
+        double DistanceMeters,
+        Guid SchoolId);
 }

@@ -65,12 +65,49 @@ public sealed class GetNearbySchoolsTests(
     }
 
     [Fact]
-    public async Task GivenNearbyCursorIsDecodable_WhenGetNearbySchools_ThenReturnsOk()
+    public async Task GivenNearbyMatchesSpanMultiplePages_WhenFollowingNextCursor_ThenReturnsStableContinuation()
+    {
+        var scenario = CreateNearbyOrderingScenario();
+
+        await SeedSchoolsAsync(
+            scenario.OutsideRadiusSchool,
+            scenario.TiedThirdSchool,
+            scenario.MissingLocationSchool,
+            scenario.ClosestSchool,
+            scenario.TiedSecondSchool);
+
+        var client = Factory.CreateClient();
+
+        var firstResponse = await client.GetAsync(
+            "/api/schools/nearby?latitude=53.8008&longitude=-1.5491&radiusMiles=5&pageSize=2",
+            TestContext.Current.CancellationToken);
+
+        _ = firstResponse.EnsureSuccessStatusCode();
+        var firstPage = await firstResponse.Content.ReadFromJsonAsync<SchoolsResponse>(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(firstPage);
+        Assert.Equal([scenario.ClosestSchool.Id, scenario.TiedSecondSchool.Id], [.. firstPage.Schools.Select(school => school.Id)]);
+        Assert.False(string.IsNullOrWhiteSpace(firstPage.NextCursor));
+
+        var secondResponse = await client.GetAsync(
+            $"/api/schools/nearby?latitude=53.8008&longitude=-1.5491&radiusMiles=5&pageSize=2&cursor={Uri.EscapeDataString(firstPage.NextCursor!)}",
+            TestContext.Current.CancellationToken);
+
+        _ = secondResponse.EnsureSuccessStatusCode();
+        var secondPage = await secondResponse.Content.ReadFromJsonAsync<SchoolsResponse>(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(secondPage);
+        Assert.Equal([scenario.TiedThirdSchool.Id], [.. secondPage.Schools.Select(school => school.Id)]);
+        Assert.Null(secondPage.NextCursor);
+    }
+
+    [Fact]
+    public async Task GivenNearbyCursorIsDecodableAndCompatible_WhenGetNearbySchools_ThenReturnsOk()
     {
         var client = Factory.CreateClient();
         var cursor = CreateCursor(
             """
-            {"version":1,"latitude":53.8008,"longitude":-1.5491,"radiusMiles":5.0,"pageSize":10}
+            {"version":1,"latitude":53.8008,"longitude":-1.5491,"radiusMiles":5.0,"pageSize":10,"distanceMeters":123.45,"schoolId":"00000000-0000-0000-0000-000000000010"}
             """);
 
         var response = await client.GetAsync(
@@ -78,6 +115,26 @@ public sealed class GetNearbySchoolsTests(
             TestContext.Current.CancellationToken);
 
         _ = response.EnsureSuccessStatusCode();
+    }
+
+    [Theory]
+    [InlineData("/api/schools/nearby?latitude=53.8009&longitude=-1.5491&radiusMiles=5&pageSize=10&cursor={0}")]
+    [InlineData("/api/schools/nearby?latitude=53.8008&longitude=-1.5491&radiusMiles=6&pageSize=10&cursor={0}")]
+    [InlineData("/api/schools/nearby?latitude=53.8008&longitude=-1.5491&radiusMiles=5&pageSize=9&cursor={0}")]
+    public async Task GivenNearbyCursorReplayIsIncompatible_WhenGetNearbySchools_ThenReturnsBadRequest(string requestUriTemplate)
+    {
+        var client = Factory.CreateClient();
+        var cursor = CreateCursor(
+            """
+            {"version":1,"latitude":53.8008,"longitude":-1.5491,"radiusMiles":5.0,"pageSize":10,"distanceMeters":123.45,"schoolId":"00000000-0000-0000-0000-000000000010"}
+            """);
+
+        var response = await client.GetAsync(
+            string.Format(System.Globalization.CultureInfo.InvariantCulture, requestUriTemplate, Uri.EscapeDataString(cursor)),
+            TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        await AssertProblemDetailsAsync(response);
     }
 
     [Theory]

@@ -5,6 +5,7 @@ public static class GetNearbySchoolsRequestValidator
     public static bool TryValidate(GetNearbySchoolsRequest request, out GetNearbySchoolsRequest validatedRequest)
     {
         validatedRequest = default!;
+        var effectivePageSize = request.PageSize ?? GetNearbySchoolsRequest.DefaultPageSize;
 
         if (!IsValidLatitude(request.Latitude)
             || !IsValidLongitude(request.Longitude)
@@ -15,11 +16,17 @@ public static class GetNearbySchoolsRequestValidator
         }
 
         var normalizedCursor = request.Cursor?.Trim();
-        if (request.Cursor is not null
-            && (string.IsNullOrWhiteSpace(normalizedCursor)
-                || !GetNearbySchoolsCursor.TryDecode(normalizedCursor, out _)))
+        if (request.Cursor is not null)
         {
-            return false;
+            if (string.IsNullOrWhiteSpace(normalizedCursor)
+                || !GetNearbySchoolsCursor.TryDecode(normalizedCursor, out var cursor)
+                || cursor.Latitude != request.Latitude
+                || cursor.Longitude != request.Longitude
+                || cursor.RadiusMiles != request.RadiusMiles
+                || cursor.PageSize != effectivePageSize)
+            {
+                return false;
+            }
         }
 
         validatedRequest = request with
