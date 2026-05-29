@@ -114,20 +114,19 @@ public static class SchoolEndpoints
         return Results.Ok(response);
     }
 
-    private static Task<IResult> GetNearbySchoolsAsync(
-        [AsParameters] SummerBornInfo.Features.Schools.Queries.GetNearbySchools.GetNearbySchoolsRequest request)
+    private static async Task<IResult> GetNearbySchoolsAsync(
+        SummerBornInfo.Features.Schools.Queries.GetNearbySchools.GetNearbySchoolsQueryHandler handler,
+        [AsParameters] SummerBornInfo.Features.Schools.Queries.GetNearbySchools.GetNearbySchoolsRequest request,
+        CancellationToken cancellationToken)
     {
-        if (!SummerBornInfo.Features.Schools.Queries.GetNearbySchools.GetNearbySchoolsRequestValidator.TryValidate(request, out _))
+        if (!SummerBornInfo.Features.Schools.Queries.GetNearbySchools.GetNearbySchoolsRequestValidator.TryValidate(request, out var query))
         {
-            return Task.FromResult(CreateInvalidDiscoveryRequest(
-                "latitude must be between -90 and 90, longitude must be between -180 and 180, radiusMiles must be greater than 0 and no more than 100, pageSize must be between 1 and 200, and cursor must be a valid nearby search continuation token."));
+            return CreateInvalidDiscoveryRequest(
+                "latitude must be between -90 and 90, longitude must be between -180 and 180, radiusMiles must be greater than 0 and no more than 100, pageSize must be between 1 and 200, and cursor must be a valid nearby search continuation token.");
         }
 
-        return Task.FromResult<IResult>(Results.Ok(new SchoolsResponse
-        {
-            Schools = [],
-            NextCursor = null,
-        }));
+        var response = await handler.ExecuteAsync(query, cancellationToken);
+        return Results.Ok(response);
     }
 
     private static IResult CreateInvalidDiscoveryRequest(string detail)

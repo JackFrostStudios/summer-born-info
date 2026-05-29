@@ -349,7 +349,7 @@ Deliver the milestone as the following one-task-at-a-time sequence, with one git
 - [x] Task 3 complete: Spatial schema and indexing committed.
 - [x] Task 4 complete: Import and location persistence alignment committed.
 - [x] Task 5 complete: Nearby-search route contract committed.
-- [ ] Task 6 complete: Nearby-search query implementation committed.
+- [x] Task 6 complete: Nearby-search query implementation committed.
 - [ ] Task 7 complete: Nearby pagination and cursor continuation committed.
 - [ ] Task 8 complete: OpenAPI and error metadata committed.
 - [ ] Task 9 complete: Integration and infrastructure verification committed.
@@ -407,9 +407,9 @@ This plan is delivery-ready for Milestone 4 with the spatial technology decision
 - [x] Nearby search rejects zero or negative `radiusMiles` with `400 Bad Request`.
 - [x] Nearby search rejects `radiusMiles` values greater than `100` with `400 Bad Request`.
 - [x] Nearby search rejects invalid `cursor` and `pageSize` values with `400 Bad Request`.
-- [ ] Nearby search returns `200 OK` with an empty `schools` collection and `nextCursor: null` when no schools match.
-- [ ] Nearby search returns only schools within the requested radius.
-- [ ] Nearby search orders results deterministically by ascending distance with a stable tie-breaker.
+- [x] Nearby search returns `200 OK` with an empty `schools` collection and `nextCursor: null` when no schools match.
+- [x] Nearby search returns only schools within the requested radius.
+- [x] Nearby search orders results deterministically by ascending distance with a stable tie-breaker.
 - [ ] Nearby-search pagination uses opaque cursor values in the existing `cursor` and `nextCursor` contract fields.
 - [ ] Nearby-search cursors are rejected when replayed against incompatible `latitude`, `longitude`, `radiusMiles`, or paging inputs.
 - [ ] Schools persist a canonical PostGIS-backed point location suitable for radius queries.
