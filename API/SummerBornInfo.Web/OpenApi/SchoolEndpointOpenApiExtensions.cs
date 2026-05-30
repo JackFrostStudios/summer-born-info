@@ -3,10 +3,10 @@ namespace SummerBornInfo.Web.OpenApi;
 public static class SchoolEndpointOpenApiExtensions
 {
     private static readonly string MaximumNearbyRadiusMilesText =
-        SummerBornInfo.Features.Schools.Queries.GetNearbySchools.GetNearbySchoolsRequest.MaximumRadiusMiles.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        GetNearbySchoolsRequest.MaximumRadiusMiles.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
     private static readonly string MaximumNearbyPageSizeText =
-        SummerBornInfo.Features.Schools.Queries.GetNearbySchools.GetNearbySchoolsRequest.MaximumPageSize.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        GetNearbySchoolsRequest.MaximumPageSize.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
     private const string InvalidNearbySearchRequestDescription =
         "Bad Request. Returned when latitude, longitude, radiusMiles, cursor, or pageSize are missing or invalid for nearby search.";
