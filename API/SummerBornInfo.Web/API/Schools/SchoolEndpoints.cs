@@ -114,11 +114,11 @@ public static class SchoolEndpoints
     }
 
     private static async Task<IResult> GetNearbySchoolsAsync(
-        SummerBornInfo.Features.Schools.Queries.GetNearbySchools.GetNearbySchoolsQueryHandler handler,
-        [AsParameters] SummerBornInfo.Features.Schools.Queries.GetNearbySchools.GetNearbySchoolsRequest request,
+        GetNearbySchoolsQueryHandler handler,
+        [AsParameters] GetNearbySchoolsRequest request,
         CancellationToken cancellationToken)
     {
-        if (!SummerBornInfo.Features.Schools.Queries.GetNearbySchools.GetNearbySchoolsRequestValidator.TryValidate(request, out var query))
+        if (!GetNearbySchoolsRequestValidator.TryValidate(request, out var query))
         {
             return CreateInvalidDiscoveryRequest(
                 "latitude must be between -90 and 90, longitude must be between -180 and 180, radiusMiles must be greater than 0 and no more than 100, pageSize must be between 1 and 200, and cursor must be a valid nearby search continuation token.");
