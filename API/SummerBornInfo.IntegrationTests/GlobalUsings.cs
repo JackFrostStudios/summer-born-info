@@ -1,6 +1,7 @@
 global using System.Reflection;
 global using System.Text;
 global using Bogus;
+global using DotNet.Testcontainers.Builders;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;
 global using Npgmq;
