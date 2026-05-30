@@ -3,7 +3,7 @@ namespace SummerBornInfo.Web.Tests.API.Schools;
 public sealed class GetNearbySchoolsTests(
     IntegrationTestDatabaseServerFixture testDatabaseServerFixture,
     ITestOutputHelper testOutputHelper)
-    : SchoolApiIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
+    : WebIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
     [Fact]
     public async Task GivenNearbySearchHasNoMatches_WhenGetNearbySchools_ThenReturnsEmptyCollectionWrapper()

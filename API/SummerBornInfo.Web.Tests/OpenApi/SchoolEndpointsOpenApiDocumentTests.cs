@@ -3,7 +3,7 @@ namespace SummerBornInfo.Web.Tests.OpenApi;
 public sealed class SchoolEndpointsOpenApiDocumentTests(
     IntegrationTestDatabaseServerFixture testDatabaseServerFixture,
     ITestOutputHelper testOutputHelper)
-    : SummerBornInfo.Web.Tests.API.Schools.SchoolApiIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
+    : WebIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
     [Fact]
     public async Task GivenSchoolsCollectionOperation_WhenFetchedFromOpenApi_ThenParametersAndResponseMetadataMatchImplementedBehavior()

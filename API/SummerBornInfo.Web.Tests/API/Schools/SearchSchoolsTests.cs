@@ -3,7 +3,7 @@ namespace SummerBornInfo.Web.Tests.API.Schools;
 public sealed class SearchSchoolsTests(
     IntegrationTestDatabaseServerFixture testDatabaseServerFixture,
     ITestOutputHelper testOutputHelper)
-    : SchoolApiIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
+    : WebIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
     [Fact]
     public async Task GivenNameAndAddressMatches_WhenGetSchoolsSearch_ThenReturnsRankedResults()
