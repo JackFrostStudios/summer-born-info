@@ -1,12 +1,10 @@
-using System.Diagnostics.CodeAnalysis;
 namespace SummerBornInfo.TestFramework;
 
 public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
 {
     private const string PostgreSqlImageName = "summerborninfo-postgres-postgis-pgmq:task-2";
     private const string PostgreSqlImageBuildMutexName = @"Global\summerborninfo-postgres-postgis-pgmq-task-2-build";
-    private static readonly string PostgreSqlDockerfileDirectory = Path.GetFullPath(
-        Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "SummerBornInfo.AppHost", "Postgres"));
+    private static readonly string PostgreSqlDockerfileDirectory = SolutionPaths.PostgreSqlDockerfileDirectory;
 
     private readonly PostgreSqlContainer _postgreSqlContainer;
 

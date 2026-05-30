@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SummerBornInfo.Domain\SummerBornInfo.Domain.csproj" />
+    <ProjectReference Include="..\SummerBornInfo.IntegrationTests\SummerBornInfo.TestFramework.csproj" />
   </ItemGroup>
 
 </Project>
