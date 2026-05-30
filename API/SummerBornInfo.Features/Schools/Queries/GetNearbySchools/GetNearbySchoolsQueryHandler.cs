@@ -32,6 +32,7 @@ public sealed class GetNearbySchoolsQueryHandler(ApplicationDbContext context)
 
     public async Task<SchoolsResponse> ExecuteAsync(GetNearbySchoolsRequest request, CancellationToken cancellationToken)
     {
+        var validatedRequest = ValidateRequest(request);
         var pageSize = Math.Min(
             request.PageSize ?? GetNearbySchoolsRequest.DefaultPageSize,
             GetNearbySchoolsRequest.MaximumPageSize);
@@ -41,9 +42,9 @@ public sealed class GetNearbySchoolsQueryHandler(ApplicationDbContext context)
                 ? decodedCursor
                 : throw new InvalidOperationException("Nearby cursor must be validated before execution.");
         var nearbySchools = await GetNearbySchoolMatchesAsync(
-            request.Latitude ?? throw new InvalidOperationException("Nearby request must be validated before execution."),
-            request.Longitude ?? throw new InvalidOperationException("Nearby request must be validated before execution."),
-            (request.RadiusMiles ?? throw new InvalidOperationException("Nearby request must be validated before execution.")) * MetersPerMile,
+            validatedRequest.Latitude,
+            validatedRequest.Longitude,
+            validatedRequest.RadiusMiles * MetersPerMile,
             cursor,
             pageSize + 1,
             cancellationToken);
@@ -74,9 +75,9 @@ public sealed class GetNearbySchoolsQueryHandler(ApplicationDbContext context)
 
         var nextCursor = nearbySchools.Count > pageSize
             ? GetNearbySchoolsCursor.Encode(new GetNearbySchoolsCursor(
-                request.Latitude ?? throw new InvalidOperationException("Nearby request must be validated before execution."),
-                request.Longitude ?? throw new InvalidOperationException("Nearby request must be validated before execution."),
-                request.RadiusMiles ?? throw new InvalidOperationException("Nearby request must be validated before execution."),
+                validatedRequest.Latitude,
+                validatedRequest.Longitude,
+                validatedRequest.RadiusMiles,
                 pageSize,
                 pageSchoolMatches[^1].DistanceMeters,
                 pageSchoolMatches[^1].Id))
@@ -87,6 +88,14 @@ public sealed class GetNearbySchoolsQueryHandler(ApplicationDbContext context)
             Schools = orderedSchools,
             NextCursor = nextCursor,
         };
+    }
+
+    private static ValidatedRequest ValidateRequest(GetNearbySchoolsRequest request)
+    {
+        return new ValidatedRequest(
+            request.Latitude ?? throw new InvalidOperationException("Nearby request must be validated before execution."),
+            request.Longitude ?? throw new InvalidOperationException("Nearby request must be validated before execution."),
+            request.RadiusMiles ?? throw new InvalidOperationException("Nearby request must be validated before execution."));
     }
 
     private async Task<List<NearbySchoolMatch>> GetNearbySchoolMatchesAsync(
@@ -139,4 +148,5 @@ public sealed class GetNearbySchoolsQueryHandler(ApplicationDbContext context)
     }
 
     private sealed record NearbySchoolMatch(Guid Id, double DistanceMeters);
+    private sealed record ValidatedRequest(double Latitude, double Longitude, double RadiusMiles);
 }
