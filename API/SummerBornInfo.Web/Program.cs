@@ -48,7 +48,7 @@ if (app.Environment.IsDevelopment())
     await PostgreSqlDatabaseBootstrapper.EnsureApplicationDatabaseAsync(dbContext, app.Lifetime.ApplicationStopping);
     var developmentAdminBootstrapper = scope.ServiceProvider.GetRequiredService<IDevelopmentAdminBootstrapper>();
     await developmentAdminBootstrapper.UpsertAsync(app.Lifetime.ApplicationStopping);
-    NpgmqClient npgmq = new(connectionString: connectionString ?? throw new InvalidOperationException("Db Connection string is null"));
+    NpgmqClient npgmq = new(connectionString: dbContext.Database.GetConnectionString() ?? throw new InvalidOperationException("Db Connection string is null"));
     await npgmq.InitAsync(app.Lifetime.ApplicationStopping);
     await npgmq.CreateQueueAsync(EventQueue.SchoolBulkImport.Name, app.Lifetime.ApplicationStopping);
     _ = app.MapOpenApi();
