@@ -86,10 +86,10 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
             .ToListAsync(TestContext.Current.CancellationToken);
 
         var aldgateSchool = Assert.Single(schools, s => s.URN == 100000);
-        AssertLocationInRange(aldgateSchool.Location, minLongitude: -0.09, maxLongitude: -0.06, minLatitude: 51.50, maxLatitude: 51.53);
+        AssertLocationInRange(aldgateSchool.Geometry, minLongitude: -0.09, maxLongitude: -0.06, minLatitude: 51.50, maxLatitude: 51.53);
 
         var sherborneSchool = Assert.Single(schools, s => s.URN == 100004);
-        AssertLocationInRange(sherborneSchool.Location, minLongitude: -0.17, maxLongitude: -0.13, minLatitude: 51.53, maxLatitude: 51.56);
+        AssertLocationInRange(sherborneSchool.Geometry, minLongitude: -0.17, maxLongitude: -0.13, minLatitude: 51.53, maxLatitude: 51.56);
     }
 
     private static void AssertAldgateSchoolImportedCorrectly(School? aldgateSchool)
@@ -370,7 +370,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         var school = await verifyDbContext.Set<School>()
             .SingleAsync(s => s.URN == 100000, TestContext.Current.CancellationToken);
 
-        Assert.Null(school.Location);
+        Assert.Null(school.Geometry);
     }
 
     [Fact]
@@ -405,11 +405,11 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
 
         var aldgateSchool = Assert.Single(schools, s => s.URN == 100000);
         Assert.Equal("The Aldgate School Updated", aldgateSchool.Name);
-        Assert.Null(aldgateSchool.Location);
+        Assert.Null(aldgateSchool.Geometry);
 
         var sherborneSchool = Assert.Single(schools, s => s.URN == 100004);
         Assert.Equal("Sherborne Nursery School Updated", sherborneSchool.Name);
-        Assert.Null(sherborneSchool.Location);
+        Assert.Null(sherborneSchool.Geometry);
     }
 
     [Fact]

@@ -11,8 +11,8 @@ internal static class SchoolResponseAssertions
         Assert.Equal(expectedSchool.Name, actualSchool.Name);
         Assert.Equal(expectedSchool.OpenDate, actualSchool.OpenDate);
         Assert.Equal(expectedSchool.CloseDate, actualSchool.CloseDate);
-        Assert.Equal(expectedSchool.Location?.Y, actualSchool.Latitude);
-        Assert.Equal(expectedSchool.Location?.X, actualSchool.Longitude);
+        Assert.Equal(expectedSchool.Geometry?.Y, actualSchool.Latitude);
+        Assert.Equal(expectedSchool.Geometry?.X, actualSchool.Longitude);
 
         Assert.Equal(expectedSchool.Address.Street, actualSchool.Address.Street);
         Assert.Equal(expectedSchool.Address.Locality, actualSchool.Address.Locality);

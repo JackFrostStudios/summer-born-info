@@ -269,7 +269,7 @@ public sealed class GetAllSchoolsTests(
                 County = county,
                 PostCode = postCode,
             },
-            Location = latitude.HasValue && longitude.HasValue
+            Geometry = latitude.HasValue && longitude.HasValue
                 ? new NetTopologySuite.Geometries.Point(longitude.Value, latitude.Value) { SRID = 4326 }
                 : null,
             OpenDate = openDate,

@@ -92,7 +92,7 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         // Arrange
         var dbContext = CreateDbContext();
         var school = SchoolFactory.GetSchool();
-        school.Location = new NetTopologySuite.Geometries.Point(-1.5491d, 53.8008d) { SRID = 4326 };
+        school.Geometry = new NetTopologySuite.Geometries.Point(-1.5491d, 53.8008d) { SRID = 4326 };
 
         // Act
         _ = dbContext.Schools.Add(school);
@@ -103,10 +103,10 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         var savedSchool = await dbContext.Schools.FindAsync([school.Id], TestContext.Current.CancellationToken);
 
         Assert.NotNull(savedSchool);
-        Assert.NotNull(savedSchool.Location);
-        Assert.Equal(4326, savedSchool.Location.SRID);
-        Assert.Equal(school.Location.X, savedSchool.Location.X, precision: 6);
-        Assert.Equal(school.Location.Y, savedSchool.Location.Y, precision: 6);
+        Assert.NotNull(savedSchool.Geometry);
+        Assert.Equal(4326, savedSchool.Geometry.SRID);
+        Assert.Equal(school.Geometry.X, savedSchool.Geometry.X, precision: 6);
+        Assert.Equal(school.Geometry.Y, savedSchool.Geometry.Y, precision: 6);
     }
 
     [Fact]

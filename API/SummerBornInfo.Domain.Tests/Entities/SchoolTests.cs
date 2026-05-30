@@ -30,7 +30,7 @@ public sealed class SchoolTests
         Assert.Equal(123456, school.URN);
         Assert.Equal("Test School", school.Name);
         Assert.Equal(address, school.Address);
-        Assert.Null(school.Location);
+        Assert.Null(school.Geometry);
 
         Assert.Equal(phaseOfEducation, school.PhaseOfEducation);
         Assert.Equal(localAuthority, school.LocalAuthority);
@@ -133,7 +133,7 @@ public sealed class SchoolTests
             EstablishmentNumber = 1234,
             Name = "Test School",
             Address = address,
-            Location = location,
+            Geometry = location,
             PhaseOfEducation = phaseOfEducation,
             LocalAuthority = localAuthority,
             EstablishmentType = establishmentType,
@@ -142,9 +142,9 @@ public sealed class SchoolTests
         };
 
         // Assert
-        Assert.Same(location, school.Location);
-        Assert.Equal(4326, school.Location.SRID);
-        Assert.Equal(-1.5491, school.Location.X);
-        Assert.Equal(53.8008, school.Location.Y);
+        Assert.Same(location, school.Geometry);
+        Assert.Equal(4326, school.Geometry.SRID);
+        Assert.Equal(-1.5491, school.Geometry.X);
+        Assert.Equal(53.8008, school.Geometry.Y);
     }
 }

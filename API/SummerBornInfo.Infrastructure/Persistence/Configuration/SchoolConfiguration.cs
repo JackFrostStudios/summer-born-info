@@ -37,10 +37,11 @@ internal sealed class SchoolConfiguration : IEntityTypeConfiguration<School>
             .HasMaxLength(300)
             .IsRequired();
 
-        _ = builder.Property(s => s.Location)
+        _ = builder.Property(s => s.Geometry)
+            .HasColumnName("Location")
             .HasColumnType("geography (point, 4326)");
 
-        _ = builder.HasIndex(s => s.Location)
+        _ = builder.HasIndex(s => s.Geometry)
             .HasDatabaseName("ix_school_location")
             .HasMethod("gist");
 
