@@ -37,7 +37,6 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
 
         await _postgreSqlContainer.StartAsync(TestContext.Current.CancellationToken);
         ConnectionString = _postgreSqlContainer.GetConnectionString();
-        ConnectionString += ";Persist Security Info=true;";
 
         var templateDatabaseConnectionString = ConnectionString.Replace("Database=postgres", $"Database={TemplateDataBaseName}", StringComparison.Ordinal);
         templateDatabaseConnectionString += ";Pooling=false;";
