@@ -5,16 +5,20 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
+    <RuntimeIdentifiers>win-x64;linux-x64;linux-arm64</RuntimeIdentifiers>
     <BundledOstn15GridSourcePath>..\SummerBornInfo.Features\Resources\Gdal\share\uk_os_OSTN15_NTv2_OSGBtoETRS.tif</BundledOstn15GridSourcePath>
   </PropertyGroup>
 
   <ItemGroup>
     <BundledOstn15Grid Include="$(BundledOstn15GridSourcePath)"
-                       TargetPath="runtimes\win-x64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif" />
+                       TargetPath="runtimes\win-x64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif"
+                       Condition="'$(RuntimeIdentifier)' == '' Or '$(RuntimeIdentifier)' == 'win-x64'" />
     <BundledOstn15Grid Include="$(BundledOstn15GridSourcePath)"
-                       TargetPath="runtimes\linux-x64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif" />
+                       TargetPath="runtimes\linux-x64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif"
+                       Condition="'$(RuntimeIdentifier)' == '' Or '$(RuntimeIdentifier)' == 'linux-x64'" />
     <BundledOstn15Grid Include="$(BundledOstn15GridSourcePath)"
-                       TargetPath="runtimes\linux-arm64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif" />
+                       TargetPath="runtimes\linux-arm64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif"
+                       Condition="'$(RuntimeIdentifier)' == '' Or '$(RuntimeIdentifier)' == 'linux-arm64'" />
     <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
@@ -27,15 +31,16 @@
   <Target Name="CopyBundledOstn15GridToPublishOutput" BeforeTargets="ComputeFilesToPublish">
     <ItemGroup>
       <ResolvedFileToPublish Include="@(BundledOstn15Grid)">
-        <RelativePath>%(BundledOstn15Grid.TargetPath)</RelativePath>
+        <RelativePath Condition="'$(RuntimeIdentifier)' == ''">%(BundledOstn15Grid.TargetPath)</RelativePath>
+        <RelativePath Condition="'$(RuntimeIdentifier)' != ''">uk_os_OSTN15_NTv2_OSGBtoETRS.tif</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
 
   <ItemGroup>
-    <PackageReference Include="MaxRev.Gdal.LinuxRuntime.Minimal" />
-    <PackageReference Include="MaxRev.Gdal.WindowsRuntime.Minimal" />
+    <PackageReference Include="MaxRev.Gdal.LinuxRuntime.Minimal" ExcludeAssets="compile" />
+    <PackageReference Include="MaxRev.Gdal.WindowsRuntime.Minimal" ExcludeAssets="compile" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="coverlet.MTP">
       <PrivateAssets>all</PrivateAssets>
