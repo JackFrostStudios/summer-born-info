@@ -8,13 +8,13 @@ public sealed class GetNearbySchoolsQueryHandler(ApplicationDbContext context)
         "    select " +
         "        s.\"Id\", " +
         "        ST_Distance( " +
-        "            s.\"Location\", " +
+        "            s.\"SchoolGeometry\", " +
         "            ST_SetSRID(ST_MakePoint(@longitude, @latitude), 4326)::geography) as \"DistanceMeters\" " +
         "    from school as s " +
         "    where " +
-        "        s.\"Location\" is not null " +
+        "        s.\"SchoolGeometry\" is not null " +
         "        and ST_DWithin( " +
-        "            s.\"Location\", " +
+        "            s.\"SchoolGeometry\", " +
         "            ST_SetSRID(ST_MakePoint(@longitude, @latitude), 4326)::geography, " +
         "            @radiusMeters)) " +
         "select n.\"Id\", n.\"DistanceMeters\" " +

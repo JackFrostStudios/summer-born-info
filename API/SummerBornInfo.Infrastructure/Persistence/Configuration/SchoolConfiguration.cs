@@ -38,11 +38,11 @@ internal sealed class SchoolConfiguration : IEntityTypeConfiguration<School>
             .IsRequired();
 
         _ = builder.Property(s => s.Geometry)
-            .HasColumnName("Location")
+            .HasColumnName("SchoolGeometry")
             .HasColumnType("geography (point, 4326)");
 
         _ = builder.HasIndex(s => s.Geometry)
-            .HasDatabaseName("ix_school_location")
+            .HasDatabaseName("ix_school_school_geometry")
             .HasMethod("gist");
 
         _ = builder.Property<NpgsqlTsVector>("SearchVector")

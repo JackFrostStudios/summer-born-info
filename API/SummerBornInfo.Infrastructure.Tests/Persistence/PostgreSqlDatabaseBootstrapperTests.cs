@@ -30,13 +30,13 @@ public sealed class PostgreSqlDatabaseBootstrapperTests(IntegrationTestDatabaseS
                 "EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'pg_trgm'), " +
                 "EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'postgis'), " +
                 "to_regclass('public.school') IS NOT NULL, " +
-                "EXISTS (SELECT 1 FROM geography_columns WHERE f_table_schema = 'public' AND f_table_name = 'school' AND lower(f_geography_column) = 'location' AND type = 'Point' AND srid = 4326), " +
+                "EXISTS (SELECT 1 FROM geography_columns WHERE f_table_schema = 'public' AND f_table_name = 'school' AND lower(f_geography_column) = 'schoolgeometry' AND type = 'Point' AND srid = 4326), " +
                 "COALESCE((SELECT pg_get_indexdef(indexrelid) " +
                 "FROM pg_index idx " +
                 "JOIN pg_class tbl ON idx.indrelid = tbl.oid " +
                 "JOIN pg_namespace ns ON tbl.relnamespace = ns.oid " +
                 "JOIN pg_class index_class ON idx.indexrelid = index_class.oid " +
-                "WHERE ns.nspname = 'public' AND tbl.relname = 'school' AND index_class.relname = 'ix_school_location'), '');";
+                "WHERE ns.nspname = 'public' AND tbl.relname = 'school' AND index_class.relname = 'ix_school_school_geometry'), '');";
 
             await using var reader = await command.ExecuteReaderAsync(TestContext.Current.CancellationToken);
             Assert.True(await reader.ReadAsync(TestContext.Current.CancellationToken));
@@ -46,7 +46,7 @@ public sealed class PostgreSqlDatabaseBootstrapperTests(IntegrationTestDatabaseS
             Assert.True(reader.GetBoolean(2));
             Assert.True(reader.GetBoolean(3));
             Assert.Contains("USING gist", reader.GetString(4), StringComparison.Ordinal);
-            Assert.Contains(@"""Location""", reader.GetString(4), StringComparison.Ordinal);
+            Assert.Contains(@"""SchoolGeometry""", reader.GetString(4), StringComparison.Ordinal);
         }
         finally
         {
