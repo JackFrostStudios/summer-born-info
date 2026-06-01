@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GDAL" ExcludeAssets="contentFiles" />
+    <PackageReference Include="MaxRev.Gdal.Core" />
     <PackageReference Include="Sep" />
   </ItemGroup>
 
