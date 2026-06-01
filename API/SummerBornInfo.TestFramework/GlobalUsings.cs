@@ -8,6 +8,7 @@ global using Microsoft.Extensions.Logging;
 global using Npgmq;
 global using Npgsql;
 global using NpgsqlTypes;
+global using SummerbornInfo.PostgresDockerImage;
 global using SummerBornInfo.Domain.Entities;
 global using SummerBornInfo.Infrastructure.Events;
 global using SummerBornInfo.Infrastructure.Persistence;

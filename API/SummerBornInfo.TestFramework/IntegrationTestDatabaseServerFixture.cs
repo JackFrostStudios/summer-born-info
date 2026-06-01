@@ -4,7 +4,7 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
 {
     private const string PostgreSqlImageName = "summerborninfo-postgres-postgis-pgmq:task-2";
     private const string PostgreSqlImageBuildMutexName = @"Global\summerborninfo-postgres-postgis-pgmq-task-2-build";
-    private static readonly string PostgreSqlDockerfileDirectory = SolutionPaths.PostgreSqlDockerfileDirectory;
+    private static readonly string PostgreSqlDockerfileDirectory = PostgresDockerfilePath.PostgreSqlDockerfileDirectory;
 
     private readonly PostgreSqlContainer _postgreSqlContainer;
 

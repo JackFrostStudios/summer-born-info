@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SummerBornInfo.Domain\SummerBornInfo.Domain.csproj" />
     <ProjectReference Include="..\SummerBornInfo.Infrastructure\SummerBornInfo.Infrastructure.csproj" />
+    <ProjectReference Include="..\SummerbornInfo.PostgresDockerImage\SummerbornInfo.PostgresDockerImage.csproj" />
   </ItemGroup>
 
 </Project>

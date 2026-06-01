@@ -1,7 +1,8 @@
 using Projects;
+using SummerbornInfo.PostgresDockerImage;
 
 var builder = DistributedApplication.CreateBuilder(args);
-var appHostDirectory = builder.AppHostDirectory;
+var appHostDirectory = PostgresDockerfilePath.PostgreSqlDockerfileDirectory;
 
 var postgres = builder
     .AddPostgres("postgres")
