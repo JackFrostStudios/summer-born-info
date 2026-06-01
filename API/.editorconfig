@@ -81,6 +81,9 @@ end_of_line = lf
 # CA1822: Make member static
 dotnet_code_quality.CA1822.api_surface = private, internal
 
+# IDE0001: Simplify Names
+dotnet_diagnostic.IDE0001.severity = error
+
 # IDE0036: Order modifiers
 csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:error
 

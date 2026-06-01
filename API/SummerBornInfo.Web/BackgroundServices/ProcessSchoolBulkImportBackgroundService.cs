@@ -2,7 +2,7 @@ namespace SummerBornInfo.Web.BackgroundServices;
 
 public sealed partial class ProcessSchoolBulkImportBackgroundService(
     IServiceScopeFactory serviceScopeFactory,
-    Microsoft.Extensions.Options.IOptions<SchoolBulkImportWorkerOptions> options,
+    IOptions<SchoolBulkImportWorkerOptions> options,
     ILogger<ProcessSchoolBulkImportBackgroundService> logger) : BackgroundService
 {
     internal TimeSpan EmptyQueueDelay { get; } = TimeSpan.FromSeconds(Math.Max(0, options.Value.EmptyQueueDelaySeconds));
