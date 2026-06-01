@@ -203,7 +203,7 @@ Rationale:
 ### Task State Checklist
 
 - [x] Task 1 complete: Package strategy migration committed.
-- [ ] Task 2 complete: Runtime initialization migration committed.
+- [x] Task 2 complete: Runtime initialization migration committed.
 - [ ] Task 3 complete: OSTN15 local resource alignment committed.
 - [ ] Task 4 complete: Cross-platform output verification committed.
 - [ ] Task 5 complete: Automated verification and documentation committed.
