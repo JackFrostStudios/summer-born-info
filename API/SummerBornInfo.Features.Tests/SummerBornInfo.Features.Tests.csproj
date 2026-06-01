@@ -8,10 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="..\SummerBornInfo.Features\Resources\Gdal\share\uk_os_OSTN15_NTv2_OSGBtoETRS.tif"
+             Link="gdal\share\uk_os_OSTN15_NTv2_OSGBtoETRS.tif"
+             CopyToOutputDirectory="PreserveNewest" />
     <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="GDAL.Native" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="coverlet.MTP">
       <PrivateAssets>all</PrivateAssets>

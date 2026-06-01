@@ -1,6 +1,7 @@
 global using System.Data;
 global using System.Diagnostics;
 global using System.Globalization;
+global using System.Runtime.InteropServices;
 global using System.Runtime.CompilerServices;
 global using System.Text;
 global using System.Text.Json;
@@ -9,6 +10,9 @@ global using Microsoft.Extensions.Logging;
 global using nietras.SeparatedValues;
 global using Npgsql;
 global using NpgsqlTypes;
+global using OSGeo.GDAL;
+global using OSGeo.OGR;
+global using OSGeo.OSR;
 global using SummerBornInfo.Domain.Entities;
 global using SummerBornInfo.Domain.Events;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
