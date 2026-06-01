@@ -5,8 +5,6 @@ public sealed class CustomWebApplicationFactory(
     ITestOutputHelper testOutputHelper,
     IReadOnlyDictionary<string, string?>? configurationValues = null) : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private const string SummerBornInfoConnectionStringEnvironmentVariableName = "ConnectionStrings__SummerbornInfo";
-    private static readonly Lock HostStartupEnvironmentLock = new();
     private readonly IntegrationTestDatabaseInstanceFixture integrationTestDatabaseInstanceFixture = new(testDatabaseServerFixture);
     private readonly IReadOnlyDictionary<string, string?> configurationValues = configurationValues ?? new Dictionary<string, string?>(StringComparer.Ordinal);
 
@@ -16,10 +14,7 @@ public sealed class CustomWebApplicationFactory(
     {
         _ = builder.ConfigureAppConfiguration((context, configurationBuilder) =>
         {
-            var testConfigurationValues = new Dictionary<string, string?>(configurationValues, StringComparer.Ordinal)
-            {
-                ["ConnectionStrings:SummerbornInfo"] = integrationTestDatabaseInstanceFixture.DatabaseConnectionString,
-            };
+            var testConfigurationValues = new Dictionary<string, string?>(configurationValues, StringComparer.Ordinal);
 
             _ = configurationBuilder.AddInMemoryCollection(testConfigurationValues);
         });
@@ -54,29 +49,6 @@ public sealed class CustomWebApplicationFactory(
     {
         client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
-    }
-
-    protected override IHost CreateHost(IHostBuilder builder)
-    {
-        lock (HostStartupEnvironmentLock)
-        {
-            var originalConnectionString = Environment.GetEnvironmentVariable(SummerBornInfoConnectionStringEnvironmentVariableName);
-
-            try
-            {
-                Environment.SetEnvironmentVariable(
-                    SummerBornInfoConnectionStringEnvironmentVariableName,
-                    integrationTestDatabaseInstanceFixture.DatabaseConnectionString);
-
-                return base.CreateHost(builder);
-            }
-            finally
-            {
-                Environment.SetEnvironmentVariable(
-                    SummerBornInfoConnectionStringEnvironmentVariableName,
-                    originalConnectionString);
-            }
-        }
     }
 
     public async ValueTask InitializeAsync()
