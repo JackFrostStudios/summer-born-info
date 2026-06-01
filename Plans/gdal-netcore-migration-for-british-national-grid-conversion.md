@@ -206,7 +206,7 @@ Rationale:
 - [x] Task 2 complete: Runtime initialization migration committed.
 - [x] Task 3 complete: OSTN15 local resource alignment committed.
 - [x] Task 4 complete: Cross-platform output verification committed.
-- [ ] Task 5 complete: Automated verification and documentation committed.
+- [x] Task 5 complete: Automated verification and documentation committed.
 
 ## 9. Risks And Mitigations
 
@@ -248,13 +248,13 @@ These are implementation details rather than blockers because the migration dire
 
 ## 11. Completion Checklist
 
-- [ ] The solution no longer depends on the direct `GDAL` / `GDAL.Native` package combination.
-- [ ] `BritishNationalGridLocationConverter` still converts valid `EPSG:27700` coordinates into WGS84 `Point` values with SRID `4326`.
-- [ ] The runtime bootstrap no longer assumes Windows-only native library layout.
+- [x] The solution no longer depends on the direct `GDAL` / `GDAL.Native` package combination.
+- [x] `BritishNationalGridLocationConverter` still converts valid `EPSG:27700` coordinates into WGS84 `Point` values with SRID `4326`.
+- [x] The runtime bootstrap no longer assumes Windows-only native library layout.
 - [x] The chosen `gdal.netcore` packages support both local Windows development and Linux containers.
-- [ ] The OSTN15 grid resource remains checked into the repository.
+- [x] The OSTN15 grid resource remains checked into the repository.
 - [x] The OSTN15 grid resource is copied into runtime output where PROJ can discover it.
-- [ ] PROJ remains configured to work without relying on network-downloaded grid files.
+- [x] PROJ remains configured to work without relying on network-downloaded grid files.
 - [x] Existing importer behavior tests for valid, invalid, and cleared coordinates still pass.
-- [ ] Additional verification protects against losing the bundled grid resource in build or publish output.
-- [ ] Contributor-facing documentation explains the new package/runtime model and local grid expectations.
+- [x] Additional verification protects against losing the bundled grid resource in build or publish output.
+- [x] Contributor-facing documentation explains the new package/runtime model and local grid expectations.

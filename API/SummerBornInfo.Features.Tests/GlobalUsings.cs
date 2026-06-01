@@ -1,6 +1,7 @@
 global using System.Diagnostics;
 global using System.Runtime.InteropServices;
 global using Microsoft.EntityFrameworkCore;
+global using OSGeo.OSR;
 global using SummerBornInfo.Domain.Entities;
 global using SummerBornInfo.Domain.Events;
 global using SummerBornInfo.Features.Schools.Commands.Import;

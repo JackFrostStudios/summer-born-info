@@ -209,6 +209,20 @@ dotnet test --report-xunit-trx --coverlet --coverlet-exclude-assemblies-without-
 
 The integration test projects use Testcontainers to provision PostgreSQL when required, so no separate manual database setup should be necessary for test runs.
 
+## GDAL Runtime And OSTN15 Grid
+
+British National Grid (`EPSG:27700`) import conversion now runs on the `gdal.netcore` packaging model rather than the older direct native-loader setup.
+
+- `SummerBornInfo.Features` references `MaxRev.Gdal.Core` for the managed GDAL bindings.
+- `SummerBornInfo.Web` and `SummerBornInfo.Features.Tests` carry the Windows and Linux minimal runtime packages so local development, test execution, and Linux container publish outputs share the same runtime assumptions.
+- `GdalRuntimeConfiguration.Configure()` calls `GdalBase.ConfigureAll()`, keeps `PROJ_NETWORK` disabled, and registers local PROJ search paths so coordinate conversion stays offline-capable.
+
+The bundled OSTN15 grid file stays in source control at `SummerBornInfo.Features/Resources/Gdal/share/uk_os_OSTN15_NTv2_OSGBtoETRS.tif`.
+
+- Build and test outputs should contain `proj.db` and the OSTN15 grid under `runtimes/<rid>/native/maxrev.gdal.core.libshared/`.
+- If you are validating a runtime or publish output manually, confirm that the bundled `uk_os_OSTN15_NTv2_OSGBtoETRS.tif` file is still present alongside the GDAL runtime data for the target runtime.
+- Do not rely on outbound network access for grid downloads when debugging conversion issues; the expected fix path is to restore the bundled runtime data or search-path configuration instead.
+
 ## Development
 
 Development is centered around Visual Studio and Aspire:

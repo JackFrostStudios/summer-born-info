@@ -3,17 +3,40 @@ namespace SummerBornInfo.Features.Tests.Schools.Commands.ProcessImportFile.FileP
 public sealed class BritishNationalGridLocationConverterTests
 {
     [Fact]
-    public void GivenConverterRuntime_WhenUsed_ThenOstn15GridIsBundledLocally()
+    public void GivenConverterRuntime_WhenUsed_ThenBundledProjRuntimeDataIsPresentLocally()
     {
-        var gridPath = Path.Combine(
+        var runtimePath = Path.Combine(
             AppContext.BaseDirectory,
             "runtimes",
             RuntimeInformation.RuntimeIdentifier,
             "native",
-            "maxrev.gdal.core.libshared",
-            "uk_os_OSTN15_NTv2_OSGBtoETRS.tif");
+            "maxrev.gdal.core.libshared");
+        var gridPath = Path.Combine(runtimePath, "uk_os_OSTN15_NTv2_OSGBtoETRS.tif");
+        var projDatabasePath = Path.Combine(runtimePath, "proj.db");
 
+        Assert.True(Directory.Exists(runtimePath), $"Expected bundled GDAL runtime directory at '{runtimePath}'.");
         Assert.True(File.Exists(gridPath), $"Expected bundled OSTN15 grid at '{gridPath}'.");
+        Assert.True(File.Exists(projDatabasePath), $"Expected bundled PROJ database at '{projDatabasePath}'.");
+    }
+
+    [Fact]
+    public void GivenConverterRuntime_WhenConfigured_ThenProjUsesBundledOfflineRuntimeData()
+    {
+        var expectedRuntimePath = Path.GetFullPath(Path.Combine(
+            AppContext.BaseDirectory,
+            "runtimes",
+            RuntimeInformation.RuntimeIdentifier,
+            "native",
+            "maxrev.gdal.core.libshared"));
+
+        Assert.True(Directory.Exists(expectedRuntimePath), $"Expected bundled GDAL runtime directory at '{expectedRuntimePath}'.");
+
+        GdalRuntimeConfiguration.Configure();
+
+        Assert.False(Osr.GetPROJEnableNetwork(), "Expected PROJ network access to remain disabled.");
+        Assert.Contains(
+            Osr.GetPROJSearchPaths().Select(Path.GetFullPath),
+            path => string.Equals(path, expectedRuntimePath, StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
