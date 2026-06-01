@@ -5,7 +5,13 @@ public sealed class BritishNationalGridLocationConverterTests
     [Fact]
     public void GivenConverterRuntime_WhenUsed_ThenOstn15GridIsBundledLocally()
     {
-        var gridPath = Path.Combine(AppContext.BaseDirectory, "gdal", "share", "uk_os_OSTN15_NTv2_OSGBtoETRS.tif");
+        var gridPath = Path.Combine(
+            AppContext.BaseDirectory,
+            "runtimes",
+            RuntimeInformation.RuntimeIdentifier,
+            "native",
+            "maxrev.gdal.core.libshared",
+            "uk_os_OSTN15_NTv2_OSGBtoETRS.tif");
 
         Assert.True(File.Exists(gridPath), $"Expected bundled OSTN15 grid at '{gridPath}'.");
     }

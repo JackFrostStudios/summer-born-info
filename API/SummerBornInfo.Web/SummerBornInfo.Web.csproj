@@ -4,6 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <BundledOstn15GridSourcePath>..\SummerBornInfo.Features\Resources\Gdal\share\uk_os_OSTN15_NTv2_OSGBtoETRS.tif</BundledOstn15GridSourcePath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,10 +19,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\SummerBornInfo.Features\Resources\Gdal\share\uk_os_OSTN15_NTv2_OSGBtoETRS.tif"
-             Link="gdal\share\uk_os_OSTN15_NTv2_OSGBtoETRS.tif"
-             CopyToOutputDirectory="PreserveNewest" />
+    <BundledOstn15Grid Include="$(BundledOstn15GridSourcePath)"
+                       TargetPath="runtimes\win-x64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif" />
+    <BundledOstn15Grid Include="$(BundledOstn15GridSourcePath)"
+                       TargetPath="runtimes\linux-x64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif" />
+    <BundledOstn15Grid Include="$(BundledOstn15GridSourcePath)"
+                       TargetPath="runtimes\linux-arm64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif" />
   </ItemGroup>
+
+  <Target Name="CopyBundledOstn15GridToOutput" AfterTargets="CopyFilesToOutputDirectory">
+    <Copy SourceFiles="@(BundledOstn15Grid)"
+          DestinationFiles="@(BundledOstn15Grid->'$(TargetDir)%(TargetPath)')"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="CopyBundledOstn15GridToPublishOutput" BeforeTargets="ComputeFilesToPublish">
+    <ItemGroup>
+      <ResolvedFileToPublish Include="@(BundledOstn15Grid)">
+        <RelativePath>%(BundledOstn15Grid.TargetPath)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
 
   <ItemGroup>
     <ProjectReference Include="..\SummerBornInfo.AppHost.ServiceDefaults\SummerBornInfo.AppHost.ServiceDefaults.csproj" />

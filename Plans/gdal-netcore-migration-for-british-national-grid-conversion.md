@@ -204,7 +204,7 @@ Rationale:
 
 - [x] Task 1 complete: Package strategy migration committed.
 - [x] Task 2 complete: Runtime initialization migration committed.
-- [ ] Task 3 complete: OSTN15 local resource alignment committed.
+- [x] Task 3 complete: OSTN15 local resource alignment committed.
 - [ ] Task 4 complete: Cross-platform output verification committed.
 - [ ] Task 5 complete: Automated verification and documentation committed.
 
@@ -253,7 +253,7 @@ These are implementation details rather than blockers because the migration dire
 - [ ] The runtime bootstrap no longer assumes Windows-only native library layout.
 - [ ] The chosen `gdal.netcore` packages support both local Windows development and Linux containers.
 - [ ] The OSTN15 grid resource remains checked into the repository.
-- [ ] The OSTN15 grid resource is copied into runtime output where PROJ can discover it.
+- [x] The OSTN15 grid resource is copied into runtime output where PROJ can discover it.
 - [ ] PROJ remains configured to work without relying on network-downloaded grid files.
 - [ ] Existing importer behavior tests for valid, invalid, and cleared coordinates still pass.
 - [ ] Additional verification protects against losing the bundled grid resource in build or publish output.
