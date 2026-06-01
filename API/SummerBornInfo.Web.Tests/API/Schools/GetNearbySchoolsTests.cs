@@ -92,7 +92,7 @@ public sealed class GetNearbySchoolsTests(
         Assert.False(string.IsNullOrWhiteSpace(firstPage.NextCursor));
 
         var secondResponse = await client.GetAsync(
-            $"/api/schools/nearby?latitude=53.8008&longitude=-1.5491&radiusMiles=5&pageSize=2&cursor={Uri.EscapeDataString(firstPage.NextCursor!)}",
+            $"/api/schools/nearby?latitude=53.8008&longitude=-1.5491&radiusMiles=5&pageSize=2&cursor={Uri.EscapeDataString(firstPage.NextCursor)}",
             TestContext.Current.CancellationToken);
 
         _ = secondResponse.EnsureSuccessStatusCode();
@@ -109,9 +109,11 @@ public sealed class GetNearbySchoolsTests(
     {
         var client = Factory.CreateClient();
         var cursor = CreateCursor(
+            /*lang=json,strict*/
             """
             {"version":1,"latitude":53.8008,"longitude":-1.5491,"radiusMiles":5.0,"pageSize":10,"distanceMeters":123.45,"schoolId":"00000000-0000-0000-0000-000000000010"}
-            """);
+            """
+        );
 
         var response = await client.GetAsync(
             $"/api/schools/nearby?latitude=53.8008&longitude=-1.5491&radiusMiles=5&pageSize=10&cursor={Uri.EscapeDataString(cursor)}",
@@ -129,9 +131,11 @@ public sealed class GetNearbySchoolsTests(
     {
         var client = Factory.CreateClient();
         var cursor = CreateCursor(
+            /*lang=json,strict*/
             """
             {"version":1,"latitude":53.8008,"longitude":-1.5491,"radiusMiles":5.0,"pageSize":10,"distanceMeters":123.45,"schoolId":"00000000-0000-0000-0000-000000000010"}
-            """);
+            """
+        );
 
         var response = await client.GetAsync(
             string.Format(System.Globalization.CultureInfo.InvariantCulture, requestUriTemplate, Uri.EscapeDataString(cursor)),

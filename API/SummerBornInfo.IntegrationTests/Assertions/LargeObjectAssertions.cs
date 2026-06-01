@@ -33,7 +33,7 @@ public static class LargeObjectAssertions
         await conn.OpenAsync(cancellationToken);
 
         await using NpgsqlCommand cmd = new("SELECT lo_get(@oid)", conn);
-        _ = cmd.Parameters.AddWithValue("oid", NpgsqlTypes.NpgsqlDbType.Oid, objectId);
+        _ = cmd.Parameters.AddWithValue("oid", NpgsqlDbType.Oid, objectId);
 
         var data = (byte[])(await cmd.ExecuteScalarAsync(cancellationToken))!;
 

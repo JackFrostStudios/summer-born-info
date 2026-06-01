@@ -33,10 +33,10 @@ public sealed class SearchSchoolsQueryHandlerTests(
 
         await SeedSchoolsAsync(addressOnlyMatch, nameMatch);
 
-        var handler = new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler(CreateDbContext());
+        var handler = new SearchSchoolsQueryHandler(CreateDbContext());
 
         var result = await handler.ExecuteAsync(
-            new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQuery("amber", PageSize: 10),
+            new SearchSchoolsQuery("amber", PageSize: 10),
             TestContext.Current.CancellationToken);
 
         Assert.Equal([nameMatch.Id, addressOnlyMatch.Id], [.. result.Schools.Select(x => x.Id)]);
@@ -82,13 +82,13 @@ public sealed class SearchSchoolsQueryHandlerTests(
 
         await SeedSchoolsAsync(addressMatch, postcodeMatch, nonMatch);
 
-        var handler = new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler(CreateDbContext());
+        var handler = new SearchSchoolsQueryHandler(CreateDbContext());
 
         var addressResult = await handler.ExecuteAsync(
-            new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQuery("market street", PageSize: 10),
+            new SearchSchoolsQuery("market street", PageSize: 10),
             TestContext.Current.CancellationToken);
         var postcodeResult = await handler.ExecuteAsync(
-            new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQuery("hu12bb", PageSize: 10),
+            new SearchSchoolsQuery("hu12bb", PageSize: 10),
             TestContext.Current.CancellationToken);
 
         Assert.Equal([addressMatch.Id], [.. addressResult.Schools.Select(x => x.Id)]);
@@ -111,10 +111,10 @@ public sealed class SearchSchoolsQueryHandlerTests(
                 county: "North Yorkshire",
                 postCode: "YO1 1AA"));
 
-        var handler = new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler(CreateDbContext());
+        var handler = new SearchSchoolsQueryHandler(CreateDbContext());
 
         var result = await handler.ExecuteAsync(
-            new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQuery("nomatchvalue", PageSize: 10),
+            new SearchSchoolsQuery("nomatchvalue", PageSize: 10),
             TestContext.Current.CancellationToken);
 
         Assert.Empty(result.Schools);
@@ -128,23 +128,23 @@ public sealed class SearchSchoolsQueryHandlerTests(
 
         await SeedSchoolsAsync(thirdSchool, firstSchool, secondSchool);
 
-        var handler = new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler(CreateDbContext());
+        var handler = new SearchSchoolsQueryHandler(CreateDbContext());
 
         var firstPage = await handler.ExecuteAsync(
-            new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQuery("amber", PageSize: 2),
+            new SearchSchoolsQuery("amber", PageSize: 2),
             TestContext.Current.CancellationToken);
 
         Assert.Equal([firstSchool.Id, secondSchool.Id], [.. firstPage.Schools.Select(x => x.Id)]);
         Assert.NotNull(firstPage.NextCursor);
 
         Assert.True(
-            SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsCursor.TryDecode(
+            SearchSchoolsCursor.TryDecode(
                 firstPage.NextCursor,
                 "amber",
                 out _));
 
         var secondPage = await handler.ExecuteAsync(
-            new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQuery(
+            new SearchSchoolsQuery(
                 "amber",
                 Cursor: firstPage.NextCursor,
                 PageSize: 2),
