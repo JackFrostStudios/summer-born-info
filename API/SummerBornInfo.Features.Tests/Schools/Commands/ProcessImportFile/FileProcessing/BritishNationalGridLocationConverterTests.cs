@@ -2,41 +2,93 @@ namespace SummerBornInfo.Features.Tests.Schools.Commands.ProcessImportFile.FileP
 
 public sealed class BritishNationalGridLocationConverterTests
 {
-    [Fact]
-    public void GivenConverterRuntime_WhenUsed_ThenBundledProjRuntimeDataIsPresentLocally()
-    {
-        var runtimePath = Path.Combine(
-            AppContext.BaseDirectory,
-            "runtimes",
-            RuntimeInformation.RuntimeIdentifier,
-            "native",
-            "maxrev.gdal.core.libshared");
-        var gridPath = Path.Combine(runtimePath, "uk_os_OSTN15_NTv2_OSGBtoETRS.tif");
-        var projDatabasePath = Path.Combine(runtimePath, "proj.db");
+    private const string ProjDatabaseFileName = "proj.db";
+    private const string Ostn15GridFileName = "uk_os_OSTN15_NTv2_OSGBtoETRS.tif";
 
-        Assert.True(Directory.Exists(runtimePath), $"Expected bundled GDAL runtime directory at '{runtimePath}'.");
-        Assert.True(File.Exists(gridPath), $"Expected bundled OSTN15 grid at '{gridPath}'.");
-        Assert.True(File.Exists(projDatabasePath), $"Expected bundled PROJ database at '{projDatabasePath}'.");
+    [Fact]
+    public void GivenConverterRuntime_WhenInspectingBundledProjSearchPaths_ThenBundledProjDataIsPresentLocally()
+    {
+        var bundledSearchPaths = GdalRuntimeConfiguration.GetBundledProjSearchPaths(
+            AppContext.BaseDirectory,
+            RuntimeInformation.RuntimeIdentifier);
+        var appBaseDirectory = Path.GetFullPath(AppContext.BaseDirectory);
+
+        Assert.NotEmpty(bundledSearchPaths);
+        Assert.All(
+            bundledSearchPaths,
+            path => Assert.StartsWith(appBaseDirectory, Path.GetFullPath(path), StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(
+            bundledSearchPaths,
+            path => File.Exists(Path.Combine(path, Ostn15GridFileName)));
+        Assert.Contains(
+            bundledSearchPaths,
+            path => File.Exists(Path.Combine(path, ProjDatabaseFileName)));
     }
 
     [Fact]
     public void GivenConverterRuntime_WhenConfigured_ThenProjUsesBundledOfflineRuntimeData()
     {
-        var expectedRuntimePath = Path.GetFullPath(Path.Combine(
-            AppContext.BaseDirectory,
-            "runtimes",
-            RuntimeInformation.RuntimeIdentifier,
-            "native",
-            "maxrev.gdal.core.libshared"));
-
-        Assert.True(Directory.Exists(expectedRuntimePath), $"Expected bundled GDAL runtime directory at '{expectedRuntimePath}'.");
-
         GdalRuntimeConfiguration.Configure();
+
+        var configuredSearchPaths = Osr.GetPROJSearchPaths()
+            .Select(Path.GetFullPath)
+            .ToArray();
+        var bundledSearchPaths = GdalRuntimeConfiguration.GetBundledProjSearchPaths(
+            AppContext.BaseDirectory,
+            RuntimeInformation.RuntimeIdentifier);
 
         Assert.False(Osr.GetPROJEnableNetwork(), "Expected PROJ network access to remain disabled.");
         Assert.Contains(
-            Osr.GetPROJSearchPaths().Select(Path.GetFullPath),
-            path => string.Equals(path, expectedRuntimePath, StringComparison.OrdinalIgnoreCase));
+            bundledSearchPaths,
+            path => configuredSearchPaths.Contains(Path.GetFullPath(path), StringComparer.OrdinalIgnoreCase));
+        Assert.True(
+            ContainsLocalBundledFile(configuredSearchPaths, ProjDatabaseFileName),
+            $"Expected configured PROJ search paths to expose a local '{ProjDatabaseFileName}'.");
+        Assert.True(
+            ContainsLocalBundledFile(configuredSearchPaths, Ostn15GridFileName),
+            $"Expected configured PROJ search paths to expose a local '{Ostn15GridFileName}'.");
+    }
+
+    [Fact]
+    public void GivenBuildOutputRuntimeLayout_WhenInspectingBundledProjSearchPaths_ThenRidRuntimeDirectoryIsIncluded()
+    {
+        var baseDirectory = CreateTempDirectory();
+
+        try
+        {
+            var runtimePath = Path.Combine(baseDirectory, "runtimes", "linux-x64", "native", "maxrev.gdal.core.libshared");
+            WriteBundledProjDataFile(runtimePath, ProjDatabaseFileName);
+            WriteBundledProjDataFile(runtimePath, Ostn15GridFileName);
+            WriteBundledProjDataFile(Path.Combine(baseDirectory, "gdal", "share"), ProjDatabaseFileName);
+
+            var bundledSearchPaths = GdalRuntimeConfiguration.GetBundledProjSearchPaths(baseDirectory, "linux-x64");
+
+            Assert.Contains(Path.GetFullPath(runtimePath), bundledSearchPaths, StringComparer.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            Directory.Delete(baseDirectory, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void GivenFlattenedPublishLayout_WhenInspectingBundledProjSearchPaths_ThenPublishRootIsIncluded()
+    {
+        var baseDirectory = CreateTempDirectory();
+
+        try
+        {
+            WriteBundledProjDataFile(baseDirectory, ProjDatabaseFileName);
+            WriteBundledProjDataFile(baseDirectory, Ostn15GridFileName);
+
+            var bundledSearchPaths = GdalRuntimeConfiguration.GetBundledProjSearchPaths(baseDirectory, "linux-x64");
+
+            Assert.Contains(Path.GetFullPath(baseDirectory), bundledSearchPaths, StringComparer.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            Directory.Delete(baseDirectory, recursive: true);
+        }
     }
 
     [Fact]
@@ -79,5 +131,30 @@ public sealed class BritishNationalGridLocationConverterTests
 
         // Assert
         Assert.Null(point);
+    }
+
+    private static bool ContainsLocalBundledFile(IEnumerable<string> searchPaths, string fileName)
+    {
+        var appBaseDirectory = Path.GetFullPath(AppContext.BaseDirectory);
+
+        return searchPaths.Any(path =>
+        {
+            var fullPath = Path.GetFullPath(path);
+            return fullPath.StartsWith(appBaseDirectory, StringComparison.OrdinalIgnoreCase)
+                && File.Exists(Path.Combine(fullPath, fileName));
+        });
+    }
+
+    private static string CreateTempDirectory()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"summer-born-info-gdal-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(path);
+        return path;
+    }
+
+    private static void WriteBundledProjDataFile(string directoryPath, string fileName)
+    {
+        Directory.CreateDirectory(directoryPath);
+        File.WriteAllText(Path.Combine(directoryPath, fileName), "test");
     }
 }

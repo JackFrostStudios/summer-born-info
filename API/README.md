@@ -215,12 +215,13 @@ British National Grid (`EPSG:27700`) import conversion now runs on the `gdal.net
 
 - `SummerBornInfo.Features` references `MaxRev.Gdal.Core` for the managed GDAL bindings.
 - `SummerBornInfo.Web` and `SummerBornInfo.Features.Tests` carry the Windows and Linux minimal runtime packages so local development, test execution, and Linux container publish outputs share the same runtime assumptions.
-- `GdalRuntimeConfiguration.Configure()` calls `GdalBase.ConfigureAll()`, keeps `PROJ_NETWORK` disabled, and registers local PROJ search paths so coordinate conversion stays offline-capable.
+- `GdalRuntimeConfiguration.Configure()` calls `GdalBase.ConfigureAll()`, keeps `PROJ_NETWORK` disabled, and registers bundled local PROJ search paths so coordinate conversion stays offline-capable across both build-output and RID-specific publish layouts.
 
 The bundled OSTN15 grid file stays in source control at `SummerBornInfo.Features/Resources/Gdal/share/uk_os_OSTN15_NTv2_OSGBtoETRS.tif`.
 
-- Build and test outputs should contain `proj.db` and the OSTN15 grid under `runtimes/<rid>/native/maxrev.gdal.core.libshared/`.
-- If you are validating a runtime or publish output manually, confirm that the bundled `uk_os_OSTN15_NTv2_OSGBtoETRS.tif` file is still present alongside the GDAL runtime data for the target runtime.
+- Build and test outputs should contain the bundled OSTN15 grid under `runtimes/<rid>/native/maxrev.gdal.core.libshared/`, with local PROJ data available from that runtime directory and the shared `gdal/share` fallback data copied by `gdal.netcore`.
+- RID-specific Linux publish outputs are flattened: the native GDAL libraries, `proj.db`, bundled GDAL data files, and `uk_os_OSTN15_NTv2_OSGBtoETRS.tif` should all be present at the publish root that is copied into the container image.
+- If you are validating a runtime or publish output manually, confirm that a local `proj.db` and the bundled `uk_os_OSTN15_NTv2_OSGBtoETRS.tif` file are both present in one of the shipped GDAL search locations for that output.
 - Do not rely on outbound network access for grid downloads when debugging conversion issues; the expected fix path is to restore the bundled runtime data or search-path configuration instead.
 
 ## Development

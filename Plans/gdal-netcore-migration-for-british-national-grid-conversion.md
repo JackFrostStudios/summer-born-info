@@ -41,7 +41,7 @@ This migration includes:
 - introducing a cross-platform GDAL runtime initialization path based on `gdal.netcore`;
 - preserving `OSGeo.OSR`-based British National Grid to WGS84 conversion behavior in the converter;
 - preserving the locally bundled OSTN15 grid shift resource and wiring it into PROJ configuration for both Windows and Linux execution paths;
-- ensuring the API host and test host both receive the runtime assets and bundled grid data required by `gdal.netcore`;
+- ensuring the API host and test host both receive the runtime assets and bundled grid data required by `gdal.netcore`, including the flattened RID-specific Linux publish shape used for container images;
 - updating automated tests so the migration is protected against runtime-path regressions and grid-resource omissions;
 - verifying that Windows local development and Linux container deployment use compatible runtime packaging assumptions.
 
@@ -84,7 +84,7 @@ Given the API host and automated test host are built or published
 When their output directories are inspected  
 Then they contain the `gdal.netcore` runtime assets required for the current platform  
 And they contain `proj.db`, GDAL data, and the bundled OSTN15 resource  
-And the output structure matches the expectations documented by `gdal.netcore` for successful runtime initialization.
+And build and test outputs keep the RID-specific runtime folder layout while RID-specific Linux publish outputs flatten those GDAL assets into the publish root for container use.
 
 ### Scenario 5: Existing import behavior remains stable
 
@@ -124,8 +124,8 @@ And any newly added runtime-initialization assertions confirm that the migration
 5. Automated verification upgrades
 
 - Preserve the existing converter and importer behavior tests.
-- Add tests or assertions that prove the bundled OSTN15 resource is present in runtime output after the migration.
-- Add at least one verification path that protects against regressions in cross-platform initialization expectations.
+- Add tests or assertions that prove the bundled OSTN15 resource and local `proj.db` are discoverable from the shipped runtime search paths after the migration.
+- Add at least one verification path that protects against regressions in both the build-output runtime-folder layout and the flattened RID-specific Linux publish layout.
 
 6. Delivery and operational documentation
 
@@ -212,7 +212,7 @@ Rationale:
 
 - Runtime-layout risk:
   `gdal.netcore` uses a different output layout than the current direct GDAL packages, and the application may silently miss native libraries or data files if the output assumptions are wrong.
-  Mitigation: make runtime-output assertions explicit in tests and validate both test-host and web-host outputs during delivery.
+  Mitigation: make runtime-output assertions explicit in tests, resolve both RID runtime folders and flattened publish roots in `GdalRuntimeConfiguration`, and validate both test-host and web-host outputs during delivery.
 
 - Grid-shift regression risk:
   The migration could accidentally preserve `proj.db` but lose the locally bundled OSTN15 resource or fail to point PROJ at it.
@@ -256,5 +256,5 @@ These are implementation details rather than blockers because the migration dire
 - [x] The OSTN15 grid resource is copied into runtime output where PROJ can discover it.
 - [x] PROJ remains configured to work without relying on network-downloaded grid files.
 - [x] Existing importer behavior tests for valid, invalid, and cleared coordinates still pass.
-- [x] Additional verification protects against losing the bundled grid resource in build or publish output.
-- [x] Contributor-facing documentation explains the new package/runtime model and local grid expectations.
+- [x] Additional verification protects against losing the bundled grid resource or local `proj.db` discovery in both build and publish output layouts.
+- [x] Contributor-facing documentation explains the new package/runtime model, the differing build-versus-publish layouts, and the local grid expectations.
