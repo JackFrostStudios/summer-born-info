@@ -115,9 +115,20 @@ public static class SchoolEndpoints
 
     private static async Task<IResult> GetNearbySchoolsAsync(
         GetNearbySchoolsQueryHandler handler,
-        [AsParameters] GetNearbySchoolsRequest request,
+        double? latitude,
+        double? longitude,
+        double? radiusMiles,
+        string? cursor,
+        int? pageSize,
         CancellationToken cancellationToken)
     {
+        GetNearbySchoolsRequest request = new(
+            latitude,
+            longitude,
+            radiusMiles,
+            cursor,
+            pageSize);
+
         if (!GetNearbySchoolsRequestValidator.TryValidate(request, out var query))
         {
             return CreateInvalidDiscoveryRequest(

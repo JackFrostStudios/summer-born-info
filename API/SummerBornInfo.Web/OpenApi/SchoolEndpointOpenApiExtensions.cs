@@ -83,27 +83,32 @@ public static class SchoolEndpointOpenApiExtensions
             operation,
             "latitude",
             "Latitude of the search origin in decimal degrees. Must be between -90 and 90.",
-            isRequired: true);
+            isRequired: true,
+            schema: CreateStringQueryParameterSchema());
         DescribeQueryParameter(
             operation,
             "longitude",
             "Longitude of the search origin in decimal degrees. Must be between -180 and 180.",
-            isRequired: true);
+            isRequired: true,
+            schema: CreateStringQueryParameterSchema());
         DescribeQueryParameter(
             operation,
             "radiusMiles",
             $"Search radius in miles. Must be greater than 0 and no more than {MaximumNearbyRadiusMilesText}.",
-            isRequired: true);
+            isRequired: true,
+            schema: CreateStringQueryParameterSchema());
         DescribeQueryParameter(
             operation,
             "cursor",
             "Opaque nearby-search continuation token returned as nextCursor from a previous response.",
-            isRequired: false);
+            isRequired: false,
+            schema: CreateStringQueryParameterSchema());
         DescribeQueryParameter(
             operation,
             "pageSize",
             $"Optional page size. Must be between 1 and {MaximumNearbyPageSizeText}.",
-            isRequired: false);
+            isRequired: false,
+            schema: CreateStringQueryParameterSchema());
 
         operation.Responses ??= [];
         operation.Responses["200"] = new OpenApiResponse
@@ -128,7 +133,8 @@ public static class SchoolEndpointOpenApiExtensions
         OpenApiOperation operation,
         string name,
         string description,
-        bool isRequired)
+        bool isRequired,
+        IOpenApiSchema schema)
     {
         if (operation.Parameters is null)
         {
@@ -152,11 +158,19 @@ public static class SchoolEndpointOpenApiExtensions
                 In = parameter.In,
                 Description = description,
                 Required = isRequired,
-                Schema = parameter.Schema,
+                Schema = schema,
             };
 
             return;
         }
+    }
+
+    private static OpenApiSchema CreateStringQueryParameterSchema()
+    {
+        return new OpenApiSchema
+        {
+            Type = JsonSchemaType.String,
+        };
     }
 
     private static void DescribeProblemResponse(

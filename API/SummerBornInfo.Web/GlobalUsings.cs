@@ -6,7 +6,6 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.ApiExplorer;
 global using Microsoft.AspNetCore.OpenApi;
 global using Microsoft.EntityFrameworkCore;
-global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Options;
 global using Microsoft.OpenApi;
 global using Npgmq;

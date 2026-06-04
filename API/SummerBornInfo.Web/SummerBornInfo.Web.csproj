@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RuntimeIdentifiers>win-x64;linux-x64;linux-arm64</RuntimeIdentifiers>
     <BundledOstn15GridSourcePath>..\SummerBornInfo.Features\Resources\Gdal\share\uk_os_OSTN15_NTv2_OSGBtoETRS.tif</BundledOstn15GridSourcePath>
+    <UserSecretsId>4384542c-6e17-49c2-b6a0-2144763afd87</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,21 +21,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <BundledOstn15Grid Include="$(BundledOstn15GridSourcePath)"
-                       TargetPath="runtimes\win-x64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif"
-                       Condition="'$(RuntimeIdentifier)' == '' Or '$(RuntimeIdentifier)' == 'win-x64'" />
-    <BundledOstn15Grid Include="$(BundledOstn15GridSourcePath)"
-                       TargetPath="runtimes\linux-x64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif"
-                       Condition="'$(RuntimeIdentifier)' == '' Or '$(RuntimeIdentifier)' == 'linux-x64'" />
-    <BundledOstn15Grid Include="$(BundledOstn15GridSourcePath)"
-                       TargetPath="runtimes\linux-arm64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif"
-                       Condition="'$(RuntimeIdentifier)' == '' Or '$(RuntimeIdentifier)' == 'linux-arm64'" />
+    <BundledOstn15Grid Include="$(BundledOstn15GridSourcePath)" TargetPath="runtimes\win-x64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif" Condition="'$(RuntimeIdentifier)' == '' Or '$(RuntimeIdentifier)' == 'win-x64'" />
+    <BundledOstn15Grid Include="$(BundledOstn15GridSourcePath)" TargetPath="runtimes\linux-x64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif" Condition="'$(RuntimeIdentifier)' == '' Or '$(RuntimeIdentifier)' == 'linux-x64'" />
+    <BundledOstn15Grid Include="$(BundledOstn15GridSourcePath)" TargetPath="runtimes\linux-arm64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif" Condition="'$(RuntimeIdentifier)' == '' Or '$(RuntimeIdentifier)' == 'linux-arm64'" />
   </ItemGroup>
 
   <Target Name="CopyBundledOstn15GridToOutput" AfterTargets="CopyFilesToOutputDirectory">
-    <Copy SourceFiles="@(BundledOstn15Grid)"
-          DestinationFiles="@(BundledOstn15Grid->'$(TargetDir)%(TargetPath)')"
-          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(BundledOstn15Grid)" DestinationFiles="@(BundledOstn15Grid->'$(TargetDir)%(TargetPath)')" SkipUnchangedFiles="true" />
   </Target>
 
   <Target Name="CopyBundledOstn15GridToPublishOutput" BeforeTargets="ComputeFilesToPublish">
