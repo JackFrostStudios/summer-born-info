@@ -2,11 +2,10 @@ using Projects;
 using SummerbornInfo.PostgresDockerImage;
 
 var builder = DistributedApplication.CreateBuilder(args);
-var appHostDirectory = PostgresDockerfilePath.PostgreSqlDockerfileDirectory;
 
 var postgres = builder
     .AddPostgres("postgres")
-    .WithDockerfile(Path.Combine(appHostDirectory, "Postgres"))
+    .WithDockerfile(Path.Combine(PostgresDockerfilePath.PostgreSqlDockerfileDirectory, "Dockerfile"))
     .WithVolume("summerborninfo_postgresdata", "/var/lib/postgresql/18/docker")
     .WithPgAdmin()
     .WithContainerRuntimeArgs("--user", "root");
