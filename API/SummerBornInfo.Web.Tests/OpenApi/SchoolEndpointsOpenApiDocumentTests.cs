@@ -78,21 +78,21 @@ public sealed class SchoolEndpointsOpenApiDocumentTests(
             "latitude",
             "query",
             isRequired: true,
-            schemaType: "number",
+            schemaType: "string",
             descriptionContains: "-90");
         AssertParameter(
             parameters,
             "longitude",
             "query",
             isRequired: true,
-            schemaType: "number",
+            schemaType: "string",
             descriptionContains: "-180");
         AssertParameter(
             parameters,
             "radiusMiles",
             "query",
             isRequired: true,
-            schemaType: "number",
+            schemaType: "string",
             descriptionContains: "100");
         AssertParameter(
             parameters,
@@ -106,7 +106,7 @@ public sealed class SchoolEndpointsOpenApiDocumentTests(
             "pageSize",
             "query",
             isRequired: false,
-            schemaType: "integer",
+            schemaType: "string",
             descriptionContains: "200");
 
         var responses = getOperation.GetProperty("responses");
