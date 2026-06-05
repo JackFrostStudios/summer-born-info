@@ -12,6 +12,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Resources\Gdal\share\uk_os_OSTN15_NTv2_OSGBtoETRS.tif">
+      <TargetPath>GridShifts\uk_os_OSTN15_NTv2_OSGBtoETRS.tif</TargetPath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SummerBornInfo.Domain\SummerBornInfo.Domain.csproj" />
     <ProjectReference Include="..\SummerBornInfo.Infrastructure\SummerBornInfo.Infrastructure.csproj" />
   </ItemGroup>

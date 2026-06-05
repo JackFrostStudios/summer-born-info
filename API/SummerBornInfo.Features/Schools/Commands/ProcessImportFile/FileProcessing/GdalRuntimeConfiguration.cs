@@ -2,7 +2,7 @@ namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcess
 
 internal static class GdalRuntimeConfiguration
 {
-    private const string ProjDatabaseFileName = "proj.db";
+    private const string GridShiftsDirectoryName = "GridShifts";
     private const string Ostn15GridFileName = "uk_os_OSTN15_NTv2_OSGBtoETRS.tif";
     private static int _configured;
 
@@ -32,22 +32,43 @@ internal static class GdalRuntimeConfiguration
     private static string[] GetProjSearchPaths()
     {
         var searchPaths = new List<string>();
+        AddSearchPaths(searchPaths, Osr.GetPROJSearchPaths());
+
         const string? missingConfigValue = null;
         AddSearchPaths(searchPaths, Gdal.GetConfigOption("PROJ_LIB", missingConfigValue));
         AddSearchPaths(searchPaths, Environment.GetEnvironmentVariable("PROJ_LIB"));
-        AddSearchPaths(searchPaths, GetBundledProjSearchPaths(AppContext.BaseDirectory, RuntimeInformation.RuntimeIdentifier));
+
+        var gridShiftPath = GetGridShiftSearchPath(AppContext.BaseDirectory);
+        if (gridShiftPath is not null)
+        {
+            AddSearchPath(searchPaths, gridShiftPath);
+        }
 
         return [.. searchPaths];
     }
 
-    internal static string[] GetBundledProjSearchPaths(string baseDirectory, string? runtimeIdentifier)
+    internal static string? GetGridShiftSearchPath(string baseDirectory)
     {
-        var searchPaths = new List<string>();
-        AddBundledSearchPath(searchPaths, GetBundledRuntimePath(baseDirectory, runtimeIdentifier));
-        AddBundledSearchPath(searchPaths, baseDirectory);
-        AddBundledSearchPath(searchPaths, Path.Combine(baseDirectory, "gdal", "share"));
+        var gridShiftPath = Path.Combine(baseDirectory, GridShiftsDirectoryName);
+        return File.Exists(Path.Combine(gridShiftPath, Ostn15GridFileName))
+            ? Path.GetFullPath(gridShiftPath)
+            : null;
+    }
 
-        return [.. searchPaths];
+    private static void AddSearchPath(List<string> searchPaths, string path)
+    {
+        if (string.IsNullOrWhiteSpace(path) || !Directory.Exists(path))
+        {
+            return;
+        }
+
+        var fullPath = Path.GetFullPath(path);
+        if (searchPaths.Contains(fullPath, StringComparer.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        searchPaths.Add(fullPath);
     }
 
     private static void AddSearchPaths(List<string> searchPaths, string? configuredValue)
@@ -59,10 +80,7 @@ internal static class GdalRuntimeConfiguration
 
         foreach (var path in configuredValue.Split(Path.PathSeparator, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
         {
-            if (Directory.Exists(path))
-            {
-                AddSearchPath(searchPaths, path);
-            }
+            AddSearchPath(searchPaths, path);
         }
     }
 
@@ -72,50 +90,5 @@ internal static class GdalRuntimeConfiguration
         {
             AddSearchPath(searchPaths, path);
         }
-    }
-
-    private static void AddBundledSearchPath(List<string> searchPaths, string? path)
-    {
-        if (string.IsNullOrWhiteSpace(path) || !Directory.Exists(path))
-        {
-            return;
-        }
-
-        var containsBundledProjData =
-            File.Exists(Path.Combine(path, ProjDatabaseFileName)) ||
-            File.Exists(Path.Combine(path, Ostn15GridFileName));
-
-        if (!containsBundledProjData)
-        {
-            return;
-        }
-
-        AddSearchPath(searchPaths, path);
-    }
-
-    private static void AddSearchPath(List<string> searchPaths, string path)
-    {
-        var fullPath = Path.GetFullPath(path);
-        if (searchPaths.Contains(fullPath, StringComparer.OrdinalIgnoreCase))
-        {
-            return;
-        }
-
-        searchPaths.Add(fullPath);
-    }
-
-    private static string? GetBundledRuntimePath(string baseDirectory, string? runtimeIdentifier)
-    {
-        if (!string.IsNullOrWhiteSpace(runtimeIdentifier))
-        {
-            return Path.Combine(
-                baseDirectory,
-                "runtimes",
-                runtimeIdentifier,
-                "native",
-                "maxrev.gdal.core.libshared");
-        }
-
-        return null;
     }
 }

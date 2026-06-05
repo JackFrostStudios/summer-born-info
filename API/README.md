@@ -214,14 +214,15 @@ The integration test projects use Testcontainers to provision PostgreSQL when re
 British National Grid (`EPSG:27700`) import conversion now runs on the `gdal.netcore` packaging model rather than the older direct native-loader setup.
 
 - `SummerBornInfo.Features` references `MaxRev.Gdal.Core` for the managed GDAL bindings.
+- `SummerBornInfo.Features` also owns the bundled OSTN15 grid file and copies it into `GridShifts/` for consuming build and publish outputs.
 - `SummerBornInfo.Web` and `SummerBornInfo.Features.Tests` carry the Windows and Linux minimal runtime packages so local development, test execution, and Linux container publish outputs share the same runtime assumptions.
-- `GdalRuntimeConfiguration.Configure()` calls `GdalBase.ConfigureAll()`, keeps `PROJ_NETWORK` disabled, and registers bundled local PROJ search paths so coordinate conversion stays offline-capable across both build-output and RID-specific publish layouts.
+- `GdalRuntimeConfiguration.Configure()` calls `GdalBase.ConfigureAll()`, keeps `PROJ_NETWORK` disabled, preserves the package-provided PROJ data paths, and appends the local `GridShifts` folder so coordinate conversion stays offline-capable.
 
 The bundled OSTN15 grid file stays in source control at `SummerBornInfo.Features/Resources/Gdal/share/uk_os_OSTN15_NTv2_OSGBtoETRS.tif`.
 
-- Build and test outputs should contain the bundled OSTN15 grid under `runtimes/<rid>/native/maxrev.gdal.core.libshared/`, with local PROJ data available from that runtime directory and the shared `gdal/share` fallback data copied by `gdal.netcore`.
-- RID-specific Linux publish outputs are flattened: the native GDAL libraries, `proj.db`, bundled GDAL data files, and `uk_os_OSTN15_NTv2_OSGBtoETRS.tif` should all be present at the publish root that is copied into the container image.
-- If you are validating a runtime or publish output manually, confirm that a local `proj.db` and the bundled `uk_os_OSTN15_NTv2_OSGBtoETRS.tif` file are both present in one of the shipped GDAL search locations for that output.
+- Build, test, and publish outputs should contain the bundled OSTN15 grid under `GridShifts/uk_os_OSTN15_NTv2_OSGBtoETRS.tif`.
+- Package-provided GDAL and PROJ data should continue to come from the `gdal.netcore` runtime layout, including a local `proj.db` that `GdalBase.ConfigureAll()` can register.
+- If you are validating output manually, confirm that `proj.db` is present in the shipped GDAL/PROJ runtime data and that `GridShifts/uk_os_OSTN15_NTv2_OSGBtoETRS.tif` is present for the custom GB grid shift.
 - Do not rely on outbound network access for grid downloads when debugging conversion issues; the expected fix path is to restore the bundled runtime data or search-path configuration instead.
 
 ## Development

@@ -5,7 +5,6 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RuntimeIdentifiers>win-x64;linux-x64;linux-arm64</RuntimeIdentifiers>
-    <BundledOstn15GridSourcePath>..\SummerBornInfo.Features\Resources\Gdal\share\uk_os_OSTN15_NTv2_OSGBtoETRS.tif</BundledOstn15GridSourcePath>
     <UserSecretsId>4384542c-6e17-49c2-b6a0-2144763afd87</UserSecretsId>
   </PropertyGroup>
 
@@ -19,26 +18,6 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
   </ItemGroup>
-
-  <ItemGroup>
-    <BundledOstn15Grid Include="$(BundledOstn15GridSourcePath)" TargetPath="runtimes\win-x64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif" Condition="'$(RuntimeIdentifier)' == '' Or '$(RuntimeIdentifier)' == 'win-x64'" />
-    <BundledOstn15Grid Include="$(BundledOstn15GridSourcePath)" TargetPath="runtimes\linux-x64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif" Condition="'$(RuntimeIdentifier)' == '' Or '$(RuntimeIdentifier)' == 'linux-x64'" />
-    <BundledOstn15Grid Include="$(BundledOstn15GridSourcePath)" TargetPath="runtimes\linux-arm64\native\maxrev.gdal.core.libshared\uk_os_OSTN15_NTv2_OSGBtoETRS.tif" Condition="'$(RuntimeIdentifier)' == '' Or '$(RuntimeIdentifier)' == 'linux-arm64'" />
-  </ItemGroup>
-
-  <Target Name="CopyBundledOstn15GridToOutput" AfterTargets="CopyFilesToOutputDirectory">
-    <Copy SourceFiles="@(BundledOstn15Grid)" DestinationFiles="@(BundledOstn15Grid->'$(TargetDir)%(TargetPath)')" SkipUnchangedFiles="true" />
-  </Target>
-
-  <Target Name="CopyBundledOstn15GridToPublishOutput" BeforeTargets="ComputeFilesToPublish">
-    <ItemGroup>
-      <ResolvedFileToPublish Include="@(BundledOstn15Grid)">
-        <RelativePath Condition="'$(RuntimeIdentifier)' == ''">%(BundledOstn15Grid.TargetPath)</RelativePath>
-        <RelativePath Condition="'$(RuntimeIdentifier)' != ''">uk_os_OSTN15_NTv2_OSGBtoETRS.tif</RelativePath>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </ResolvedFileToPublish>
-    </ItemGroup>
-  </Target>
 
   <ItemGroup>
     <ProjectReference Include="..\SummerBornInfo.AppHost.ServiceDefaults\SummerBornInfo.AppHost.ServiceDefaults.csproj" />

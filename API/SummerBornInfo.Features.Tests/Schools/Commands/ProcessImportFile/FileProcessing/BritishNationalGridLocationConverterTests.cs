@@ -4,66 +4,49 @@ public sealed class BritishNationalGridLocationConverterTests
 {
     private const string ProjDatabaseFileName = "proj.db";
     private const string Ostn15GridFileName = "uk_os_OSTN15_NTv2_OSGBtoETRS.tif";
+    private static readonly string AppBaseDirectory = Path.GetFullPath(AppContext.BaseDirectory);
 
     [Fact]
-    public void GivenConverterRuntime_WhenInspectingBundledProjSearchPaths_ThenBundledProjDataIsPresentLocally()
+    public void GivenConverterRuntime_WhenInspectingGridShiftSearchPath_ThenStableGridShiftsFolderIsReturned()
     {
-        var bundledSearchPaths = GdalRuntimeConfiguration.GetBundledProjSearchPaths(
-            AppContext.BaseDirectory,
-            RuntimeInformation.RuntimeIdentifier);
-        var appBaseDirectory = Path.GetFullPath(AppContext.BaseDirectory);
+        var gridShiftSearchPath = GdalRuntimeConfiguration.GetGridShiftSearchPath(AppContext.BaseDirectory);
 
-        Assert.NotEmpty(bundledSearchPaths);
-        Assert.All(
-            bundledSearchPaths,
-            path => Assert.StartsWith(appBaseDirectory, Path.GetFullPath(path), StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(
-            bundledSearchPaths,
-            path => File.Exists(Path.Combine(path, Ostn15GridFileName)));
-        Assert.Contains(
-            bundledSearchPaths,
-            path => File.Exists(Path.Combine(path, ProjDatabaseFileName)));
+        Assert.NotNull(gridShiftSearchPath);
+        Assert.Equal(Path.Combine(AppBaseDirectory, "GridShifts"), gridShiftSearchPath);
+        Assert.True(File.Exists(Path.Combine(gridShiftSearchPath, Ostn15GridFileName)));
     }
 
     [Fact]
-    public void GivenConverterRuntime_WhenConfigured_ThenProjUsesBundledOfflineRuntimeData()
+    public void GivenConverterRuntime_WhenConfigured_ThenProjUsesBundledOfflineRuntimeDataAndGridShifts()
     {
         GdalRuntimeConfiguration.Configure();
 
-        var configuredSearchPaths = Osr.GetPROJSearchPaths()
-            .Select(Path.GetFullPath)
-            .ToArray();
-        var bundledSearchPaths = GdalRuntimeConfiguration.GetBundledProjSearchPaths(
-            AppContext.BaseDirectory,
-            RuntimeInformation.RuntimeIdentifier);
+        var configuredSearchPaths = GetConfiguredProjSearchPaths();
+        var gridShiftSearchPath = GdalRuntimeConfiguration.GetGridShiftSearchPath(AppContext.BaseDirectory);
 
         Assert.False(Osr.GetPROJEnableNetwork(), "Expected PROJ network access to remain disabled.");
-        Assert.Contains(
-            bundledSearchPaths,
-            path => configuredSearchPaths.Contains(Path.GetFullPath(path), StringComparer.OrdinalIgnoreCase));
         Assert.True(
-            ContainsLocalBundledFile(configuredSearchPaths, ProjDatabaseFileName),
+            ContainsLocalFile(configuredSearchPaths, ProjDatabaseFileName),
             $"Expected configured PROJ search paths to expose a local '{ProjDatabaseFileName}'.");
+        Assert.NotNull(gridShiftSearchPath);
         Assert.True(
-            ContainsLocalBundledFile(configuredSearchPaths, Ostn15GridFileName),
-            $"Expected configured PROJ search paths to expose a local '{Ostn15GridFileName}'.");
+            configuredSearchPaths.Contains(gridShiftSearchPath, StringComparer.OrdinalIgnoreCase),
+            $"Expected configured PROJ search paths to include '{gridShiftSearchPath}'.");
     }
 
     [Fact]
-    public void GivenBuildOutputRuntimeLayout_WhenInspectingBundledProjSearchPaths_ThenRidRuntimeDirectoryIsIncluded()
+    public void GivenGridShiftsFolder_WhenInspectingGridShiftSearchPath_ThenFolderIsReturned()
     {
         var baseDirectory = CreateTempDirectory();
 
         try
         {
-            var runtimePath = Path.Combine(baseDirectory, "runtimes", "linux-x64", "native", "maxrev.gdal.core.libshared");
-            WriteBundledProjDataFile(runtimePath, ProjDatabaseFileName);
-            WriteBundledProjDataFile(runtimePath, Ostn15GridFileName);
-            WriteBundledProjDataFile(Path.Combine(baseDirectory, "gdal", "share"), ProjDatabaseFileName);
+            var gridShiftsPath = Path.Combine(baseDirectory, "GridShifts");
+            WriteBundledProjDataFile(gridShiftsPath, Ostn15GridFileName);
 
-            var bundledSearchPaths = GdalRuntimeConfiguration.GetBundledProjSearchPaths(baseDirectory, "linux-x64");
+            var gridShiftSearchPath = GdalRuntimeConfiguration.GetGridShiftSearchPath(baseDirectory);
 
-            Assert.Contains(Path.GetFullPath(runtimePath), bundledSearchPaths, StringComparer.OrdinalIgnoreCase);
+            Assert.Equal(Path.GetFullPath(gridShiftsPath), gridShiftSearchPath);
         }
         finally
         {
@@ -72,23 +55,33 @@ public sealed class BritishNationalGridLocationConverterTests
     }
 
     [Fact]
-    public void GivenFlattenedPublishLayout_WhenInspectingBundledProjSearchPaths_ThenPublishRootIsIncluded()
+    public void GivenMissingGridShiftFile_WhenInspectingGridShiftSearchPath_ThenNullIsReturned()
     {
         var baseDirectory = CreateTempDirectory();
 
         try
         {
-            WriteBundledProjDataFile(baseDirectory, ProjDatabaseFileName);
-            WriteBundledProjDataFile(baseDirectory, Ostn15GridFileName);
+            var gridShiftSearchPath = GdalRuntimeConfiguration.GetGridShiftSearchPath(baseDirectory);
 
-            var bundledSearchPaths = GdalRuntimeConfiguration.GetBundledProjSearchPaths(baseDirectory, "linux-x64");
-
-            Assert.Contains(Path.GetFullPath(baseDirectory), bundledSearchPaths, StringComparer.OrdinalIgnoreCase);
+            Assert.Null(gridShiftSearchPath);
         }
         finally
         {
             Directory.Delete(baseDirectory, recursive: true);
         }
+    }
+
+    [Fact]
+    public void GivenConverterRuntime_WhenConfiguredMultipleTimes_ThenProjSearchPathsRemainDeduplicated()
+    {
+        GdalRuntimeConfiguration.Configure();
+        GdalRuntimeConfiguration.Configure();
+
+        var configuredSearchPaths = GetConfiguredProjSearchPaths();
+
+        Assert.Equal(
+            configuredSearchPaths.Length,
+            configuredSearchPaths.Distinct(StringComparer.OrdinalIgnoreCase).Count());
     }
 
     [Fact]
@@ -133,14 +126,17 @@ public sealed class BritishNationalGridLocationConverterTests
         Assert.Null(point);
     }
 
-    private static bool ContainsLocalBundledFile(IEnumerable<string> searchPaths, string fileName)
+    private static string[] GetConfiguredProjSearchPaths()
     {
-        var appBaseDirectory = Path.GetFullPath(AppContext.BaseDirectory);
+        return [.. Osr.GetPROJSearchPaths().Select(Path.GetFullPath)];
+    }
 
+    private static bool ContainsLocalFile(IEnumerable<string> searchPaths, string fileName)
+    {
         return searchPaths.Any(path =>
         {
             var fullPath = Path.GetFullPath(path);
-            return fullPath.StartsWith(appBaseDirectory, StringComparison.OrdinalIgnoreCase)
+            return fullPath.StartsWith(AppBaseDirectory, StringComparison.OrdinalIgnoreCase)
                 && File.Exists(Path.Combine(fullPath, fileName));
         });
     }
