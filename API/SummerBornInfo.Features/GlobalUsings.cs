@@ -7,6 +7,7 @@ global using System.Text.Json;
 global using MaxRev.Gdal.Core;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;
+global using NetTopologySuite.Geometries;
 global using nietras.SeparatedValues;
 global using Npgsql;
 global using NpgsqlTypes;

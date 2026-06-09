@@ -1,13 +1,13 @@
 namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
 
-internal static class BritishNationalGridLocationConverter
+public static class BritishNationalGridLocationConverter
 {
     private const int BritishNationalGridEpsgCode = 27700;
     private const int Wgs84EpsgCode = 4326;
     private const double MaxEasting = 700000d;
     private const double MaxNorthing = 1300000d;
 
-    public static NetTopologySuite.Geometries.Point? TryConvertToWgs84Point(string easting, string northing)
+    public static Point? TryConvertToWgs84Point(string easting, string northing)
     {
         if (!double.TryParse(easting, CultureInfo.InvariantCulture, out var parsedEasting)
             || !double.TryParse(northing, CultureInfo.InvariantCulture, out var parsedNorthing)
@@ -19,7 +19,6 @@ internal static class BritishNationalGridLocationConverter
             return null;
         }
 
-        GdalRuntimeConfiguration.Configure();
         using var sourceSpatialReference = CreateSpatialReference(BritishNationalGridEpsgCode);
         using var targetSpatialReference = CreateSpatialReference(Wgs84EpsgCode);
         using var coordinateTransformation = new CoordinateTransformation(sourceSpatialReference, targetSpatialReference);
@@ -37,7 +36,7 @@ internal static class BritishNationalGridLocationConverter
             return null;
         }
 
-        return new NetTopologySuite.Geometries.Point(longitude, latitude) { SRID = 4326 };
+        return new Point(longitude, latitude) { SRID = 4326 };
     }
 
     private static SpatialReference CreateSpatialReference(int epsgCode)

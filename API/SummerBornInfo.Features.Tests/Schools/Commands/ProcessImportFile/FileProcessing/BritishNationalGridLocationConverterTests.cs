@@ -6,10 +6,15 @@ public sealed class BritishNationalGridLocationConverterTests
     private const string Ostn15GridFileName = "uk_os_OSTN15_NTv2_OSGBtoETRS.tif";
     private static readonly string AppBaseDirectory = Path.GetFullPath(AppContext.BaseDirectory);
 
+    public BritishNationalGridLocationConverterTests()
+    {
+        GdalRuntimeConfiguration.Configure();
+    }
+
     [Fact]
     public void GivenConverterRuntime_WhenInspectingGridShiftSearchPath_ThenStableGridShiftsFolderIsReturned()
     {
-        var gridShiftSearchPath = GdalRuntimeConfiguration.GetGridShiftSearchPath(AppContext.BaseDirectory);
+        var gridShiftSearchPath = GdalRuntimeConfiguration.GetGridShiftSearchPath();
 
         Assert.NotNull(gridShiftSearchPath);
         Assert.Equal(Path.Combine(AppBaseDirectory, "GridShifts"), gridShiftSearchPath);
@@ -22,7 +27,7 @@ public sealed class BritishNationalGridLocationConverterTests
         GdalRuntimeConfiguration.Configure();
 
         var configuredSearchPaths = GetConfiguredProjSearchPaths();
-        var gridShiftSearchPath = GdalRuntimeConfiguration.GetGridShiftSearchPath(AppContext.BaseDirectory);
+        var gridShiftSearchPath = GdalRuntimeConfiguration.GetGridShiftSearchPath();
 
         Assert.False(Osr.GetPROJEnableNetwork(), "Expected PROJ network access to remain disabled.");
         Assert.True(
@@ -32,43 +37,6 @@ public sealed class BritishNationalGridLocationConverterTests
         Assert.True(
             configuredSearchPaths.Contains(gridShiftSearchPath, StringComparer.OrdinalIgnoreCase),
             $"Expected configured PROJ search paths to include '{gridShiftSearchPath}'.");
-    }
-
-    [Fact]
-    public void GivenGridShiftsFolder_WhenInspectingGridShiftSearchPath_ThenFolderIsReturned()
-    {
-        var baseDirectory = CreateTempDirectory();
-
-        try
-        {
-            var gridShiftsPath = Path.Combine(baseDirectory, "GridShifts");
-            WriteBundledProjDataFile(gridShiftsPath, Ostn15GridFileName);
-
-            var gridShiftSearchPath = GdalRuntimeConfiguration.GetGridShiftSearchPath(baseDirectory);
-
-            Assert.Equal(Path.GetFullPath(gridShiftsPath), gridShiftSearchPath);
-        }
-        finally
-        {
-            Directory.Delete(baseDirectory, recursive: true);
-        }
-    }
-
-    [Fact]
-    public void GivenMissingGridShiftFile_WhenInspectingGridShiftSearchPath_ThenNullIsReturned()
-    {
-        var baseDirectory = CreateTempDirectory();
-
-        try
-        {
-            var gridShiftSearchPath = GdalRuntimeConfiguration.GetGridShiftSearchPath(baseDirectory);
-
-            Assert.Null(gridShiftSearchPath);
-        }
-        finally
-        {
-            Directory.Delete(baseDirectory, recursive: true);
-        }
     }
 
     [Fact]
@@ -139,18 +107,5 @@ public sealed class BritishNationalGridLocationConverterTests
             return fullPath.StartsWith(AppBaseDirectory, StringComparison.OrdinalIgnoreCase)
                 && File.Exists(Path.Combine(fullPath, fileName));
         });
-    }
-
-    private static string CreateTempDirectory()
-    {
-        var path = Path.Combine(Path.GetTempPath(), $"summer-born-info-gdal-{Guid.NewGuid():N}");
-        Directory.CreateDirectory(path);
-        return path;
-    }
-
-    private static void WriteBundledProjDataFile(string directoryPath, string fileName)
-    {
-        Directory.CreateDirectory(directoryPath);
-        File.WriteAllText(Path.Combine(directoryPath, fileName), "test");
     }
 }

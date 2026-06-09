@@ -1,5 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
+GdalRuntimeConfiguration.Configure();
+
 builder.AddServiceDefaults();
 builder.Services.AddOpenApi(options => options.AddAdminSecurityMetadata());
 builder.Services.Configure<SchoolBulkImportWorkerOptions>(builder.Configuration.GetSection(SchoolBulkImportWorkerOptions.SectionName));

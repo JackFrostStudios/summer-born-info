@@ -1,8 +1,14 @@
 namespace SummerBornInfo.Features.Tests.Schools.Commands.ProcessImportFile;
 
-public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper)
-    : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
+public sealed class ProcessImportFileCommandHandlerTests : IntegrationTestBase
 {
+
+    public ProcessImportFileCommandHandlerTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) :
+        base(testDatabaseServerFixture, testOutputHelper)
+    {
+        GdalRuntimeConfiguration.Configure();
+    }
+
     [Fact]
     public async Task GivenMissingImportRequest_WhenExecuted_ThenExceptionIsThrown()
     {
