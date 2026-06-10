@@ -1,4 +1,4 @@
-namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
+namespace SummerBornInfo.CoordinateConversion;
 
 public static class GdalRuntimeConfiguration
 {

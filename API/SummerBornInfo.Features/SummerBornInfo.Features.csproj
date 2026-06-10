@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -8,18 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="MaxRev.Gdal.Core" />
+    <PackageReference Include="NetTopologySuite" />
     <PackageReference Include="Sep" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\Gdal\share\uk_os_OSTN15_NTv2_OSGBtoETRS.tif">
-      <TargetPath>GridShifts\uk_os_OSTN15_NTv2_OSGBtoETRS.tif</TargetPath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\SummerBornInfo.CoordinateConversion\SummerBornInfo.CoordinateConversion.csproj" />
     <ProjectReference Include="..\SummerBornInfo.Domain\SummerBornInfo.Domain.csproj" />
     <ProjectReference Include="..\SummerBornInfo.Infrastructure\SummerBornInfo.Infrastructure.csproj" />
   </ItemGroup>

@@ -1,4 +1,4 @@
-namespace SummerBornInfo.Features.Tests.Schools.Commands.ProcessImportFile.FileProcessing;
+namespace SummerBornInfo.CoordinateConversion.Tests;
 
 public sealed class BritishNationalGridLocationConverterTests
 {
@@ -48,6 +48,19 @@ public sealed class BritishNationalGridLocationConverterTests
         Assert.Equal(4326, point.SRID);
         Assert.InRange(point.X, -0.09d, -0.06d);
         Assert.InRange(point.Y, 51.50d, 51.53d);
+    }
+
+    [Fact]
+    public void GivenValidBritishNationalGridCoordinatesWhereGridShiftMatters_WhenTryConvertToWgs84Point_ThenWgs84PointIsReturned()
+    {
+        // Act
+        var point = BritishNationalGridLocationConverter.TryConvertToWgs84Point("433962", "300363");
+
+        // Assert
+        Assert.NotNull(point);
+        Assert.Equal(4326, point.SRID);
+        Assert.InRange(point.X, -1.501d, -1.499d);
+        Assert.InRange(point.Y, 52.599d, 52.601d);
     }
 
     [Theory]
