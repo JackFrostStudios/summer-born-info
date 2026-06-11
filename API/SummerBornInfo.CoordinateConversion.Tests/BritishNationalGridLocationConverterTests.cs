@@ -1,5 +1,8 @@
+[assembly: Xunit.CollectionBehavior(DisableTestParallelization = true)]
+
 namespace SummerBornInfo.CoordinateConversion.Tests;
 
+[Xunit.TestCaseOrderer(typeof(BritishNationalGridLocationConverterTestCaseOrderer))]
 public sealed class BritishNationalGridLocationConverterTests
 {
     private const string ProjDatabaseFileName = "proj.db";
@@ -8,26 +11,15 @@ public sealed class BritishNationalGridLocationConverterTests
     private readonly BritishNationalGridLocationConverter converter = new();
 
     [Fact]
-    public void GivenConverter_WhenUsedForTheFirstTime_ThenBundledGridShiftSearchPathIsConfigured()
+    public void GivenConverter_WhenConversionIsAttemptedWithoutManualRuntimeBootstrap_ThenBundledOfflineRuntimeDataAndGridShiftsAreConfigured()
     {
         var point = converter.TryConvertToWgs84Point("533523", "181201");
         var gridShiftSearchPath = Path.Combine(AppBaseDirectory, "GridShifts");
         var configuredSearchPaths = GetConfiguredProjSearchPaths();
-
-        Assert.NotNull(point);
-        Assert.True(File.Exists(Path.Combine(gridShiftSearchPath, Ostn15GridFileName)));
-        Assert.Contains(gridShiftSearchPath, configuredSearchPaths, StringComparer.OrdinalIgnoreCase);
-    }
-
-    [Fact]
-    public void GivenConverter_WhenUsedForTheFirstTime_ThenProjUsesBundledOfflineRuntimeDataAndGridShifts()
-    {
-        var point = converter.TryConvertToWgs84Point("533523", "181201");
-        var configuredSearchPaths = GetConfiguredProjSearchPaths();
-        var gridShiftSearchPath = Path.Combine(AppBaseDirectory, "GridShifts");
 
         Assert.NotNull(point);
         Assert.False(Osr.GetPROJEnableNetwork(), "Expected PROJ network access to remain disabled.");
+        Assert.True(File.Exists(Path.Combine(gridShiftSearchPath, Ostn15GridFileName)));
         Assert.True(
             ContainsLocalFile(configuredSearchPaths, ProjDatabaseFileName),
             $"Expected configured PROJ search paths to expose a local '{ProjDatabaseFileName}'.");
@@ -104,5 +96,35 @@ public sealed class BritishNationalGridLocationConverterTests
             return fullPath.StartsWith(AppBaseDirectory, StringComparison.OrdinalIgnoreCase)
                 && File.Exists(Path.Combine(fullPath, fileName));
         });
+    }
+}
+
+sealed file class BritishNationalGridLocationConverterTestCaseOrderer : Xunit.v3.ITestCaseOrderer
+{
+    IReadOnlyCollection<TTestCase> Xunit.v3.ITestCaseOrderer.OrderTestCases<TTestCase>(
+        IReadOnlyCollection<TTestCase> testCases)
+    {
+        return
+        [
+            .. testCases
+                .OrderBy(static testCase => GetPriority(GetTestMethodName(testCase)))
+                .ThenBy(static testCase => GetTestMethodName(testCase), StringComparer.Ordinal),
+        ];
+    }
+
+    private static int GetPriority(string testMethodName)
+    {
+        return string.Equals(
+            testMethodName,
+            nameof(BritishNationalGridLocationConverterTests.GivenConverter_WhenConversionIsAttemptedWithoutManualRuntimeBootstrap_ThenBundledOfflineRuntimeDataAndGridShiftsAreConfigured),
+            StringComparison.Ordinal)
+            ? 0
+            : 1;
+    }
+
+    private static string GetTestMethodName<TTestCase>(TTestCase testCase)
+    {
+        return testCase?.GetType().GetProperty("TestMethodName")?.GetValue(testCase)?.ToString()
+            ?? string.Empty;
     }
 }

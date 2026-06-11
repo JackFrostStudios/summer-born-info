@@ -195,7 +195,7 @@ Rationale:
 - [x] Task 2 complete: feature code rewired and duplicates removed.
 - [x] Task 3 complete: runtime composition updated.
 - [x] Task 4 complete: fake-by-default test refactor committed.
-- [ ] Task 5 complete: real-runtime verification boundary cleaned up.
+- [x] Task 5 complete: real-runtime verification boundary cleaned up.
 
 ## 9. Risks And Mitigations
 
