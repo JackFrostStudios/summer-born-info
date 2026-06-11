@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MaxRev.Gdal.Core" />
     <PackageReference Include="NetTopologySuite" />
     <PackageReference Include="Sep" />
   </ItemGroup>
