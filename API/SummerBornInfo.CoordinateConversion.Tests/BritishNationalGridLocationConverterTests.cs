@@ -5,33 +5,32 @@ public sealed class BritishNationalGridLocationConverterTests
     private const string ProjDatabaseFileName = "proj.db";
     private const string Ostn15GridFileName = "uk_os_OSTN15_NTv2_OSGBtoETRS.tif";
     private static readonly string AppBaseDirectory = Path.GetFullPath(AppContext.BaseDirectory);
-
-    public BritishNationalGridLocationConverterTests()
-    {
-        GdalRuntimeConfiguration.Configure();
-    }
+    private readonly BritishNationalGridLocationConverter converter = new();
 
     [Fact]
-    public void GivenConverterRuntime_WhenInspectingGridShiftSearchPath_ThenStableGridShiftsFolderIsReturned()
+    public void GivenConverter_WhenUsedForTheFirstTime_ThenBundledGridShiftSearchPathIsConfigured()
     {
-        var gridShiftSearchPath = GdalRuntimeConfiguration.GetGridShiftSearchPath();
-
-        Assert.NotNull(gridShiftSearchPath);
-        Assert.Equal(Path.Combine(AppBaseDirectory, "GridShifts"), gridShiftSearchPath);
-        Assert.True(File.Exists(Path.Combine(gridShiftSearchPath, Ostn15GridFileName)));
-    }
-
-    [Fact]
-    public void GivenConverterRuntime_WhenConfigured_ThenProjUsesBundledOfflineRuntimeDataAndGridShifts()
-    {
+        var point = converter.TryConvertToWgs84Point("533523", "181201");
+        var gridShiftSearchPath = Path.Combine(AppBaseDirectory, "GridShifts");
         var configuredSearchPaths = GetConfiguredProjSearchPaths();
-        var gridShiftSearchPath = GdalRuntimeConfiguration.GetGridShiftSearchPath();
 
+        Assert.NotNull(point);
+        Assert.True(File.Exists(Path.Combine(gridShiftSearchPath, Ostn15GridFileName)));
+        Assert.Contains(gridShiftSearchPath, configuredSearchPaths, StringComparer.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void GivenConverter_WhenUsedForTheFirstTime_ThenProjUsesBundledOfflineRuntimeDataAndGridShifts()
+    {
+        var point = converter.TryConvertToWgs84Point("533523", "181201");
+        var configuredSearchPaths = GetConfiguredProjSearchPaths();
+        var gridShiftSearchPath = Path.Combine(AppBaseDirectory, "GridShifts");
+
+        Assert.NotNull(point);
         Assert.False(Osr.GetPROJEnableNetwork(), "Expected PROJ network access to remain disabled.");
         Assert.True(
             ContainsLocalFile(configuredSearchPaths, ProjDatabaseFileName),
             $"Expected configured PROJ search paths to expose a local '{ProjDatabaseFileName}'.");
-        Assert.NotNull(gridShiftSearchPath);
         Assert.True(
             configuredSearchPaths.Contains(gridShiftSearchPath, StringComparer.OrdinalIgnoreCase),
             $"Expected configured PROJ search paths to include '{gridShiftSearchPath}'.");
@@ -41,7 +40,7 @@ public sealed class BritishNationalGridLocationConverterTests
     public void GivenValidBritishNationalGridCoordinates_WhenTryConvertToWgs84Point_ThenWgs84PointIsReturned()
     {
         // Act
-        var point = BritishNationalGridLocationConverter.TryConvertToWgs84Point("533523", "181201");
+        var point = converter.TryConvertToWgs84Point("533523", "181201");
 
         // Assert
         Assert.NotNull(point);
@@ -54,7 +53,7 @@ public sealed class BritishNationalGridLocationConverterTests
     public void GivenValidBritishNationalGridCoordinatesWhereGridShiftMatters_WhenTryConvertToWgs84Point_ThenWgs84PointIsReturned()
     {
         // Act
-        var point = BritishNationalGridLocationConverter.TryConvertToWgs84Point("433962", "300363");
+        var point = converter.TryConvertToWgs84Point("433962", "300363");
 
         // Assert
         Assert.NotNull(point);
@@ -72,7 +71,7 @@ public sealed class BritishNationalGridLocationConverterTests
     public void GivenInvalidCoordinateValues_WhenTryConvertToWgs84Point_ThenNullIsReturned(string easting, string northing)
     {
         // Act
-        var point = BritishNationalGridLocationConverter.TryConvertToWgs84Point(easting, northing);
+        var point = converter.TryConvertToWgs84Point(easting, northing);
 
         // Assert
         Assert.Null(point);
@@ -86,7 +85,7 @@ public sealed class BritishNationalGridLocationConverterTests
     public void GivenOutOfRangeBritishNationalGridCoordinates_WhenTryConvertToWgs84Point_ThenNullIsReturned(string easting, string northing)
     {
         // Act
-        var point = BritishNationalGridLocationConverter.TryConvertToWgs84Point(easting, northing);
+        var point = converter.TryConvertToWgs84Point(easting, northing);
 
         // Assert
         Assert.Null(point);

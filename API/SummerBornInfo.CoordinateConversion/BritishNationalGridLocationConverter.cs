@@ -1,14 +1,16 @@
 namespace SummerBornInfo.CoordinateConversion;
 
-public static class BritishNationalGridLocationConverter
+public sealed class BritishNationalGridLocationConverter : IBritishNationalGridLocationConverter
 {
     private const int BritishNationalGridEpsgCode = 27700;
     private const int Wgs84EpsgCode = 4326;
     private const double MaxEasting = 700000d;
     private const double MaxNorthing = 1300000d;
 
-    public static Point? TryConvertToWgs84Point(string easting, string northing)
+    public Point? TryConvertToWgs84Point(string easting, string northing)
     {
+        GdalRuntimeConfiguration.Configure();
+
         if (!double.TryParse(easting, CultureInfo.InvariantCulture, out var parsedEasting)
             || !double.TryParse(northing, CultureInfo.InvariantCulture, out var parsedNorthing)
             || !double.IsFinite(parsedEasting)
