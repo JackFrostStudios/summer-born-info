@@ -1,7 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
 
-GdalRuntimeConfiguration.Configure();
-
 builder.AddServiceDefaults();
 builder.Services.AddOpenApi(options => options.AddAdminSecurityMetadata());
 builder.Services.Configure<SchoolBulkImportWorkerOptions>(builder.Configuration.GetSection(SchoolBulkImportWorkerOptions.SectionName));
@@ -33,6 +31,7 @@ builder.Services.AddScoped<GetNearbySchoolsQueryHandler>();
 builder.Services.AddScoped<SearchSchoolsQueryHandler>();
 builder.Services.AddScoped<GetSchoolByUrnQueryHandler>();
 builder.Services.AddScoped<GetSchoolBulkImportStatusQueryHandler>();
+builder.Services.AddSingleton<IBritishNationalGridLocationConverter, BritishNationalGridLocationConverter>();
 builder.Services.AddScoped<ISchoolsImporter, SchoolsImporter<ApplicationDbContext>>();
 builder.Services.AddScoped<ILargeObjectWriter, LargeObjectWriter>();
 builder.Services.AddScoped<ILargeObjectReader, LargeObjectReader>();

@@ -193,7 +193,7 @@ Rationale:
 
 - [x] Task 1 complete: converter abstraction and canonical implementation committed.
 - [x] Task 2 complete: feature code rewired and duplicates removed.
-- [ ] Task 3 complete: runtime composition updated.
+- [x] Task 3 complete: runtime composition updated.
 - [ ] Task 4 complete: fake-by-default test refactor committed.
 - [ ] Task 5 complete: real-runtime verification boundary cleaned up.
 

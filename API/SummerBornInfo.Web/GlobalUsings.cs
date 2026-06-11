@@ -10,6 +10,7 @@ global using Microsoft.Extensions.Options;
 global using Microsoft.OpenApi;
 global using Npgmq;
 global using SummerBornInfo.AppHost.ServiceDefaults;
+global using SummerBornInfo.CoordinateConversion;
 global using SummerBornInfo.Domain.Events;
 global using SummerBornInfo.Features.CsaApplicationReviews.Commands.Moderate;
 global using SummerBornInfo.Features.Schools.Commands.Import;
