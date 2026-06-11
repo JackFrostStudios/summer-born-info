@@ -211,14 +211,12 @@ The integration test projects use Testcontainers to provision PostgreSQL when re
 
 ## GDAL Runtime And OSTN15 Grid
 
-British National Grid (`EPSG:27700`) import conversion now runs on the `gdal.netcore` packaging model rather than the older direct native-loader setup.
+British National Grid (`EPSG:27700`) import conversion now lives in `SummerBornInfo.CoordinateConversion`, which owns the real GDAL-backed implementation, the minimal GDAL runtime packages, and the bundled OSTN15 grid.
 
-- `SummerBornInfo.Features` references `MaxRev.Gdal.Core` for the managed GDAL bindings.
-- `SummerBornInfo.Features` also owns the bundled OSTN15 grid file and copies it into `GridShifts/` for consuming build and publish outputs.
-- `SummerBornInfo.Web` and `SummerBornInfo.Features.Tests` carry the Windows and Linux minimal runtime packages so local development, test execution, and Linux container publish outputs share the same runtime assumptions.
-- `GdalRuntimeConfiguration.Configure()` calls `GdalBase.ConfigureAll()`, keeps `PROJ_NETWORK` disabled, preserves the package-provided PROJ data paths, and appends the local `GridShifts` folder so coordinate conversion stays offline-capable.
-
-The bundled OSTN15 grid file stays in source control at `SummerBornInfo.Features/Resources/Gdal/share/uk_os_OSTN15_NTv2_OSGBtoETRS.tif`.
+- `SummerBornInfo.Features` and `SummerBornInfo.Web` consume the converter through `IBritishNationalGridLocationConverter`; they should not bootstrap GDAL directly.
+- `SummerBornInfo.CoordinateConversion` references `MaxRev.Gdal.Core`, carries the Windows and Linux minimal runtime packages, and copies `Resources/Gdal/share/uk_os_OSTN15_NTv2_OSGBtoETRS.tif` into `GridShifts/` for build, test, and publish outputs.
+- Runtime bootstrap is lazy and internal to the real converter. On first real conversion, `BritishNationalGridLocationConverter` calls `GdalRuntimeConfiguration.Configure()`, which runs `GdalBase.ConfigureAll()`, keeps `PROJ_NETWORK` disabled, preserves the package-provided PROJ data paths, and appends the local `GridShifts` folder so conversion stays offline-capable.
+- Most feature and web-hosted tests should use fake converter implementations instead of the real GDAL runtime. `SummerBornInfo.CoordinateConversion.Tests` is the authoritative suite for real-runtime behavior, including offline PROJ/grid-shift configuration and representative conversion coverage.
 
 - Build, test, and publish outputs should contain the bundled OSTN15 grid under `GridShifts/uk_os_OSTN15_NTv2_OSGBtoETRS.tif`.
 - Package-provided GDAL and PROJ data should continue to come from the `gdal.netcore` runtime layout, including a local `proj.db` that `GdalBase.ConfigureAll()` can register.

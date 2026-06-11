@@ -233,11 +233,11 @@ These are delivery-level choices, not blockers, because they do not materially c
 
 ## 11. Completion Checklist
 
-- [ ] There is exactly one canonical real coordinate conversion implementation in `API/SummerBornInfo.CoordinateConversion/`.
-- [ ] Feature code no longer contains its own duplicate `BritishNationalGridLocationConverter` or `GdalRuntimeConfiguration`.
-- [ ] `SchoolsImporter<TContext>` depends on an injectable coordinate conversion abstraction instead of a static converter call.
-- [ ] `API/SummerBornInfo.Web/Program.cs` registers the real converter in DI and no longer eagerly configures GDAL at startup.
-- [ ] Most tests in `API/SummerBornInfo.Features.Tests/` no longer call `GdalRuntimeConfiguration.Configure()` or depend on real GDAL conversion.
-- [ ] Any remaining real-runtime conversion assertions outside runtime have been consolidated into `API/SummerBornInfo.CoordinateConversion.Tests/`.
-- [ ] Dedicated coordinate-conversion tests still verify offline runtime configuration, valid conversions, invalid inputs, and out-of-range handling.
-- [ ] Parallel test execution no longer depends on shared real GDAL process state for ordinary feature and web tests.
+- [x] There is exactly one canonical real coordinate conversion implementation in `API/SummerBornInfo.CoordinateConversion/`.
+- [x] Feature code no longer contains its own duplicate `BritishNationalGridLocationConverter` or `GdalRuntimeConfiguration`.
+- [x] `SchoolsImporter<TContext>` depends on an injectable coordinate conversion abstraction instead of a static converter call.
+- [x] `API/SummerBornInfo.Web/Program.cs` registers the real converter in DI and no longer eagerly configures GDAL at startup.
+- [x] Most tests in `API/SummerBornInfo.Features.Tests/` no longer call `GdalRuntimeConfiguration.Configure()` or depend on real GDAL conversion.
+- [x] Any remaining real-runtime conversion assertions outside runtime have been consolidated into `API/SummerBornInfo.CoordinateConversion.Tests/`.
+- [x] Dedicated coordinate-conversion tests still verify offline runtime configuration, valid conversions, invalid inputs, and out-of-range handling.
+- [x] Parallel test execution no longer depends on shared real GDAL process state for ordinary feature and web tests.
