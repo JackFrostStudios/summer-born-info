@@ -1,13 +1,10 @@
 namespace SummerBornInfo.Features.Tests.Schools.Commands.ProcessImportFile;
 
-public sealed class ProcessImportFileCommandHandlerTests : IntegrationTestBase
+public sealed class ProcessImportFileCommandHandlerTests(
+    IntegrationTestDatabaseServerFixture testDatabaseServerFixture,
+    ITestOutputHelper testOutputHelper)
+    : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
-
-    public ProcessImportFileCommandHandlerTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) :
-        base(testDatabaseServerFixture, testOutputHelper)
-    {
-        GdalRuntimeConfiguration.Configure();
-    }
 
     [Fact]
     public async Task GivenMissingImportRequest_WhenExecuted_ThenExceptionIsThrown()
@@ -61,8 +58,16 @@ public sealed class ProcessImportFileCommandHandlerTests : IntegrationTestBase
         Assert.Equal(SchoolBulkImportStatus.Completed, request.Status);
         Assert.Empty(request.Failures);
 
-        var schools = await verifyDbContext.Schools.ToListAsync(TestContext.Current.CancellationToken);
+        var schools = await verifyDbContext.Schools
+            .OrderBy(x => x.URN)
+            .ToListAsync(TestContext.Current.CancellationToken);
         Assert.Equal(2, schools.Count);
+        AssertLocation(
+            Assert.Single(schools, school => school.URN == 100000).Geometry,
+            FakeBritishNationalGridLocationConverter.CreateExampleAldgatePoint());
+        AssertLocation(
+            Assert.Single(schools, school => school.URN == 100004).Geometry,
+            FakeBritishNationalGridLocationConverter.CreateExampleSherbornePoint());
     }
 
     [Fact]
@@ -168,9 +173,7 @@ public sealed class ProcessImportFileCommandHandlerTests : IntegrationTestBase
             new ThrowingSchoolsImporter(async cancellationToken =>
             {
                 var importerDbContext = CreateDbContext();
-                SchoolsImporter<ApplicationDbContext> importer = new(
-                    importerDbContext,
-                    Microsoft.Extensions.Logging.Abstractions.NullLogger<SchoolsImporter<ApplicationDbContext>>.Instance);
+                var importer = CreateImporter(importerDbContext);
                 await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
                 var firstResult = await importer.ImportAsync(requestId, csvStream, cancellationToken).FirstAsync(cancellationToken);
                 return firstResult;
@@ -206,9 +209,30 @@ public sealed class ProcessImportFileCommandHandlerTests : IntegrationTestBase
         return new(
             dbContext,
             new LargeObjectReader(dbContext),
-            new SchoolsImporter<ApplicationDbContext>(
-                dbContext,
-                Microsoft.Extensions.Logging.Abstractions.NullLogger<SchoolsImporter<ApplicationDbContext>>.Instance));
+            CreateImporter(dbContext));
+    }
+
+    private static SchoolsImporter<ApplicationDbContext> CreateImporter(
+        ApplicationDbContext dbContext,
+        FakeBritishNationalGridLocationConverter? locationConverter = null)
+    {
+        return new(
+            dbContext,
+            locationConverter ?? CreateDefaultLocationConverter(),
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<SchoolsImporter<ApplicationDbContext>>.Instance);
+    }
+
+    private static FakeBritishNationalGridLocationConverter CreateDefaultLocationConverter()
+    {
+        return FakeBritishNationalGridLocationConverter.ForExampleImportFile();
+    }
+
+    private static void AssertLocation(Point? actualLocation, Point expectedLocation)
+    {
+        Assert.NotNull(actualLocation);
+        Assert.Equal(expectedLocation.SRID, actualLocation.SRID);
+        Assert.Equal(expectedLocation.X, actualLocation.X);
+        Assert.Equal(expectedLocation.Y, actualLocation.Y);
     }
 
     private async Task<Guid> CreateImportRequestAsync(Stream content)

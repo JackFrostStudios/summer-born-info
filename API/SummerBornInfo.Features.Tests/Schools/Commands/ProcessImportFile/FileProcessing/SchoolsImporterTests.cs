@@ -10,7 +10,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var importer = CreateImporter(dbContext);
         await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
@@ -36,7 +36,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var importer = CreateImporter(dbContext);
         await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
@@ -69,7 +69,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var importer = CreateImporter(dbContext);
         await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
@@ -86,10 +86,14 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
             .ToListAsync(TestContext.Current.CancellationToken);
 
         var aldgateSchool = Assert.Single(schools, s => s.URN == 100000);
-        AssertLocationInRange(aldgateSchool.Geometry, minLongitude: -0.09, maxLongitude: -0.06, minLatitude: 51.50, maxLatitude: 51.53);
+        AssertLocation(
+            aldgateSchool.Geometry,
+            FakeBritishNationalGridLocationConverter.CreateExampleAldgatePoint());
 
         var sherborneSchool = Assert.Single(schools, s => s.URN == 100004);
-        AssertLocationInRange(sherborneSchool.Geometry, minLongitude: -0.17, maxLongitude: -0.13, minLatitude: 51.53, maxLatitude: 51.56);
+        AssertLocation(
+            sherborneSchool.Geometry,
+            FakeBritishNationalGridLocationConverter.CreateExampleSherbornePoint());
     }
 
     private static void AssertAldgateSchoolImportedCorrectly(School? aldgateSchool)
@@ -151,13 +155,13 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext1 = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer1 = new(dbContext1, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var importer1 = CreateImporter(dbContext1);
         await using var csvStream1 = ExampleImportFile.GetExampleImportFileContent();
 
         var firstResults = await importer1.ImportAsync(_testRequestId, csvStream1, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
 
         var dbContext2 = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer2 = new(dbContext2, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var importer2 = CreateImporter(dbContext2);
         await using var csvStream2 = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
@@ -180,7 +184,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext1 = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer1 = new(dbContext1, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var importer1 = CreateImporter(dbContext1);
         await using var csvStream1 = ExampleImportFile.GetExampleImportFileContent();
 
         var firstResults = await importer1.ImportAsync(_testRequestId, csvStream1, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
@@ -196,7 +200,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
             .ToListAsync(TestContext.Current.CancellationToken);
 
         var dbContext2 = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer2 = new(dbContext2, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var importer2 = CreateImporter(dbContext2);
         await using var csvStream2 = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
@@ -255,13 +259,13 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext1 = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer1 = new(dbContext1, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var importer1 = CreateImporter(dbContext1);
         await using var csvStream1 = ExampleImportFile.GetExampleImportFileContent();
 
         var firstResults = await importer1.ImportAsync(_testRequestId, csvStream1, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
 
         var dbContext2 = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer2 = new(dbContext2, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var importer2 = CreateImporter(dbContext2);
         await using var csvStream2 = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
@@ -294,7 +298,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var importer = CreateImporter(dbContext);
         await using var csvStream = CreateCsvStream(
             "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\",\"Easting\",\"Northing\"",
             "\"100000\",\"3614\",\"The Aldgate School\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\",\"533523\",\"181201\"",
@@ -333,7 +337,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var importer = CreateImporter(dbContext);
         await using var csvStream = CreateCsvStream(
             "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\",\"Easting\",\"Northing\"",
             "\"INVALID\",\"1045\",\"Broken School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\",\"528515\",\"184869\"");
@@ -353,7 +357,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var importer = CreateImporter(dbContext);
         await using var csvStream = CreateCsvStream(
             "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\",\"Easting\",\"Northing\"",
             "\"100000\",\"3614\",\"The Aldgate School\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\",\"invalid\",\"181201\"");
@@ -378,13 +382,13 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var firstImportDbContext = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> firstImporter = new(firstImportDbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var firstImporter = CreateImporter(firstImportDbContext);
         await using var firstCsvStream = ExampleImportFile.GetExampleImportFileContent();
         _ = await firstImporter.ImportAsync(_testRequestId, firstCsvStream, TestContext.Current.CancellationToken)
             .ToListAsync(TestContext.Current.CancellationToken);
 
         var secondImportDbContext = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> secondImporter = new(secondImportDbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var secondImporter = CreateImporter(secondImportDbContext);
         await using var secondCsvStream = CreateCsvStream(
             "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\",\"Easting\",\"Northing\"",
             "\"100000\",\"3614\",\"The Aldgate School Updated\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\",\"\",\"\"",
@@ -417,7 +421,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var importer = CreateImporter(dbContext);
         await using var csvStream = CreateCsvStream(
             "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\"",
             "\"100000\",\"3614\",\"The Aldgate School\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\"");
@@ -443,7 +447,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
     {
         // Arrange
         var dbContext = CreateDbContext();
-        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+        var importer = CreateImporter(dbContext);
         await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
 
         // Act
@@ -470,7 +474,7 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         // Arrange
         var dbContext = CreateDbContext();
         var logger = new TestLogger<SchoolsImporter<ApplicationDbContext>>();
-        SchoolsImporter<ApplicationDbContext> importer = new(dbContext, logger);
+        var importer = CreateImporter(dbContext, logger: logger);
         await dbContext.DisposeAsync();
         await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
 
@@ -491,17 +495,28 @@ public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture te
         return new(System.Text.Encoding.UTF8.GetBytes(string.Join(Environment.NewLine, lines)));
     }
 
-    private static void AssertLocationInRange(
-        NetTopologySuite.Geometries.Point? location,
-        double minLongitude,
-        double maxLongitude,
-        double minLatitude,
-        double maxLatitude)
+    private static SchoolsImporter<ApplicationDbContext> CreateImporter(
+        ApplicationDbContext dbContext,
+        FakeBritishNationalGridLocationConverter? locationConverter = null,
+        Microsoft.Extensions.Logging.ILogger<SchoolsImporter<ApplicationDbContext>>? logger = null)
     {
-        Assert.NotNull(location);
-        Assert.Equal(4326, location.SRID);
-        Assert.InRange(location.X, minLongitude, maxLongitude);
-        Assert.InRange(location.Y, minLatitude, maxLatitude);
+        return new(
+            dbContext,
+            locationConverter ?? CreateDefaultLocationConverter(),
+            logger ?? CreateLogger<SchoolsImporter<ApplicationDbContext>>());
+    }
+
+    private static FakeBritishNationalGridLocationConverter CreateDefaultLocationConverter()
+    {
+        return FakeBritishNationalGridLocationConverter.ForExampleImportFile();
+    }
+
+    private static void AssertLocation(Point? actualLocation, Point expectedLocation)
+    {
+        Assert.NotNull(actualLocation);
+        Assert.Equal(expectedLocation.SRID, actualLocation.SRID);
+        Assert.Equal(expectedLocation.X, actualLocation.X);
+        Assert.Equal(expectedLocation.Y, actualLocation.Y);
     }
 
     private static Microsoft.Extensions.Logging.Abstractions.NullLogger<T> CreateLogger<T>() where T : class

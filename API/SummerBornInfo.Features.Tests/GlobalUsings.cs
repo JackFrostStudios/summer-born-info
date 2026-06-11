@@ -1,9 +1,11 @@
 global using System.Diagnostics;
 global using Microsoft.EntityFrameworkCore;
-global using OSGeo.OSR;
+global using NetTopologySuite.Geometries;
+global using SummerBornInfo.CoordinateConversion;
 global using SummerBornInfo.Domain.Entities;
 global using SummerBornInfo.Domain.Events;
 global using SummerBornInfo.Features.Schools.Commands.Import;
+global using SummerBornInfo.Features.Tests.TestFramework;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing.Exceptions;

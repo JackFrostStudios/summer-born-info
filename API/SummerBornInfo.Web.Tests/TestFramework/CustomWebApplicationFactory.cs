@@ -3,10 +3,12 @@ namespace SummerBornInfo.Web.Tests.TestFramework;
 public sealed class CustomWebApplicationFactory(
     IntegrationTestDatabaseServerFixture testDatabaseServerFixture,
     ITestOutputHelper testOutputHelper,
-    IReadOnlyDictionary<string, string?>? configurationValues = null) : WebApplicationFactory<Program>, IAsyncLifetime
+    IReadOnlyDictionary<string, string?>? configurationValues = null,
+    IBritishNationalGridLocationConverter? locationConverter = null) : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly IntegrationTestDatabaseInstanceFixture integrationTestDatabaseInstanceFixture = new(testDatabaseServerFixture);
     private readonly IReadOnlyDictionary<string, string?> configurationValues = configurationValues ?? new Dictionary<string, string?>(StringComparer.Ordinal);
+    private readonly IBritishNationalGridLocationConverter? locationConverter = locationConverter;
 
     internal string DatabaseConnectionString => integrationTestDatabaseInstanceFixture.DatabaseConnectionString;
 
@@ -37,6 +39,18 @@ public sealed class CustomWebApplicationFactory(
                     npgsqlOptions => npgsqlOptions.UseNetTopologySuite());
                 TestEntityFrameworkLoggingConfiguration.AddLoggingToDbContextOptions(optionsBuilder, testOutputHelper);
             });
+
+            if (locationConverter is not null)
+            {
+                foreach (var locationConverterDescriptor in services
+                             .Where(serviceDescriptor => serviceDescriptor.ServiceType == typeof(IBritishNationalGridLocationConverter))
+                             .ToList())
+                {
+                    _ = services.Remove(locationConverterDescriptor);
+                }
+
+                _ = services.AddSingleton(locationConverter);
+            }
         });
 
         _ = builder.ConfigureLogging(logging =>

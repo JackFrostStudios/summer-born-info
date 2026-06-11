@@ -63,6 +63,7 @@ public sealed class ProcessImportFileTelemetryTests(
             new LargeObjectReader(dbContext),
             new SchoolsImporter<ApplicationDbContext>(
                 dbContext,
+                FakeBritishNationalGridLocationConverter.ForExampleImportFile(),
                 Microsoft.Extensions.Logging.Abstractions.NullLogger<SchoolsImporter<ApplicationDbContext>>.Instance));
     }
 
