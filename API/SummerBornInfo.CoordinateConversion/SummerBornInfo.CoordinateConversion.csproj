@@ -18,8 +18,8 @@
 
   <ItemGroup>
     <PackageReference Include="MaxRev.Gdal.Core" />
-    <PackageReference Include="MaxRev.Gdal.LinuxRuntime.Minimal" />
-    <PackageReference Include="MaxRev.Gdal.WindowsRuntime.Minimal" />
+    <PackageReference Include="MaxRev.Gdal.LinuxRuntime.Minimal" ExcludeAssets="compile" />
+    <PackageReference Include="MaxRev.Gdal.WindowsRuntime.Minimal" ExcludeAssets="compile" />
     <PackageReference Include="NetTopologySuite" />
   </ItemGroup>
 
