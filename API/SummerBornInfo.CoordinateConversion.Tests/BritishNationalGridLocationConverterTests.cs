@@ -1,8 +1,6 @@
-[assembly: Xunit.CollectionBehavior(DisableTestParallelization = true)]
-
 namespace SummerBornInfo.CoordinateConversion.Tests;
 
-[Xunit.TestCaseOrderer(typeof(BritishNationalGridLocationConverterTestCaseOrderer))]
+[TestCaseOrderer(typeof(BritishNationalGridLocationConverterTestCaseOrderer))]
 public sealed class BritishNationalGridLocationConverterTests
 {
     private const string ProjDatabaseFileName = "proj.db";
