@@ -1,5 +1,6 @@
 namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
 internal sealed class AddressConfiguration : IEntityTypeConfiguration<SchoolAddress>
 {
     public void Configure(EntityTypeBuilder<SchoolAddress> builder)

@@ -1,5 +1,6 @@
 namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
 internal sealed class PhaseOfEducationConfiguration : IEntityTypeConfiguration<PhaseOfEducation>
 {
     public void Configure(EntityTypeBuilder<PhaseOfEducation> builder)

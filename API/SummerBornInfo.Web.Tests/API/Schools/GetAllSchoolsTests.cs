@@ -9,7 +9,7 @@ public sealed class GetAllSchoolsTests(
     public async Task GivenSchoolExists_WhenGetAllSchools_ThenReturnsSchoolInformation()
     {
         var expectedSchool = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000001"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1) /* 00000000-0000-0000-0000-000000000001 */,
             urn: 100001,
             ukprn: 200001,
             establishmentNumber: 3001,
@@ -124,7 +124,7 @@ public sealed class GetAllSchoolsTests(
     private static School CreateAmberHillSchool()
     {
         return CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
             urn: 100010,
             ukprn: 200010,
             establishmentNumber: 3010,
@@ -144,7 +144,7 @@ public sealed class GetAllSchoolsTests(
     private static School CreateBirchGroveSchool()
     {
         return CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x20) /* 00000000-0000-0000-0000-000000000020 */,
             urn: 100020,
             ukprn: 200020,
             establishmentNumber: 3020,
@@ -164,7 +164,7 @@ public sealed class GetAllSchoolsTests(
     private static School CreateCedarParkSchool()
     {
         return CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000030"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x30) /* 00000000-0000-0000-0000-000000000030 */,
             urn: 100030,
             ukprn: 200030,
             establishmentNumber: 3030,
@@ -185,10 +185,10 @@ public sealed class GetAllSchoolsTests(
     {
         for (var index = 1; index <= count; index++)
         {
-            var indexText = index.ToString("D12", System.Globalization.CultureInfo.InvariantCulture);
-            var nameText = index.ToString("D3", System.Globalization.CultureInfo.InvariantCulture);
-            var streetText = index.ToString(System.Globalization.CultureInfo.InvariantCulture);
-            var postCodeSuffix = (index % 10).ToString(System.Globalization.CultureInfo.InvariantCulture);
+            var indexText = index.ToString("D12", CultureInfo.InvariantCulture);
+            var nameText = index.ToString("D3", CultureInfo.InvariantCulture);
+            var streetText = index.ToString(CultureInfo.InvariantCulture);
+            var postCodeSuffix = (index % 10).ToString(CultureInfo.InvariantCulture);
 
             yield return CreateSchool(
                 id: new Guid($"00000000-0000-0000-0000-{indexText}"),
@@ -226,7 +226,7 @@ public sealed class GetAllSchoolsTests(
         DateOnly? openDate,
         DateOnly? closeDate)
     {
-        var urnText = urn.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var urnText = urn.ToString(CultureInfo.InvariantCulture);
         var phaseOfEducation = new PhaseOfEducation
         {
             Code = $"PRIMARY-{urnText}",
@@ -270,7 +270,7 @@ public sealed class GetAllSchoolsTests(
                 PostCode = postCode,
             },
             Geometry = latitude.HasValue && longitude.HasValue
-                ? new NetTopologySuite.Geometries.Point(longitude.Value, latitude.Value) { SRID = 4326 }
+                ? new Point(longitude.Value, latitude.Value) { SRID = 4326 }
                 : null,
             OpenDate = openDate,
             CloseDate = closeDate,

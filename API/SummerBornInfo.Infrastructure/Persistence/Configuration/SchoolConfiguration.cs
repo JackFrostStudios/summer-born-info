@@ -1,5 +1,6 @@
 namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
 internal sealed class SchoolConfiguration : IEntityTypeConfiguration<School>
 {
     private const string SearchVectorComputedColumnSql =

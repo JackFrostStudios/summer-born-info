@@ -10,12 +10,12 @@ public sealed class GetAllSchoolsQueryHandlerTests(
     {
         // Arrange
         var secondSchool = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x20) /* 00000000-0000-0000-0000-000000000020 */,
             urn: 100020,
             establishmentNumber: 3020,
             name: "Birch Grove School");
         var firstSchool = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
             urn: 100010,
             establishmentNumber: 3010,
             name: "Amber Hill School");
@@ -39,7 +39,7 @@ public sealed class GetAllSchoolsQueryHandlerTests(
     {
         // Arrange
         var school = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
             urn: 100010,
             establishmentNumber: 3010,
             name: "Amber Hill School");
@@ -91,17 +91,17 @@ public sealed class GetAllSchoolsQueryHandlerTests(
     {
         // Arrange
         var firstSchool = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
             urn: 100010,
             establishmentNumber: 3010,
             name: "Amber Hill School");
         var secondSchool = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x20) /* 00000000-0000-0000-0000-000000000020 */,
             urn: 100020,
             establishmentNumber: 3020,
             name: "Birch Grove School");
         var thirdSchool = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000030"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x30) /* 00000000-0000-0000-0000-000000000030 */,
             urn: 100030,
             establishmentNumber: 3030,
             name: "Cedar Park School");
@@ -125,17 +125,17 @@ public sealed class GetAllSchoolsQueryHandlerTests(
     {
         // Arrange
         var firstSchool = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
             urn: 100010,
             establishmentNumber: 3010,
             name: "Amber Hill School");
         var secondSchool = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x20) /* 00000000-0000-0000-0000-000000000020 */,
             urn: 100020,
             establishmentNumber: 3020,
             name: "Birch Grove School");
         var thirdSchool = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000030"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x30) /* 00000000-0000-0000-0000-000000000030 */,
             urn: 100030,
             establishmentNumber: 3030,
             name: "Cedar Park School");

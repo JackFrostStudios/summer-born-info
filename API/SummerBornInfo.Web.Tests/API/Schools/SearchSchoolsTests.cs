@@ -9,7 +9,7 @@ public sealed class SearchSchoolsTests(
     public async Task GivenNameAndAddressMatches_WhenGetSchoolsSearch_ThenReturnsRankedResults()
     {
         var nameMatch = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
             urn: 100010,
             ukprn: 200010,
             establishmentNumber: 3010,
@@ -21,7 +21,7 @@ public sealed class SearchSchoolsTests(
             county: "North Yorkshire",
             postCode: "YO1 1AA");
         var addressOnlyMatch = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x20) /* 00000000-0000-0000-0000-000000000020 */,
             urn: 100020,
             ukprn: 200020,
             establishmentNumber: 3020,
@@ -83,7 +83,7 @@ public sealed class SearchSchoolsTests(
     public async Task GivenAddressOrPostcodeMatches_WhenGetSchoolsSearch_ThenReturnsMatchingSchools(string query, string expectedSchoolId)
     {
         var addressMatch = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
             urn: 100010,
             ukprn: 200010,
             establishmentNumber: 3010,
@@ -95,7 +95,7 @@ public sealed class SearchSchoolsTests(
             county: "West Yorkshire",
             postCode: "LS1 1AA");
         var postcodeMatch = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x20) /* 00000000-0000-0000-0000-000000000020 */,
             urn: 100020,
             ukprn: 200020,
             establishmentNumber: 3020,
@@ -124,7 +124,7 @@ public sealed class SearchSchoolsTests(
     public async Task GivenTypoTolerantNameMatch_WhenGetSchoolsSearch_ThenReturnsMatchingSchool()
     {
         var expectedSchool = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000050"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x50) /* 00000000-0000-0000-0000-000000000050 */,
             urn: 100050,
             ukprn: 200050,
             establishmentNumber: 3050,
@@ -154,7 +154,7 @@ public sealed class SearchSchoolsTests(
     {
         await SeedSchoolsAsync(
             CreateSchool(
-                id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+                id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
                 urn: 100010,
                 ukprn: 200010,
                 establishmentNumber: 3010,
@@ -181,7 +181,7 @@ public sealed class SearchSchoolsTests(
     public async Task GivenMatchingSchoolExists_WhenGetSchoolsSearch_ThenReturnsCollectionWrapperWithFullSchoolShape()
     {
         var expectedSchool = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000040"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x40) /* 00000000-0000-0000-0000-000000000040 */,
             urn: 100040,
             ukprn: 200040,
             establishmentNumber: 3040,
@@ -253,7 +253,7 @@ public sealed class SearchSchoolsTests(
     {
         return (
             CreateSchool(
-                id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+                id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
                 urn: 100010,
                 ukprn: 200010,
                 establishmentNumber: 3010,
@@ -265,7 +265,7 @@ public sealed class SearchSchoolsTests(
                 county: "North Yorkshire",
                 postCode: "YO1 1AA"),
             CreateSchool(
-                id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+                id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x20) /* 00000000-0000-0000-0000-000000000020 */,
                 urn: 100020,
                 ukprn: 200020,
                 establishmentNumber: 3020,
@@ -277,7 +277,7 @@ public sealed class SearchSchoolsTests(
                 county: "North Yorkshire",
                 postCode: "YO1 1AB"),
             CreateSchool(
-                id: Guid.Parse("00000000-0000-0000-0000-000000000030"),
+                id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x30) /* 00000000-0000-0000-0000-000000000030 */,
                 urn: 100030,
                 ukprn: 200030,
                 establishmentNumber: 3030,
@@ -295,7 +295,7 @@ public sealed class SearchSchoolsTests(
         return
         [
             CreateSchool(
-                id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+                id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
                 urn: 100010,
                 ukprn: 200010,
                 establishmentNumber: 3010,
@@ -307,7 +307,7 @@ public sealed class SearchSchoolsTests(
                 county: "North Yorkshire",
                 postCode: "YO1 1AA"),
             CreateSchool(
-                id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+                id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x20) /* 00000000-0000-0000-0000-000000000020 */,
                 urn: 100020,
                 ukprn: 200020,
                 establishmentNumber: 3020,
@@ -319,7 +319,7 @@ public sealed class SearchSchoolsTests(
                 county: "North Yorkshire",
                 postCode: "YO1 1AB"),
             CreateSchool(
-                id: Guid.Parse("00000000-0000-0000-0000-000000000030"),
+                id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x30) /* 00000000-0000-0000-0000-000000000030 */,
                 urn: 100030,
                 ukprn: 200030,
                 establishmentNumber: 3030,
@@ -354,7 +354,7 @@ public sealed class SearchSchoolsTests(
         string? county,
         string postCode)
     {
-        var urnText = urn.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var urnText = urn.ToString(CultureInfo.InvariantCulture);
 
         return new School
         {

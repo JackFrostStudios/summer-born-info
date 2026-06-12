@@ -1,5 +1,6 @@
 namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
 internal sealed class LocalAuthorityConfiguration : IEntityTypeConfiguration<LocalAuthority>
 {
     public void Configure(EntityTypeBuilder<LocalAuthority> builder)

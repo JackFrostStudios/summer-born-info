@@ -10,7 +10,7 @@ public sealed class GetNearbySchoolsTests(
     {
         await SeedSchoolsAsync(
             CreateSchool(
-                id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+                id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
                 urn: 100010,
                 ukprn: 200010,
                 establishmentNumber: 3010,
@@ -138,7 +138,7 @@ public sealed class GetNearbySchoolsTests(
         );
 
         var response = await client.GetAsync(
-            string.Format(System.Globalization.CultureInfo.InvariantCulture, requestUriTemplate, Uri.EscapeDataString(cursor)),
+            string.Format(CultureInfo.InvariantCulture, requestUriTemplate, Uri.EscapeDataString(cursor)),
             TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -192,7 +192,7 @@ public sealed class GetNearbySchoolsTests(
     private static School CreateClosestNearbySchool()
     {
         return CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
             urn: 100010,
             ukprn: 200010,
             establishmentNumber: 3010,
@@ -210,7 +210,7 @@ public sealed class GetNearbySchoolsTests(
     private static School CreateTiedSecondNearbySchool()
     {
         return CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x20) /* 00000000-0000-0000-0000-000000000020 */,
             urn: 100020,
             ukprn: 200020,
             establishmentNumber: 3020,
@@ -228,7 +228,7 @@ public sealed class GetNearbySchoolsTests(
     private static School CreateTiedThirdNearbySchool()
     {
         return CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000030"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x30) /* 00000000-0000-0000-0000-000000000030 */,
             urn: 100030,
             ukprn: 200030,
             establishmentNumber: 3030,
@@ -246,7 +246,7 @@ public sealed class GetNearbySchoolsTests(
     private static School CreateOutsideRadiusNearbySchool()
     {
         return CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000040"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x40) /* 00000000-0000-0000-0000-000000000040 */,
             urn: 100040,
             ukprn: 200040,
             establishmentNumber: 3040,
@@ -264,7 +264,7 @@ public sealed class GetNearbySchoolsTests(
     private static School CreateMissingLocationNearbySchool()
     {
         return CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000050"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x50) /* 00000000-0000-0000-0000-000000000050 */,
             urn: 100050,
             ukprn: 200050,
             establishmentNumber: 3050,
@@ -294,7 +294,7 @@ public sealed class GetNearbySchoolsTests(
         double? latitude,
         double? longitude)
     {
-        var urnText = urn.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var urnText = urn.ToString(CultureInfo.InvariantCulture);
 
         return new School
         {
@@ -313,7 +313,7 @@ public sealed class GetNearbySchoolsTests(
                 PostCode = postCode,
             },
             Geometry = latitude.HasValue && longitude.HasValue
-                ? new NetTopologySuite.Geometries.Point(longitude.Value, latitude.Value) { SRID = 4326 }
+                ? new Point(longitude.Value, latitude.Value) { SRID = 4326 }
                 : null,
             OpenDate = new DateOnly(2010, 9, 1),
             CloseDate = null,

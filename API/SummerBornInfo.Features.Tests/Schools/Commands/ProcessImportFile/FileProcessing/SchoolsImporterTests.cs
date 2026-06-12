@@ -3,7 +3,7 @@ namespace SummerBornInfo.Features.Tests.Schools.Commands.ProcessImportFile.FileP
 public sealed class SchoolsImporterTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper)
     : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
-    private static readonly Guid _testRequestId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+    private static readonly Guid _testRequestId = new(0x11111111, 0x1111, 0x1111, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11) /* 11111111-1111-1111-1111-111111111111 */;
 
     [Fact]
     public async Task GivenCsvStream_WhenImportAsync_ThenResultIsYieldedForEachRow()
