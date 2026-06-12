@@ -9,8 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MaxRev.Gdal.LinuxRuntime.Minimal" ExcludeAssets="compile" />
-    <PackageReference Include="MaxRev.Gdal.WindowsRuntime.Minimal" ExcludeAssets="compile" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Npgmq" />
