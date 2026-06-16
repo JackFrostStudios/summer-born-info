@@ -97,7 +97,7 @@ then all consuming test projects should pick up the same behavior without needin
 
 - [x] Add the shared helper and supporting project references in `SummerBornInfo.TestFramework`.
 - [x] Confirm the helper builds cleanly from the test framework project boundary.
-- [ ] Update feature tests to consume the shared type.
+- [x] Update feature tests to consume the shared type.
 - [ ] Update web tests to consume the shared type.
 - [ ] Remove duplicate files only after both consuming projects reference the shared helper successfully.
 - [ ] Run targeted tests for the feature and web suites to verify no behavioral regressions were introduced by the move.
