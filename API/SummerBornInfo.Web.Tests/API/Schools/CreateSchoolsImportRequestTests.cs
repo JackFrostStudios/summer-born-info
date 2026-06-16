@@ -1,3 +1,5 @@
+using SharedFakeBritishNationalGridLocationConverter = SummerBornInfo.TestFramework.FakeBritishNationalGridLocationConverter;
+
 namespace SummerBornInfo.Web.Tests.API.Schools;
 
 public sealed class CreateSchoolsImportRequestTests(
@@ -60,15 +62,15 @@ public sealed class CreateSchoolsImportRequestTests(
         Assert.Equal(2, schools.Count);
         AssertLocation(
             Assert.Single(schools, school => school.URN == 100000).Geometry,
-            FakeBritishNationalGridLocationConverter.CreateExampleAldgatePoint());
+            SharedFakeBritishNationalGridLocationConverter.CreateExampleAldgatePoint());
         AssertLocation(
             Assert.Single(schools, school => school.URN == 100004).Geometry,
-            FakeBritishNationalGridLocationConverter.CreateExampleSherbornePoint());
+            SharedFakeBritishNationalGridLocationConverter.CreateExampleSherbornePoint());
     }
 
-    private static FakeBritishNationalGridLocationConverter CreateLocationConverter()
+    private static SharedFakeBritishNationalGridLocationConverter CreateLocationConverter()
     {
-        return FakeBritishNationalGridLocationConverter.ForExampleImportFile();
+        return SharedFakeBritishNationalGridLocationConverter.ForExampleImportFile();
     }
 
     private static StreamContent CreateImportContent()

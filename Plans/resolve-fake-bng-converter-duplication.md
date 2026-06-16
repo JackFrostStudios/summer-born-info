@@ -65,8 +65,8 @@ then all consuming test projects should pick up the same behavior without needin
    - `API/SummerBornInfo.Features.Tests/TestFramework/FakeBritishNationalGridLocationConverter.cs`
    - `API/SummerBornInfo.Web.Tests/TestFramework/FakeBritishNationalGridLocationConverter.cs`
 7. Run targeted validation covering the affected consumers:
-   - `dotnet test API/SummerBornInfo.Features.Tests/SummerBornInfo.Features.Tests.csproj --filter "*ProcessImportFile*|*SchoolsImporter*"`
-   - `dotnet test API/SummerBornInfo.Web.Tests/SummerBornInfo.Web.Tests.csproj --filter "*CreateSchoolsImportRequestTests*"`
+   - From `API/`: `dotnet test --project SummerBornInfo.Features.Tests/SummerBornInfo.Features.Tests.csproj -- --filter-class "SummerBornInfo.Features.Tests.Schools.Commands.ProcessImportFile.ProcessImportFileCommandHandlerTests" --filter-class "SummerBornInfo.Features.Tests.Schools.Commands.ProcessImportFile.ProcessImportFileTelemetryTests" --filter-class "SummerBornInfo.Features.Tests.Schools.Commands.ProcessImportFile.FileProcessing.SchoolsImporterTests"`
+   - From `API/`: `dotnet test --project SummerBornInfo.Web.Tests/SummerBornInfo.Web.Tests.csproj -- --filter-class "SummerBornInfo.Web.Tests.API.Schools.CreateSchoolsImportRequestTests"`
 
 ## 7. Technology Requirements and Decisions
 
@@ -98,9 +98,9 @@ then all consuming test projects should pick up the same behavior without needin
 - [x] Add the shared helper and supporting project references in `SummerBornInfo.TestFramework`.
 - [x] Confirm the helper builds cleanly from the test framework project boundary.
 - [x] Update feature tests to consume the shared type.
-- [ ] Update web tests to consume the shared type.
-- [ ] Remove duplicate files only after both consuming projects reference the shared helper successfully.
-- [ ] Run targeted tests for the feature and web suites to verify no behavioral regressions were introduced by the move.
+- [x] Update web tests to consume the shared type.
+- [x] Remove duplicate files only after both consuming projects reference the shared helper successfully.
+- [x] Run targeted tests for the feature and web suites to verify no behavioral regressions were introduced by the move.
 
 ## 9. Risks and Mitigations
 
@@ -119,10 +119,10 @@ No blocking unknowns identified for planning. The implementation can proceed wit
 
 ## 11. Completion Checklist
 
-- [ ] `SummerBornInfo.TestFramework` contains the only `FakeBritishNationalGridLocationConverter` implementation.
+- [x] `SummerBornInfo.TestFramework` contains the only `FakeBritishNationalGridLocationConverter` implementation.
 - [x] The test framework project file explicitly references any compile-time dependencies required by the shared fake.
-- [ ] `SummerBornInfo.Features.Tests` compiles against the shared fake with no local duplicate remaining.
-- [ ] `SummerBornInfo.Web.Tests` compiles against the shared fake with no local duplicate remaining.
-- [ ] The duplicated fake converter files have been removed from both test projects.
-- [ ] Targeted feature and web tests pass after the move.
-- [ ] The resulting changes directly satisfy the PR feedback that the fake converter should live in the shared test framework.
+- [x] `SummerBornInfo.Features.Tests` compiles against the shared fake with no local duplicate remaining.
+- [x] `SummerBornInfo.Web.Tests` compiles against the shared fake with no local duplicate remaining.
+- [x] The duplicated fake converter files have been removed from both test projects.
+- [x] Targeted feature and web tests pass after the move.
+- [x] The resulting changes directly satisfy the PR feedback that the fake converter should live in the shared test framework.

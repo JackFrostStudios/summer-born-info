@@ -1,7 +1,6 @@
 global using System.Diagnostics;
 global using Microsoft.EntityFrameworkCore;
 global using NetTopologySuite.Geometries;
-global using SummerBornInfo.CoordinateConversion;
 global using SummerBornInfo.Domain.Entities;
 global using SummerBornInfo.Domain.Events;
 global using SummerBornInfo.Features.Schools.Commands.Import;
