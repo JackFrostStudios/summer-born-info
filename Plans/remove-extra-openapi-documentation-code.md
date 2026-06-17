@@ -147,4 +147,4 @@ Assumption captured for implementation: the application should continue exposing
 - [x] Step 4: Search the solution for deleted extension method references and remove any stragglers.
 - [x] Step 5: Run the retained authorization OpenAPI tests.
 - [x] Step 6: Run the school endpoint behavioral tests to confirm coverage remains where it matters.
-- [ ] Step 7: Build the web test project if needed to catch stale compile-time references after the cleanup.
+- [x] Step 7: Build the web test project if needed to catch stale compile-time references after the cleanup.
