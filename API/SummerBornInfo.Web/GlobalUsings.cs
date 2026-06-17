@@ -32,4 +32,4 @@ global using SummerBornInfo.Web.API.Schools;
 global using SummerBornInfo.Web.Authentication;
 global using SummerBornInfo.Web.Authorization;
 global using SummerBornInfo.Web.BackgroundServices;
-global using SummerBornInfo.Web.OpenApi;
+global using static SummerBornInfo.Web.OpenApi.AdminSecurityOpenApiOptionsExtensions;
