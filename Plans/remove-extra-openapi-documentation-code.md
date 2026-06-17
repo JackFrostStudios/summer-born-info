@@ -133,8 +133,8 @@ Assumption captured for implementation: the application should continue exposing
 - [x] `API/SummerBornInfo.Web/OpenApi/SchoolEndpointOpenApiExtensions.cs` is deleted.
 - [x] `API/SummerBornInfo.Web/API/Schools/SchoolEndpoints.cs` no longer references any school OpenAPI extension methods.
 - [x] `API/SummerBornInfo.Web/OpenApi/AdminSecurityOpenApiOptionsExtensions.cs` remains intact and registered.
-- [ ] Obsolete OpenAPI-related global usings and references are removed only where they are no longer needed.
-- [ ] `API/SummerBornInfo.Web.Tests/OpenApi/SchoolEndpointsOpenApiDocumentTests.cs` is deleted.
+- [x] Obsolete OpenAPI-related global usings and references are removed only where they are no longer needed.
+- [x] `API/SummerBornInfo.Web.Tests/OpenApi/SchoolEndpointsOpenApiDocumentTests.cs` is deleted.
 - [ ] No solution files reference `AddSchoolCollectionOpenApiMetadata`, `AddSchoolSearchOpenApiMetadata`, or `AddNearbySchoolOpenApiMetadata`.
 - [ ] Authorization OpenAPI document tests pass.
 - [ ] School endpoint behavioral integration tests pass after the cleanup.
@@ -143,7 +143,7 @@ Assumption captured for implementation: the application should continue exposing
 
 - [x] Step 1: Remove the school endpoint OpenAPI extension file and the three call sites in `SchoolEndpoints.cs`.
 - [x] Step 2: Clean up web-project usings and confirm only the authorization OpenAPI code remains under `API/SummerBornInfo.Web/OpenApi/`.
-- [ ] Step 3: Remove the obsolete school OpenAPI document tests and tidy any leftover test usings.
+- [x] Step 3: Remove the obsolete school OpenAPI document tests and tidy any leftover test usings.
 - [ ] Step 4: Search the solution for deleted extension method references and remove any stragglers.
 - [ ] Step 5: Run the retained authorization OpenAPI tests.
 - [ ] Step 6: Run the school endpoint behavioral tests to confirm coverage remains where it matters.
