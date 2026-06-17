@@ -138,3 +138,13 @@ Assumption captured for implementation: the application should continue exposing
 - [ ] No solution files reference `AddSchoolCollectionOpenApiMetadata`, `AddSchoolSearchOpenApiMetadata`, or `AddNearbySchoolOpenApiMetadata`.
 - [ ] Authorization OpenAPI document tests pass.
 - [ ] School endpoint behavioral integration tests pass after the cleanup.
+
+## 12. Implementation Progress
+
+- [x] Step 1: Remove the school endpoint OpenAPI extension file and the three call sites in `SchoolEndpoints.cs`.
+- [x] Step 2: Clean up web-project usings and confirm only the authorization OpenAPI code remains under `API/SummerBornInfo.Web/OpenApi/`.
+- [ ] Step 3: Remove the obsolete school OpenAPI document tests and tidy any leftover test usings.
+- [ ] Step 4: Search the solution for deleted extension method references and remove any stragglers.
+- [ ] Step 5: Run the retained authorization OpenAPI tests.
+- [ ] Step 6: Run the school endpoint behavioral tests to confirm coverage remains where it matters.
+- [ ] Step 7: Build the web test project if needed to catch stale compile-time references after the cleanup.
