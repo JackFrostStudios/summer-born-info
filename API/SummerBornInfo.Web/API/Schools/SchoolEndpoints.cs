@@ -16,8 +16,7 @@ public static class SchoolEndpoints
 
     private static RouteGroupBuilder MapGetAllSchools(this RouteGroupBuilder builder)
     {
-        _ = builder.MapGet("/", GetSchoolsAsync)
-            .AddSchoolCollectionOpenApiMetadata();
+        _ = builder.MapGet("/", GetSchoolsAsync);
 
         return builder;
     }
@@ -55,16 +54,14 @@ public static class SchoolEndpoints
             }
 
             return await SearchSchoolsAsync(searchSchoolsHandler, q, cursor, pageSize, cancellationToken);
-        })
-            .AddSchoolSearchOpenApiMetadata();
+        });
 
         return builder;
     }
 
     private static RouteGroupBuilder MapGetNearbySchools(this RouteGroupBuilder builder)
     {
-        _ = builder.MapGet("/nearby", GetNearbySchoolsAsync)
-            .AddNearbySchoolOpenApiMetadata();
+        _ = builder.MapGet("/nearby", GetNearbySchoolsAsync);
 
         return builder;
     }

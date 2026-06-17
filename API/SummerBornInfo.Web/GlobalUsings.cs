@@ -20,7 +20,6 @@ global using SummerBornInfo.Features.Schools.Queries.GetAllSchools;
 global using SummerBornInfo.Features.Schools.Queries.GetNearbySchools;
 global using SummerBornInfo.Features.Schools.Queries.GetSchoolBulkImportStatus;
 global using SummerBornInfo.Features.Schools.Queries.GetSchoolByUrn;
-global using SummerBornInfo.Features.Schools.Queries.Response;
 global using SummerBornInfo.Features.Schools.Queries.SearchSchools;
 global using SummerBornInfo.Infrastructure.Events;
 global using SummerBornInfo.Infrastructure.Persistence;
