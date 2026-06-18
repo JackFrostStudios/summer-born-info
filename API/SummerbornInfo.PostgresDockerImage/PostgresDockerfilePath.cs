@@ -9,6 +9,10 @@ public static class PostgresDockerfilePath
         SolutionDirectory,
         "SummerbornInfo.PostgresDockerImage");
 
+    public static string PostgreSqlDockerfileFilePath { get; } = Path.Combine(
+        PostgreSqlDockerfileDirectory,
+        "Dockerfile");
+
     private static string FindSolutionDirectory()
     {
         for (var currentDirectory = new DirectoryInfo(AppContext.BaseDirectory);

@@ -136,7 +136,7 @@ Implementation assumption captured for delivery: the team accepts a manual versi
 
 - [x] `API/SummerbornInfo.PostgresDockerImage/Dockerfile` contains a version label pinned to `1.0.0`.
 - [x] The Dockerfile includes a clear maintenance note that image-affecting changes must bump the version label.
-- [ ] `SummerbornInfo.PostgresDockerImage` exposes the Dockerfile version through a shared helper instead of requiring downstream parsing.
+- [x] `SummerbornInfo.PostgresDockerImage` exposes the Dockerfile version through a shared helper instead of requiring downstream parsing.
 - [ ] `IntegrationTestDatabaseServerFixture` no longer hardcodes the `:task-2` image tag or task-specific mutex name.
 - [ ] The fixture derives both the Docker image tag and the mutex name from the Dockerfile version metadata.
 - [ ] Invalid or missing Dockerfile version metadata causes a clear failure instead of falling back to a hidden default.
