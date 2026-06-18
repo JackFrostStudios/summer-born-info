@@ -2,15 +2,20 @@ namespace SummerBornInfo.TestFramework;
 
 public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
 {
-    private const string PostgreSqlImageName = "summerborninfo-postgres-postgis-pgmq:task-2";
-    private const string PostgreSqlImageBuildMutexName = @"Global\summerborninfo-postgres-postgis-pgmq-task-2-build";
+    private const string PostgreSqlImageRepositoryName = "summerborninfo-postgres-postgis-pgmq";
     private static readonly string PostgreSqlDockerfileDirectory = PostgresDockerfilePath.PostgreSqlDockerfileDirectory;
 
     private readonly PostgreSqlContainer _postgreSqlContainer;
+    private readonly string _postgreSqlImageName;
+    private readonly string _postgreSqlImageBuildMutexName;
 
     public IntegrationTestDatabaseServerFixture()
     {
-        _postgreSqlContainer = new PostgreSqlBuilder(PostgreSqlImageName)
+        var postgreSqlImageVersion = PostgreSqlDockerImageVersion.Version;
+        _postgreSqlImageName = CreatePostgreSqlImageName(postgreSqlImageVersion);
+        _postgreSqlImageBuildMutexName = CreatePostgreSqlImageBuildMutexName(postgreSqlImageVersion);
+
+        _postgreSqlContainer = new PostgreSqlBuilder(_postgreSqlImageName)
             .WithUsername("test")
             .WithPassword("test")
             .WithName($"integration_tests_postgresql_db_{Guid.NewGuid()}")
@@ -27,11 +32,12 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
         var postgreSqlImage = new ImageFromDockerfileBuilder()
             .WithDockerfileDirectory(dockerfileDirectory: PostgreSqlDockerfileDirectory)
             .WithDockerfile(dockerfile: "Dockerfile")
-            .WithName(name: PostgreSqlImageName)
+            .WithName(name: _postgreSqlImageName)
             .WithDeleteIfExists(deleteIfExists: false)
             .Build();
 
         await CreatePostgreSqlImageAsync(
+            imageBuildMutexName: _postgreSqlImageBuildMutexName,
             createImageAsync: ct => postgreSqlImage.CreateAsync(ct),
             TestContext.Current.CancellationToken);
 
@@ -66,12 +72,15 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
 
     // Visual Studio can start multiple test hosts in parallel, and Testcontainers packages the shared
     // Docker build context through one temp archive path, so concurrent image creation races on that file.
-    private static async Task CreatePostgreSqlImageAsync(Func<CancellationToken, Task> createImageAsync, CancellationToken cancellationToken)
+    private static async Task CreatePostgreSqlImageAsync(
+        string imageBuildMutexName,
+        Func<CancellationToken, Task> createImageAsync,
+        CancellationToken cancellationToken)
     {
         await Task.Run(() =>
         {
             cancellationToken.ThrowIfCancellationRequested();
-            using var mutex = new Mutex(initiallyOwned: false, PostgreSqlImageBuildMutexName);
+            using var mutex = new Mutex(initiallyOwned: false, imageBuildMutexName);
             var acquired = false;
 
             try
@@ -100,6 +109,16 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
                 }
             }
         }, cancellationToken);
+    }
+
+    private static string CreatePostgreSqlImageName(string postgreSqlImageVersion)
+    {
+        return $"{PostgreSqlImageRepositoryName}:{postgreSqlImageVersion}";
+    }
+
+    private static string CreatePostgreSqlImageBuildMutexName(string postgreSqlImageVersion)
+    {
+        return $@"Global\{PostgreSqlImageRepositoryName}-{postgreSqlImageVersion}-build";
     }
 
     [SuppressMessage("Usage", "MA0042:Prefer using 'await'", Justification = "Named mutex ownership is thread-affine, so acquire, build, and release must stay on the same worker thread.")]
