@@ -1,7 +1,7 @@
 namespace SummerBornInfo.CoordinateConversion.Tests;
 
 [TestCaseOrderer(typeof(BritishNationalGridLocationConverterTestCaseOrderer))]
-public sealed class BritishNationalGridLocationConverterTests
+public sealed class BritishNationalGridLocationConverterTests : IDisposable
 {
     private const string ProjDatabaseFileName = "proj.db";
     private const string Ostn15GridFileName = "uk_os_OSTN15_NTv2_OSGBtoETRS.tif";
@@ -94,6 +94,11 @@ public sealed class BritishNationalGridLocationConverterTests
             return fullPath.StartsWith(AppBaseDirectory, StringComparison.OrdinalIgnoreCase)
                 && File.Exists(Path.Combine(fullPath, fileName));
         });
+    }
+
+    public void Dispose()
+    {
+        converter.Dispose();
     }
 }
 

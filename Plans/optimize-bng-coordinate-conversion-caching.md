@@ -94,11 +94,11 @@ then any cached `SpatialReference`, thread-local `CoordinateTransformation`, and
 ## 8. Dependencies and Sequencing
 
 1. [x] Confirm the converter remains the sole owner of real GDAL/PROJ conversion objects and decide the exact disposal model for cached resources.
-2. [ ] Introduce the reusable spatial reference fields and thread-local transformation creation path in `BritishNationalGridLocationConverter`.
+2. [x] Introduce the reusable spatial reference fields and thread-local transformation creation path in `BritishNationalGridLocationConverter`.
 3. [ ] Add any required internal test seam for observing transform creation counts and disposal behavior.
 4. [ ] Extend the coordinate conversion tests to cover same-thread reuse and concurrent-thread isolation without changing the public interface.
-5. [ ] Run the coordinate conversion test project.
-6. [ ] Run a solution build to catch any DI, disposal, or compile-time regressions outside the converter project.
+5. [x] Run the coordinate conversion test project.
+6. [x] Run a solution build to catch any DI, disposal, or compile-time regressions outside the converter project.
 
 ## 9. Risks and Mitigations
 
