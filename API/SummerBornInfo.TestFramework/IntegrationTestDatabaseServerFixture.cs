@@ -12,8 +12,9 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
     public IntegrationTestDatabaseServerFixture()
     {
         var postgreSqlImageVersion = PostgreSqlDockerImageVersion.Version;
-        _postgreSqlImageName = CreatePostgreSqlImageName(postgreSqlImageVersion);
-        _postgreSqlImageBuildMutexName = CreatePostgreSqlImageBuildMutexName(postgreSqlImageVersion);
+        var postgreSqlImageIdentity = CreatePostgreSqlImageIdentity(postgreSqlImageVersion);
+        _postgreSqlImageName = postgreSqlImageIdentity.ImageName;
+        _postgreSqlImageBuildMutexName = postgreSqlImageIdentity.BuildMutexName;
 
         _postgreSqlContainer = new PostgreSqlBuilder(_postgreSqlImageName)
             .WithUsername("test")
@@ -111,14 +112,11 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
         }, cancellationToken);
     }
 
-    private static string CreatePostgreSqlImageName(string postgreSqlImageVersion)
+    internal static PostgreSqlTestImageIdentity CreatePostgreSqlImageIdentity(string postgreSqlImageVersion)
     {
-        return $"{PostgreSqlImageRepositoryName}:{postgreSqlImageVersion}";
-    }
-
-    private static string CreatePostgreSqlImageBuildMutexName(string postgreSqlImageVersion)
-    {
-        return $@"Global\{PostgreSqlImageRepositoryName}-{postgreSqlImageVersion}-build";
+        return new PostgreSqlTestImageIdentity(
+            ImageName: $"{PostgreSqlImageRepositoryName}:{postgreSqlImageVersion}",
+            BuildMutexName: $@"Global\{PostgreSqlImageRepositoryName}-{postgreSqlImageVersion}-build");
     }
 
     [SuppressMessage("Usage", "MA0042:Prefer using 'await'", Justification = "Named mutex ownership is thread-affine, so acquire, build, and release must stay on the same worker thread.")]
@@ -126,4 +124,6 @@ public sealed class IntegrationTestDatabaseServerFixture : IAsyncLifetime
     {
         createImageAsync(cancellationToken).GetAwaiter().GetResult();
     }
+
+    internal readonly record struct PostgreSqlTestImageIdentity(string ImageName, string BuildMutexName);
 }

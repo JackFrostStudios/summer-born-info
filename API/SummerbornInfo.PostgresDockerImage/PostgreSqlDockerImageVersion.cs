@@ -58,14 +58,14 @@ public static class PostgreSqlDockerImageVersion
             discoveredVersions.Add(discoveredVersion);
         }
 
+        if (sawMalformedVersionLabel)
+        {
+            throw new InvalidOperationException(
+                $"Expected Dockerfile label '{VersionLabelKey}' to use the format LABEL {VersionLabelKey}=\"<version>\" exactly once.");
+        }
+
         if (discoveredVersions.Count == 0)
         {
-            if (sawMalformedVersionLabel)
-            {
-                throw new InvalidOperationException(
-                    $"Expected Dockerfile label '{VersionLabelKey}' to use the format LABEL {VersionLabelKey}=\"<version>\".");
-            }
-
             throw new InvalidOperationException(
                 $"Expected Dockerfile label '{VersionLabelKey}' to be present exactly once.");
         }
