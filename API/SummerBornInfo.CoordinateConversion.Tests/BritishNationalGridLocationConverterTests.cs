@@ -81,6 +81,63 @@ public sealed class BritishNationalGridLocationConverterTests : IDisposable
         Assert.Null(point);
     }
 
+    [Fact]
+    public void GivenLifecycleTrackingHooks_WhenConverterIsUsedAndDisposed_ThenCreationAndDisposalCountsAreObservable()
+    {
+        var createdSpatialReferenceCount = 0;
+        var createdTransformationCount = 0;
+        var disposedSpatialReferenceCount = 0;
+        var disposedTransformationCount = 0;
+
+        using var instrumentedConverter = new BritishNationalGridLocationConverter(new BritishNationalGridLocationConverter.TestHooks
+        {
+            CreateSpatialReference = epsgCode =>
+            {
+                createdSpatialReferenceCount++;
+                return CreateSpatialReference(epsgCode);
+            },
+            CreateCoordinateTransformation = (sourceSpatialReference, targetSpatialReference) =>
+            {
+                createdTransformationCount++;
+                return new CoordinateTransformation(sourceSpatialReference, targetSpatialReference);
+            },
+            DisposeSpatialReference = spatialReference =>
+            {
+                disposedSpatialReferenceCount++;
+                spatialReference.Dispose();
+            },
+            DisposeCoordinateTransformation = coordinateTransformation =>
+            {
+                disposedTransformationCount++;
+                coordinateTransformation.Dispose();
+            },
+        });
+
+        var point = instrumentedConverter.TryConvertToWgs84Point("533523", "181201");
+
+        Assert.NotNull(point);
+        Assert.Equal(2, createdSpatialReferenceCount);
+        Assert.Equal(1, createdTransformationCount);
+        Assert.Equal(0, disposedSpatialReferenceCount);
+        Assert.Equal(0, disposedTransformationCount);
+
+        instrumentedConverter.Dispose();
+
+        Assert.Equal(2, disposedSpatialReferenceCount);
+        Assert.Equal(1, disposedTransformationCount);
+    }
+
+    private static SpatialReference CreateSpatialReference(int epsgCode)
+    {
+        var spatialReference = new SpatialReference(string.Empty);
+        var importResult = spatialReference.ImportFromEPSG(epsgCode);
+
+        Assert.Equal(0, importResult);
+
+        spatialReference.SetAxisMappingStrategy(AxisMappingStrategy.OAMS_TRADITIONAL_GIS_ORDER);
+        return spatialReference;
+    }
+
     private static string[] GetConfiguredProjSearchPaths()
     {
         return [.. Osr.GetPROJSearchPaths().Select(Path.GetFullPath)];

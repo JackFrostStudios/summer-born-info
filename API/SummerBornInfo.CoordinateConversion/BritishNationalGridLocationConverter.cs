@@ -7,10 +7,21 @@ public sealed class BritishNationalGridLocationConverter : IBritishNationalGridL
     private const double MaxEasting = 700000d;
     private const double MaxNorthing = 1300000d;
     private readonly Lock sync = new();
+    private readonly TestHooks hooks;
     private SpatialReference? sourceSpatialReference;
     private SpatialReference? targetSpatialReference;
     private ThreadLocal<CoordinateTransformation>? coordinateTransformations;
     private bool disposed;
+
+    public BritishNationalGridLocationConverter()
+        : this(TestHooks.CreateDefault())
+    {
+    }
+
+    internal BritishNationalGridLocationConverter(TestHooks testHooks)
+    {
+        hooks = testHooks ?? throw new ArgumentNullException(nameof(testHooks));
+    }
 
     public Point? TryConvertToWgs84Point(string easting, string northing)
     {
@@ -72,14 +83,21 @@ public sealed class BritishNationalGridLocationConverter : IBritishNationalGridL
         {
             foreach (var coordinateTransformation in threadLocalTransformations.Values)
             {
-                coordinateTransformation.Dispose();
+                hooks.DisposeCoordinateTransformation(coordinateTransformation);
             }
 
             threadLocalTransformations.Dispose();
         }
 
-        targetReference?.Dispose();
-        sourceReference?.Dispose();
+        if (targetReference is not null)
+        {
+            hooks.DisposeSpatialReference(targetReference);
+        }
+
+        if (sourceReference is not null)
+        {
+            hooks.DisposeSpatialReference(sourceReference);
+        }
     }
 
     private CoordinateTransformation GetCoordinateTransformation()
@@ -109,35 +127,48 @@ public sealed class BritishNationalGridLocationConverter : IBritishNationalGridL
                 return;
             }
 
-            var sourceReference = CreateSpatialReference(BritishNationalGridEpsgCode);
+            var sourceReference = hooks.CreateSpatialReference(BritishNationalGridEpsgCode);
 
             try
             {
-                var targetReference = CreateSpatialReference(Wgs84EpsgCode);
+                var targetReference = hooks.CreateSpatialReference(Wgs84EpsgCode);
 
                 try
                 {
                     sourceSpatialReference = sourceReference;
                     targetSpatialReference = targetReference;
                     coordinateTransformations = new ThreadLocal<CoordinateTransformation>(
-                        () => CreateCoordinateTransformation(sourceReference, targetReference),
+                        () => hooks.CreateCoordinateTransformation(sourceReference, targetReference),
                         trackAllValues: true);
                 }
                 catch
                 {
-                    targetReference.Dispose();
+                    hooks.DisposeSpatialReference(targetReference);
                     throw;
                 }
             }
             catch
             {
-                sourceReference.Dispose();
+                hooks.DisposeSpatialReference(sourceReference);
                 throw;
             }
         }
     }
 
-    private static SpatialReference CreateSpatialReference(int epsgCode)
+    internal sealed class TestHooks
+    {
+        internal Func<int, SpatialReference> CreateSpatialReference { get; init; } = CreateDefaultSpatialReference;
+        internal Func<SpatialReference, SpatialReference, CoordinateTransformation> CreateCoordinateTransformation { get; init; } = CreateDefaultCoordinateTransformation;
+        internal Action<SpatialReference> DisposeSpatialReference { get; init; } = static spatialReference => spatialReference.Dispose();
+        internal Action<CoordinateTransformation> DisposeCoordinateTransformation { get; init; } = static coordinateTransformation => coordinateTransformation.Dispose();
+
+        internal static TestHooks CreateDefault()
+        {
+            return new TestHooks();
+        }
+    }
+
+    private static SpatialReference CreateDefaultSpatialReference(int epsgCode)
     {
         var spatialReference = new SpatialReference(string.Empty);
         var importResult = spatialReference.ImportFromEPSG(epsgCode);
@@ -152,7 +183,7 @@ public sealed class BritishNationalGridLocationConverter : IBritishNationalGridL
         return spatialReference;
     }
 
-    private static CoordinateTransformation CreateCoordinateTransformation(
+    private static CoordinateTransformation CreateDefaultCoordinateTransformation(
         SpatialReference sourceSpatialReference,
         SpatialReference targetSpatialReference)
     {
