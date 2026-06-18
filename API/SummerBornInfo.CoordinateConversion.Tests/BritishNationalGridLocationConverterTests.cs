@@ -127,6 +127,126 @@ public sealed class BritishNationalGridLocationConverterTests : IDisposable
         Assert.Equal(1, disposedTransformationCount);
     }
 
+    [Fact]
+    public void GivenLifecycleTrackingHooks_WhenValidCoordinatesAreConvertedRepeatedlyOnTheSameThread_ThenTheTransformationIsReused()
+    {
+        var createdSpatialReferenceCount = 0;
+        var createdTransformationCount = 0;
+
+        using var instrumentedConverter = new BritishNationalGridLocationConverter(new BritishNationalGridLocationConverter.TestHooks
+        {
+            CreateSpatialReference = epsgCode =>
+            {
+                createdSpatialReferenceCount++;
+                return CreateSpatialReference(epsgCode);
+            },
+            CreateCoordinateTransformation = (sourceSpatialReference, targetSpatialReference) =>
+            {
+                createdTransformationCount++;
+                return new CoordinateTransformation(sourceSpatialReference, targetSpatialReference);
+            },
+        });
+
+        var firstPoint = instrumentedConverter.TryConvertToWgs84Point("533523", "181201");
+        var secondPoint = instrumentedConverter.TryConvertToWgs84Point("433962", "300363");
+
+        Assert.NotNull(firstPoint);
+        Assert.NotNull(secondPoint);
+        Assert.Equal(2, createdSpatialReferenceCount);
+        Assert.Equal(1, createdTransformationCount);
+        Assert.InRange(firstPoint.X, -0.09d, -0.06d);
+        Assert.InRange(firstPoint.Y, 51.50d, 51.53d);
+        Assert.InRange(secondPoint.X, -1.501d, -1.499d);
+        Assert.InRange(secondPoint.Y, 52.599d, 52.601d);
+    }
+
+    [Fact]
+    public void GivenLifecycleTrackingHooks_WhenValidCoordinatesAreConvertedOnSeparateThreads_ThenEachThreadCreatesItsOwnTransformation()
+    {
+        var createdSpatialReferenceCount = 0;
+        var createdTransformationCount = 0;
+        var transformationCreationThreadIds = new ConcurrentBag<int>();
+        var conversionThreadIds = new ConcurrentBag<int>();
+        var points = new ConcurrentBag<Point>();
+        var failures = new ConcurrentQueue<Exception>();
+        using var startGate = new ManualResetEventSlim(initialState: false);
+
+        using var instrumentedConverter = new BritishNationalGridLocationConverter(new BritishNationalGridLocationConverter.TestHooks
+        {
+            CreateSpatialReference = epsgCode =>
+            {
+                _ = Interlocked.Increment(ref createdSpatialReferenceCount);
+                return CreateSpatialReference(epsgCode);
+            },
+            CreateCoordinateTransformation = (sourceSpatialReference, targetSpatialReference) =>
+            {
+                transformationCreationThreadIds.Add(Environment.CurrentManagedThreadId);
+                _ = Interlocked.Increment(ref createdTransformationCount);
+                return new CoordinateTransformation(sourceSpatialReference, targetSpatialReference);
+            },
+        });
+
+        var firstThread = CreateConversionThread(
+            instrumentedConverter,
+            startGate,
+            "533523",
+            "181201",
+            conversionThreadIds,
+            points,
+            failures);
+        var secondThread = CreateConversionThread(
+            instrumentedConverter,
+            startGate,
+            "433962",
+            "300363",
+            conversionThreadIds,
+            points,
+            failures);
+
+        firstThread.Start();
+        secondThread.Start();
+        startGate.Set();
+        firstThread.Join();
+        secondThread.Join();
+
+        if (failures.TryDequeue(out var failure))
+        {
+            throw new AggregateException(failures.Prepend(failure));
+        }
+
+        Assert.Equal(2, points.Count);
+        Assert.Equal(2, createdSpatialReferenceCount);
+        Assert.Equal(2, createdTransformationCount);
+        Assert.Equal(2, conversionThreadIds.Distinct().Count());
+        Assert.Equal(2, transformationCreationThreadIds.Distinct().Count());
+    }
+
+    private static Thread CreateConversionThread(
+        BritishNationalGridLocationConverter converter,
+        ManualResetEventSlim startGate,
+        string easting,
+        string northing,
+        ConcurrentBag<int> conversionThreadIds,
+        ConcurrentBag<Point> points,
+        ConcurrentQueue<Exception> failures)
+    {
+        return new Thread(() =>
+        {
+            try
+            {
+                startGate.Wait(TestContext.Current.CancellationToken);
+                conversionThreadIds.Add(Environment.CurrentManagedThreadId);
+                var point = converter.TryConvertToWgs84Point(easting, northing);
+                Assert.NotNull(point);
+                points.Add(point);
+            }
+            catch (Exception exception)
+            {
+                failures.Enqueue(exception);
+            }
+        });
+    }
+
     private static SpatialReference CreateSpatialReference(int epsgCode)
     {
         var spatialReference = new SpatialReference(string.Empty);
