@@ -6,11 +6,13 @@ public sealed class BritishNationalGridLocationConverter : IBritishNationalGridL
     private const int Wgs84EpsgCode = 4326;
     private const double MaxEasting = 700000d;
     private const double MaxNorthing = 1300000d;
-    private readonly Lock sync = new();
+    private readonly object sync = new();
     private readonly TestHooks hooks;
     private SpatialReference? sourceSpatialReference;
     private SpatialReference? targetSpatialReference;
     private ThreadLocal<CoordinateTransformation>? coordinateTransformations;
+    private int activeConversionCount;
+    private bool disposeRequested;
     private bool disposed;
 
     public BritishNationalGridLocationConverter()
@@ -25,35 +27,43 @@ public sealed class BritishNationalGridLocationConverter : IBritishNationalGridL
 
     public Point? TryConvertToWgs84Point(string easting, string northing)
     {
-        ObjectDisposedException.ThrowIf(disposed, this);
-        GdalRuntimeConfiguration.Configure();
+        EnterActiveConversion();
 
-        if (!double.TryParse(easting, CultureInfo.InvariantCulture, out var parsedEasting)
-            || !double.TryParse(northing, CultureInfo.InvariantCulture, out var parsedNorthing)
-            || !double.IsFinite(parsedEasting)
-            || !double.IsFinite(parsedNorthing)
-            || parsedEasting is < 0 or > MaxEasting
-            || parsedNorthing is < 0 or > MaxNorthing)
+        try
         {
-            return null;
+            GdalRuntimeConfiguration.Configure();
+
+            if (!double.TryParse(easting, CultureInfo.InvariantCulture, out var parsedEasting)
+                || !double.TryParse(northing, CultureInfo.InvariantCulture, out var parsedNorthing)
+                || !double.IsFinite(parsedEasting)
+                || !double.IsFinite(parsedNorthing)
+                || parsedEasting is < 0 or > MaxEasting
+                || parsedNorthing is < 0 or > MaxNorthing)
+            {
+                return null;
+            }
+
+            var coordinateTransformation = GetCoordinateTransformation();
+            var coordinates = new double[3];
+            hooks.TransformPoint(coordinateTransformation, coordinates, parsedEasting, parsedNorthing, 0d);
+
+            var longitude = coordinates[0];
+            var latitude = coordinates[1];
+
+            if (!double.IsFinite(longitude)
+                || !double.IsFinite(latitude)
+                || longitude is < -180d or > 180d
+                || latitude is < -90d or > 90d)
+            {
+                return null;
+            }
+
+            return new Point(longitude, latitude) { SRID = 4326 };
         }
-
-        var coordinateTransformation = GetCoordinateTransformation();
-        var coordinates = new double[3];
-        coordinateTransformation.TransformPoint(coordinates, parsedEasting, parsedNorthing, 0d);
-
-        var longitude = coordinates[0];
-        var latitude = coordinates[1];
-
-        if (!double.IsFinite(longitude)
-            || !double.IsFinite(latitude)
-            || longitude is < -180d or > 180d
-            || latitude is < -90d or > 90d)
+        finally
         {
-            return null;
+            ExitActiveConversion();
         }
-
-        return new Point(longitude, latitude) { SRID = 4326 };
     }
 
     public void Dispose()
@@ -69,7 +79,24 @@ public sealed class BritishNationalGridLocationConverter : IBritishNationalGridL
                 return;
             }
 
-            disposed = true;
+            if (disposeRequested)
+            {
+                while (!disposed)
+                {
+                    _ = Monitor.Wait(sync);
+                }
+
+                return;
+            }
+
+            disposeRequested = true;
+
+            while (activeConversionCount > 0)
+            {
+                hooks.OnDisposeBlockedByActiveConversion?.Invoke();
+                _ = Monitor.Wait(sync);
+            }
+
             threadLocalTransformations = coordinateTransformations;
             sourceReference = sourceSpatialReference;
             targetReference = targetSpatialReference;
@@ -77,6 +104,8 @@ public sealed class BritishNationalGridLocationConverter : IBritishNationalGridL
             coordinateTransformations = null;
             sourceSpatialReference = null;
             targetSpatialReference = null;
+            disposed = true;
+            Monitor.PulseAll(sync);
         }
 
         if (threadLocalTransformations is not null)
@@ -120,8 +149,6 @@ public sealed class BritishNationalGridLocationConverter : IBritishNationalGridL
 
         lock (sync)
         {
-            ObjectDisposedException.ThrowIf(disposed, this);
-
             if (coordinateTransformations is not null)
             {
                 return;
@@ -155,12 +182,37 @@ public sealed class BritishNationalGridLocationConverter : IBritishNationalGridL
         }
     }
 
+    private void EnterActiveConversion()
+    {
+        lock (sync)
+        {
+            ObjectDisposedException.ThrowIf(disposeRequested, this);
+            activeConversionCount++;
+        }
+    }
+
+    private void ExitActiveConversion()
+    {
+        lock (sync)
+        {
+            activeConversionCount--;
+
+            if (disposeRequested && activeConversionCount == 0)
+            {
+                Monitor.PulseAll(sync);
+            }
+        }
+    }
+
     internal sealed class TestHooks
     {
         internal Func<int, SpatialReference> CreateSpatialReference { get; init; } = CreateDefaultSpatialReference;
         internal Func<SpatialReference, SpatialReference, CoordinateTransformation> CreateCoordinateTransformation { get; init; } = CreateDefaultCoordinateTransformation;
+        internal Action<CoordinateTransformation, double[], double, double, double> TransformPoint { get; init; } = static (coordinateTransformation, coordinates, easting, northing, height) =>
+            coordinateTransformation.TransformPoint(coordinates, easting, northing, height);
         internal Action<SpatialReference> DisposeSpatialReference { get; init; } = static spatialReference => spatialReference.Dispose();
         internal Action<CoordinateTransformation> DisposeCoordinateTransformation { get; init; } = static coordinateTransformation => coordinateTransformation.Dispose();
+        internal Action? OnDisposeBlockedByActiveConversion { get; init; }
 
         internal static TestHooks CreateDefault()
         {

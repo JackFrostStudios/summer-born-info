@@ -122,12 +122,12 @@ Assumption captured for implementation: shared cached `SpatialReference` instanc
 
 ## 11. Completion Checklist
 
-- [ ] `BritishNationalGridLocationConverter` no longer creates fresh `SpatialReference` instances on every conversion call.
-- [ ] The converter no longer creates a fresh `CoordinateTransformation` for every conversion call.
-- [ ] Repeated conversions on the same thread reuse the same transformation instance or equivalent cached per-thread transform state.
-- [ ] Concurrent callers do not share a single `CoordinateTransformation` instance across threads.
-- [ ] Native GDAL resources created by the converter are disposed through a defined singleton lifecycle.
-- [ ] Existing conversion accuracy and invalid-input behavior remain covered by tests.
-- [ ] New tests prove caching/reuse semantics without relying on timing-based assertions.
+- [x] `BritishNationalGridLocationConverter` no longer creates fresh `SpatialReference` instances on every conversion call.
+- [x] The converter no longer creates a fresh `CoordinateTransformation` for every conversion call.
+- [x] Repeated conversions on the same thread reuse the same transformation instance or equivalent cached per-thread transform state.
+- [x] Concurrent callers do not share a single `CoordinateTransformation` instance across threads.
+- [x] Native GDAL resources created by the converter are disposed through a defined singleton lifecycle.
+- [x] Existing conversion accuracy and invalid-input behavior remain covered by tests.
+- [x] New tests prove caching/reuse semantics without relying on timing-based assertions.
 - [x] `dotnet test SummerBornInfo.CoordinateConversion.Tests/SummerBornInfo.CoordinateConversion.Tests.csproj` passes from `API/`.
 - [x] `dotnet build SummerBornInfo.sln` passes from `API/`.

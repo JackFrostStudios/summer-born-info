@@ -221,6 +221,58 @@ public sealed class BritishNationalGridLocationConverterTests : IDisposable
         Assert.Equal(2, transformationCreationThreadIds.Distinct().Count());
     }
 
+    [Fact]
+    public void GivenActiveConversion_WhenDisposeRunsConcurrently_ThenItWaitsBeforeReleasingNativeResources()
+    {
+        var disposedSpatialReferenceCount = new Counter();
+        var disposedTransformationCount = new Counter();
+        var disposeWaitSignalCount = new Counter();
+        Point? convertedPoint = null;
+        var failures = new ConcurrentQueue<Exception>();
+        using var transformStarted = new ManualResetEventSlim(initialState: false);
+        using var allowTransformToComplete = new ManualResetEventSlim(initialState: false);
+        using var disposeWaiting = new ManualResetEventSlim(initialState: false);
+        using var disposeCompleted = new ManualResetEventSlim(initialState: false);
+        using var instrumentedConverter = CreateDisposeRaceInstrumentedConverter(
+            transformStarted,
+            allowTransformToComplete,
+            disposeWaiting,
+            disposedSpatialReferenceCount,
+            disposedTransformationCount,
+            disposeWaitSignalCount);
+
+        var conversionThread = CreateFailureCapturingThread(
+            () => convertedPoint = instrumentedConverter.TryConvertToWgs84Point("533523", "181201"),
+            failures);
+        var disposeThread = CreateFailureCapturingThread(
+            () =>
+            {
+                instrumentedConverter.Dispose();
+                disposeCompleted.Set();
+            },
+            failures);
+
+        conversionThread.Start();
+        Assert.True(transformStarted.Wait(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken));
+
+        disposeThread.Start();
+        Assert.True(disposeWaiting.Wait(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken));
+        Assert.False(disposeCompleted.IsSet);
+        Assert.Equal(0, disposedTransformationCount.Value);
+        Assert.Equal(0, disposedSpatialReferenceCount.Value);
+        Assert.True(Volatile.Read(ref disposeWaitSignalCount.Value) > 0);
+
+        allowTransformToComplete.Set();
+        Assert.True(conversionThread.Join(TimeSpan.FromSeconds(5)));
+        Assert.True(disposeThread.Join(TimeSpan.FromSeconds(5)));
+        ThrowIfAnyFailures(failures);
+
+        Assert.NotNull(convertedPoint);
+        Assert.True(disposeCompleted.IsSet);
+        Assert.Equal(1, disposedTransformationCount.Value);
+        Assert.Equal(2, disposedSpatialReferenceCount.Value);
+    }
+
     private static Thread CreateConversionThread(
         BritishNationalGridLocationConverter converter,
         ManualResetEventSlim startGate,
@@ -245,6 +297,68 @@ public sealed class BritishNationalGridLocationConverterTests : IDisposable
                 failures.Enqueue(exception);
             }
         });
+    }
+
+    private static Thread CreateFailureCapturingThread(Action action, ConcurrentQueue<Exception> failures)
+    {
+        return new Thread(() =>
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception exception)
+            {
+                failures.Enqueue(exception);
+            }
+        });
+    }
+
+    private static void ThrowIfAnyFailures(ConcurrentQueue<Exception> failures)
+    {
+        if (failures.TryDequeue(out var failure))
+        {
+            throw new AggregateException(failures.Prepend(failure));
+        }
+    }
+
+    private static BritishNationalGridLocationConverter CreateDisposeRaceInstrumentedConverter(
+        ManualResetEventSlim transformStarted,
+        ManualResetEventSlim allowTransformToComplete,
+        ManualResetEventSlim disposeWaiting,
+        Counter disposedSpatialReferenceCount,
+        Counter disposedTransformationCount,
+        Counter disposeWaitSignalCount)
+    {
+        return new BritishNationalGridLocationConverter(new BritishNationalGridLocationConverter.TestHooks
+        {
+            TransformPoint = (coordinateTransformation, coordinates, easting, northing, height) =>
+            {
+                transformStarted.Set();
+                allowTransformToComplete.Wait(TestContext.Current.CancellationToken);
+                coordinateTransformation.TransformPoint(coordinates, easting, northing, height);
+            },
+            DisposeSpatialReference = spatialReference =>
+            {
+                _ = Interlocked.Increment(ref disposedSpatialReferenceCount.Value);
+                spatialReference.Dispose();
+            },
+            DisposeCoordinateTransformation = coordinateTransformation =>
+            {
+                _ = Interlocked.Increment(ref disposedTransformationCount.Value);
+                coordinateTransformation.Dispose();
+            },
+            OnDisposeBlockedByActiveConversion = () =>
+            {
+                _ = Interlocked.Increment(ref disposeWaitSignalCount.Value);
+                disposeWaiting.Set();
+            },
+        });
+    }
+
+    private sealed class Counter
+    {
+        public int Value;
     }
 
     private static SpatialReference CreateSpatialReference(int epsgCode)
