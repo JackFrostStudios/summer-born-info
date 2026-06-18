@@ -98,7 +98,7 @@ then any cached `SpatialReference`, thread-local `CoordinateTransformation`, and
 3. [x] Add any required internal test seam for observing transform creation counts and disposal behavior.
 4. [x] Extend the coordinate conversion tests to cover same-thread reuse and concurrent-thread isolation without changing the public interface.
 5. [x] Run the coordinate conversion test project.
-6. [ ] Run a solution build to catch any DI, disposal, or compile-time regressions outside the converter project.
+6. [x] Run a solution build to catch any DI, disposal, or compile-time regressions outside the converter project.
 
 ## 9. Risks and Mitigations
 
@@ -130,4 +130,4 @@ Assumption captured for implementation: shared cached `SpatialReference` instanc
 - [ ] Existing conversion accuracy and invalid-input behavior remain covered by tests.
 - [ ] New tests prove caching/reuse semantics without relying on timing-based assertions.
 - [x] `dotnet test SummerBornInfo.CoordinateConversion.Tests/SummerBornInfo.CoordinateConversion.Tests.csproj` passes from `API/`.
-- [ ] `dotnet build SummerBornInfo.sln` passes from `API/`.
+- [x] `dotnet build SummerBornInfo.sln` passes from `API/`.
