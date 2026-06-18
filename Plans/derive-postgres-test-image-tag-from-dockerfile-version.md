@@ -140,5 +140,5 @@ Implementation assumption captured for delivery: the team accepts a manual versi
 - [x] `IntegrationTestDatabaseServerFixture` no longer hardcodes the `:task-2` image tag or task-specific mutex name.
 - [x] The fixture derives both the Docker image tag and the mutex name from the Dockerfile version metadata.
 - [x] Invalid or missing Dockerfile version metadata causes a clear failure instead of falling back to a hidden default.
-- [ ] `SummerBornInfo.AppHost` still builds after the shared helper is added.
-- [ ] Representative infrastructure and web tests that use `IntegrationTestDatabaseServerFixture` pass with the new version-derived tag flow.
+- [x] `SummerBornInfo.AppHost` still builds after the shared helper is added.
+- [x] Representative infrastructure and web tests that use `IntegrationTestDatabaseServerFixture` pass with the new version-derived tag flow.
