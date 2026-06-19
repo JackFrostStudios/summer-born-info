@@ -120,7 +120,7 @@ Given an unauthenticated caller or an authenticated non-admin caller, when an ad
   - resolution timestamp;
   - a best-effort anonymous reporter fingerprint used to prevent the same caller from counting multiple times toward the 10-user reapproval threshold.
 - Model review moderation state explicitly with at least `Visible`, `PendingApproval`, `Approved`, `PendingReapproval`, and `Rejected`, or an equivalent shape that preserves the same behavior semantics.
-- Add EF Core configurations, `DbSet`s, and a migration in `SummerBornInfo.Infrastructure`.
+- Add EF Core configurations and `DbSet`s in `SummerBornInfo.Infrastructure`.
 - Enforce foreign-key linkage to `School` and cascade rules that match the existing import-first data model.
 
 ### Deliverable B: Public submission slice
@@ -201,7 +201,7 @@ Given an unauthenticated caller or an authenticated non-admin caller, when an ad
 ## 8. Dependencies and Sequencing
 
 1. [x] Update the Milestone 5 contract notes to reflect the confirmed Turnstile choice, visible-by-default submission behavior, first-report hide rule, 10-report reapproval threshold, and admin queue route.
-2. Add the review and report domain model, infrastructure mapping, and migration.
+2. Add the review and report domain model and infrastructure mapping.
 3. Implement public review submission and public review retrieval.
 4. Implement public report submission, including first-report hide logic, distinct-reporter counting, and the reapproval threshold transition.
 5. Replace the moderation placeholder with persistence-backed moderation and add the admin queue endpoint.
@@ -250,7 +250,7 @@ This remaining item should be documented during implementation, but it does not 
 ## 11. Completion Checklist
 
 - The Milestone 5 moderation and abuse-control decisions are recorded in this plan and approved.
-- A persisted review aggregate and report model exist with migrations and infrastructure configuration.
+- A persisted review aggregate and report model exist with infrastructure configuration.
 - `POST /api/schools/{schoolId}/csa-application-reviews` is implemented against persisted data and returns the documented visible-by-default response.
 - `GET /api/schools/{schoolId}/csa-application-reviews` returns only publicly visible reviews with stable cursor pagination.
 - `POST /api/schools/{schoolId}/csa-application-reviews/{reviewId}/reports` persists reports, enforces route ownership validation, and applies the first-report and reapproval-threshold hiding rules.
