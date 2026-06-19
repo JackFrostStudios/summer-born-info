@@ -1,1 +1,1 @@
-[assembly: global::System.Runtime.CompilerServices.InternalsVisibleTo("SummerBornInfo.Infrastructure.Tests")]
+[assembly: InternalsVisibleTo("SummerBornInfo.Infrastructure.Tests")]
