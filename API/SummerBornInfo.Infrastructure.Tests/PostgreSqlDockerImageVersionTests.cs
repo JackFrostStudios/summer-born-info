@@ -1,5 +1,3 @@
-using SummerbornInfo.PostgresDockerImage;
-
 namespace SummerBornInfo.Infrastructure.Tests;
 
 public sealed class PostgreSqlDockerImageVersionTests

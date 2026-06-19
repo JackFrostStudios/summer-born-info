@@ -34,5 +34,6 @@ global using SummerBornInfo.TestFramework.TestData;
 global using SummerBornInfo.Web.Authentication;
 global using SummerBornInfo.Web.Authorization;
 global using SummerBornInfo.Web.BackgroundServices;
+global using SummerBornInfo.Web.OpenApi;
 global using SummerBornInfo.Web.Tests.TestFramework;
 global using Xunit;

@@ -2,6 +2,7 @@ global using System.Diagnostics.CodeAnalysis;
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.EntityFrameworkCore;
 global using Npgsql;
+global using SummerbornInfo.PostgresDockerImage;
 global using SummerBornInfo.Domain.Entities;
 global using SummerBornInfo.Infrastructure.Events;
 global using SummerBornInfo.Infrastructure.Persistence;
