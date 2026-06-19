@@ -68,9 +68,9 @@ public static class SchoolCsaApplicationReviewEndpoints
         var result = await handler.ExecuteAsync(command, cancellationToken);
         return result.Status switch
         {
-            SubmitPublicCsaApplicationReviewExecutionStatus.Created => Results.Created(
-                $"/api/schools/{schoolId}/csa-application-reviews/{result.Response!.Id}",
-                result.Response),
+            SubmitPublicCsaApplicationReviewExecutionStatus.Created => Results.Json(
+                result.Response,
+                statusCode: StatusCodes.Status201Created),
             SubmitPublicCsaApplicationReviewExecutionStatus.SchoolNotFound => CreateSchoolNotFound(
                 "No school was found for the supplied school id."),
             SubmitPublicCsaApplicationReviewExecutionStatus.BotVerificationFailed => CreateBotVerificationFailure(

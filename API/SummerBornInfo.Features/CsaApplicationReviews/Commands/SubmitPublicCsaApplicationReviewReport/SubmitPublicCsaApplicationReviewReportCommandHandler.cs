@@ -4,6 +4,8 @@ public sealed class SubmitPublicCsaApplicationReviewReportCommandHandler(
     ApplicationDbContext context,
     IAnonymousBotVerifier botVerifier)
 {
+    private const string DuplicateOpenFingerprintConstraintName = "ux_csa_application_review_report_open_fingerprint";
+
     private readonly ApplicationDbContext _context = context;
     private readonly IAnonymousBotVerifier _botVerifier = botVerifier;
 
@@ -53,7 +55,14 @@ public sealed class SubmitPublicCsaApplicationReviewReportCommandHandler(
 
         if (reportAttached)
         {
-            _ = await _context.SaveChangesAsync(cancellationToken);
+            try
+            {
+                _ = await _context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException exception) when (IsDuplicateOpenFingerprintViolation(exception))
+            {
+                // A concurrent duplicate report from the same fingerprint should be accepted as a no-op.
+            }
         }
 
         return SubmitPublicCsaApplicationReviewReportExecutionResult.Accepted(
@@ -61,5 +70,16 @@ public sealed class SubmitPublicCsaApplicationReviewReportCommandHandler(
                 review.Id,
                 "reportAccepted",
                 reportedAtUtc));
+    }
+
+    private static bool IsDuplicateOpenFingerprintViolation(DbUpdateException exception)
+    {
+        if (exception.InnerException is not PostgresException postgresException)
+        {
+            return false;
+        }
+
+        return string.Equals(postgresException.SqlState, PostgresErrorCodes.UniqueViolation, StringComparison.Ordinal)
+            && string.Equals(postgresException.ConstraintName, DuplicateOpenFingerprintConstraintName, StringComparison.Ordinal);
     }
 }

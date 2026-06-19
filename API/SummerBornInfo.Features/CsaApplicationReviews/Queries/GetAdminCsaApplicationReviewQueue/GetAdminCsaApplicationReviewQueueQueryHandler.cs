@@ -28,7 +28,7 @@ public sealed class GetAdminCsaApplicationReviewQueueQueryHandler(ApplicationDbC
                 ToApiStatus(x.Status),
                 x.SubmittedAtUtc,
                 x.OpenReportCount,
-                x.OpenReportCount,
+                x.PostApprovalDistinctReportCount,
                 x.LatestReportAtUtc,
                 new AdminCsaApplicationReviewQueueSchoolResponse(
                     x.SchoolId,
@@ -106,6 +106,9 @@ public sealed class GetAdminCsaApplicationReviewQueueQueryHandler(ApplicationDbC
             school.Urn,
             school.Name,
             openReports.Count,
+            review.Status == CsaApplicationReviewStatus.PendingReapproval
+                ? openReports.Count
+                : 0,
             [.. openReports.Select(report => new AdminCsaApplicationReviewQueueReportResponse(
                 report.Id,
                 report.Reason,
@@ -138,6 +141,7 @@ public sealed class GetAdminCsaApplicationReviewQueueQueryHandler(ApplicationDbC
         int SchoolUrn,
         string SchoolName,
         int OpenReportCount,
+        int PostApprovalDistinctReportCount,
         IReadOnlyList<AdminCsaApplicationReviewQueueReportResponse> Reports,
         DateTimeOffset LatestReportAtUtc);
 

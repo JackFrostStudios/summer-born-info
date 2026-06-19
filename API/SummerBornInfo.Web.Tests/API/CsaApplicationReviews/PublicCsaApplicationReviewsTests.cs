@@ -33,6 +33,7 @@ public sealed class PublicCsaApplicationReviewsTests(
         Assert.True(payload.ApplicationSuccessful);
         Assert.Equal("Helpful review.", payload.Comment);
         Assert.InRange(payload.SubmittedAtUtc, startedAtUtc.AddSeconds(-1), DateTimeOffset.UtcNow.AddSeconds(1));
+        Assert.Null(response.Headers.Location);
 
         await using var scope = Factory.Services.CreateAsyncScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();

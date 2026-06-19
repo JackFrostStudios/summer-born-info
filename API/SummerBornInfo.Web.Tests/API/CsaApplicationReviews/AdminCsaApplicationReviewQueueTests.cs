@@ -60,6 +60,7 @@ public sealed class AdminCsaApplicationReviewQueueTests(
             {
                 Assert.Equal(pendingApprovalReview.Id, second.Id);
                 Assert.Equal("pendingApproval", second.Status);
+                Assert.Equal(0, second.PostApprovalDistinctReportCount);
                 _ = Assert.Single(second.Reports);
                 Assert.Equal("spam", second.Reports[0].Reason);
             });

@@ -28,8 +28,16 @@ public sealed class GetAdminCsaApplicationReviewQueueQueryHandlerTests(
 
         Assert.Collection(
             response.Reviews,
-            first => Assert.Equal(pendingReapprovalReview.Id, first.Id),
-            second => Assert.Equal(pendingApprovalReview.Id, second.Id));
+            first =>
+            {
+                Assert.Equal(pendingReapprovalReview.Id, first.Id);
+                Assert.Equal(CsaApplicationReview.PostApprovalReportThreshold, first.PostApprovalDistinctReportCount);
+            },
+            second =>
+            {
+                Assert.Equal(pendingApprovalReview.Id, second.Id);
+                Assert.Equal(0, second.PostApprovalDistinctReportCount);
+            });
         Assert.All(response.Reviews, review => Assert.NotEmpty(review.Reports));
         Assert.DoesNotContain(response.Reviews, review => review.Id == approvedReview.Id);
         Assert.Null(response.NextCursor);
