@@ -12,7 +12,7 @@ public sealed class SubmitPublicCsaApplicationReviewReportCommandHandlerTests(
         var review = CsaApplicationReview.Submit(school.Id, "Parent", applicationSuccessful: true, "Helpful review.", DateTimeOffset.UtcNow);
         await SeedSchoolAndReviewAsync(school, review);
 
-        var handler = new SubmitPublicCsaApplicationReviewReportCommandHandler(CreateDbContext());
+        var handler = new SubmitPublicCsaApplicationReviewReportCommandHandler(CreateDbContext(), new AlwaysVerifiedAnonymousBotVerifier());
 
         var result = await handler.ExecuteAsync(
             new SubmitPublicCsaApplicationReviewReportCommand(
@@ -20,7 +20,9 @@ public sealed class SubmitPublicCsaApplicationReviewReportCommandHandlerTests(
                 ReviewId: review.Id,
                 Reason: "spam",
                 Details: "Repeated promotional content.",
-                ReporterFingerprint: "fingerprint-1"),
+                ReporterFingerprint: "fingerprint-1",
+                BotVerificationToken: null,
+                RemoteIpAddress: "203.0.113.1"),
             TestContext.Current.CancellationToken);
 
         Assert.Equal(SubmitPublicCsaApplicationReviewReportExecutionStatus.Accepted, result.Status);
@@ -43,7 +45,7 @@ public sealed class SubmitPublicCsaApplicationReviewReportCommandHandlerTests(
         _ = review.AttachReport("abusive", "First report.", "fingerprint-1", DateTimeOffset.UtcNow.AddMinutes(3));
         await SeedSchoolAndReviewAsync(school, review);
 
-        var handler = new SubmitPublicCsaApplicationReviewReportCommandHandler(CreateDbContext());
+        var handler = new SubmitPublicCsaApplicationReviewReportCommandHandler(CreateDbContext(), new AlwaysVerifiedAnonymousBotVerifier());
 
         var result = await handler.ExecuteAsync(
             new SubmitPublicCsaApplicationReviewReportCommand(
@@ -51,7 +53,9 @@ public sealed class SubmitPublicCsaApplicationReviewReportCommandHandlerTests(
                 ReviewId: review.Id,
                 Reason: "privacy",
                 Details: "Duplicate report.",
-                ReporterFingerprint: "fingerprint-1"),
+                ReporterFingerprint: "fingerprint-1",
+                BotVerificationToken: null,
+                RemoteIpAddress: "203.0.113.1"),
             TestContext.Current.CancellationToken);
 
         Assert.Equal(SubmitPublicCsaApplicationReviewReportExecutionStatus.Accepted, result.Status);
@@ -76,7 +80,7 @@ public sealed class SubmitPublicCsaApplicationReviewReportCommandHandlerTests(
         var review = CsaApplicationReview.Submit(school.Id, "Parent", applicationSuccessful: true, "Helpful review.", DateTimeOffset.UtcNow);
         await SeedSchoolAndReviewAsync(school, review);
 
-        var handler = new SubmitPublicCsaApplicationReviewReportCommandHandler(CreateDbContext());
+        var handler = new SubmitPublicCsaApplicationReviewReportCommandHandler(CreateDbContext(), new AlwaysVerifiedAnonymousBotVerifier());
 
         var result = await handler.ExecuteAsync(
             new SubmitPublicCsaApplicationReviewReportCommand(
@@ -84,7 +88,9 @@ public sealed class SubmitPublicCsaApplicationReviewReportCommandHandlerTests(
                 ReviewId: useUnknownSchool ? review.Id : Guid.NewGuid(),
                 Reason: "spam",
                 Details: "Repeated promotional content.",
-                ReporterFingerprint: "fingerprint-1"),
+                ReporterFingerprint: "fingerprint-1",
+                BotVerificationToken: null,
+                RemoteIpAddress: "203.0.113.1"),
             TestContext.Current.CancellationToken);
 
         Assert.Equal(expectedStatus, result.Status);

@@ -1,20 +1,34 @@
 namespace SummerBornInfo.Features.CsaApplicationReviews.Commands.SubmitPublicCsaApplicationReview;
 
-public sealed class SubmitPublicCsaApplicationReviewCommandHandler(ApplicationDbContext context)
+public sealed class SubmitPublicCsaApplicationReviewCommandHandler(
+    ApplicationDbContext context,
+    IAnonymousBotVerifier botVerifier)
 {
     private readonly ApplicationDbContext _context = context;
+    private readonly IAnonymousBotVerifier _botVerifier = botVerifier;
 
-    public async Task<SubmitPublicCsaApplicationReviewResponse?> ExecuteAsync(
+    public async Task<SubmitPublicCsaApplicationReviewExecutionResult> ExecuteAsync(
         SubmitPublicCsaApplicationReviewCommand command,
         CancellationToken cancellationToken)
     {
+        var botVerification = await _botVerifier.VerifyAsync(
+            new AnonymousBotVerificationRequest(
+                command.BotVerificationToken,
+                command.RemoteIpAddress),
+            cancellationToken);
+
+        if (!botVerification.IsVerified)
+        {
+            return SubmitPublicCsaApplicationReviewExecutionResult.BotVerificationFailed();
+        }
+
         var schoolExists = await _context.Schools
             .AsNoTracking()
             .AnyAsync(x => x.Id == command.SchoolId, cancellationToken);
 
         if (!schoolExists)
         {
-            return null;
+            return SubmitPublicCsaApplicationReviewExecutionResult.SchoolNotFound();
         }
 
         var review = CsaApplicationReview.Submit(
@@ -27,6 +41,7 @@ public sealed class SubmitPublicCsaApplicationReviewCommandHandler(ApplicationDb
         _ = _context.CsaApplicationReviews.Add(review);
         _ = await _context.SaveChangesAsync(cancellationToken);
 
-        return SubmitPublicCsaApplicationReviewResponse.FromEntity(review);
+        return SubmitPublicCsaApplicationReviewExecutionResult.Created(
+            SubmitPublicCsaApplicationReviewResponse.FromEntity(review));
     }
 }

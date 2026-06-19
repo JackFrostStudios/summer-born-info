@@ -10,6 +10,8 @@ public static class SubmitPublicCsaApplicationReviewReportCommandValidator
         string? reason,
         string? details,
         string? reporterFingerprint,
+        string? botVerificationToken,
+        string? remoteIpAddress,
         out SubmitPublicCsaApplicationReviewReportCommand command,
         out IDictionary<string, string[]> errors)
     {
@@ -47,7 +49,13 @@ public static class SubmitPublicCsaApplicationReviewReportCommandValidator
             normalizedDetails,
             string.IsNullOrWhiteSpace(reporterFingerprint)
                 ? null
-                : reporterFingerprint.Trim());
+                : reporterFingerprint.Trim(),
+            string.IsNullOrWhiteSpace(botVerificationToken)
+                ? null
+                : botVerificationToken.Trim(),
+            string.IsNullOrWhiteSpace(remoteIpAddress)
+                ? null
+                : remoteIpAddress.Trim());
 
         return true;
     }

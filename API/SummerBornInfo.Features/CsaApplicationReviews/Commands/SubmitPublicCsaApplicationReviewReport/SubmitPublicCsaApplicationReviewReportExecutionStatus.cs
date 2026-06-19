@@ -5,4 +5,5 @@ public enum SubmitPublicCsaApplicationReviewReportExecutionStatus
     Accepted,
     SchoolNotFound,
     ReviewNotFound,
+    BotVerificationFailed,
 }

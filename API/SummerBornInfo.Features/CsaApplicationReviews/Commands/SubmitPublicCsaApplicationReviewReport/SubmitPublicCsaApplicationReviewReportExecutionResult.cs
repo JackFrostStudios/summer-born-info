@@ -24,4 +24,11 @@ public sealed record SubmitPublicCsaApplicationReviewReportExecutionResult(
             SubmitPublicCsaApplicationReviewReportExecutionStatus.ReviewNotFound,
             Response: null);
     }
+
+    public static SubmitPublicCsaApplicationReviewReportExecutionResult BotVerificationFailed()
+    {
+        return new SubmitPublicCsaApplicationReviewReportExecutionResult(
+            SubmitPublicCsaApplicationReviewReportExecutionStatus.BotVerificationFailed,
+            Response: null);
+    }
 }

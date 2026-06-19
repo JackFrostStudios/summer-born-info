@@ -7,6 +7,8 @@ public static class SubmitPublicCsaApplicationReviewCommandValidator
         string? name,
         bool? applicationSuccessful,
         string? comment,
+        string? botVerificationToken,
+        string? remoteIpAddress,
         out SubmitPublicCsaApplicationReviewCommand command,
         out IDictionary<string, string[]> errors)
     {
@@ -48,7 +50,13 @@ public static class SubmitPublicCsaApplicationReviewCommandValidator
             schoolId,
             trimmedName!,
             applicationSuccessful!.Value,
-            trimmedComment!);
+            trimmedComment!,
+            string.IsNullOrWhiteSpace(botVerificationToken)
+                ? null
+                : botVerificationToken.Trim(),
+            string.IsNullOrWhiteSpace(remoteIpAddress)
+                ? null
+                : remoteIpAddress.Trim());
 
         return true;
     }

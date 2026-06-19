@@ -11,41 +11,47 @@ public sealed class SubmitPublicCsaApplicationReviewCommandHandlerTests(
         var school = SchoolFactory.GetSchool();
         await SeedSchoolAsync(school);
 
-        var handler = new SubmitPublicCsaApplicationReviewCommandHandler(CreateDbContext());
+        var handler = new SubmitPublicCsaApplicationReviewCommandHandler(CreateDbContext(), new AlwaysVerifiedAnonymousBotVerifier());
 
-        var response = await handler.ExecuteAsync(
+        var result = await handler.ExecuteAsync(
             new SubmitPublicCsaApplicationReviewCommand(
                 SchoolId: school.Id,
                 Name: "Parent",
                 ApplicationSuccessful: true,
-                Comment: "Helpful review."),
+                Comment: "Helpful review.",
+                BotVerificationToken: null,
+                RemoteIpAddress: "203.0.113.1"),
             TestContext.Current.CancellationToken);
 
-        Assert.NotNull(response);
-        Assert.Equal(school.Id, response.SchoolId);
-        Assert.Equal("Parent", response.Name);
-        Assert.True(response.ApplicationSuccessful);
-        Assert.Equal("Helpful review.", response.Comment);
-        Assert.Equal("visible", response.Status);
+        Assert.Equal(SubmitPublicCsaApplicationReviewExecutionStatus.Created, result.Status);
+        Assert.NotNull(result.Response);
+        Assert.Equal(school.Id, result.Response.SchoolId);
+        Assert.Equal("Parent", result.Response.Name);
+        Assert.True(result.Response.ApplicationSuccessful);
+        Assert.Equal("Helpful review.", result.Response.Comment);
+        Assert.Equal("visible", result.Response.Status);
 
-        var savedReview = await CreateDbContext().CsaApplicationReviews.SingleAsync(x => x.Id == response.Id, TestContext.Current.CancellationToken);
+        var savedReview = await CreateDbContext().CsaApplicationReviews.SingleAsync(x => x.Id == result.Response.Id, TestContext.Current.CancellationToken);
         Assert.Equal(CsaApplicationReviewStatus.Visible, savedReview.Status);
     }
 
     [Fact]
-    public async Task GivenUnknownSchool_WhenExecuteAsync_ThenReturnsNull()
+    public async Task GivenUnknownSchool_WhenExecuteAsync_ThenReturnsSchoolNotFound()
     {
-        var handler = new SubmitPublicCsaApplicationReviewCommandHandler(CreateDbContext());
+        var handler = new SubmitPublicCsaApplicationReviewCommandHandler(CreateDbContext(), new AlwaysVerifiedAnonymousBotVerifier());
 
-        var response = await handler.ExecuteAsync(
+        var result = await handler.ExecuteAsync(
             new SubmitPublicCsaApplicationReviewCommand(
                 SchoolId: Guid.NewGuid(),
                 Name: "Parent",
                 ApplicationSuccessful: true,
-                Comment: "Helpful review."),
+                Comment: "Helpful review.",
+                BotVerificationToken: null,
+                RemoteIpAddress: "203.0.113.1"),
             TestContext.Current.CancellationToken);
 
-        Assert.Null(response);
+        Assert.Equal(SubmitPublicCsaApplicationReviewExecutionStatus.SchoolNotFound, result.Status);
+        Assert.Null(result.Response);
     }
 
     private async Task SeedSchoolAsync(School school)

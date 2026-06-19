@@ -5,4 +5,6 @@ public sealed record SubmitPublicCsaApplicationReviewReportCommand(
     Guid ReviewId,
     string Reason,
     string? Details,
-    string? ReporterFingerprint);
+    string? ReporterFingerprint,
+    string? BotVerificationToken,
+    string? RemoteIpAddress);

@@ -12,6 +12,7 @@ global using NpgsqlTypes;
 global using SummerBornInfo.CoordinateConversion;
 global using SummerBornInfo.Domain.Entities;
 global using SummerBornInfo.Domain.Events;
+global using SummerBornInfo.Features.CsaApplicationReviews.BotVerification;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing.Exceptions;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing.LookupImporter;

@@ -20,14 +20,19 @@ public static class SchoolCsaApplicationReviewEndpoints
     private static async Task<IResult> SubmitReviewAsync(
         Guid schoolId,
         SubmitPublicCsaApplicationReviewRequest request,
+        HttpContext httpContext,
         SubmitPublicCsaApplicationReviewCommandHandler handler,
         CancellationToken cancellationToken)
     {
+        var callerSignal = AnonymousCallerSignalProvider.Get(httpContext);
+
         if (!SubmitPublicCsaApplicationReviewCommandValidator.TryValidate(
                 schoolId,
                 request.Name,
                 request.ApplicationSuccessful,
                 request.Comment,
+                request.BotVerificationToken,
+                callerSignal.RemoteIpAddress,
                 out var command,
                 out var errors))
         {
@@ -36,10 +41,18 @@ public static class SchoolCsaApplicationReviewEndpoints
                 title: InvalidReviewSubmissionTitle);
         }
 
-        var response = await handler.ExecuteAsync(command, cancellationToken);
-        return response is null
-            ? CreateSchoolNotFound("No school was found for the supplied school id.")
-            : Results.Created($"/api/schools/{schoolId}/csa-application-reviews/{response.Id}", response);
+        var result = await handler.ExecuteAsync(command, cancellationToken);
+        return result.Status switch
+        {
+            SubmitPublicCsaApplicationReviewExecutionStatus.Created => Results.Created(
+                $"/api/schools/{schoolId}/csa-application-reviews/{result.Response!.Id}",
+                result.Response),
+            SubmitPublicCsaApplicationReviewExecutionStatus.SchoolNotFound => CreateSchoolNotFound(
+                "No school was found for the supplied school id."),
+            SubmitPublicCsaApplicationReviewExecutionStatus.BotVerificationFailed => CreateBotVerificationFailure(
+                InvalidReviewSubmissionTitle),
+            _ => throw new UnreachableException(),
+        };
     }
 
     private static async Task<IResult> GetReviewsAsync(
@@ -71,12 +84,16 @@ public static class SchoolCsaApplicationReviewEndpoints
         SubmitPublicCsaApplicationReviewReportCommandHandler handler,
         CancellationToken cancellationToken)
     {
+        var callerSignal = AnonymousCallerSignalProvider.Get(httpContext);
+
         if (!SubmitPublicCsaApplicationReviewReportCommandValidator.TryValidate(
                 schoolId,
                 reviewId,
                 request.Reason,
                 request.Details,
-                CreateAnonymousReporterFingerprint(httpContext),
+                callerSignal.GetReporterFingerprint(),
+                request.BotVerificationToken,
+                callerSignal.RemoteIpAddress,
                 out var command,
                 out var errors))
         {
@@ -94,6 +111,8 @@ public static class SchoolCsaApplicationReviewEndpoints
                 detail: "No publicly visible CSA application review was found for the supplied school and review ids.",
                 statusCode: StatusCodes.Status404NotFound,
                 title: ReviewNotFoundTitle),
+            SubmitPublicCsaApplicationReviewReportExecutionStatus.BotVerificationFailed => CreateBotVerificationFailure(
+                InvalidReviewReportTitle),
             _ => throw new UnreachableException(),
         };
     }
@@ -106,32 +125,24 @@ public static class SchoolCsaApplicationReviewEndpoints
             title: SchoolNotFoundTitle);
     }
 
+    private static IResult CreateBotVerificationFailure(string title)
+    {
+        return Results.ValidationProblem(
+            new Dictionary<string, string[]>(StringComparer.Ordinal)
+            {
+                ["botVerificationToken"] = ["Bot verification failed."],
+            },
+            title: title);
+    }
+
     internal sealed record SubmitPublicCsaApplicationReviewRequest(
         string? Name,
         bool? ApplicationSuccessful,
-        string? Comment);
+        string? Comment,
+        string? BotVerificationToken);
 
     internal sealed record SubmitPublicCsaApplicationReviewReportRequest(
         string? Reason,
-        string? Details);
-
-    // Best-effort dedupe uses the current request's IP-style caller signal and user agent.
-    private static string? CreateAnonymousReporterFingerprint(HttpContext httpContext)
-    {
-        var forwardedFor = httpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
-        var clientIp = string.IsNullOrWhiteSpace(forwardedFor)
-            ? httpContext.Connection.RemoteIpAddress?.ToString()
-            : forwardedFor.Split(',')[0].Trim();
-        var userAgent = httpContext.Request.Headers.UserAgent.ToString().Trim();
-
-        if (string.IsNullOrWhiteSpace(clientIp) && string.IsNullOrWhiteSpace(userAgent))
-        {
-            return null;
-        }
-
-        var fingerprintSource = $"{clientIp ?? "unknown-ip"}|{userAgent ?? "unknown-user-agent"}";
-        var fingerprintBytes = SHA256.HashData(Encoding.UTF8.GetBytes(fingerprintSource));
-
-        return Convert.ToHexString(fingerprintBytes);
-    }
+        string? Details,
+        string? BotVerificationToken);
 }
