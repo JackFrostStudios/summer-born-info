@@ -40,6 +40,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.CoordinateCo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerBornInfo.CoordinateConversion.Tests", "SummerBornInfo.CoordinateConversion.Tests\SummerBornInfo.CoordinateConversion.Tests.csproj", "{FD20A9B7-A46B-46BA-8123-B601AAC450DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerbornInfo.PostgresDockerImage.Tests", "SummerbornInfo.PostgresDockerImage.Tests\SummerbornInfo.PostgresDockerImage.Tests.csproj", "{5416199F-B27C-4017-A729-5237651C190C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -218,6 +220,18 @@ Global
 		{FD20A9B7-A46B-46BA-8123-B601AAC450DB}.Release|x64.Build.0 = Release|Any CPU
 		{FD20A9B7-A46B-46BA-8123-B601AAC450DB}.Release|x86.ActiveCfg = Release|Any CPU
 		{FD20A9B7-A46B-46BA-8123-B601AAC450DB}.Release|x86.Build.0 = Release|Any CPU
+		{5416199F-B27C-4017-A729-5237651C190C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5416199F-B27C-4017-A729-5237651C190C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5416199F-B27C-4017-A729-5237651C190C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5416199F-B27C-4017-A729-5237651C190C}.Debug|x64.Build.0 = Debug|Any CPU
+		{5416199F-B27C-4017-A729-5237651C190C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5416199F-B27C-4017-A729-5237651C190C}.Debug|x86.Build.0 = Debug|Any CPU
+		{5416199F-B27C-4017-A729-5237651C190C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5416199F-B27C-4017-A729-5237651C190C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5416199F-B27C-4017-A729-5237651C190C}.Release|x64.ActiveCfg = Release|Any CPU
+		{5416199F-B27C-4017-A729-5237651C190C}.Release|x64.Build.0 = Release|Any CPU
+		{5416199F-B27C-4017-A729-5237651C190C}.Release|x86.ActiveCfg = Release|Any CPU
+		{5416199F-B27C-4017-A729-5237651C190C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
