@@ -1,3 +1,4 @@
+global using System.Globalization;
 global using System.Diagnostics.CodeAnalysis;
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.EntityFrameworkCore;

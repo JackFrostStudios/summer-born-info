@@ -20,6 +20,8 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
     public DbSet<EstablishmentStatus> EstablishmentStatuses => Set<EstablishmentStatus>();
     public DbSet<SchoolBulkImportRequest> SchoolBulkImportRequests => Set<SchoolBulkImportRequest>();
     public DbSet<SchoolBulkImportFailure> SchoolBulkImportFailures => Set<SchoolBulkImportFailure>();
+    public DbSet<CsaApplicationReview> CsaApplicationReviews => Set<CsaApplicationReview>();
+    public DbSet<CsaApplicationReviewReport> CsaApplicationReviewReports => Set<CsaApplicationReviewReport>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
