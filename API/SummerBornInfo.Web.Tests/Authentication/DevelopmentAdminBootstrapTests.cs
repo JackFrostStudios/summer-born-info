@@ -87,7 +87,7 @@ public sealed class DevelopmentAdminBootstrapTests(
         string password)
     {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseNpgsql(databaseConnectionString)
+            .UseNpgsql(databaseConnectionString, npgsqlOptions => npgsqlOptions.UseNetTopologySuite())
             .Options;
 
         await using var dbContext = new ApplicationDbContext(options);

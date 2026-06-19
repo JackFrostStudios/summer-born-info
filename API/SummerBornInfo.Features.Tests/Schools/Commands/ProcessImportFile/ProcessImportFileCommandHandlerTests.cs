@@ -1,8 +1,11 @@
 namespace SummerBornInfo.Features.Tests.Schools.Commands.ProcessImportFile;
 
-public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper)
+public sealed class ProcessImportFileCommandHandlerTests(
+    IntegrationTestDatabaseServerFixture testDatabaseServerFixture,
+    ITestOutputHelper testOutputHelper)
     : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
+
     [Fact]
     public async Task GivenMissingImportRequest_WhenExecuted_ThenExceptionIsThrown()
     {
@@ -55,20 +58,27 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
         Assert.Equal(SchoolBulkImportStatus.Completed, request.Status);
         Assert.Empty(request.Failures);
 
-        var schools = await verifyDbContext.Schools.ToListAsync(TestContext.Current.CancellationToken);
+        var schools = await verifyDbContext.Schools
+            .OrderBy(x => x.URN)
+            .ToListAsync(TestContext.Current.CancellationToken);
         Assert.Equal(2, schools.Count);
+        AssertLocation(
+            Assert.Single(schools, school => school.URN == 100000).Geometry,
+            FakeBritishNationalGridLocationConverter.CreateExampleAldgatePoint());
+        AssertLocation(
+            Assert.Single(schools, school => school.URN == 100004).Geometry,
+            FakeBritishNationalGridLocationConverter.CreateExampleSherbornePoint());
     }
 
     [Fact]
     public async Task GivenImportRequestWithInvalidRow_WhenExecuted_ThenFailureIsRecordedAndImportContinues()
     {
-        await
-                // Arrange
-                using var invalidCsv = CreateCsvStream(
-            "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\"",
-            "\"100000\",\"3614\",\"The Aldgate School\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\"",
-            "\"INVALID\",\"1045\",\"Broken School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\"",
-            "\"100004\",\"1045\",\"Sherborne Nursery School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\"");
+        // Arrange
+        await using var invalidCsv = CreateCsvStream(
+            "\"URN\",\"EstablishmentNumber\",\"EstablishmentName\",\"LA (code)\",\"LA (name)\",\"TypeOfEstablishment (code)\",\"TypeOfEstablishment (name)\",\"EstablishmentTypeGroup (code)\",\"EstablishmentTypeGroup (name)\",\"EstablishmentStatus (code)\",\"EstablishmentStatus (name)\",\"PhaseOfEducation (code)\",\"PhaseOfEducation (name)\",\"OpenDate\",\"CloseDate\",\"UKPRN\",\"Street\",\"Locality\",\"Address3\",\"Town\",\"County (name)\",\"Postcode\",\"Easting\",\"Northing\"",
+            "\"100000\",\"3614\",\"The Aldgate School\",\"201\",\"City of London\",\"02\",\"Voluntary aided school\",\"4\",\"Local authority maintained schools\",\"1\",\"Open\",\"2\",\"Primary\",\"\",\"\",\"10079319\",\"St James's Passage\",\"Duke's Place\",\"\",\"London\",\"\",\"EC3A 5DE\",\"533523\",\"181201\"",
+            "\"INVALID\",\"1045\",\"Broken School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\",\"528515\",\"184869\"",
+            "\"100004\",\"1045\",\"Sherborne Nursery School\",\"202\",\"Camden\",\"15\",\"Local authority nursery school\",\"4\",\"Local authority maintained schools\",\"2\",\"Closed\",\"1\",\"Nursery\",\"\",\"31-08-1992\",\"\",\"Priestly House\",\"Athlone Street\",\"\",\"London\",\"\",\"NW5 4LP\",\"528515\",\"184869\"");
         var requestId = await CreateImportRequestAsync(invalidCsv);
         var handler = CreateHandler(CreateDbContext());
 
@@ -163,9 +173,7 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
             new ThrowingSchoolsImporter(async cancellationToken =>
             {
                 var importerDbContext = CreateDbContext();
-                SchoolsImporter<ApplicationDbContext> importer = new(
-                    importerDbContext,
-                    Microsoft.Extensions.Logging.Abstractions.NullLogger<SchoolsImporter<ApplicationDbContext>>.Instance);
+                var importer = CreateImporter(importerDbContext);
                 await using var csvStream = ExampleImportFile.GetExampleImportFileContent();
                 var firstResult = await importer.ImportAsync(requestId, csvStream, cancellationToken).FirstAsync(cancellationToken);
                 return firstResult;
@@ -201,9 +209,30 @@ public sealed class ProcessImportFileCommandHandlerTests(IntegrationTestDatabase
         return new(
             dbContext,
             new LargeObjectReader(dbContext),
-            new SchoolsImporter<ApplicationDbContext>(
-                dbContext,
-                Microsoft.Extensions.Logging.Abstractions.NullLogger<SchoolsImporter<ApplicationDbContext>>.Instance));
+            CreateImporter(dbContext));
+    }
+
+    private static SchoolsImporter<ApplicationDbContext> CreateImporter(
+        ApplicationDbContext dbContext,
+        FakeBritishNationalGridLocationConverter? locationConverter = null)
+    {
+        return new(
+            dbContext,
+            locationConverter ?? CreateDefaultLocationConverter(),
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<SchoolsImporter<ApplicationDbContext>>.Instance);
+    }
+
+    private static FakeBritishNationalGridLocationConverter CreateDefaultLocationConverter()
+    {
+        return FakeBritishNationalGridLocationConverter.ForExampleImportFile();
+    }
+
+    private static void AssertLocation(Point? actualLocation, Point expectedLocation)
+    {
+        Assert.NotNull(actualLocation);
+        Assert.Equal(expectedLocation.SRID, actualLocation.SRID);
+        Assert.Equal(expectedLocation.X, actualLocation.X);
+        Assert.Equal(expectedLocation.Y, actualLocation.Y);
     }
 
     private async Task<Guid> CreateImportRequestAsync(Stream content)

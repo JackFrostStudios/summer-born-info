@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" />
+    <PackageReference Include="NetTopologySuite" />
     <PackageReference Include="Testcontainers" />
     <PackageReference Include="Testcontainers.PostgreSql" />
     <PackageReference Include="xunit.v3.assert" />
@@ -25,8 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SummerBornInfo.CoordinateConversion\SummerBornInfo.CoordinateConversion.csproj" />
     <ProjectReference Include="..\SummerBornInfo.Domain\SummerBornInfo.Domain.csproj" />
     <ProjectReference Include="..\SummerBornInfo.Infrastructure\SummerBornInfo.Infrastructure.csproj" />
+    <ProjectReference Include="..\SummerbornInfo.PostgresDockerImage\SummerbornInfo.PostgresDockerImage.csproj" />
   </ItemGroup>
 
 </Project>

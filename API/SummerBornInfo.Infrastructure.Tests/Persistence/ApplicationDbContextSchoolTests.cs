@@ -3,7 +3,7 @@ namespace SummerBornInfo.Infrastructure.Tests.Persistence;
 public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
 {
     [Fact]
-    public void GivenSchoolPersistenceModel_WhenGeneratingCreateScript_ThenSearchFoundationIsIncluded()
+    public void GivenSchoolPersistenceModel_WhenGeneratingCreateScript_ThenSearchAndSpatialFoundationIsIncluded()
     {
         // Arrange
         using var dbContext = CreateDbContext();
@@ -13,6 +13,8 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
 
         // Assert
         Assert.Contains("CREATE EXTENSION IF NOT EXISTS pg_trgm;", createScript, StringComparison.Ordinal);
+        Assert.Contains("CREATE EXTENSION IF NOT EXISTS postgis;", createScript, StringComparison.Ordinal);
+        Assert.Contains(@"""SchoolGeometry"" geography (point, 4326)", createScript, StringComparison.Ordinal);
         Assert.Contains("search_vector", createScript, StringComparison.Ordinal);
         Assert.Contains("GENERATED ALWAYS AS", createScript, StringComparison.Ordinal);
         Assert.Contains(@"to_tsvector('simple', coalesce(""Name"", ''))", createScript, StringComparison.Ordinal);
@@ -21,10 +23,12 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         Assert.Contains("search_address_normalized", createScript, StringComparison.Ordinal);
         Assert.Contains("ix_school_urn", createScript, StringComparison.Ordinal);
         Assert.Contains("UNIQUE", createScript, StringComparison.Ordinal);
+        Assert.Contains("ix_school_school_geometry", createScript, StringComparison.Ordinal);
         Assert.Contains("ix_school_search_vector", createScript, StringComparison.Ordinal);
         Assert.Contains("ix_school_search_name_normalized", createScript, StringComparison.Ordinal);
         Assert.Contains("ix_school_search_postcode_normalized", createScript, StringComparison.Ordinal);
         Assert.Contains("ix_school_search_address_normalized", createScript, StringComparison.Ordinal);
+        Assert.Contains("USING gist", createScript, StringComparison.Ordinal);
         Assert.Contains("USING gin", createScript, StringComparison.Ordinal);
         Assert.Contains("gin_trgm_ops", createScript, StringComparison.Ordinal);
     }
@@ -80,6 +84,29 @@ public sealed class ApplicationDbContextSchoolTests(IntegrationTestDatabaseServe
         Assert.Contains("'academy'", searchVector, StringComparison.Ordinal);
         Assert.Contains("'ls1'", searchVector, StringComparison.Ordinal);
         Assert.Contains("'2ab'", searchVector, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task GivenSchoolHasLocation_WhenPersisted_ThenSpatialPointRoundTripsThroughPostGisMapping()
+    {
+        // Arrange
+        var dbContext = CreateDbContext();
+        var school = SchoolFactory.GetSchool();
+        school.Geometry = new NetTopologySuite.Geometries.Point(-1.5491d, 53.8008d) { SRID = 4326 };
+
+        // Act
+        _ = dbContext.Schools.Add(school);
+        _ = await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        dbContext.ChangeTracker.Clear();
+        var savedSchool = await dbContext.Schools.FindAsync([school.Id], TestContext.Current.CancellationToken);
+
+        Assert.NotNull(savedSchool);
+        Assert.NotNull(savedSchool.Geometry);
+        Assert.Equal(4326, savedSchool.Geometry.SRID);
+        Assert.Equal(school.Geometry.X, savedSchool.Geometry.X, precision: 6);
+        Assert.Equal(school.Geometry.Y, savedSchool.Geometry.Y, precision: 6);
     }
 
     [Fact]

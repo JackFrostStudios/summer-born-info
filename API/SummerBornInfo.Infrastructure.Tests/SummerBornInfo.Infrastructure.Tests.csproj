@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SummerBornInfo.Infrastructure\SummerBornInfo.Infrastructure.csproj" />
-    <ProjectReference Include="..\SummerBornInfo.IntegrationTests\SummerBornInfo.TestFramework.csproj" />
+    <ProjectReference Include="..\SummerBornInfo.TestFramework\SummerBornInfo.TestFramework.csproj" />
   </ItemGroup>
 
 </Project>

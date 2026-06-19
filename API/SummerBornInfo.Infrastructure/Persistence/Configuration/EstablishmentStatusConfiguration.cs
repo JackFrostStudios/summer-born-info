@@ -1,5 +1,6 @@
 namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
 internal sealed class EstablishmentStatusConfiguration : IEntityTypeConfiguration<EstablishmentStatus>
 {
     public void Configure(EntityTypeBuilder<EstablishmentStatus> builder)

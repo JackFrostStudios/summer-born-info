@@ -1,5 +1,6 @@
 namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
 internal sealed class SchoolBulkImportRequestConfiguration : IEntityTypeConfiguration<SchoolBulkImportRequest>
 {
     public void Configure(EntityTypeBuilder<SchoolBulkImportRequest> builder)

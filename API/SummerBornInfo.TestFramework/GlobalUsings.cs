@@ -1,11 +1,16 @@
+global using System.Diagnostics.CodeAnalysis;
 global using System.Reflection;
 global using System.Text;
 global using Bogus;
+global using DotNet.Testcontainers.Builders;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;
+global using NetTopologySuite.Geometries;
 global using Npgmq;
 global using Npgsql;
 global using NpgsqlTypes;
+global using SummerbornInfo.PostgresDockerImage;
+global using SummerBornInfo.CoordinateConversion;
 global using SummerBornInfo.Domain.Entities;
 global using SummerBornInfo.Infrastructure.Events;
 global using SummerBornInfo.Infrastructure.Persistence;

@@ -8,6 +8,7 @@ public sealed class School
     public required int EstablishmentNumber { get; set; }
     public required string Name { get; set; }
     public required SchoolAddress Address { get; set; }
+    public NetTopologySuite.Geometries.Point? Geometry { get; set; }
     public DateOnly? OpenDate { get; set; }
     public DateOnly? CloseDate { get; set; }
     public required PhaseOfEducation PhaseOfEducation { get; set; }

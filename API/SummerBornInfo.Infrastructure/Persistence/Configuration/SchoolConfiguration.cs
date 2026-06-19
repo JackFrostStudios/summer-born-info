@@ -1,5 +1,6 @@
 namespace SummerBornInfo.Infrastructure.Persistence.Configuration;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
 internal sealed class SchoolConfiguration : IEntityTypeConfiguration<School>
 {
     private const string SearchVectorComputedColumnSql =
@@ -36,6 +37,14 @@ internal sealed class SchoolConfiguration : IEntityTypeConfiguration<School>
         _ = builder.Property(s => s.Name)
             .HasMaxLength(300)
             .IsRequired();
+
+        _ = builder.Property(s => s.Geometry)
+            .HasColumnName("SchoolGeometry")
+            .HasColumnType("geography (point, 4326)");
+
+        _ = builder.HasIndex(s => s.Geometry)
+            .HasDatabaseName("ix_school_school_geometry")
+            .HasMethod("gist");
 
         _ = builder.Property<NpgsqlTsVector>("SearchVector")
             .HasColumnName("search_vector")

@@ -51,6 +51,7 @@ internal sealed class LargeObjectStream(NpgsqlConnection connection, uint largeO
         return _length.Value;
     }
 
+    [SuppressMessage("Usage", "MA0015:Specify the parameter name in ArgumentException", Justification = "Position would be the value being set.")]
     public override long Position
     {
         get => _position;

@@ -61,7 +61,7 @@ public sealed class ProcessSchoolBulkImportBackgroundServiceTests
 
         var rootProvider = services.BuildServiceProvider();
         var scopeFactory = rootProvider.GetRequiredService<IServiceScopeFactory>();
-        var options = Microsoft.Extensions.Options.Options.Create(new SchoolBulkImportWorkerOptions
+        var options = Options.Create(new SchoolBulkImportWorkerOptions
         {
             EmptyQueueDelaySeconds = 1,
             MessageReadTimeoutSeconds = 30,

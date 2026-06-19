@@ -9,7 +9,7 @@ public sealed class GetAllSchoolsTests(
     public async Task GivenSchoolExists_WhenGetAllSchools_ThenReturnsSchoolInformation()
     {
         var expectedSchool = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000001"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1) /* 00000000-0000-0000-0000-000000000001 */,
             urn: 100001,
             ukprn: 200001,
             establishmentNumber: 3001,
@@ -20,6 +20,8 @@ public sealed class GetAllSchoolsTests(
             town: "Leeds",
             county: "West Yorkshire",
             postCode: "LS1 1AA",
+            latitude: 53.7997,
+            longitude: -1.5492,
             openDate: new DateOnly(2010, 9, 1),
             closeDate: new DateOnly(2024, 7, 31));
 
@@ -34,36 +36,7 @@ public sealed class GetAllSchoolsTests(
         Assert.NotNull(result);
         var school = Assert.Single(result.Schools);
         Assert.Null(result.NextCursor);
-
-        Assert.Equal(expectedSchool.Id, school.Id);
-        Assert.Equal(expectedSchool.URN, school.URN);
-        Assert.Equal(expectedSchool.UKPRN, school.UKPRN);
-        Assert.Equal(expectedSchool.EstablishmentNumber, school.EstablishmentNumber);
-        Assert.Equal(expectedSchool.Name, school.Name);
-        Assert.Equal(expectedSchool.OpenDate, school.OpenDate);
-        Assert.Equal(expectedSchool.CloseDate, school.CloseDate);
-
-        Assert.Equal(expectedSchool.Address.Street, school.Address.Street);
-        Assert.Equal(expectedSchool.Address.Locality, school.Address.Locality);
-        Assert.Equal(expectedSchool.Address.AddressThree, school.Address.AddressThree);
-        Assert.Equal(expectedSchool.Address.Town, school.Address.Town);
-        Assert.Equal(expectedSchool.Address.County, school.Address.County);
-        Assert.Equal(expectedSchool.Address.PostCode, school.Address.PostCode);
-
-        Assert.Equal(expectedSchool.PhaseOfEducation.Id, school.PhaseOfEducation.Id);
-        Assert.Equal(expectedSchool.PhaseOfEducation.Code, school.PhaseOfEducation.Code);
-        Assert.Equal(expectedSchool.PhaseOfEducation.Name, school.PhaseOfEducation.Name);
-
-        Assert.Equal(expectedSchool.LocalAuthority.Id, school.LocalAuthority.Id);
-        Assert.Equal(expectedSchool.LocalAuthority.Code, school.LocalAuthority.Code);
-        Assert.Equal(expectedSchool.LocalAuthority.Name, school.LocalAuthority.Name);
-
-        Assert.Equal(expectedSchool.EstablishmentType.Code, school.EstablishmentType.Code);
-        Assert.Equal(expectedSchool.EstablishmentType.Name, school.EstablishmentType.Name);
-        Assert.Equal(expectedSchool.EstablishmentGroup.Code, school.EstablishmentGroup.Code);
-        Assert.Equal(expectedSchool.EstablishmentGroup.Name, school.EstablishmentGroup.Name);
-        Assert.Equal(expectedSchool.EstablishmentStatus.Code, school.EstablishmentStatus.Code);
-        Assert.Equal(expectedSchool.EstablishmentStatus.Name, school.EstablishmentStatus.Name);
+        SchoolResponseAssertions.AssertMatches(expectedSchool, school);
     }
 
     [Fact]
@@ -151,7 +124,7 @@ public sealed class GetAllSchoolsTests(
     private static School CreateAmberHillSchool()
     {
         return CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
             urn: 100010,
             ukprn: 200010,
             establishmentNumber: 3010,
@@ -162,6 +135,8 @@ public sealed class GetAllSchoolsTests(
             town: "York",
             county: "North Yorkshire",
             postCode: "YO1 1AA",
+            latitude: null,
+            longitude: null,
             openDate: new DateOnly(2012, 9, 1),
             closeDate: null);
     }
@@ -169,7 +144,7 @@ public sealed class GetAllSchoolsTests(
     private static School CreateBirchGroveSchool()
     {
         return CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x20) /* 00000000-0000-0000-0000-000000000020 */,
             urn: 100020,
             ukprn: 200020,
             establishmentNumber: 3020,
@@ -180,6 +155,8 @@ public sealed class GetAllSchoolsTests(
             town: "Hull",
             county: "East Yorkshire",
             postCode: "HU1 2BB",
+            latitude: null,
+            longitude: null,
             openDate: new DateOnly(2014, 9, 1),
             closeDate: null);
     }
@@ -187,7 +164,7 @@ public sealed class GetAllSchoolsTests(
     private static School CreateCedarParkSchool()
     {
         return CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000030"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x30) /* 00000000-0000-0000-0000-000000000030 */,
             urn: 100030,
             ukprn: 200030,
             establishmentNumber: 3030,
@@ -198,6 +175,8 @@ public sealed class GetAllSchoolsTests(
             town: "Bradford",
             county: "West Yorkshire",
             postCode: "BD1 3CC",
+            latitude: null,
+            longitude: null,
             openDate: new DateOnly(2016, 9, 1),
             closeDate: null);
     }
@@ -206,10 +185,10 @@ public sealed class GetAllSchoolsTests(
     {
         for (var index = 1; index <= count; index++)
         {
-            var indexText = index.ToString("D12", System.Globalization.CultureInfo.InvariantCulture);
-            var nameText = index.ToString("D3", System.Globalization.CultureInfo.InvariantCulture);
-            var streetText = index.ToString(System.Globalization.CultureInfo.InvariantCulture);
-            var postCodeSuffix = (index % 10).ToString(System.Globalization.CultureInfo.InvariantCulture);
+            var indexText = index.ToString("D12", CultureInfo.InvariantCulture);
+            var nameText = index.ToString("D3", CultureInfo.InvariantCulture);
+            var streetText = index.ToString(CultureInfo.InvariantCulture);
+            var postCodeSuffix = (index % 10).ToString(CultureInfo.InvariantCulture);
 
             yield return CreateSchool(
                 id: new Guid($"00000000-0000-0000-0000-{indexText}"),
@@ -223,6 +202,8 @@ public sealed class GetAllSchoolsTests(
                 town: "Leeds",
                 county: "West Yorkshire",
                 postCode: $"LS1 {postCodeSuffix}AA",
+                latitude: null,
+                longitude: null,
                 openDate: new DateOnly(2010, 9, 1).AddDays(index),
                 closeDate: null);
         }
@@ -240,10 +221,12 @@ public sealed class GetAllSchoolsTests(
         string town,
         string? county,
         string postCode,
+        double? latitude,
+        double? longitude,
         DateOnly? openDate,
         DateOnly? closeDate)
     {
-        var urnText = urn.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var urnText = urn.ToString(CultureInfo.InvariantCulture);
         var phaseOfEducation = new PhaseOfEducation
         {
             Code = $"PRIMARY-{urnText}",
@@ -286,6 +269,9 @@ public sealed class GetAllSchoolsTests(
                 County = county,
                 PostCode = postCode,
             },
+            Geometry = latitude.HasValue && longitude.HasValue
+                ? new Point(longitude.Value, latitude.Value) { SRID = 4326 }
+                : null,
             OpenDate = openDate,
             CloseDate = closeDate,
             PhaseOfEducation = phaseOfEducation,

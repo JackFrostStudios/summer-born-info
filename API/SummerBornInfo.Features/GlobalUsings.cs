@@ -9,6 +9,7 @@ global using Microsoft.Extensions.Logging;
 global using nietras.SeparatedValues;
 global using Npgsql;
 global using NpgsqlTypes;
+global using SummerBornInfo.CoordinateConversion;
 global using SummerBornInfo.Domain.Entities;
 global using SummerBornInfo.Domain.Events;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;

@@ -10,13 +10,13 @@ public static class SchoolEndpoints
         var schools = endpoints.MapGroup("/api/schools");
 
         _ = schools.MapGetAllSchools()
+            .MapGetNearbySchools()
             .MapSearchSchools();
     }
 
     private static RouteGroupBuilder MapGetAllSchools(this RouteGroupBuilder builder)
     {
-        _ = builder.MapGet("/", GetSchoolsAsync)
-            .AddSchoolCollectionOpenApiMetadata();
+        _ = builder.MapGet("/", GetSchoolsAsync);
 
         return builder;
     }
@@ -54,8 +54,14 @@ public static class SchoolEndpoints
             }
 
             return await SearchSchoolsAsync(searchSchoolsHandler, q, cursor, pageSize, cancellationToken);
-        })
-            .AddSchoolSearchOpenApiMetadata();
+        });
+
+        return builder;
+    }
+
+    private static RouteGroupBuilder MapGetNearbySchools(this RouteGroupBuilder builder)
+    {
+        _ = builder.MapGet("/nearby", GetNearbySchoolsAsync);
 
         return builder;
     }
@@ -98,6 +104,32 @@ public static class SchoolEndpoints
         {
             return CreateInvalidDiscoveryRequest(
                 "q must be at least 4 non-whitespace characters, pageSize must be between 1 and 200, and cursor must be a valid search continuation token.");
+        }
+
+        var response = await handler.ExecuteAsync(query, cancellationToken);
+        return Results.Ok(response);
+    }
+
+    private static async Task<IResult> GetNearbySchoolsAsync(
+        GetNearbySchoolsQueryHandler handler,
+        double? latitude,
+        double? longitude,
+        double? radiusMiles,
+        string? cursor,
+        int? pageSize,
+        CancellationToken cancellationToken)
+    {
+        GetNearbySchoolsRequest request = new(
+            latitude,
+            longitude,
+            radiusMiles,
+            cursor,
+            pageSize);
+
+        if (!GetNearbySchoolsRequestValidator.TryValidate(request, out var query))
+        {
+            return CreateInvalidDiscoveryRequest(
+                "latitude must be between -90 and 90, longitude must be between -180 and 180, radiusMiles must be greater than 0 and no more than 100, pageSize must be between 1 and 200, and cursor must be a valid nearby search continuation token.");
         }
 
         var response = await handler.ExecuteAsync(query, cancellationToken);

@@ -1,8 +1,13 @@
 namespace SummerBornInfo.Web.Tests.TestFramework;
 
-public class WebIntegrationTestBase(IntegrationTestDatabaseServerFixture testDatabaseServerFixture, ITestOutputHelper testOutputHelper) : IAsyncLifetime
+public class WebIntegrationTestBase(
+    IntegrationTestDatabaseServerFixture testDatabaseServerFixture,
+    ITestOutputHelper testOutputHelper,
+    IReadOnlyDictionary<string, string?>? configurationValues = null,
+    IBritishNationalGridLocationConverter? locationConverter = null) : IAsyncLifetime
 {
-    protected CustomWebApplicationFactory Factory { get; } = new(testDatabaseServerFixture, testOutputHelper);
+    protected CustomWebApplicationFactory Factory { get; } =
+        new(testDatabaseServerFixture, testOutputHelper, configurationValues, locationConverter);
 
     protected Task<HttpClient> CreateAdminTestClientAsync(string email, string password)
     {

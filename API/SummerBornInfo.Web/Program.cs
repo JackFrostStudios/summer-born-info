@@ -6,7 +6,7 @@ builder.Services.Configure<SchoolBulkImportWorkerOptions>(builder.Configuration.
 builder.Services.Configure<DevelopmentAdminBootstrapOptions>(builder.Configuration);
 
 var connectionString = builder.Configuration.GetConnectionString("SummerbornInfo");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.UseNetTopologySuite()));
 builder.Services
     .AddIdentity<ApplicationUser, ApplicationRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -27,9 +27,11 @@ builder.Services.AddScoped<ModerateCsaApplicationReviewCommandHandler>();
 builder.Services.AddScoped<ImportSchoolsCommandHandler>();
 builder.Services.AddScoped<IProcessImportFileCommandHandler, ProcessImportFileCommandHandler>();
 builder.Services.AddScoped<GetAllSchoolsQueryHandler>();
-builder.Services.AddScoped<SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler>();
-builder.Services.AddScoped<SummerBornInfo.Features.Schools.Queries.GetSchoolByUrn.GetSchoolByUrnQueryHandler>();
+builder.Services.AddScoped<GetNearbySchoolsQueryHandler>();
+builder.Services.AddScoped<SearchSchoolsQueryHandler>();
+builder.Services.AddScoped<GetSchoolByUrnQueryHandler>();
 builder.Services.AddScoped<GetSchoolBulkImportStatusQueryHandler>();
+builder.Services.AddSingleton<IBritishNationalGridLocationConverter, BritishNationalGridLocationConverter>();
 builder.Services.AddScoped<ISchoolsImporter, SchoolsImporter<ApplicationDbContext>>();
 builder.Services.AddScoped<ILargeObjectWriter, LargeObjectWriter>();
 builder.Services.AddScoped<ILargeObjectReader, LargeObjectReader>();
@@ -47,7 +49,7 @@ if (app.Environment.IsDevelopment())
     await PostgreSqlDatabaseBootstrapper.EnsureApplicationDatabaseAsync(dbContext, app.Lifetime.ApplicationStopping);
     var developmentAdminBootstrapper = scope.ServiceProvider.GetRequiredService<IDevelopmentAdminBootstrapper>();
     await developmentAdminBootstrapper.UpsertAsync(app.Lifetime.ApplicationStopping);
-    NpgmqClient npgmq = new(connectionString: dbContext.Database.GetConnectionString() ?? throw new InvalidOperationException("Db Connection string is null"));
+    NpgmqClient npgmq = new(connection: dbContext.GetNpgsqlConnection());
     await npgmq.InitAsync(app.Lifetime.ApplicationStopping);
     await npgmq.CreateQueueAsync(EventQueue.SchoolBulkImport.Name, app.Lifetime.ApplicationStopping);
     _ = app.MapOpenApi();

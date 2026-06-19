@@ -7,7 +7,9 @@ public abstract class IntegrationTestBase(IntegrationTestDatabaseServerFixture t
     {
         DbContextOptionsBuilder<ApplicationDbContext> optionsBuilder = new();
         _ = optionsBuilder
-            .UseNpgsql(IntegrationTestDatabaseInstanceFixture.DatabaseConnectionString);
+            .UseNpgsql(
+                IntegrationTestDatabaseInstanceFixture.DatabaseConnectionString,
+                npgsqlOptions => npgsqlOptions.UseNetTopologySuite());
 
         TestEntityFrameworkLoggingConfiguration.AddLoggingToDbContextOptions(optionsBuilder, testOutputHelper);
 

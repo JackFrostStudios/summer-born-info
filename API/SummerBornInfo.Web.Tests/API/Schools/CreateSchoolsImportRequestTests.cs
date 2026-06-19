@@ -3,7 +3,10 @@ namespace SummerBornInfo.Web.Tests.API.Schools;
 public sealed class CreateSchoolsImportRequestTests(
     IntegrationTestDatabaseServerFixture testDatabaseServerFixture,
     ITestOutputHelper testOutputHelper)
-    : WebIntegrationTestBase(testDatabaseServerFixture, testOutputHelper)
+    : WebIntegrationTestBase(
+        testDatabaseServerFixture,
+        testOutputHelper,
+        locationConverter: CreateLocationConverter())
 {
     [Fact]
     public async Task GivenUnauthenticatedCaller_WhenSchoolImportPosted_ThenReturnsUnauthorized()
@@ -51,8 +54,21 @@ public sealed class CreateSchoolsImportRequestTests(
 
         await using var scope = Factory.Services.CreateAsyncScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var schools = await dbContext.Schools.ToListAsync(TestContext.Current.CancellationToken);
+        var schools = await dbContext.Schools
+            .OrderBy(x => x.URN)
+            .ToListAsync(TestContext.Current.CancellationToken);
         Assert.Equal(2, schools.Count);
+        AssertLocation(
+            Assert.Single(schools, school => school.URN == 100000).Geometry,
+            FakeBritishNationalGridLocationConverter.CreateExampleAldgatePoint());
+        AssertLocation(
+            Assert.Single(schools, school => school.URN == 100004).Geometry,
+            FakeBritishNationalGridLocationConverter.CreateExampleSherbornePoint());
+    }
+
+    private static FakeBritishNationalGridLocationConverter CreateLocationConverter()
+    {
+        return FakeBritishNationalGridLocationConverter.ForExampleImportFile();
     }
 
     private static StreamContent CreateImportContent()
@@ -90,5 +106,13 @@ public sealed class CreateSchoolsImportRequestTests(
         }
 
         return null;
+    }
+
+    private static void AssertLocation(Point? actualLocation, Point expectedLocation)
+    {
+        Assert.NotNull(actualLocation);
+        Assert.Equal(expectedLocation.SRID, actualLocation.SRID);
+        Assert.Equal(expectedLocation.X, actualLocation.X);
+        Assert.Equal(expectedLocation.Y, actualLocation.Y);
     }
 }

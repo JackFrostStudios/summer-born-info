@@ -9,6 +9,8 @@ This document is the compact source of truth for the repository layout and the c
 - `API/SummerBornInfo.Infrastructure`: EF Core, event queue, and storage implementations.
 - `API/SummerBornInfo.Web`: HTTP wiring, route registration, and startup configuration.
 - `API/SummerBornInfo.AppHost`: Aspire composition and local dependency startup.
+- `API/SummerbornInfo.PostgresDockerImage`: PostgreSQL Docker image assets and shared version parsing helpers.
+- `API/SummerbornInfo.PostgresDockerImage.Tests`: tests that own the Postgres Docker image helper behaviour.
 - `API/SummerBornInfo.*.Tests`: the matching test projects for each layer.
 
 ## Conventions

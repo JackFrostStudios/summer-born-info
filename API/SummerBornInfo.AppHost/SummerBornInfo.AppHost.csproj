@@ -10,9 +10,11 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+    <PackageReference Include="MessagePack" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SummerbornInfo.PostgresDockerImage\SummerbornInfo.PostgresDockerImage.csproj" IsAspireProjectResource="false" />
     <ProjectReference Include="..\SummerBornInfo.Web\SummerBornInfo.Web.csproj" />
   </ItemGroup>
 

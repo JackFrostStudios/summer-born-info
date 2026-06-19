@@ -1,9 +1,13 @@
 namespace SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;
 
-public sealed partial class SchoolsImporter<TContext>(TContext context, ILogger<SchoolsImporter<TContext>> logger) : ISchoolsImporter where TContext : DbContext
+public sealed partial class SchoolsImporter<TContext>(
+    TContext context,
+    IBritishNationalGridLocationConverter locationConverter,
+    ILogger<SchoolsImporter<TContext>> logger) : ISchoolsImporter where TContext : DbContext
 {
     private readonly TContext _context = context;
     private readonly EstablishmentGroupImporter<TContext> _groupImporter = new(context);
+    private readonly IBritishNationalGridLocationConverter _locationConverter = locationConverter;
     private readonly EstablishmentStatusImporter<TContext> _statusImporter = new(context);
     private readonly EstablishmentTypeImporter<TContext> _typeImporter = new(context);
     private readonly LocalAuthorityImporter<TContext> _laImporter = new(context);
@@ -125,6 +129,7 @@ public sealed partial class SchoolsImporter<TContext>(TContext context, ILogger<
         var establishmentGroup = await _groupImporter.UpsertAsync(row.EstablishmentGroupCode, row.EstablishmentGroupName, cancellationToken);
         var establishmentStatus = await _statusImporter.UpsertAsync(row.EstablishmentStatusCode, row.EstablishmentStatusName, cancellationToken);
         var phaseOfEducation = await _phaseImporter.UpsertAsync(row.PhaseOfEducationCode, row.PhaseOfEducationName, cancellationToken);
+        var location = _locationConverter.TryConvertToWgs84Point(row.Easting, row.Northing);
 
         var school = await _context.Set<School>()
             .FirstOrDefaultAsync(s => s.URN == row.URN, cancellationToken);
@@ -137,6 +142,7 @@ public sealed partial class SchoolsImporter<TContext>(TContext context, ILogger<
                 EstablishmentNumber = row.EstablishmentNumber,
                 Name = row.EstablishmentName,
                 Address = BuildAddress(row),
+                Geometry = location,
                 OpenDate = ParseDate(row.OpenDate),
                 CloseDate = ParseDate(row.CloseDate),
                 UKPRN = ParseNullableInt(row.UKPRN),
@@ -156,6 +162,7 @@ public sealed partial class SchoolsImporter<TContext>(TContext context, ILogger<
             school.OpenDate = ParseDate(row.OpenDate);
             school.CloseDate = ParseDate(row.CloseDate);
             school.UKPRN = ParseNullableInt(row.UKPRN);
+            school.Geometry = location;
 
             school.Address.Street = NullIfEmpty(row.Street);
             school.Address.Locality = NullIfEmpty(row.Locality);

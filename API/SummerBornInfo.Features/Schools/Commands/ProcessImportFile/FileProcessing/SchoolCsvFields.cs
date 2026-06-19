@@ -24,6 +24,8 @@ internal sealed record SchoolCsvFields
     public required string Town { get; init; }
     public required string County { get; init; }
     public required string Postcode { get; init; }
+    public required string Easting { get; init; }
+    public required string Northing { get; init; }
 
     public static SchoolCsvFields FromRow(SepReader.Row row)
     {
@@ -51,6 +53,8 @@ internal sealed record SchoolCsvFields
             Town = ParseString(row, "Town"),
             County = ParseString(row, "County (name)"),
             Postcode = ParseString(row, "Postcode"),
+            Easting = ParseString(row, "Easting"),
+            Northing = ParseString(row, "Northing"),
         };
     }
 

@@ -9,7 +9,7 @@ public sealed class SearchSchoolsQueryHandlerTests(
     public async Task GivenNameAndAddressMatches_WhenExecuteAsync_ThenRanksNameMatchAheadOfAddressOnlyMatch()
     {
         var nameMatch = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
             urn: 100010,
             establishmentNumber: 3010,
             name: "Amber Hill School",
@@ -20,7 +20,7 @@ public sealed class SearchSchoolsQueryHandlerTests(
             county: "North Yorkshire",
             postCode: "YO1 1AA");
         var addressOnlyMatch = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x20) /* 00000000-0000-0000-0000-000000000020 */,
             urn: 100020,
             establishmentNumber: 3020,
             name: "Northgate Primary",
@@ -33,10 +33,10 @@ public sealed class SearchSchoolsQueryHandlerTests(
 
         await SeedSchoolsAsync(addressOnlyMatch, nameMatch);
 
-        var handler = new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler(CreateDbContext());
+        var handler = new SearchSchoolsQueryHandler(CreateDbContext());
 
         var result = await handler.ExecuteAsync(
-            new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQuery("amber", PageSize: 10),
+            new SearchSchoolsQuery("amber", PageSize: 10),
             TestContext.Current.CancellationToken);
 
         Assert.Equal([nameMatch.Id, addressOnlyMatch.Id], [.. result.Schools.Select(x => x.Id)]);
@@ -47,7 +47,7 @@ public sealed class SearchSchoolsQueryHandlerTests(
     public async Task GivenAddressAndPostcodeMatches_WhenExecuteAsync_ThenReturnsMatchingSchools()
     {
         var addressMatch = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
             urn: 100010,
             establishmentNumber: 3010,
             name: "Northgate Primary",
@@ -58,7 +58,7 @@ public sealed class SearchSchoolsQueryHandlerTests(
             county: "West Yorkshire",
             postCode: "LS1 1AA");
         var postcodeMatch = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x20) /* 00000000-0000-0000-0000-000000000020 */,
             urn: 100020,
             establishmentNumber: 3020,
             name: "South Bank Academy",
@@ -69,7 +69,7 @@ public sealed class SearchSchoolsQueryHandlerTests(
             county: "East Yorkshire",
             postCode: "HU1 2BB");
         var nonMatch = CreateSchool(
-            id: Guid.Parse("00000000-0000-0000-0000-000000000030"),
+            id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x30) /* 00000000-0000-0000-0000-000000000030 */,
             urn: 100030,
             establishmentNumber: 3030,
             name: "Cedar Park School",
@@ -82,13 +82,13 @@ public sealed class SearchSchoolsQueryHandlerTests(
 
         await SeedSchoolsAsync(addressMatch, postcodeMatch, nonMatch);
 
-        var handler = new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler(CreateDbContext());
+        var handler = new SearchSchoolsQueryHandler(CreateDbContext());
 
         var addressResult = await handler.ExecuteAsync(
-            new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQuery("market street", PageSize: 10),
+            new SearchSchoolsQuery("market street", PageSize: 10),
             TestContext.Current.CancellationToken);
         var postcodeResult = await handler.ExecuteAsync(
-            new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQuery("hu12bb", PageSize: 10),
+            new SearchSchoolsQuery("hu12bb", PageSize: 10),
             TestContext.Current.CancellationToken);
 
         Assert.Equal([addressMatch.Id], [.. addressResult.Schools.Select(x => x.Id)]);
@@ -100,7 +100,7 @@ public sealed class SearchSchoolsQueryHandlerTests(
     {
         await SeedSchoolsAsync(
             CreateSchool(
-                id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+                id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
                 urn: 100010,
                 establishmentNumber: 3010,
                 name: "Amber Hill School",
@@ -111,10 +111,10 @@ public sealed class SearchSchoolsQueryHandlerTests(
                 county: "North Yorkshire",
                 postCode: "YO1 1AA"));
 
-        var handler = new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler(CreateDbContext());
+        var handler = new SearchSchoolsQueryHandler(CreateDbContext());
 
         var result = await handler.ExecuteAsync(
-            new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQuery("nomatchvalue", PageSize: 10),
+            new SearchSchoolsQuery("nomatchvalue", PageSize: 10),
             TestContext.Current.CancellationToken);
 
         Assert.Empty(result.Schools);
@@ -128,23 +128,23 @@ public sealed class SearchSchoolsQueryHandlerTests(
 
         await SeedSchoolsAsync(thirdSchool, firstSchool, secondSchool);
 
-        var handler = new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQueryHandler(CreateDbContext());
+        var handler = new SearchSchoolsQueryHandler(CreateDbContext());
 
         var firstPage = await handler.ExecuteAsync(
-            new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQuery("amber", PageSize: 2),
+            new SearchSchoolsQuery("amber", PageSize: 2),
             TestContext.Current.CancellationToken);
 
         Assert.Equal([firstSchool.Id, secondSchool.Id], [.. firstPage.Schools.Select(x => x.Id)]);
         Assert.NotNull(firstPage.NextCursor);
 
         Assert.True(
-            SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsCursor.TryDecode(
+            SearchSchoolsCursor.TryDecode(
                 firstPage.NextCursor,
                 "amber",
                 out _));
 
         var secondPage = await handler.ExecuteAsync(
-            new SummerBornInfo.Features.Schools.Queries.SearchSchools.SearchSchoolsQuery(
+            new SearchSchoolsQuery(
                 "amber",
                 Cursor: firstPage.NextCursor,
                 PageSize: 2),
@@ -159,7 +159,7 @@ public sealed class SearchSchoolsQueryHandlerTests(
     {
         return (
             CreateSchool(
-                id: Guid.Parse("00000000-0000-0000-0000-000000000010"),
+                id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10) /* 00000000-0000-0000-0000-000000000010 */,
                 urn: 100010,
                 establishmentNumber: 3010,
                 name: "Amber Alpha School",
@@ -170,7 +170,7 @@ public sealed class SearchSchoolsQueryHandlerTests(
                 county: "North Yorkshire",
                 postCode: "YO1 1AA"),
             CreateSchool(
-                id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+                id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x20) /* 00000000-0000-0000-0000-000000000020 */,
                 urn: 100020,
                 establishmentNumber: 3020,
                 name: "Amber Beta School",
@@ -181,7 +181,7 @@ public sealed class SearchSchoolsQueryHandlerTests(
                 county: "North Yorkshire",
                 postCode: "YO1 1AB"),
             CreateSchool(
-                id: Guid.Parse("00000000-0000-0000-0000-000000000030"),
+                id: new Guid(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x30) /* 00000000-0000-0000-0000-000000000030 */,
                 urn: 100030,
                 establishmentNumber: 3030,
                 name: "Amber Gamma School",

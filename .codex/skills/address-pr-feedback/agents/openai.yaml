@@ -1,0 +1,4 @@
+interface:
+  display_name: "Address PR Feedback"
+  short_description: "Resolve PR comments sequentially"
+  default_prompt: "Use $address-pr-feedback to retrieve PR comments, resolve them one at a time with a dedicated sub-agent, validate fixes, and post an AI-tagged reply when no change is needed."
