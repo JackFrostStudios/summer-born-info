@@ -25,6 +25,7 @@ builder.Services
 builder.Services.AddScoped<IDevelopmentAdminBootstrapper, DevelopmentAdminBootstrapper>();
 builder.Services.AddScoped<ModerateCsaApplicationReviewCommandHandler>();
 builder.Services.AddScoped<SubmitPublicCsaApplicationReviewCommandHandler>();
+builder.Services.AddScoped<SubmitPublicCsaApplicationReviewReportCommandHandler>();
 builder.Services.AddScoped<ImportSchoolsCommandHandler>();
 builder.Services.AddScoped<IProcessImportFileCommandHandler, ProcessImportFileCommandHandler>();
 builder.Services.AddScoped<GetAllSchoolsQueryHandler>();
