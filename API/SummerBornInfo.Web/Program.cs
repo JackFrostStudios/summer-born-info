@@ -23,6 +23,7 @@ builder.Services
         policy => policy.RequireRole(ApplicationRoleNames.Admin));
 
 builder.Services.AddScoped<IDevelopmentAdminBootstrapper, DevelopmentAdminBootstrapper>();
+builder.Services.AddScoped<GetAdminCsaApplicationReviewQueueQueryHandler>();
 builder.Services.AddScoped<ModerateCsaApplicationReviewCommandHandler>();
 builder.Services.AddScoped<SubmitPublicCsaApplicationReviewCommandHandler>();
 builder.Services.AddScoped<SubmitPublicCsaApplicationReviewReportCommandHandler>();

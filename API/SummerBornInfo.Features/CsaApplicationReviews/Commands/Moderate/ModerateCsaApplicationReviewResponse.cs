@@ -1,9 +1,9 @@
 namespace SummerBornInfo.Features.CsaApplicationReviews.Commands.Moderate;
 
 public sealed record ModerateCsaApplicationReviewResponse(
-    string Id,
+    Guid Id,
     string Status,
-    DateTime ModeratedAtUtc,
+    DateTimeOffset ModeratedAtUtc,
     string? ModeratorNote)
 {
     public const string ApprovedStatus = "approved";
