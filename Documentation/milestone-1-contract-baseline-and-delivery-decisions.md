@@ -110,7 +110,7 @@ Baseline rules:
 - `403 Forbidden` is used when a caller is authenticated but is not authorized for the admin operation.
 - `404 Not Found` is used when a requested school or review does not exist.
 - Valid school discovery requests that return no matches still return `200 OK` with an empty `schools` array.
-- `429 Too Many Requests` is reserved for later abuse-protection implementation and is not required to be implemented in Milestone 1.
+- `429 Too Many Requests` is implemented for the anonymous public review submission and report routes once Milestone 5 abuse controls are enabled.
 
 ## 5. Endpoint Inventory
 
@@ -473,6 +473,7 @@ Request body:
 | `name` | string | Yes | Submitter-provided name. Must not be blank. |
 | `applicationSuccessful` | boolean | Yes | Indicates whether the CSA application was successful. |
 | `comment` | string | Yes | Free-text review comment. Must not be blank. |
+| `botVerificationToken` | string | No | Bot-verification token for abuse-control enforcement when enabled. |
 
 Example request:
 
@@ -480,7 +481,8 @@ Example request:
 {
   "name": "Parent A",
   "applicationSuccessful": true,
-  "comment": "Our application was accepted after appeal and the school was responsive."
+  "comment": "Our application was accepted after appeal and the school was responsive.",
+  "botVerificationToken": "test-token"
 }
 ```
 
@@ -504,9 +506,13 @@ Validation and failure expectations:
 
 - Malformed request bodies return `400 Bad Request`.
 - Blank `name` returns `400 Bad Request`.
+- `name` longer than 200 characters returns `400 Bad Request`.
 - Missing `applicationSuccessful` returns `400 Bad Request`.
 - Blank `comment` returns `400 Bad Request`.
+- `comment` longer than 4000 characters returns `400 Bad Request`.
+- Failed bot verification returns `400 Bad Request`.
 - Unknown `schoolId` returns `404 Not Found`.
+- Anonymous callers that exceed the submission rate limit return `429 Too Many Requests`.
 
 Baseline notes:
 
@@ -536,7 +542,7 @@ Query parameters:
 | Name | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `cursor` | string | No | Continuation value from a previous response. Must not be blank when supplied. |
-| `limit` | integer | No | Optional positive result limit. If supplied, must be within the supported maximum. |
+| `pageSize` | integer | No | Optional positive result limit. Defaults to `20` and must be within the supported maximum. |
 
 Response:
 
@@ -544,18 +550,16 @@ Response:
 
 ```json
 {
-  "items": [
+  "reviews": [
     {
       "id": "rev_123",
-      "schoolId": "sch_123",
       "name": "Parent A",
       "applicationSuccessful": true,
       "comment": "Our application was accepted after appeal and the school was responsive.",
       "submittedAtUtc": "2026-05-21T10:30:00Z"
     }
   ],
-  "nextCursor": "eyJsYXN0UmV2aWV3SWQiOiJyZXZfMTIzIn0",
-  "hasMore": true
+  "nextCursor": "eyJ2IjoxLCJwYWdlU2l6ZSI6MjAsImxhc3RTdWJtaXR0ZWRBdFV0YyI6IjIwMjYtMDUtMjFUMTA6MzA6MDBaIiwibGFzdElkIjoicmV2XzEyMyJ9"
 }
 ```
 
@@ -563,8 +567,8 @@ Validation and failure expectations:
 
 - Unknown `schoolId` returns `404 Not Found`.
 - Blank or invalid `cursor` values return `400 Bad Request`.
-- Invalid `limit` values return `400 Bad Request`.
-- No public comments return `200 OK` with `"items": []`, `"nextCursor": null`, and `"hasMore": false`.
+- Invalid `pageSize` values return `400 Bad Request`.
+- No public comments return `200 OK` with `"reviews": []` and `"nextCursor": null`.
 
 Baseline notes:
 
@@ -595,13 +599,15 @@ Request body:
 | --- | --- | --- | --- |
 | `reason` | string | Yes | Initial baseline values are `spam`, `abusive`, `privacy`, or `other`. |
 | `details` | string | No | Optional supporting detail. Required when `reason` is `other`. |
+| `botVerificationToken` | string | No | Bot-verification token for abuse-control enforcement when enabled. |
 
 Example request:
 
 ```json
 {
   "reason": "spam",
-  "details": "Repeated promotional content."
+  "details": "Repeated promotional content.",
+  "botVerificationToken": "test-token"
 }
 ```
 
@@ -622,8 +628,11 @@ Validation and failure expectations:
 - Malformed request bodies return `400 Bad Request`.
 - Missing or unsupported `reason` returns `400 Bad Request`.
 - Blank `details` when `reason` is `other` returns `400 Bad Request`.
+- `details` longer than 1000 characters returns `400 Bad Request`.
+- Failed bot verification returns `400 Bad Request`.
 - Unknown `schoolId` returns `404 Not Found`.
 - Unknown `reviewId`, a review that does not belong to the supplied school, or a non-reportable review returns `404 Not Found`.
+- Anonymous callers that exceed the reporting rate limit return `429 Too Many Requests`.
 
 Baseline notes:
 
@@ -643,9 +652,49 @@ Allow an authenticated admin to discover reviews that require moderation.
 Authentication:
 Admin-only using ASP.NET Core Identity.
 
+Query parameters:
+
+| Name | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `queueState` | string | No | Optional queue-state filter. Supported values are `PendingApproval` and `PendingReapproval`, repeated or comma-separated. Defaults to both states. |
+| `cursor` | string | No | Opaque continuation token from a previous queue response. |
+| `pageSize` | integer | No | Optional positive result limit. Defaults to `25` and must be within the supported maximum. |
+
 Response:
 
-`200 OK` returns reviews whose moderation status is `pendingApproval` or `pendingReapproval`, together with the school summary, review content, report count, latest report timestamp, and paging metadata needed for triage.
+`200 OK`
+
+```json
+{
+  "reviews": [
+    {
+      "id": "rev_123",
+      "reviewerName": "Parent A",
+      "applicationSuccessful": true,
+      "comment": "Our application was accepted after appeal and the school was responsive.",
+      "status": "pendingApproval",
+      "submittedAtUtc": "2026-05-21T10:30:00Z",
+      "openReportCount": 1,
+      "postApprovalDistinctReportCount": 0,
+      "latestReportAtUtc": "2026-05-21T11:00:00Z",
+      "school": {
+        "id": "sch_123",
+        "urn": 100001,
+        "name": "Northbridge Primary"
+      },
+      "reports": [
+        {
+          "id": "rep_123",
+          "reason": "spam",
+          "details": "Repeated promotional content.",
+          "submittedAtUtc": "2026-05-21T11:00:00Z"
+        }
+      ]
+    }
+  ],
+  "nextCursor": "eyJ2IjoxLCJxdWV1ZVN0YXRlcyI6IlBlbmRpbmdBcHByb3ZhbCxQZW5kaW5nUmVhcHByb3ZhbCIsImxhc3RTdWJtaXR0ZWRBdFV0YyI6IjIwMjYtMDUtMjFUMTA6MzA6MDBaIiwibGFzdElkIjoicmV2XzEyMyJ9"
+}
+```
 
 Validation and failure expectations:
 
@@ -696,7 +745,7 @@ Response:
 
 ```json
 {
-  "reviewId": "rev_123",
+  "id": "rev_123",
   "status": "approved",
   "moderatedAtUtc": "2026-05-21T10:45:00Z",
   "moderatorNote": "Looks valid."
@@ -709,6 +758,7 @@ Validation and failure expectations:
 - Authenticated non-admin callers receive `403 Forbidden`.
 - Missing or unsupported `decision` returns `400 Bad Request`.
 - Unknown `reviewId` returns `404 Not Found`.
+- Reviews that are not currently in `pendingApproval` or `pendingReapproval` return `409 Conflict`.
 
 Baseline notes:
 
@@ -758,6 +808,7 @@ Baseline notes:
 - Public operations must clearly distinguish invalid input from valid-but-empty result sets.
 - Search and lookup operations must not silently fall back from one lookup mode to another.
 - School response objects must include `Id` even when the caller reached the resource by URN lookup.
+- Anonymous public review submission and reporting routes now document both abuse-control validation failures (`400`) and throttle failures (`429`).
 - Later generated OpenAPI output must preserve the same field names and required-field expectations defined here unless a later milestone deliberately revises the contract.
 - Contract-level auth expectations reference ASP.NET Core Identity, but Milestone 1 does not define bootstrap, persistence, seeding, or login endpoint details.
 

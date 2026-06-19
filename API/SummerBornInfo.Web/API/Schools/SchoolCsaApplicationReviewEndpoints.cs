@@ -10,9 +10,33 @@ public static class SchoolCsaApplicationReviewEndpoints
 
     public static RouteGroupBuilder MapPublicCsaApplicationReviewEndpoints(this RouteGroupBuilder builder)
     {
-        _ = builder.MapPost("/{schoolId:guid}/csa-application-reviews", SubmitReviewAsync);
-        _ = builder.MapGet("/{schoolId:guid}/csa-application-reviews", GetReviewsAsync);
-        _ = builder.MapPost("/{schoolId:guid}/csa-application-reviews/{reviewId:guid}/reports", SubmitReviewReportAsync);
+        _ = builder.MapPost("/{schoolId:guid}/csa-application-reviews", SubmitReviewAsync)
+            .WithName("SubmitPublicCsaApplicationReview")
+            .WithSummary("Submit a public CSA application review for a school.")
+            .WithDescription("Creates a publicly visible CSA application review. When anonymous bot verification is enabled, callers should supply botVerificationToken. Anonymous submission may return 429 when the route rate limit is exceeded.")
+            .Accepts<SubmitPublicCsaApplicationReviewRequest>("application/json")
+            .Produces<SubmitPublicCsaApplicationReviewResponse>(StatusCodes.Status201Created)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")
+            .Produces<ProblemDetails>(StatusCodes.Status429TooManyRequests, "application/problem+json");
+
+        _ = builder.MapGet("/{schoolId:guid}/csa-application-reviews", GetReviewsAsync)
+            .WithName("GetPublicCsaApplicationReviews")
+            .WithSummary("List publicly visible CSA application reviews for a school.")
+            .WithDescription("Returns publicly visible reviews in stable newest-first order with cursor pagination. Hidden moderation states are not exposed in this public response.")
+            .Produces<GetPublicCsaApplicationReviewsResponse>(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json");
+
+        _ = builder.MapPost("/{schoolId:guid}/csa-application-reviews/{reviewId:guid}/reports", SubmitReviewReportAsync)
+            .WithName("SubmitPublicCsaApplicationReviewReport")
+            .WithSummary("Report a publicly visible CSA application review.")
+            .WithDescription("Accepts a public report for a visible review. The first valid report against a newly visible review hides it, while an admin-approved review is hidden again after 10 further distinct reports. When anonymous bot verification is enabled, callers should supply botVerificationToken.")
+            .Accepts<SubmitPublicCsaApplicationReviewReportRequest>("application/json")
+            .Produces<SubmitPublicCsaApplicationReviewReportResponse>(StatusCodes.Status202Accepted)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")
+            .Produces<ProblemDetails>(StatusCodes.Status429TooManyRequests, "application/problem+json");
 
         return builder;
     }

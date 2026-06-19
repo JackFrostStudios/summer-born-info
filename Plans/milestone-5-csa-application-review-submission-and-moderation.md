@@ -206,7 +206,7 @@ Given an unauthenticated caller or an authenticated non-admin caller, when an ad
 4. [x] Implement public report submission, including first-report hide logic, distinct-reporter counting, and the reapproval threshold transition.
 5. [x] Replace the moderation placeholder with persistence-backed moderation and add the admin queue endpoint.
 6. [x] Add rate limiting and Turnstile-backed bot verification to the anonymous public routes, together with the non-production disable or mock path.
-7. Update OpenAPI-facing endpoint metadata, API reference documentation, and contract notes.
+7. [x] Update OpenAPI-facing endpoint metadata, API reference documentation, and contract notes.
 8. Run the relevant automated tests and close any query-ordering, duplicate-report, or moderation-state issues found during validation.
 
 ## 9. Risks and Mitigations

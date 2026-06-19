@@ -17,14 +17,27 @@ public static class AdminCsaApplicationReviewModerationEndpoints
 
     private static RouteGroupBuilder MapModerationQueue(this RouteGroupBuilder builder)
     {
-        _ = builder.MapGet(string.Empty, HandleGetQueueAsync);
+        _ = builder.MapGet(string.Empty, HandleGetQueueAsync)
+            .WithName("GetAdminCsaApplicationReviewModerationQueue")
+            .WithSummary("List CSA application reviews that require admin moderation.")
+            .WithDescription("Returns reviews in the moderation queue, including PendingApproval and PendingReapproval items, with queue filters and cursor pagination for moderator triage.")
+            .Produces<GetAdminCsaApplicationReviewQueueResponse>(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json");
 
         return builder;
     }
 
     private static RouteGroupBuilder MapModeration(this RouteGroupBuilder builder)
     {
-        _ = builder.MapPost("/{reviewId:guid}/moderation", HandleModerationAsync);
+        _ = builder.MapPost("/{reviewId:guid}/moderation", HandleModerationAsync)
+            .WithName("ModerateCsaApplicationReview")
+            .WithSummary("Approve or reject a queued CSA application review.")
+            .WithDescription("Accepts an admin moderation decision for a queued review. Approvals restore public visibility, while reapprovals also reset the post-approval distinct report counter.")
+            .Accepts<ModerateCsaApplicationReviewRequest>("application/json")
+            .Produces<ModerateCsaApplicationReviewResponse>(StatusCodes.Status200OK)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")
+            .Produces<ProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json");
 
         return builder;
     }
