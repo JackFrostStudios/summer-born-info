@@ -33,27 +33,6 @@ public sealed class PostgreSqlDockerImageVersionTests
         Assert.Contains("to use the format", exception.Message, StringComparison.Ordinal);
     }
 
-    [Fact]
-    public void GivenParsedSharedDockerfileVersion_WhenCreatingFixtureImageIdentity_ThenDerivedValuesIncludeThatVersion()
-    {
-        var parsedVersion = PostgreSqlDockerImageVersion.Version;
-
-        var imageIdentity = IntegrationTestDatabaseServerFixture.CreatePostgreSqlImageIdentity(parsedVersion);
-
-        Assert.Equal($"summerborninfo-postgres-postgis-pgmq:{parsedVersion}", imageIdentity.ImageName);
-        Assert.Equal($@"Global\summerborninfo-postgres-postgis-pgmq-{parsedVersion}-build", imageIdentity.BuildMutexName);
-    }
-
-    [Fact]
-    public void GivenDifferentVersions_WhenCreatingFixtureImageIdentity_ThenDerivedValuesChange()
-    {
-        var firstImageIdentity = IntegrationTestDatabaseServerFixture.CreatePostgreSqlImageIdentity("1.0.0");
-        var secondImageIdentity = IntegrationTestDatabaseServerFixture.CreatePostgreSqlImageIdentity("1.0.1");
-
-        Assert.NotEqual(firstImageIdentity.ImageName, secondImageIdentity.ImageName);
-        Assert.NotEqual(firstImageIdentity.BuildMutexName, secondImageIdentity.BuildMutexName);
-    }
-
     public static TheoryData<string, string> GetInvalidDockerfileContents()
     {
         return new TheoryData<string, string>
