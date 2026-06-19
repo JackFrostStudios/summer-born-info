@@ -13,6 +13,8 @@ global using SummerBornInfo.AppHost.ServiceDefaults;
 global using SummerBornInfo.CoordinateConversion;
 global using SummerBornInfo.Domain.Events;
 global using SummerBornInfo.Features.CsaApplicationReviews.Commands.Moderate;
+global using SummerBornInfo.Features.CsaApplicationReviews.Commands.SubmitPublicCsaApplicationReview;
+global using SummerBornInfo.Features.CsaApplicationReviews.Queries.GetPublicCsaApplicationReviews;
 global using SummerBornInfo.Features.Schools.Commands.Import;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile;
 global using SummerBornInfo.Features.Schools.Commands.ProcessImportFile.FileProcessing;

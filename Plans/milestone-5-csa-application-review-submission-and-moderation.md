@@ -202,7 +202,7 @@ Given an unauthenticated caller or an authenticated non-admin caller, when an ad
 
 1. [x] Update the Milestone 5 contract notes to reflect the confirmed Turnstile choice, visible-by-default submission behavior, first-report hide rule, 10-report reapproval threshold, and admin queue route.
 2. [x] Add the review and report domain model and infrastructure mapping.
-3. Implement public review submission and public review retrieval.
+3. [x] Implement public review submission and public review retrieval.
 4. Implement public report submission, including first-report hide logic, distinct-reporter counting, and the reapproval threshold transition.
 5. Replace the moderation placeholder with persistence-backed moderation and add the admin queue endpoint.
 6. Add rate limiting and Turnstile-backed bot verification to the anonymous public routes, together with the non-production disable or mock path.
