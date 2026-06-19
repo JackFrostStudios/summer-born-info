@@ -495,7 +495,7 @@ Response:
   "name": "Parent A",
   "applicationSuccessful": true,
   "comment": "Our application was accepted after appeal and the school was responsive.",
-  "status": "pendingModeration",
+  "status": "visible",
   "submittedAtUtc": "2026-05-21T10:30:00Z"
 }
 ```
@@ -512,7 +512,8 @@ Baseline notes:
 
 - The route carries the school association by `schoolId` so the body cannot drift from the target school.
 - Public submission is synchronous at contract level with `201 Created`.
-- Abuse protection is required later, but its mechanism is deferred.
+- Newly submitted reviews are publicly visible by default; they do not enter the moderation queue until reporting triggers a moderation transition.
+- Cloudflare Turnstile is the initial CAPTCHA provider for public review submission. Non-production environments may disable verification or substitute a local mock verifier so local development and automated end-to-end tests do not require the live service.
 
 ### 5.6 Public School Comment Retrieval
 
@@ -627,9 +628,37 @@ Validation and failure expectations:
 Baseline notes:
 
 - Reporting is public and separate from admin moderation actions.
-- The contract only fixes submission and acceptance behaviour; downstream moderation workflow remains flexible.
+- The first valid report against a visible review that has not previously been approved hides it immediately, changes its moderation status to `pendingApproval`, and places it in the admin queue.
+- After an admin approves a hidden reported review, it is visible again. It remains visible until 10 further distinct reporters have submitted valid reports since that approval; the 10th report hides it, changes its moderation status to `pendingReapproval`, and returns it to the admin queue.
+- Distinct reporters are determined using a best-effort anonymous reporter fingerprint because public user accounts are outside this milestone's scope.
+- Cloudflare Turnstile is the initial CAPTCHA provider for public reporting, with the same non-production disable or local-mock support as public review submission.
 
-### 5.8 Admin Review Moderation
+### 5.8 Admin Review Moderation Queue
+
+`GET /api/admin/csa-application-reviews`
+
+Purpose:
+Allow an authenticated admin to discover reviews that require moderation.
+
+Authentication:
+Admin-only using ASP.NET Core Identity.
+
+Response:
+
+`200 OK` returns reviews whose moderation status is `pendingApproval` or `pendingReapproval`, together with the school summary, review content, report count, latest report timestamp, and paging metadata needed for triage.
+
+Validation and failure expectations:
+
+- Unauthenticated callers receive `401 Unauthorized`.
+- Authenticated non-admin callers receive `403 Forbidden`.
+- Invalid queue filters, cursors, or page sizes return `400 Bad Request`.
+
+Baseline notes:
+
+- This route is the discovery surface for the moderation workflow; review decisions continue to use the moderation action route below.
+- The default queue contains both first-report `pendingApproval` reviews and threshold-triggered `pendingReapproval` reviews.
+
+### 5.9 Admin Review Moderation
 
 `POST /api/admin/csa-application-reviews/{reviewId}/moderation`
 
@@ -684,9 +713,10 @@ Validation and failure expectations:
 Baseline notes:
 
 - The baseline fixes approve or reject as the minimum moderation action set.
-- Richer moderation states remain a later decision.
+- Approving a `pendingApproval` or `pendingReapproval` review makes it publicly visible, resolves its open reports, and removes it from the moderation queue. Reapproving a `pendingReapproval` review also resets the post-approval report counter.
+- Rejecting either queued status keeps the review hidden, resolves its open reports, and removes it from the moderation queue.
 
-### 5.9 Admin School Import Trigger
+### 5.10 Admin School Import Trigger
 
 `POST /api/admin/school-imports`
 
@@ -741,9 +771,8 @@ The following decisions are intentionally not settled by this baseline and must 
 - maximum supported radius and handling for schools with missing location data;
 - exact URN format validation constraints beyond requiring an exact query identifier;
 - final length and content rules for `name` and `comment`;
-- richer moderation state transitions beyond `approve` and `reject`;
-- report reason taxonomy expansion, duplicate-report handling, reporter anonymity or storage design, and moderation workflow after report receipt;
-- rate limiting, CAPTCHA or equivalent bot protection, and related abuse-control implementation details;
+- report reason taxonomy expansion and the precise anonymous reporter-fingerprint implementation used for duplicate-report handling;
+- exact rate-limit policy values and Cloudflare Turnstile configuration details;
 - distribution workflow for generated OpenAPI outside the running API project once implementation is complete.
 
 ## 8. Downstream Milestone Inputs
@@ -774,9 +803,11 @@ The following decisions are intentionally not settled by this baseline and must 
 - Implement public review submission at `POST /api/schools/{schoolId}/csa-application-reviews` using the baseline `name`, `applicationSuccessful`, and `comment` fields.
 - Implement public comment retrieval at `GET /api/schools/{schoolId}/csa-application-reviews`, returning only publicly visible comments.
 - Implement public comment reporting at `POST /api/schools/{schoolId}/csa-application-reviews/{reviewId}/reports`.
-- Implement admin moderation using the baseline moderation endpoint and minimum decision set.
+- Make new reviews visible by default, hide them on the first valid report as `pendingApproval`, and hide an admin-approved review again as `pendingReapproval` after 10 further distinct reporters.
+- Implement the admin moderation queue at `GET /api/admin/csa-application-reviews` and moderation decisions using the baseline moderation endpoint and minimum decision set.
+- Use Cloudflare Turnstile for public submission and reporting, with verification disabled or locally mocked in non-production environments.
 - Validate school and review mismatch cases plus invalid report payload failure paths.
-- Add abuse-control measures without breaking the baseline request and response surface unless a deliberate contract revision is approved.
+- Add rate limiting without breaking the baseline request and response surface unless a deliberate contract revision is approved.
 
 ### Milestone 6: Contract Stabilization for UI Handoff
 
