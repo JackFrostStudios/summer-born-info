@@ -16,7 +16,15 @@ public sealed class CustomWebApplicationFactory(
     {
         _ = builder.ConfigureAppConfiguration((context, configurationBuilder) =>
         {
-            var testConfigurationValues = new Dictionary<string, string?>(configurationValues, StringComparer.Ordinal);
+            var testConfigurationValues = new Dictionary<string, string?>(StringComparer.Ordinal)
+            {
+                ["AbuseControls:BotVerification:Mode"] = "Disabled",
+            };
+
+            foreach (var pair in configurationValues)
+            {
+                testConfigurationValues[pair.Key] = pair.Value;
+            }
 
             _ = configurationBuilder.AddInMemoryCollection(testConfigurationValues);
         });

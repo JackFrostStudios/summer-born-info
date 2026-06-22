@@ -20,14 +20,15 @@ public sealed class OpenApiSecurityDocumentTests(
     }
 
     [Theory]
-    [InlineData("/api/admin/school-imports")]
-    [InlineData("/api/admin/csa-application-reviews/{reviewId}/moderation")]
-    public async Task GivenProtectedAdminOperation_WhenFetchedFromOpenApi_ThenSecurityAndErrorResponsesArePresent(string path)
+    [InlineData("/api/admin/school-imports", "post")]
+    [InlineData("/api/admin/csa-application-reviews", "get")]
+    [InlineData("/api/admin/csa-application-reviews/{reviewId}/moderation", "post")]
+    public async Task GivenProtectedAdminOperation_WhenFetchedFromOpenApi_ThenSecurityAndErrorResponsesArePresent(string path, string method)
     {
         using var document = await GetOpenApiDocumentAsync();
-        var postOperation = GetPostOperation(document, path);
+        var operation = GetOperation(document, path, method);
 
-        Assert.True(postOperation.TryGetProperty("security", out var security));
+        Assert.True(operation.TryGetProperty("security", out var security));
         Assert.Contains(
             security.EnumerateArray(),
             requirement => requirement.TryGetProperty(
@@ -35,7 +36,7 @@ public sealed class OpenApiSecurityDocumentTests(
                 out var scopes)
                 && scopes.ValueKind == JsonValueKind.Array);
 
-        var responses = postOperation.GetProperty("responses");
+        var responses = operation.GetProperty("responses");
         Assert.True(responses.TryGetProperty("401", out _));
         Assert.True(responses.TryGetProperty("403", out _));
     }
@@ -64,9 +65,14 @@ public sealed class OpenApiSecurityDocumentTests(
 
     private static JsonElement GetPostOperation(JsonDocument document, string path)
     {
+        return GetOperation(document, path, "post");
+    }
+
+    private static JsonElement GetOperation(JsonDocument document, string path, string method)
+    {
         return document.RootElement
             .GetProperty("paths")
             .GetProperty(path)
-            .GetProperty("post");
+            .GetProperty(method);
     }
 }

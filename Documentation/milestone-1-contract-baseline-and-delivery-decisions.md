@@ -110,7 +110,7 @@ Baseline rules:
 - `403 Forbidden` is used when a caller is authenticated but is not authorized for the admin operation.
 - `404 Not Found` is used when a requested school or review does not exist.
 - Valid school discovery requests that return no matches still return `200 OK` with an empty `schools` array.
-- `429 Too Many Requests` is reserved for later abuse-protection implementation and is not required to be implemented in Milestone 1.
+- `429 Too Many Requests` is implemented for the anonymous public review submission and report routes once Milestone 5 abuse controls are enabled.
 
 ## 5. Endpoint Inventory
 
@@ -473,6 +473,7 @@ Request body:
 | `name` | string | Yes | Submitter-provided name. Must not be blank. |
 | `applicationSuccessful` | boolean | Yes | Indicates whether the CSA application was successful. |
 | `comment` | string | Yes | Free-text review comment. Must not be blank. |
+| `botVerificationToken` | string | No | Bot-verification token for abuse-control enforcement when enabled. |
 
 Example request:
 
@@ -480,7 +481,8 @@ Example request:
 {
   "name": "Parent A",
   "applicationSuccessful": true,
-  "comment": "Our application was accepted after appeal and the school was responsive."
+  "comment": "Our application was accepted after appeal and the school was responsive.",
+  "botVerificationToken": "test-token"
 }
 ```
 
@@ -495,7 +497,7 @@ Response:
   "name": "Parent A",
   "applicationSuccessful": true,
   "comment": "Our application was accepted after appeal and the school was responsive.",
-  "status": "pendingModeration",
+  "status": "visible",
   "submittedAtUtc": "2026-05-21T10:30:00Z"
 }
 ```
@@ -504,15 +506,20 @@ Validation and failure expectations:
 
 - Malformed request bodies return `400 Bad Request`.
 - Blank `name` returns `400 Bad Request`.
+- `name` longer than 200 characters returns `400 Bad Request`.
 - Missing `applicationSuccessful` returns `400 Bad Request`.
 - Blank `comment` returns `400 Bad Request`.
+- `comment` longer than 4000 characters returns `400 Bad Request`.
+- Failed bot verification returns `400 Bad Request`.
 - Unknown `schoolId` returns `404 Not Found`.
+- Anonymous callers that exceed the submission rate limit return `429 Too Many Requests`.
 
 Baseline notes:
 
 - The route carries the school association by `schoolId` so the body cannot drift from the target school.
 - Public submission is synchronous at contract level with `201 Created`.
-- Abuse protection is required later, but its mechanism is deferred.
+- Newly submitted reviews are publicly visible by default; they do not enter the moderation queue until reporting triggers a moderation transition.
+- Cloudflare Turnstile is the initial CAPTCHA provider for public review submission. Non-production environments may disable verification or substitute a local mock verifier so local development and automated end-to-end tests do not require the live service.
 
 ### 5.6 Public School Comment Retrieval
 
@@ -535,7 +542,7 @@ Query parameters:
 | Name | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `cursor` | string | No | Continuation value from a previous response. Must not be blank when supplied. |
-| `limit` | integer | No | Optional positive result limit. If supplied, must be within the supported maximum. |
+| `pageSize` | integer | No | Optional positive result limit. Defaults to `20` and must be within the supported maximum. |
 
 Response:
 
@@ -543,18 +550,16 @@ Response:
 
 ```json
 {
-  "items": [
+  "reviews": [
     {
       "id": "rev_123",
-      "schoolId": "sch_123",
       "name": "Parent A",
       "applicationSuccessful": true,
       "comment": "Our application was accepted after appeal and the school was responsive.",
       "submittedAtUtc": "2026-05-21T10:30:00Z"
     }
   ],
-  "nextCursor": "eyJsYXN0UmV2aWV3SWQiOiJyZXZfMTIzIn0",
-  "hasMore": true
+  "nextCursor": "eyJ2IjoxLCJwYWdlU2l6ZSI6MjAsImxhc3RTdWJtaXR0ZWRBdFV0YyI6IjIwMjYtMDUtMjFUMTA6MzA6MDBaIiwibGFzdElkIjoicmV2XzEyMyJ9"
 }
 ```
 
@@ -562,8 +567,8 @@ Validation and failure expectations:
 
 - Unknown `schoolId` returns `404 Not Found`.
 - Blank or invalid `cursor` values return `400 Bad Request`.
-- Invalid `limit` values return `400 Bad Request`.
-- No public comments return `200 OK` with `"items": []`, `"nextCursor": null`, and `"hasMore": false`.
+- Invalid `pageSize` values return `400 Bad Request`.
+- No public comments return `200 OK` with `"reviews": []` and `"nextCursor": null`.
 
 Baseline notes:
 
@@ -594,13 +599,15 @@ Request body:
 | --- | --- | --- | --- |
 | `reason` | string | Yes | Initial baseline values are `spam`, `abusive`, `privacy`, or `other`. |
 | `details` | string | No | Optional supporting detail. Required when `reason` is `other`. |
+| `botVerificationToken` | string | No | Bot-verification token for abuse-control enforcement when enabled. |
 
 Example request:
 
 ```json
 {
   "reason": "spam",
-  "details": "Repeated promotional content."
+  "details": "Repeated promotional content.",
+  "botVerificationToken": "test-token"
 }
 ```
 
@@ -621,15 +628,86 @@ Validation and failure expectations:
 - Malformed request bodies return `400 Bad Request`.
 - Missing or unsupported `reason` returns `400 Bad Request`.
 - Blank `details` when `reason` is `other` returns `400 Bad Request`.
+- `details` longer than 1000 characters returns `400 Bad Request`.
+- Failed bot verification returns `400 Bad Request`.
 - Unknown `schoolId` returns `404 Not Found`.
 - Unknown `reviewId`, a review that does not belong to the supplied school, or a non-reportable review returns `404 Not Found`.
+- Anonymous callers that exceed the reporting rate limit return `429 Too Many Requests`.
 
 Baseline notes:
 
 - Reporting is public and separate from admin moderation actions.
-- The contract only fixes submission and acceptance behaviour; downstream moderation workflow remains flexible.
+- The first valid report against a visible review that has not previously been approved hides it immediately, changes its moderation status to `pendingApproval`, and places it in the admin queue.
+- After an admin approves a hidden reported review, it is visible again. It remains visible until 10 further distinct reporters have submitted valid reports since that approval; the 10th report hides it, changes its moderation status to `pendingReapproval`, and returns it to the admin queue.
+- Distinct reporters are determined using a best-effort anonymous reporter fingerprint because public user accounts are outside this milestone's scope.
+- Cloudflare Turnstile is the initial CAPTCHA provider for public reporting, with the same non-production disable or local-mock support as public review submission.
 
-### 5.8 Admin Review Moderation
+### 5.8 Admin Review Moderation Queue
+
+`GET /api/admin/csa-application-reviews`
+
+Purpose:
+Allow an authenticated admin to discover reviews that require moderation.
+
+Authentication:
+Admin-only using ASP.NET Core Identity.
+
+Query parameters:
+
+| Name | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `queueState` | string | No | Optional queue-state filter. Supported values are `PendingApproval` and `PendingReapproval`, repeated or comma-separated. Defaults to both states. |
+| `cursor` | string | No | Opaque continuation token from a previous queue response. |
+| `pageSize` | integer | No | Optional positive result limit. Defaults to `25` and must be within the supported maximum. |
+
+Response:
+
+`200 OK`
+
+```json
+{
+  "reviews": [
+    {
+      "id": "rev_123",
+      "reviewerName": "Parent A",
+      "applicationSuccessful": true,
+      "comment": "Our application was accepted after appeal and the school was responsive.",
+      "status": "pendingApproval",
+      "submittedAtUtc": "2026-05-21T10:30:00Z",
+      "openReportCount": 1,
+      "postApprovalDistinctReportCount": 0,
+      "latestReportAtUtc": "2026-05-21T11:00:00Z",
+      "school": {
+        "id": "sch_123",
+        "urn": 100001,
+        "name": "Northbridge Primary"
+      },
+      "reports": [
+        {
+          "id": "rep_123",
+          "reason": "spam",
+          "details": "Repeated promotional content.",
+          "submittedAtUtc": "2026-05-21T11:00:00Z"
+        }
+      ]
+    }
+  ],
+  "nextCursor": "eyJ2IjoxLCJxdWV1ZVN0YXRlcyI6IlBlbmRpbmdBcHByb3ZhbCxQZW5kaW5nUmVhcHByb3ZhbCIsImxhc3RTdWJtaXR0ZWRBdFV0YyI6IjIwMjYtMDUtMjFUMTA6MzA6MDBaIiwibGFzdElkIjoicmV2XzEyMyJ9"
+}
+```
+
+Validation and failure expectations:
+
+- Unauthenticated callers receive `401 Unauthorized`.
+- Authenticated non-admin callers receive `403 Forbidden`.
+- Invalid queue filters, cursors, or page sizes return `400 Bad Request`.
+
+Baseline notes:
+
+- This route is the discovery surface for the moderation workflow; review decisions continue to use the moderation action route below.
+- The default queue contains both first-report `pendingApproval` reviews and threshold-triggered `pendingReapproval` reviews.
+
+### 5.9 Admin Review Moderation
 
 `POST /api/admin/csa-application-reviews/{reviewId}/moderation`
 
@@ -667,7 +745,7 @@ Response:
 
 ```json
 {
-  "reviewId": "rev_123",
+  "id": "rev_123",
   "status": "approved",
   "moderatedAtUtc": "2026-05-21T10:45:00Z",
   "moderatorNote": "Looks valid."
@@ -680,13 +758,15 @@ Validation and failure expectations:
 - Authenticated non-admin callers receive `403 Forbidden`.
 - Missing or unsupported `decision` returns `400 Bad Request`.
 - Unknown `reviewId` returns `404 Not Found`.
+- Reviews that are not currently in `pendingApproval` or `pendingReapproval` return `409 Conflict`.
 
 Baseline notes:
 
 - The baseline fixes approve or reject as the minimum moderation action set.
-- Richer moderation states remain a later decision.
+- Approving a `pendingApproval` or `pendingReapproval` review makes it publicly visible, resolves its open reports, and removes it from the moderation queue. Reapproving a `pendingReapproval` review also resets the post-approval report counter.
+- Rejecting either queued status keeps the review hidden, resolves its open reports, and removes it from the moderation queue.
 
-### 5.9 Admin School Import Trigger
+### 5.10 Admin School Import Trigger
 
 `POST /api/admin/school-imports`
 
@@ -728,6 +808,7 @@ Baseline notes:
 - Public operations must clearly distinguish invalid input from valid-but-empty result sets.
 - Search and lookup operations must not silently fall back from one lookup mode to another.
 - School response objects must include `Id` even when the caller reached the resource by URN lookup.
+- Anonymous public review submission and reporting routes now document both abuse-control validation failures (`400`) and throttle failures (`429`).
 - Later generated OpenAPI output must preserve the same field names and required-field expectations defined here unless a later milestone deliberately revises the contract.
 - Contract-level auth expectations reference ASP.NET Core Identity, but Milestone 1 does not define bootstrap, persistence, seeding, or login endpoint details.
 
@@ -741,9 +822,8 @@ The following decisions are intentionally not settled by this baseline and must 
 - maximum supported radius and handling for schools with missing location data;
 - exact URN format validation constraints beyond requiring an exact query identifier;
 - final length and content rules for `name` and `comment`;
-- richer moderation state transitions beyond `approve` and `reject`;
-- report reason taxonomy expansion, duplicate-report handling, reporter anonymity or storage design, and moderation workflow after report receipt;
-- rate limiting, CAPTCHA or equivalent bot protection, and related abuse-control implementation details;
+- report reason taxonomy expansion and the precise anonymous reporter-fingerprint implementation used for duplicate-report handling;
+- exact rate-limit policy values and Cloudflare Turnstile configuration details;
 - distribution workflow for generated OpenAPI outside the running API project once implementation is complete.
 
 ## 8. Downstream Milestone Inputs
@@ -774,9 +854,11 @@ The following decisions are intentionally not settled by this baseline and must 
 - Implement public review submission at `POST /api/schools/{schoolId}/csa-application-reviews` using the baseline `name`, `applicationSuccessful`, and `comment` fields.
 - Implement public comment retrieval at `GET /api/schools/{schoolId}/csa-application-reviews`, returning only publicly visible comments.
 - Implement public comment reporting at `POST /api/schools/{schoolId}/csa-application-reviews/{reviewId}/reports`.
-- Implement admin moderation using the baseline moderation endpoint and minimum decision set.
+- Make new reviews visible by default, hide them on the first valid report as `pendingApproval`, and hide an admin-approved review again as `pendingReapproval` after 10 further distinct reporters.
+- Implement the admin moderation queue at `GET /api/admin/csa-application-reviews` and moderation decisions using the baseline moderation endpoint and minimum decision set.
+- Use Cloudflare Turnstile for public submission and reporting, with verification disabled or locally mocked in non-production environments.
 - Validate school and review mismatch cases plus invalid report payload failure paths.
-- Add abuse-control measures without breaking the baseline request and response surface unless a deliberate contract revision is approved.
+- Add rate limiting without breaking the baseline request and response surface unless a deliberate contract revision is approved.
 
 ### Milestone 6: Contract Stabilization for UI Handoff
 

@@ -10,6 +10,7 @@ public static class SchoolEndpoints
         var schools = endpoints.MapGroup("/api/schools");
 
         _ = schools.MapGetAllSchools()
+            .MapPublicCsaApplicationReviewEndpoints()
             .MapGetNearbySchools()
             .MapSearchSchools();
     }

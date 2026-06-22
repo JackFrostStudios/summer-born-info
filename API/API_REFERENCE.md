@@ -84,6 +84,90 @@ Nearby search uses PostgreSQL `PostGIS` together with EF Core `NetTopologySuite`
 - Radius filtering and distance ordering run in PostgreSQL rather than in application memory, which keeps the nearby route aligned with the repository's PostgreSQL-first search approach.
 - Schools without a persisted canonical location are intentionally excluded from nearby results instead of being assigned guessed coordinates at query time.
 
+## CSA Application Reviews
+
+The public CSA Application Review surface also lives under `/api/schools`:
+
+- `POST /api/schools/{schoolId}/csa-application-reviews`
+- `GET /api/schools/{schoolId}/csa-application-reviews`
+- `POST /api/schools/{schoolId}/csa-application-reviews/{reviewId}/reports`
+
+Public review submission is visible by default. Reviews enter moderation only after reporting:
+
+- the first valid report against a visible review that has not been admin-approved hides it immediately and moves it to `pendingApproval`;
+- if an admin approves that hidden review, it becomes visible again;
+- after reapproval, the review stays visible until 10 further distinct reporters submit valid reports, at which point it is hidden again and moves to `pendingReapproval`.
+
+Distinct reporters are counted with a best-effort anonymous fingerprint rather than an authenticated user id.
+
+### `POST /api/schools/{schoolId}/csa-application-reviews`
+
+Successful responses return `201 Created` with the persisted review payload:
+
+```json
+{
+  "id": "00000000-0000-0000-0000-000000000101",
+  "schoolId": "00000000-0000-0000-0000-000000000001",
+  "name": "Parent A",
+  "applicationSuccessful": true,
+  "comment": "Our application was accepted after appeal and the school was responsive.",
+  "status": "visible",
+  "submittedAtUtc": "2026-05-21T10:30:00Z"
+}
+```
+
+- `name` is required and limited to 200 characters after trimming.
+- `applicationSuccessful` is required.
+- `comment` is required and limited to 4000 characters after trimming.
+- `botVerificationToken` is accepted on the request body and is used when anonymous bot verification is enabled.
+- Unknown schools return `404 Not Found`.
+- Invalid payloads or failed bot verification return `400 Bad Request` with validation details.
+- Anonymous submission is rate-limited and can return `429 Too Many Requests`.
+
+### `GET /api/schools/{schoolId}/csa-application-reviews`
+
+Successful responses return only publicly visible reviews, newest first, with cursor pagination:
+
+```json
+{
+  "reviews": [
+    {
+      "id": "00000000-0000-0000-0000-000000000101",
+      "name": "Parent A",
+      "applicationSuccessful": true,
+      "comment": "Our application was accepted after appeal and the school was responsive.",
+      "submittedAtUtc": "2026-05-21T10:30:00Z"
+    }
+  ],
+  "nextCursor": "eyJ2IjoxLCJwYWdlU2l6ZSI6MjAsImxhc3RTdWJtaXR0ZWRBdFV0YyI6IjIwMjYtMDUtMjFUMTA6MzA6MDBaIiwibGFzdElkIjoiMDAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMTAxIn0"
+}
+```
+
+- `pageSize` is optional, defaults to `20`, and is capped at `200`.
+- `cursor`, when present, must be the opaque `nextCursor` from an earlier response generated with the same effective page size.
+- Hidden reviews in `pendingApproval`, `pendingReapproval`, or `rejected` state are excluded from the public list.
+- Unknown schools return `404 Not Found`.
+- Invalid cursors or page sizes return `400 Bad Request`.
+
+### `POST /api/schools/{schoolId}/csa-application-reviews/{reviewId}/reports`
+
+Successful responses return `202 Accepted`:
+
+```json
+{
+  "id": "00000000-0000-0000-0000-000000000101",
+  "status": "reportAccepted",
+  "reportedAtUtc": "2026-05-21T11:00:00Z"
+}
+```
+
+- `reason` is required and must be one of `spam`, `abusive`, `privacy`, or `other`.
+- `details` is required for `reason = other` and is otherwise optional up to 1000 characters.
+- `botVerificationToken` is accepted on the request body and is used when anonymous bot verification is enabled.
+- Unknown schools, unknown reviews, school and review mismatches, and attempts to report hidden reviews return `404 Not Found`.
+- Invalid payloads or failed bot verification return `400 Bad Request` with validation details.
+- Anonymous reporting is rate-limited and can return `429 Too Many Requests`.
+
 ## Admin Authentication And Bootstrap
 
 The supported admin auth contract is intentionally limited to project-specific endpoints under `/api/admin/auth/*`:
@@ -96,9 +180,17 @@ The sign-in endpoint accepts an email/password payload, validates that the user 
 Protected admin operations remain under `/api/admin`, including:
 
 - `POST /api/admin/school-imports`
+- `GET /api/admin/csa-application-reviews`
 - `POST /api/admin/csa-application-reviews/{reviewId}/moderation`
 
-The moderation route is intentionally only a protected contract shell at this stage. The deeper moderation business workflow remains deferred.
+The review moderation workflow is now fully implemented behind those admin routes:
+
+- `GET /api/admin/csa-application-reviews` returns queued `pendingApproval` and `pendingReapproval` reviews by default, with optional `queueState`, `cursor`, and `pageSize` query parameters;
+- queue items include the school summary, review content, current status, open report count, post-approval distinct report count, latest report timestamp, and the open report list needed for moderator triage;
+- `POST /api/admin/csa-application-reviews/{reviewId}/moderation` accepts `approve` or `reject` decisions;
+- approving a queued review restores public visibility, resolves open reports, and resets the post-approval distinct report counter only when the review was in `pendingReapproval`;
+- rejecting a queued review keeps it hidden and resolves open reports;
+- admin queue and moderation routes return `401 Unauthorized` for unauthenticated callers and `403 Forbidden` for authenticated non-admin callers.
 
 ### Local development bootstrap
 
