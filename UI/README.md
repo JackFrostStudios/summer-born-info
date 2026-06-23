@@ -1,59 +1,86 @@
-# SummerBornInfo
+# UI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.3.
+This folder contains the Summer Born Information Angular frontend application.
 
-## Development server
+## Project Aims
 
-To start a local development server, run:
+The UI is the browser-facing surface for the Summer Born Information platform.
 
-```bash
-ng serve
-```
+- Present user journeys for parents and guardians.
+- Consume backend API capabilities once those contracts are wired into the frontend.
+- Provide a clear place for future client-side routing, state, styling, and accessibility work.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Prerequisites
 
-## Code scaffolding
+- Node.js 20 or later
+- npm 11.x (the project is pinned to `npm@11.1.0` in `package.json`)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Install
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Run from the `UI` folder:
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
+## Run Locally
 
-To build the project run:
+Start the Angular development server from the `UI` folder:
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+This runs `ng serve` with the development configuration from `angular.json`. By default the app is available at `http://localhost:4200/`.
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+To run the generated SSR output after a build:
 
 ```bash
-ng test
+npm run serve:ssr:summer-born-info
 ```
 
-## Running end-to-end tests
+Run that only after `npm run build`, because it serves the built server bundle from `dist/summer-born-info/server/`.
 
-For end-to-end (e2e) testing, run:
+## Build
+
+Create a production build:
 
 ```bash
-ng e2e
+npm run build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+For an incremental development build:
 
-## Additional Resources
+```bash
+npm run watch
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The current Angular build uses the application builder and produces browser and server output in `dist/summer-born-info/`.
+
+## Test
+
+Run unit tests from the `UI` folder:
+
+```bash
+npm test
+```
+
+The current test target is Angular's unit-test builder and the project currently includes scaffold-level component tests only.
+
+## Current API Relationship
+
+The UI and API live in the same repository, but they are not yet wired into a documented end-to-end local startup flow.
+
+- There is no shared root command that starts both services together.
+- The UI does not yet define a repository-standard API client, proxy, or environment-based backend URL convention.
+- Treat current frontend-to-backend integration as a gap to be implemented explicitly when UI features begin consuming live API endpoints.
+
+Until that wiring exists, document and build UI changes as a standalone Angular application and describe any new API assumptions in the related plan or feature change.
+
+## Architecture And Workflow Guidance
+
+Keep this README focused on setup and commands. Use the deeper UI guidance files when you need structure or delivery rules:
+
+- [AGENTS.md](./AGENTS.md) for UI workflow expectations and coding guidance.
+- [AI_PROJECT_GUIDE.md](./AI_PROJECT_GUIDE.md) for UI structure, file ownership, and testing/layout conventions.
+- [../AI_PROJECT_GUIDE.md](../AI_PROJECT_GUIDE.md) for top-level repository boundaries.

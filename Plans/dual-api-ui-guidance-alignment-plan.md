@@ -180,10 +180,10 @@ Then it should distinguish API and UI paths, conventions, and verification appro
 
 - [x] Root `README.md` describes the repository as API + UI and links to both child READMEs.
 - [x] Root `AGENTS.md` routes UI work to `UI/AGENTS.md`.
-- [ ] `UI/README.md` is rewritten from Angular boilerplate into project-specific contributor guidance.
-- [ ] `UI/AGENTS.md` combines repo workflow expectations with Angular-specific coding guidance.
+- [x] `UI/README.md` is rewritten from Angular boilerplate into project-specific contributor guidance.
+- [x] `UI/AGENTS.md` combines repo workflow expectations with Angular-specific coding guidance.
 - [x] Root `AI_PROJECT_GUIDE.md` exists and describes top-level repository boundaries.
-- [ ] `UI/AI_PROJECT_GUIDE.md` exists if needed for canonical UI structure guidance.
+- [x] `UI/AI_PROJECT_GUIDE.md` exists if needed for canonical UI structure guidance.
 - [x] `API/AI_PROJECT_GUIDE.md` remains accurate and linked from the correct places.
 - [ ] Project-local skills that currently assume API-only structure are updated.
 - [ ] Cross-links between README, AGENTS, project guides, and skills are valid and internally consistent.
