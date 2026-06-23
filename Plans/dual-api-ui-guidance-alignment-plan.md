@@ -187,4 +187,4 @@ Then it should distinguish API and UI paths, conventions, and verification appro
 - [x] `API/AI_PROJECT_GUIDE.md` remains accurate and linked from the correct places.
 - [x] Project-local skills that currently assume API-only structure are updated.
 - [x] Cross-links between README, AGENTS, project guides, and skills are valid and internally consistent.
-- [ ] Final review confirms the repository guidance is lean at the root and detailed in child folders.
+- [x] Final review confirms the repository guidance is lean at the root and detailed in child folders.

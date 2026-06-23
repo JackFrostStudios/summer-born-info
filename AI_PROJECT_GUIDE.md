@@ -23,6 +23,7 @@ This file is the canonical top-level map for the repository. Use it to decide wh
 - API structure and conventions: [API/AI_PROJECT_GUIDE.md](./API/AI_PROJECT_GUIDE.md)
 - API setup and run/test guidance: [API/README.md](./API/README.md)
 - UI workflow and coding guidance: [UI/AGENTS.md](./UI/AGENTS.md)
+- UI structure and conventions: [UI/AI_PROJECT_GUIDE.md](./UI/AI_PROJECT_GUIDE.md)
 - UI setup and run/test guidance: [UI/README.md](./UI/README.md)
 
 ## Routing rule

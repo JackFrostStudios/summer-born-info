@@ -12,7 +12,7 @@ The UI is the browser-facing surface for the Summer Born Information platform.
 
 ## Prerequisites
 
-- Node.js 20 or later
+- Node.js supported by the current Angular 22 toolchain. At the time of writing, Angular 22.0.x supports `^22.22.3 || ^24.15.0 || ^26.0.0`.
 - npm 11.x (the project is pinned to `npm@11.1.0` in `package.json`)
 
 ## Install
