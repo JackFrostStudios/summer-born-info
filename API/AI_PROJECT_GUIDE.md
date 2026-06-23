@@ -1,6 +1,6 @@
 # AI Project Guide
 
-This document is the compact source of truth for the repository layout and the conventions that AI helpers should assume.
+This document covers API-internal structure and conventions. For top-level repository boundaries and API-vs-UI routing, start with [../AI_PROJECT_GUIDE.md](../AI_PROJECT_GUIDE.md).
 
 ## Solution Layout
 
