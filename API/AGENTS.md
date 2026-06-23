@@ -5,8 +5,8 @@ Provide the smallest amount of context that still leads to a good decision.
 
 ## Delegation
 
-- Use the `architect` sub-agent for code layout, feature placement, and project pattern questions.
-- Use the `automated-test-developer` sub-agent for test design and implementation.
+- Use the `api-architect` sub-agent for code layout, feature placement, and project pattern questions inside `API/`.
+- Use the `api-automated-test-developer` sub-agent for test design and implementation inside `API/`.
 
 ## Delivery Rules
 

@@ -79,8 +79,8 @@ For every plan step:
    - The minimum relevant files and constraints
    - The delivery instructions needed for that step
    - These additional instructions:
-     - Use the `architect` skill to design the implementation.
-     - Use the `automated-test-developer` skill to write tests.
+     - Use the surface-specific architect skill for the step (`api-architect` for `API/` work or `ui-architect` for `UI/` work).
+     - Use the surface-specific automated test skill for the step (`api-automated-test-developer` for `API/` work or `ui-automated-test-developer` for `UI/` work).
      - Before handoff, ensure the build and tests are passing.
 3. Require the sub-agent to report:
    - What it changed
@@ -150,8 +150,8 @@ Relevant context:
 <files, constraints, behaviour notes>
 
 Requirements:
-- Use the architect skill to design the implementation.
-- Use the automated-test-developer skill to write tests.
+- Use the surface-specific architect skill to design the implementation.
+- Use the surface-specific automated test skill to write tests.
 - Before handoff, ensure build and tests are passing.
 - Return a concise summary of changes, tests, validation, and any residual risks.
 ```

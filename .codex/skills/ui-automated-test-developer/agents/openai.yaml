@@ -1,0 +1,7 @@
+interface:
+  display_name: "UI Automated Test Developer"
+  short_description: "Angular and Vitest UI testing"
+  default_prompt: "Use $ui-automated-test-developer to write UI tests that follow the project's current Angular and Vitest patterns."
+
+policy:
+  allow_implicit_invocation: true

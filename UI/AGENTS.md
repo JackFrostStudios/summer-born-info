@@ -2,6 +2,11 @@
 
 Use this file when the requested change belongs to the Angular UI in `UI/`.
 
+## Delegation
+
+- Use the `ui-architect` sub-agent for UI code layout, feature placement, and project pattern questions inside `UI/`.
+- Use the `ui-automated-test-developer` sub-agent for UI test design and implementation inside `UI/`.
+
 ## Delivery Rules
 
 - Assume implementation work already has a corresponding plan in the root `Plans` folder.

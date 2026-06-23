@@ -1,8 +1,7 @@
 interface:
-  display_name: "Architect"
-  short_description: "Code placement and project structure"
-  default_prompt: "Use $architect to decide where new code belongs and how to wire it into this project."
+  display_name: "Deprecated Architect"
+  short_description: "Deprecated skill shim"
+  default_prompt: "This deprecated skill should not be used for new work. Use $api-architect for API work or $ui-architect for UI work."
 
 policy:
-  allow_implicit_invocation: true
-
+  allow_implicit_invocation: false

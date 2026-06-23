@@ -105,8 +105,7 @@ Then it should distinguish API and UI paths, conventions, and verification appro
    - Ensure agent and skill references point to the correct guide level.
 
 6. Project-local skill updates
-   - Update `.codex/skills/architect/SKILL.md` so it no longer assumes every task belongs in the API vertical-slice architecture.
-   - Update `.codex/skills/automated-test-developer/SKILL.md` so it distinguishes API testing patterns from UI testing patterns and corrects stale API path references where needed.
+   - Replace the shared `architect` and `automated-test-developer` skills with explicit API-only and UI-only skill variants.
    - Review any other project-local skills that reference API-only structure and adjust only those that materially affect guidance for this repository shape.
 
 7. Cross-link consistency pass
