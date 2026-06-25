@@ -136,6 +136,7 @@ Then `api-ci` and `ui-ci` should run as separate workflows so one area can repor
 7. UI CI quality gates
    - Add a dedicated `ui-ci` GitHub Actions workflow so UI changes are validated in CI instead of relying only on local commands.
    - Ensure `ui-ci` enforces the agreed formatting, lint, build, test, and coverage checks for the Angular app.
+   - Ensure the formatting gate is a non-mutating check that fails when any tracked UI file would be reformatted, rather than a command that rewrites files in CI.
    - Scope `ui-ci` triggers and working directories so the UI checks run from `UI/` and do not accidentally depend on API-only defaults in the existing workflow.
 
 8. API workflow split
@@ -145,6 +146,7 @@ Then `api-ci` and `ui-ci` should run as separate workflows so one area can repor
 
 9. UI validation script baseline
    - Add or normalize the npm scripts needed for CI so the workflow can invoke stable, named commands for format checking, linting, build, test execution, and coverage generation.
+   - Distinguish between a contributor convenience formatting command such as `npm run format` and a CI-safe check command such as `npm run format:check` that fails if any file is not already correctly formatted.
    - Ensure the chosen scripts are documented in `UI/README.md` and are practical for contributors to run locally before pushing changes.
    - If the current Angular toolchain does not already provide one of the required checks, add the minimum necessary project configuration and document why it was introduced.
 
@@ -215,7 +217,7 @@ Then `api-ci` and `ui-ci` should run as separate workflows so one area can repor
 
 8. Define the UI quality-gate contract
    - Status: Completed on 2026-06-25 after settling the linting and coverage decisions for Milestone 7.
-   - Enforce formatting separately from linting, use `angular-eslint` through `npm run lint`, keep build and test commands aligned with Angular CLI defaults, and add a dedicated `npm run test:coverage` command with initial global 90% thresholds for statements, functions, lines, and branches.
+   - Enforce formatting separately from linting, require CI to run a non-mutating format-check command that fails when files would be reformatted, use `angular-eslint` through `npm run lint`, keep build and test commands aligned with Angular CLI defaults, and add a dedicated `npm run test:coverage` command with initial global 90% thresholds for statements, functions, lines, and branches.
 
 9. Split the repository workflows
    - Status: Pending.
@@ -277,6 +279,6 @@ Then `api-ci` and `ui-ci` should run as separate workflows so one area can repor
 - [x] Any new or clarified UI structural conventions are reflected in the appropriate UI guidance file.
 - [ ] The repository CI is split into explicit `api-ci` and `ui-ci` workflows that can run and report independently.
 - [ ] The `ui-ci` workflow runs the agreed format, lint, build, test, and coverage gates from the `UI/` workspace.
-- [ ] The UI project exposes stable npm commands for each CI gate, including any newly required lint, format-check, and coverage commands.
+- [ ] The UI project exposes stable npm commands for each CI gate, including a non-mutating `format:check` command plus any newly required lint and coverage commands.
 - [ ] Contributor documentation explains how to reproduce the UI CI checks locally and how to interpret the initial 90% global UI coverage thresholds and any related reporting output.
 - [ ] Final review confirms the milestone delivers both a clean Angular starting point and the required repository-level UI quality gates.
