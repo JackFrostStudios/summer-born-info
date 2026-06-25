@@ -137,6 +137,7 @@ Then they should have a supported editor setup in VS Code, Angular-aware languag
    - Remove placeholder markup, styles, and sample component state.
 
 3. Re-establish the minimal shell
+   - Status: Completed on 2026-06-25 after validating with `npm run build` and `npm test -- --watch=false`.
    - Leave behind a deliberate root app structure that still runs cleanly and is ready for route growth.
 
 4. Update validation
@@ -177,7 +178,7 @@ Then they should have a supported editor setup in VS Code, Angular-aware languag
 
 - [x] Angular placeholder markup, links, branding, and demo styles are removed from the root app shell.
 - [ ] The root app still runs locally with `npm start` from `UI/`.
-- [ ] The project retains a clean minimal shell and route baseline ready for Milestone 8 work.
+- [x] The project retains a clean minimal shell and route baseline ready for Milestone 8 work.
 - [x] Global and app-level styles are reduced to an intentional neutral baseline.
 - [x] Unit tests no longer assert scaffold/demo behaviour and instead cover the cleaned baseline shell.
 - [ ] UI documentation includes a practical development workflow for daily UI work.
