@@ -141,6 +141,7 @@ Then they should have a supported editor setup in VS Code, Angular-aware languag
    - Leave behind a deliberate root app structure that still runs cleanly and is ready for route growth.
 
 4. Update validation
+   - Status: Completed on 2026-06-25 with no additional code changes required after validating `npm start`, `npm run build`, and `npm test -- --watch=false`.
    - Adjust tests to assert the new baseline experience.
 
 5. Write workflow documentation
@@ -177,7 +178,7 @@ Then they should have a supported editor setup in VS Code, Angular-aware languag
 ## 11. Completion Checklist
 
 - [x] Angular placeholder markup, links, branding, and demo styles are removed from the root app shell.
-- [ ] The root app still runs locally with `npm start` from `UI/`.
+- [x] The root app still runs locally with `npm start` from `UI/`.
 - [x] The project retains a clean minimal shell and route baseline ready for Milestone 8 work.
 - [x] Global and app-level styles are reduced to an intentional neutral baseline.
 - [x] Unit tests no longer assert scaffold/demo behaviour and instead cover the cleaned baseline shell.
