@@ -224,7 +224,7 @@ Then `api-ci` and `ui-ci` should run as separate workflows so one area can repor
    - Replace the generic root workflow arrangement with explicit `api-ci` and `ui-ci` workflows that can run independently.
 
 10. Implement the UI workflow automation
-   - Status: Pending.
+   - Status: Completed on 2026-06-25 after adding the `ui-ci` GitHub Actions workflow, wiring path-based `push` and `pull_request` triggers for `UI/`, adding stable UI validation scripts, and validating `npm run format:check`, `npm run lint`, `npm run build`, `npm run test:ci`, and `npm run test:coverage`.
    - Update the repository workflow configuration so pull requests and relevant pushes run the agreed UI checks from the `UI/` workspace.
 
 11. Document CI reproduction and expectations

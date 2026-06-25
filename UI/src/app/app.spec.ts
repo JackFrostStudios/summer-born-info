@@ -31,7 +31,7 @@ describe('App', () => {
     expect(compiled.querySelector('main')).not.toBeNull();
     expect(compiled.querySelector('h1')?.textContent).toContain('Summer Born Info');
     expect(compiled.querySelector('p')?.textContent).toContain(
-      'Application shell ready for upcoming UI work.'
+      'Application shell ready for upcoming UI work.',
     );
   });
 });

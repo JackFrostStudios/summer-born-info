@@ -5,6 +5,6 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-root-shell',
   imports: [RouterOutlet],
   templateUrl: './root-shell.html',
-  styleUrl: './root-shell.scss'
+  styleUrl: './root-shell.scss',
 })
 export class RootShell {}

@@ -10,8 +10,8 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        component: HomePlaceholder
-      }
-    ]
-  }
+        component: HomePlaceholder,
+      },
+    ],
+  },
 ];
