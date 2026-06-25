@@ -133,6 +133,7 @@ Then they should have a supported editor setup in VS Code, Angular-aware languag
    - Review the generated Angular shell, routes, styles, tests, and documentation.
 
 2. Clean the scaffold
+   - Status: Completed on 2026-06-25 after validating with `npm run build` and `npm test -- --watch=false`.
    - Remove placeholder markup, styles, and sample component state.
 
 3. Re-establish the minimal shell
@@ -174,11 +175,11 @@ Then they should have a supported editor setup in VS Code, Angular-aware languag
 
 ## 11. Completion Checklist
 
-- [ ] Angular placeholder markup, links, branding, and demo styles are removed from the root app shell.
+- [x] Angular placeholder markup, links, branding, and demo styles are removed from the root app shell.
 - [ ] The root app still runs locally with `npm start` from `UI/`.
 - [ ] The project retains a clean minimal shell and route baseline ready for Milestone 8 work.
-- [ ] Global and app-level styles are reduced to an intentional neutral baseline.
-- [ ] Unit tests no longer assert scaffold/demo behaviour and instead cover the cleaned baseline shell.
+- [x] Global and app-level styles are reduced to an intentional neutral baseline.
+- [x] Unit tests no longer assert scaffold/demo behaviour and instead cover the cleaned baseline shell.
 - [ ] UI documentation includes a practical development workflow for daily UI work.
 - [ ] The workflow documentation recommends VS Code, the relevant extensions, and a browser debugging setup that matches Angular development needs.
 - [ ] Any new or clarified UI structural conventions are reflected in the appropriate UI guidance file.
