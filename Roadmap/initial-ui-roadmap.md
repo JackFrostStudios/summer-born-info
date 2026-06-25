@@ -61,13 +61,13 @@ The UI also needs an early design and structural baseline so later features can 
 - Type:
   Delivery
 - Objective:
-  Establish the Angular application, core shell, and baseline project structure needed for all later UI work.
+  Establish the Angular application, core shell, baseline project structure, and repository-level CI quality gates needed for all later UI work.
 - Target window:
   Early UI roadmap phase
 - Dependencies:
-  Agreement on the chosen Angular project shape; availability of the API contract needed for environment and integration assumptions
+  Agreement on the chosen Angular project shape; availability of the API contract needed for environment and integration assumptions; agreement on the linting, formatting, build, test, and coverage standards that GitHub Actions must enforce
 - Exit criteria:
-  The Angular application runs locally, has a baseline shell and routing structure, and provides a clean starting point for homepage and admin feature delivery.
+  The Angular application runs locally, has a baseline shell and routing structure, provides a clean starting point for homepage and admin feature delivery, and includes GitHub Actions workflows that enforce lint, format, build, test, and coverage checks for ongoing changes.
 
 ### Milestone 8: Homepage
 
