@@ -4,16 +4,14 @@ on:
   push:
     branches:
       - main
-    paths:
-      - .github/workflows/ui-ci.yml
-      - UI/**
   pull_request:
     branches:
       - main
-    paths:
-      - .github/workflows/ui-ci.yml
-      - UI/**
   workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
 
 jobs:
   ui-ci:
@@ -24,25 +22,46 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+      - name: Detect UI changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            ui:
+              - '.github/workflows/ui-ci.yml'
+              - 'UI/**'
+      - name: Skip UI validation when no UI files changed
+        if: github.event_name != 'workflow_dispatch' && steps.changes.outputs.ui != 'true'
+        run: echo "No UI changes detected; skipping UI validation."
       - name: Set up Node.js
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: UI/package-lock.json
       - name: Install dependencies
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
         run: npm ci
       - name: Check formatting
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
         run: npm run format:check
       - name: Lint
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
         run: npm run lint
       - name: Build
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
         run: npm run build
       - name: Run tests
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
         run: npm run test:ci
       - name: Run coverage
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
         run: npm run test:coverage
       - name: Upload coverage report
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4.6.2
         with:
           name: ui-coverage

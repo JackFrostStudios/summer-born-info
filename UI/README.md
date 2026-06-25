@@ -113,7 +113,18 @@ Repository CI now lives in two separate GitHub Actions workflow files under `.gi
 - `api-ci.yml` validates the .NET backend from `API/`.
 - `ui-ci.yml` validates the Angular frontend from `UI/`.
 
-That split lets API and UI changes report independently on the same pull request. If `ui-ci` fails, reproduce it from the `UI/` folder with the same commands CI runs:
+That split lets API and UI changes report independently on the same pull request while still keeping both checks visible for branch protection on pull requests and pushes to `main`.
+
+Trigger behavior:
+
+- Both workflows trigger for pull requests targeting `main` and pushes to `main`, so `api-ci` and `ui-ci` still appear predictably as separate checks.
+- Each workflow detects whether its own area changed before doing the expensive work.
+- `api-ci` runs the full backend validation only when `API/**` or `.github/workflows/api-ci.yml` changed.
+- `ui-ci` runs the full frontend validation only when `UI/**` or `.github/workflows/ui-ci.yml` changed.
+- When a workflow's area did not change, the workflow exits quickly with a skip message instead of disappearing entirely.
+- `ui-ci` still supports `workflow_dispatch` for a deliberate full UI validation run.
+
+If `ui-ci` runs its full validation and fails, reproduce it from the `UI/` folder with the same commands CI runs:
 
 ```bash
 npm ci

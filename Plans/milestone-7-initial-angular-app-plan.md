@@ -281,4 +281,4 @@ Then `api-ci` and `ui-ci` should run as separate workflows so one area can repor
 - [x] The `ui-ci` workflow runs the agreed format, lint, build, test, and coverage gates from the `UI/` workspace.
 - [x] The UI project exposes stable npm commands for each CI gate, including a non-mutating `format:check` command plus any newly required lint and coverage commands.
 - [x] Contributor documentation explains how to reproduce the UI CI checks locally and how to interpret the initial 90% global UI coverage thresholds and any related reporting output.
-- [ ] Final review confirms the milestone delivers both a clean Angular starting point and the required repository-level UI quality gates.
+- [x] Final review confirms the milestone delivers both a clean Angular starting point and the required repository-level UI quality gates.
