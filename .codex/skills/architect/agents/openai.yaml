@@ -1,7 +1,0 @@
-interface:
-  display_name: "Deprecated Architect"
-  short_description: "Deprecated skill shim"
-  default_prompt: "This deprecated skill should not be used for new work. Use $api-architect for API work or $ui-architect for UI work."
-
-policy:
-  allow_implicit_invocation: false

@@ -1,7 +1,0 @@
-interface:
-  display_name: "Deprecated Automated Test Developer"
-  short_description: "Deprecated skill shim"
-  default_prompt: "This deprecated skill should not be used for new work. Use $api-automated-test-developer for API work or $ui-automated-test-developer for UI work."
-
-policy:
-  allow_implicit_invocation: false
