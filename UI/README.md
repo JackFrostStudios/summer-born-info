@@ -65,7 +65,46 @@ Run unit tests from the `UI` folder:
 npm test
 ```
 
-The current test target is Angular's unit-test builder and the project currently includes scaffold-level component tests only.
+The current test target is Angular's unit-test builder and the project currently includes focused tests around the baseline app shell and routing setup.
+
+## Development Workflow
+
+Use VS Code as the baseline editor for day-to-day UI work in this repository. It lines up with the checked-in workspace tasks and launch settings under `UI/.vscode/`, which already include `npm start` and `npm test` tasks plus Chrome launch profiles for `ng serve` and `ng test`.
+
+Recommended minimum extensions:
+
+- Angular Language Service (`angular.ng-template`) to match the workspace recommendation in `UI/.vscode/extensions.json`.
+- Prettier (`esbenp.prettier-vscode`) for consistent formatting against `UI/.prettierrc`.
+
+Recommended local loop from the `UI` folder:
+
+1. Install dependencies when you first clone the repo or when `package-lock.json` changes.
+
+   ```bash
+   npm install
+   ```
+
+2. Start the Angular dev server for normal UI iteration.
+
+   ```bash
+   npm start
+   ```
+
+3. Run the unit tests while you work or before you hand changes over.
+
+   ```bash
+   npm test
+   ```
+
+4. Check formatting before you commit. If Prettier reports changes, rerun it with `--write`.
+
+   ```bash
+   npx prettier "src/**/*.{ts,scss,html}" ".vscode/*.json" "*.json" "*.md" ".prettierrc" --check
+   ```
+
+5. Inspect the running app in a browser at `http://localhost:4200/`.
+
+   Use any browser you prefer, but a Chromium-based browser such as Chrome or Edge is the most practical default here because the Angular DevTools extension is readily available there for routine component-tree and change-detection inspection. If you use VS Code, the checked-in launch profiles are also set up around that browser family.
 
 ## Current API Relationship
 

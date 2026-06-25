@@ -145,6 +145,7 @@ Then they should have a supported editor setup in VS Code, Angular-aware languag
    - Adjust tests to assert the new baseline experience.
 
 5. Write workflow documentation
+   - Status: Completed on 2026-06-25 after documenting the contributor workflow in `UI/README.md` and validating the documented commands against the current project setup.
    - Capture the recommended editor, extensions, browser tooling, and daily commands after the cleaned app shape is in place.
 
 6. Perform consistency review
@@ -182,7 +183,7 @@ Then they should have a supported editor setup in VS Code, Angular-aware languag
 - [x] The project retains a clean minimal shell and route baseline ready for Milestone 8 work.
 - [x] Global and app-level styles are reduced to an intentional neutral baseline.
 - [x] Unit tests no longer assert scaffold/demo behaviour and instead cover the cleaned baseline shell.
-- [ ] UI documentation includes a practical development workflow for daily UI work.
-- [ ] The workflow documentation recommends VS Code, the relevant extensions, and a browser debugging setup that matches Angular development needs.
+- [x] UI documentation includes a practical development workflow for daily UI work.
+- [x] The workflow documentation recommends VS Code, the relevant extensions, and a browser debugging setup that matches Angular development needs.
 - [ ] Any new or clarified UI structural conventions are reflected in the appropriate UI guidance file.
 - [ ] Final review confirms the milestone delivers a clean starting point rather than unfinished scaffold content.
