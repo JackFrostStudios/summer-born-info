@@ -175,15 +175,14 @@ Then `api-ci` and `ui-ci` should run as separate workflows so one area can repor
 - Decision: split CI into separate `api-ci` and `ui-ci` workflows.
   - Rationale: the repo already has API-only automation and now needs UI-specific quality gates; separate workflows let both areas run in parallel and return faster, clearer feedback.
 
-- Open decision: choose the linting path the UI workflow will enforce.
-  - Current options to resolve during implementation:
-    - add `angular-eslint` and expose a dedicated lint command,
-    - or define an alternative lint baseline explicitly if the team does not want Angular ESLint in the project.
-  - Why this matters: the roadmap now names lint as a required CI gate, and the current Angular workspace does not yet expose a lint script.
+- Decision: enforce UI linting with `angular-eslint`, integrated through Angular CLI and exposed via a stable `npm run lint` command that delegates to `ng lint`.
+  - Rationale: Angular 22 does not ship a built-in lint ruleset by default, while Angular CLI still supports `ng lint` when a lint provider is added. `angular-eslint` is the Angular ecosystem's best-supported path, brings both TypeScript and Angular template linting, fits the planned VS Code workflow, and coexists cleanly with Prettier as a separate formatting concern.
 
-- Open decision: choose the coverage command and threshold baseline the UI workflow will enforce.
-  - Current constraint: `UI/package.json` does not yet expose a dedicated coverage script even though the locked dependencies indicate Vitest coverage providers are available.
-  - Why this matters: the roadmap now requires coverage enforcement, so the plan must capture how coverage is generated and what "passing" means in CI.
+- Decision: enforce UI coverage with a dedicated `npm run test:coverage` command that runs `ng test --watch=false --coverage`, using Angular's supported coverage configuration surface in `angular.json`.
+  - Rationale: Angular 22's default unit-test path is Vitest-backed and Angular documents coverage through `ng test --coverage` plus builder-level coverage settings. Keeping the configuration in `angular.json` is more supportable than introducing an early custom Vitest config, and `--watch=false` gives contributors and CI the same deterministic command shape.
+
+- Decision: start the UI coverage gate with global 90% thresholds for statements, functions, lines, and branches, then lower them later only if real implementation or tooling friction proves that necessary.
+  - Rationale: the team prefers to set a high initial quality bar and relax it only if the baseline proves impractical. Using global thresholds keeps the first CI contract simpler than per-file enforcement while still making "passing" explicit from the start.
 
 ## 8. Dependencies and Sequencing
 
@@ -211,12 +210,12 @@ Then `api-ci` and `ui-ci` should run as separate workflows so one area can repor
    - Ensure docs, tests, and shell structure all describe the same baseline and do not reference removed scaffold content.
 
 7. Confirm the UI CI baseline and decision points
-   - Status: Pending.
-   - Review the existing root GitHub Actions workflow, current UI scripts, and available coverage/linting tooling so the plan reflects the real starting point for the `api-ci` / `ui-ci` split.
+   - Status: Completed on 2026-06-25 after reviewing the existing root GitHub Actions workflow, current UI scripts, and the Angular/Vitest linting and coverage options available to the project.
+   - Confirm the implementation starts from an API-only root workflow, a UI workspace without lint scripts, and a UI workspace without a working coverage command until the required coverage provider is installed.
 
 8. Define the UI quality-gate contract
-   - Status: Pending.
-   - Decide the concrete UI commands and standards `ui-ci` must enforce for formatting, linting, build, tests, and coverage.
+   - Status: Completed on 2026-06-25 after settling the linting and coverage decisions for Milestone 7.
+   - Enforce formatting separately from linting, use `angular-eslint` through `npm run lint`, keep build and test commands aligned with Angular CLI defaults, and add a dedicated `npm run test:coverage` command with initial global 90% thresholds for statements, functions, lines, and branches.
 
 9. Split the repository workflows
    - Status: Pending.
@@ -263,9 +262,6 @@ Then `api-ci` and `ui-ci` should run as separate workflows so one area can repor
 
 - Assumption: retaining SSR support is preferred for now because it already exists and there is no explicit request to remove it.
 - Assumption: the recommended browser tooling should be advisory, not a hard project requirement.
-- Required clarification before Milestone 7 can be considered fully complete:
-  - what linting standard should be enforced for the Angular app in CI,
-  - what coverage command and pass threshold should the `ui-ci` workflow enforce.
 - Follow-up to settle during implementation if needed:
   - whether the workflow guidance belongs entirely in `UI/README.md` or should live in a dedicated child document such as `UI/docs/development-workflow.md` with the README linking to it.
 
@@ -282,5 +278,5 @@ Then `api-ci` and `ui-ci` should run as separate workflows so one area can repor
 - [ ] The repository CI is split into explicit `api-ci` and `ui-ci` workflows that can run and report independently.
 - [ ] The `ui-ci` workflow runs the agreed format, lint, build, test, and coverage gates from the `UI/` workspace.
 - [ ] The UI project exposes stable npm commands for each CI gate, including any newly required lint, format-check, and coverage commands.
-- [ ] Contributor documentation explains how to reproduce the UI CI checks locally and how to interpret any new coverage expectations.
+- [ ] Contributor documentation explains how to reproduce the UI CI checks locally and how to interpret the initial 90% global UI coverage thresholds and any related reporting output.
 - [ ] Final review confirms the milestone delivers both a clean Angular starting point and the required repository-level UI quality gates.
