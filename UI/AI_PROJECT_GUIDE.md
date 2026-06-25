@@ -4,14 +4,16 @@ This document covers UI-internal structure and conventions. For top-level reposi
 
 ## Current UI Shape
 
-The UI is currently a newly generated Angular application with server-side rendering support and a minimal app shell.
+The UI is currently an Angular application with server-side rendering support, a thin root app host, and a minimal routed shell baseline.
 
 - `UI/src/main.ts` bootstraps the browser application.
 - `UI/src/main.server.ts` bootstraps the server render entry point.
 - `UI/src/server.ts` hosts the generated SSR server entry.
-- `UI/src/app/app.ts` is the current root standalone component.
+- `UI/src/app/app.ts` is the root app host and should stay focused on the top-level router outlet.
 - `UI/src/app/app.config.ts` and `app.config.server.ts` hold browser and server configuration.
-- `UI/src/app/app.routes.ts` and `app.routes.server.ts` hold route definitions.
+- `UI/src/app/app.routes.ts` is the route entry point for browser routes, with `app.routes.server.ts` holding the server route definitions.
+- `UI/src/app/shell/root-shell.*` owns shell-level layout and nested route composition.
+- `UI/src/app/features/home/home-placeholder.*` is the current baseline feature route rendered inside the shell.
 - `UI/src/styles.scss` is the shared global stylesheet entry point.
 - `UI/public/` holds static assets copied by the Angular build.
 
@@ -19,16 +21,20 @@ The UI is currently a newly generated Angular application with server-side rende
 
 - Put browser-facing UI work in `UI/src/app/` unless there is a clear reason to create a new top-level folder under `src/`.
 - Keep feature code close together: route definition, component, template, styles, and tests should stay near each other.
+- Treat `UI/src/app/app.routes.ts` as the canonical place to grow the route tree until a feature area is large enough to justify a route-specific substructure.
+- Keep shell-only layout concerns in `UI/src/app/shell/` and keep feature-specific rendering out of the shell.
+- Add new routed user-facing areas under `UI/src/app/features/` so each feature keeps its component, template, styles, and tests together.
 - Add shared static assets to `UI/public/`.
 - Keep repository-level guidance in `UI/README.md` and `UI/AGENTS.md`; do not duplicate that detail inside feature files.
-- If the UI grows beyond the single generated shell, prefer adding feature-focused subfolders under `UI/src/app/` rather than expanding the root app component indefinitely.
+- If the UI grows beyond the current baseline, prefer adding feature-focused subfolders under `UI/src/app/features/` rather than expanding `app.ts` or putting feature logic into `root-shell`.
 
 ## Conventions
 
 ### Application Structure
 
-- Keep the root `App` component focused on shell concerns such as app-level layout and router outlet composition.
-- Put feature-specific behaviour in feature components, routes, and services rather than in the root shell.
+- Keep the root `App` component focused on app bootstrap concerns and router outlet composition.
+- Keep `RootShell` focused on shell concerns such as app-level layout, navigation framing, and nested router outlet composition.
+- Put feature-specific behaviour in feature components, routes, and services rather than in `App` or the root shell.
 - Prefer standalone Angular APIs and keep module-era patterns out unless an existing dependency requires them.
 - When adding a reusable abstraction, make sure at least two consumers justify it.
 
@@ -49,7 +55,7 @@ The UI is currently a newly generated Angular application with server-side rende
 
 - Run UI tests from the `UI` folder with `npm test`.
 - Keep automated tests close to the component or behaviour they cover.
-- For the current Angular app, prefer focused unit or shallow integration tests around rendered output, routing behaviour, and component interaction.
+- For the current Angular app, prefer focused unit or shallow integration tests around rendered output, shell-plus-route composition, and component interaction.
 - Assert on visible behaviour and state, not internal implementation details.
 - When a UI change affects accessibility or semantics, include assertions or manual validation notes that cover the changed experience.
 
@@ -57,6 +63,7 @@ The UI is currently a newly generated Angular application with server-side rende
 
 - Does the change belong in `UI/` rather than `API/`, `Plans/`, or `Roadmap/`?
 - Is new UI code placed near the route, component, or feature it belongs to?
+- Does the change preserve the current ownership split between `app.ts`, `app.routes.ts`, `shell/`, and `features/`?
 - Are accessibility, responsive layout, and keyboard/focus behaviour considered for user-facing changes?
 - Are tests or validation notes appropriate for the level of UI change?
 - If a new structural convention was introduced, was this file updated to capture it?

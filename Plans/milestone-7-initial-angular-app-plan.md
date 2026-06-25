@@ -149,6 +149,7 @@ Then they should have a supported editor setup in VS Code, Angular-aware languag
    - Capture the recommended editor, extensions, browser tooling, and daily commands after the cleaned app shape is in place.
 
 6. Perform consistency review
+   - Status: Completed on 2026-06-25 after aligning `UI/AI_PROJECT_GUIDE.md` with the routed shell baseline and updated contributor workflow.
    - Ensure docs, tests, and shell structure all describe the same baseline and do not reference removed scaffold content.
 
 ## 9. Risks and Mitigations
@@ -185,5 +186,5 @@ Then they should have a supported editor setup in VS Code, Angular-aware languag
 - [x] Unit tests no longer assert scaffold/demo behaviour and instead cover the cleaned baseline shell.
 - [x] UI documentation includes a practical development workflow for daily UI work.
 - [x] The workflow documentation recommends VS Code, the relevant extensions, and a browser debugging setup that matches Angular development needs.
-- [ ] Any new or clarified UI structural conventions are reflected in the appropriate UI guidance file.
+- [x] Any new or clarified UI structural conventions are reflected in the appropriate UI guidance file.
 - [ ] Final review confirms the milestone delivers a clean starting point rather than unfinished scaffold content.
