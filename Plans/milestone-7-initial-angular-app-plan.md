@@ -20,6 +20,8 @@ The primary outcome of this milestone is not creating a new Angular app from scr
   - `UI/src/styles.scss` is still the default comment-only scaffold.
   - `UI/src/app/app.routes.ts` exists but currently defines no routes.
   - `UI/README.md` documents basic setup and commands, but it does not yet provide a contributor-focused development workflow or recommended tooling setup.
+  - `.github/workflows/ci.yml` currently runs API-only checks from `API/`; this should be split into a dedicated `api-ci` workflow while Milestone 7 adds a separate `ui-ci` workflow for Angular quality gates.
+  - `UI/package.json` currently exposes `start`, `build`, `watch`, and `test` scripts, but it does not yet define a dedicated lint script, formatting script, or coverage-oriented CI script.
 
 ## 3. Scope
 
@@ -28,6 +30,7 @@ The primary outcome of this milestone is not creating a new Angular app from scr
 - Preserve the existing SSR-capable project shape unless a simplification is clearly safe and explicitly justified during implementation.
 - Establish a minimal application shell that is intentionally empty but structurally ready for later homepage and admin work.
 - Document the recommended UI development workflow, including local commands, editor setup, and browser tooling for day-to-day work.
+- Define and document the repository-level CI expectations Milestone 7 now owns for the Angular app, including the checks GitHub Actions must run for UI changes.
 - Align UI guidance files if the cleanup introduces or clarifies baseline structural conventions.
 
 ## 4. Non-Goals
@@ -38,6 +41,8 @@ The primary outcome of this milestone is not creating a new Angular app from scr
 - Introducing a full design system, shared component library, or state-management framework.
 - Reworking the Angular project into a materially different architecture unless an existing generated choice is actively blocking delivery.
 - Defining a repository-wide API and UI combined startup workflow if one does not yet exist.
+- Expanding CI to cover broader API and UI orchestration beyond the UI quality gates required for this milestone.
+- Quietly choosing long-term linting or coverage tooling without recording the decision and rationale in the plan and implementation.
 
 ## 5. Behaviour Scenarios
 
@@ -70,6 +75,24 @@ Then they should be able to install dependencies, run the app, run tests, format
 Given a contributor is iterating on Angular UI work  
 When they follow the documented recommendations  
 Then they should have a supported editor setup in VS Code, Angular-aware language tooling, formatting support, and a recommended browser setup that enables Angular inspection and routine debugging.
+
+### Scenario: Pull request validation runs for UI changes
+
+Given a contributor opens or updates a pull request that changes files under `UI/` or the `ui-ci` workflow  
+When GitHub Actions runs the Milestone 7 UI quality gates  
+Then the `ui-ci` workflow should execute the agreed UI formatting, lint, build, test, and coverage checks and fail clearly when any gate does not pass.
+
+### Scenario: Coverage expectations are visible in CI
+
+Given the UI test suite runs in GitHub Actions  
+When coverage is collected for the Angular project  
+Then the workflow should publish or expose the resulting coverage output in a repeatable way so reviewers can tell whether the configured threshold or expected baseline was met.
+
+### Scenario: API and UI feedback can arrive independently
+
+Given a pull request changes both API and UI code  
+When GitHub Actions evaluates the repository checks  
+Then `api-ci` and `ui-ci` should run as separate workflows so one area can report success or failure without waiting for the other to finish.
 
 ## 6. Deliverables
 
@@ -110,6 +133,25 @@ Then they should have a supported editor setup in VS Code, Angular-aware languag
 6. Guidance alignment
    - Update `UI/README.md`, `UI/AI_PROJECT_GUIDE.md`, or related docs if the cleanup establishes clearer conventions for app-shell ownership, route growth, or day-to-day developer workflow.
 
+7. UI CI quality gates
+   - Add a dedicated `ui-ci` GitHub Actions workflow so UI changes are validated in CI instead of relying only on local commands.
+   - Ensure `ui-ci` enforces the agreed formatting, lint, build, test, and coverage checks for the Angular app.
+   - Scope `ui-ci` triggers and working directories so the UI checks run from `UI/` and do not accidentally depend on API-only defaults in the existing workflow.
+
+8. API workflow split
+   - Rename or replace the current root API-focused workflow so it becomes an explicit `api-ci` workflow rather than a generic shared `ci` workflow.
+   - Preserve the existing API validation behaviour while isolating it from UI concerns so API and UI checks can run and report independently.
+   - Keep workflow naming, triggers, and branch-protection intent clear enough that contributors can tell which check failed without opening unrelated jobs.
+
+9. UI validation script baseline
+   - Add or normalize the npm scripts needed for CI so the workflow can invoke stable, named commands for format checking, linting, build, test execution, and coverage generation.
+   - Ensure the chosen scripts are documented in `UI/README.md` and are practical for contributors to run locally before pushing changes.
+   - If the current Angular toolchain does not already provide one of the required checks, add the minimum necessary project configuration and document why it was introduced.
+
+10. UI CI documentation and review expectations
+   - Document where `api-ci` and `ui-ci` live, what each workflow enforces, and how a contributor can reproduce UI failures locally.
+   - Clarify any coverage threshold, artifact, or reporting expectation introduced for UI checks so maintainers know how to interpret CI output.
+
 ## 7. Technology Requirements and Decisions
 
 - Decision: treat Angular project creation as complete.
@@ -126,6 +168,22 @@ Then they should have a supported editor setup in VS Code, Angular-aware languag
 
 - Decision: prefer built-in Angular/npm workflows before introducing extra task runners or tooling.
   - Rationale: the current project already has the necessary scripts for start, build, watch, and test, and Milestone 7 should reduce noise rather than add more moving parts.
+
+- Decision: Milestone 7 must treat UI CI as a repository-level concern, not just a local developer workflow concern.
+  - Rationale: the roadmap now makes GitHub Actions enforcement part of the milestone exit criteria, so the implementation plan must include automation and not stop at documented local commands.
+
+- Decision: split CI into separate `api-ci` and `ui-ci` workflows.
+  - Rationale: the repo already has API-only automation and now needs UI-specific quality gates; separate workflows let both areas run in parallel and return faster, clearer feedback.
+
+- Open decision: choose the linting path the UI workflow will enforce.
+  - Current options to resolve during implementation:
+    - add `angular-eslint` and expose a dedicated lint command,
+    - or define an alternative lint baseline explicitly if the team does not want Angular ESLint in the project.
+  - Why this matters: the roadmap now names lint as a required CI gate, and the current Angular workspace does not yet expose a lint script.
+
+- Open decision: choose the coverage command and threshold baseline the UI workflow will enforce.
+  - Current constraint: `UI/package.json` does not yet expose a dedicated coverage script even though the locked dependencies indicate Vitest coverage providers are available.
+  - Why this matters: the roadmap now requires coverage enforcement, so the plan must capture how coverage is generated and what "passing" means in CI.
 
 ## 8. Dependencies and Sequencing
 
@@ -152,6 +210,26 @@ Then they should have a supported editor setup in VS Code, Angular-aware languag
    - Status: Completed on 2026-06-25 after aligning `UI/AI_PROJECT_GUIDE.md` with the routed shell baseline and updated contributor workflow.
    - Ensure docs, tests, and shell structure all describe the same baseline and do not reference removed scaffold content.
 
+7. Confirm the UI CI baseline and decision points
+   - Status: Pending.
+   - Review the existing root GitHub Actions workflow, current UI scripts, and available coverage/linting tooling so the plan reflects the real starting point for the `api-ci` / `ui-ci` split.
+
+8. Define the UI quality-gate contract
+   - Status: Pending.
+   - Decide the concrete UI commands and standards `ui-ci` must enforce for formatting, linting, build, tests, and coverage.
+
+9. Split the repository workflows
+   - Status: Pending.
+   - Replace the generic root workflow arrangement with explicit `api-ci` and `ui-ci` workflows that can run independently.
+
+10. Implement the UI workflow automation
+   - Status: Pending.
+   - Update the repository workflow configuration so pull requests and relevant pushes run the agreed UI checks from the `UI/` workspace.
+
+11. Document CI reproduction and expectations
+   - Status: Pending.
+   - Update contributor-facing docs so CI failures can be reproduced locally and the coverage/lint expectations are discoverable.
+
 ## 9. Risks and Mitigations
 
 - Risk: cleanup accidentally removes structure needed for later milestones.
@@ -169,11 +247,25 @@ Then they should have a supported editor setup in VS Code, Angular-aware languag
 - Risk: contributors still guess how to work efficiently in the UI.
   - Mitigation: make one canonical workflow document or section that covers the normal edit-run-test-debug loop end to end.
 
+- Risk: the roadmap now requires CI quality gates, but the implementation could stop after local scripts and docs.
+  - Mitigation: treat GitHub Actions workflow changes as an explicit deliverable and keep the completion checklist tied to automation, not only local validation.
+
+- Risk: lint and coverage gates could be added inconsistently or with unclear thresholds, causing noisy CI failures and team churn.
+  - Mitigation: record the chosen commands, thresholds, and rationale in the implementation itself and in the contributor docs at the same time.
+
+- Risk: extending the existing root workflow could unintentionally inherit API-specific defaults such as `working-directory: API`.
+  - Mitigation: explicitly scope UI jobs or steps to `UI/` and validate that the workflow behaves correctly for UI-only changes.
+
+- Risk: splitting the workflows could confuse branch protection or check naming if the new workflow names are not stable.
+  - Mitigation: standardize on explicit `api-ci` and `ui-ci` workflow names in both implementation and documentation.
+
 ## 10. Unknowns and Required Clarifications
 
-- No blocker is currently identified for producing an implementation-ready plan.
 - Assumption: retaining SSR support is preferred for now because it already exists and there is no explicit request to remove it.
 - Assumption: the recommended browser tooling should be advisory, not a hard project requirement.
+- Required clarification before Milestone 7 can be considered fully complete:
+  - what linting standard should be enforced for the Angular app in CI,
+  - what coverage command and pass threshold should the `ui-ci` workflow enforce.
 - Follow-up to settle during implementation if needed:
   - whether the workflow guidance belongs entirely in `UI/README.md` or should live in a dedicated child document such as `UI/docs/development-workflow.md` with the README linking to it.
 
@@ -187,4 +279,8 @@ Then they should have a supported editor setup in VS Code, Angular-aware languag
 - [x] UI documentation includes a practical development workflow for daily UI work.
 - [x] The workflow documentation recommends VS Code, the relevant extensions, and a browser debugging setup that matches Angular development needs.
 - [x] Any new or clarified UI structural conventions are reflected in the appropriate UI guidance file.
-- [x] Final review confirms the milestone delivers a clean starting point rather than unfinished scaffold content.
+- [ ] The repository CI is split into explicit `api-ci` and `ui-ci` workflows that can run and report independently.
+- [ ] The `ui-ci` workflow runs the agreed format, lint, build, test, and coverage gates from the `UI/` workspace.
+- [ ] The UI project exposes stable npm commands for each CI gate, including any newly required lint, format-check, and coverage commands.
+- [ ] Contributor documentation explains how to reproduce the UI CI checks locally and how to interpret any new coverage expectations.
+- [ ] Final review confirms the milestone delivers both a clean Angular starting point and the required repository-level UI quality gates.
