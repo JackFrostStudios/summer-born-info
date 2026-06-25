@@ -220,7 +220,7 @@ Then `api-ci` and `ui-ci` should run as separate workflows so one area can repor
    - Enforce formatting separately from linting, require CI to run a non-mutating format-check command that fails when files would be reformatted, use `angular-eslint` through `npm run lint`, keep build and test commands aligned with Angular CLI defaults, and add a dedicated `npm run test:coverage` command with initial global 90% thresholds for statements, functions, lines, and branches.
 
 9. Split the repository workflows
-   - Status: Pending.
+   - Status: Completed on 2026-06-25 after replacing the generic root workflow with explicit `api-ci` and `ui-ci` workflow files and validating the workflow diff with `git diff --check -- .github/workflows`.
    - Replace the generic root workflow arrangement with explicit `api-ci` and `ui-ci` workflows that can run independently.
 
 10. Implement the UI workflow automation

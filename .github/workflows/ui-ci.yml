@@ -1,0 +1,11 @@
+name: ui-ci
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ui-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder
+        run: echo "UI CI automation will be added in milestone 7 step 10."
