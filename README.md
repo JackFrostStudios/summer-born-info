@@ -19,6 +19,10 @@ This repository contains the Summer Born Information platform split into separat
 - Updating implementation plans: [Plans/AGENTS.md](./Plans/AGENTS.md)
 - Updating roadmap documents: [Roadmap/AGENTS.md](./Roadmap/AGENTS.md)
 
+## CI Workflows
+
+Repository checks are split across `.github/workflows/api-ci.yml` for API validation and `.github/workflows/ui-ci.yml` for UI validation. For the exact UI commands and coverage expectations needed to reproduce a `ui-ci` failure locally, use [UI/README.md](./UI/README.md).
+
 ## License
 
 This project is licensed under the GNU General Public License. See [LICENSE](./LICENSE).

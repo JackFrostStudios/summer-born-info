@@ -228,7 +228,7 @@ Then `api-ci` and `ui-ci` should run as separate workflows so one area can repor
    - Update the repository workflow configuration so pull requests and relevant pushes run the agreed UI checks from the `UI/` workspace.
 
 11. Document CI reproduction and expectations
-   - Status: Pending.
+   - Status: Completed on 2026-06-25 after documenting the `api-ci` and `ui-ci` workflow split, the local `ui-ci` reproduction commands, the non-mutating `format:check` gate, and the initial 90% global UI coverage thresholds in `UI/README.md` with a repository-level pointer in `README.md`.
    - Update contributor-facing docs so CI failures can be reproduced locally and the coverage/lint expectations are discoverable.
 
 ## 9. Risks and Mitigations
@@ -277,8 +277,8 @@ Then `api-ci` and `ui-ci` should run as separate workflows so one area can repor
 - [x] UI documentation includes a practical development workflow for daily UI work.
 - [x] The workflow documentation recommends VS Code, the relevant extensions, and a browser debugging setup that matches Angular development needs.
 - [x] Any new or clarified UI structural conventions are reflected in the appropriate UI guidance file.
-- [ ] The repository CI is split into explicit `api-ci` and `ui-ci` workflows that can run and report independently.
-- [ ] The `ui-ci` workflow runs the agreed format, lint, build, test, and coverage gates from the `UI/` workspace.
-- [ ] The UI project exposes stable npm commands for each CI gate, including a non-mutating `format:check` command plus any newly required lint and coverage commands.
-- [ ] Contributor documentation explains how to reproduce the UI CI checks locally and how to interpret the initial 90% global UI coverage thresholds and any related reporting output.
+- [x] The repository CI is split into explicit `api-ci` and `ui-ci` workflows that can run and report independently.
+- [x] The `ui-ci` workflow runs the agreed format, lint, build, test, and coverage gates from the `UI/` workspace.
+- [x] The UI project exposes stable npm commands for each CI gate, including a non-mutating `format:check` command plus any newly required lint and coverage commands.
+- [x] Contributor documentation explains how to reproduce the UI CI checks locally and how to interpret the initial 90% global UI coverage thresholds and any related reporting output.
 - [ ] Final review confirms the milestone delivers both a clean Angular starting point and the required repository-level UI quality gates.

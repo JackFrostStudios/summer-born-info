@@ -96,15 +96,48 @@ Recommended local loop from the `UI` folder:
    npm test
    ```
 
-4. Check formatting before you commit. If Prettier reports changes, rerun it with `--write`.
+4. Check formatting before you commit. If Prettier reports changes, rerun the fix-up command.
 
    ```bash
-   npx prettier "src/**/*.{ts,scss,html}" ".vscode/*.json" "*.json" "*.md" ".prettierrc" --check
+   npm run format:check
    ```
 
 5. Inspect the running app in a browser at `http://localhost:4200/`.
 
    Use any browser you prefer, but a Chromium-based browser such as Chrome or Edge is the most practical default here because the Angular DevTools extension is readily available there for routine component-tree and change-detection inspection. If you use VS Code, the checked-in launch profiles are also set up around that browser family.
+
+## CI Workflows
+
+Repository CI now lives in two separate GitHub Actions workflow files under `.github/workflows/`:
+
+- `api-ci.yml` validates the .NET backend from `API/`.
+- `ui-ci.yml` validates the Angular frontend from `UI/`.
+
+That split lets API and UI changes report independently on the same pull request. If `ui-ci` fails, reproduce it from the `UI/` folder with the same commands CI runs:
+
+```bash
+npm ci
+npm run format:check
+npm run lint
+npm run build
+npm run test:ci
+npm run test:coverage
+```
+
+What each UI command enforces:
+
+- `npm run format:check` is the CI-safe, non-mutating Prettier gate. It fails when files are not formatted but does not rewrite them.
+- `npm run format` is the local fix-up command that applies Prettier changes.
+- `npm run lint` runs the Angular ESLint rules for TypeScript and templates.
+- `npm run build` verifies the application still compiles with the current Angular build configuration.
+- `npm run test:ci` runs the unit tests once without watch mode.
+- `npm run test:coverage` runs the unit tests with coverage enabled and enforces the current global 90% thresholds for statements, branches, functions, and lines.
+
+Coverage reporting expectations:
+
+- Local coverage output is written under `UI/coverage/summer-born-info/`.
+- The coverage run emits a text summary in the terminal and also writes HTML, `lcov`, and `cobertura` outputs under `UI/coverage/summer-born-info/` for deeper inspection.
+- In GitHub Actions, `ui-ci` uploads the full `UI/coverage/` directory as the `ui-coverage` artifact, so reviewers can inspect the generated report when the workflow completes.
 
 ## Current API Relationship
 
