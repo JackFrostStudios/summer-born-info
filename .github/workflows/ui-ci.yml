@@ -7,7 +7,6 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -34,37 +33,37 @@ jobs:
               - '.github/workflows/ui-ci.yml'
               - 'UI/**'
       - name: Skip UI validation when no UI files changed
-        if: github.event_name != 'workflow_dispatch' && steps.changes.outputs.ui != 'true'
+        if: steps.changes.outputs.ui != 'true'
         run: echo "No UI changes detected; skipping UI validation."
       - name: Set up Node.js
-        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
+        if: steps.changes.outputs.ui == 'true'
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: UI/package-lock.json
       - name: Install dependencies
-        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
+        if: steps.changes.outputs.ui == 'true'
         run: npm ci
       - name: Check formatting
-        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
+        if: steps.changes.outputs.ui == 'true'
         run: npm run format:check
       - name: Lint
-        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
+        if: steps.changes.outputs.ui == 'true'
         run: npm run lint
       - name: Build
-        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
+        if: steps.changes.outputs.ui == 'true'
         run: npm run build
       - name: Validate i18n extraction and localized build
-        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
+        if: steps.changes.outputs.ui == 'true'
         run: npm run validate:i18n
       - name: Run tests with coverage
         id: tests
-        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
+        if: steps.changes.outputs.ui == 'true'
         continue-on-error: true
         run: npm run test:ci
       - name: Upload coverage report
-        if: always() && (github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true')
+        if: always() && steps.changes.outputs.ui == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ui-coverage
@@ -72,7 +71,7 @@ jobs:
           retention-days: 5
           if-no-files-found: error
       - name: Publish code coverage summary
-        if: always() && (github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true')
+        if: always() && steps.changes.outputs.ui == 'true'
         uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95 # v1.3.0
         with:
           filename: /UI/coverage/summer-born-info/cobertura-coverage.xml
@@ -84,13 +83,13 @@ jobs:
           fail_below_min: false
           output: both
       - name: Add coverage PR comment
-        if: always() && (github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true')
+        if: always() && steps.changes.outputs.ui == 'true'
         uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
         with:
           recreate: true
           path: code-coverage-results.md
       - name: Upload test results
-        if: always() && (github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true')
+        if: always() && steps.changes.outputs.ui == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ui-test-results
@@ -100,10 +99,10 @@ jobs:
           retention-days: 5
           if-no-files-found: error
       - name: Publish test results
-        if: always() && (github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true')
+        if: always() && steps.changes.outputs.ui == 'true'
         uses: EnricoMi/publish-unit-test-result-action@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2.23.0
         with:
           files: ${{ github.workspace }}/UI/test-results/junit.xml
       - name: Fail job when UI tests fail
-        if: always() && (github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true') && steps.tests.outcome == 'failure'
+        if: always() && steps.changes.outputs.ui == 'true' && steps.tests.outcome == 'failure'
         run: exit 1
