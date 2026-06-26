@@ -121,8 +121,8 @@ Given a contributor reading repository docs to understand CI behavior, when they
 - [x] `UI/package.json` includes a Node `engines` constraint.
 - [x] UI locale configuration and documentation consistently use `en-GB`.
 - [x] Any tracked localization artifact impacted by the locale change is refreshed and committed.
-- [ ] Shared CI documentation lives under `Documentation/`.
-- [ ] `UI/README.md` keeps a shorter UI-specific CI summary with a link to the shared doc.
+- [x] Shared CI documentation lives under `Documentation/`.
+- [x] `UI/README.md` keeps a shorter UI-specific CI summary with a link to the shared doc.
 - [ ] Documentation links remain accurate from root and UI entry points.
 - [ ] Validation is completed for the touched surfaces.
 - [ ] `npm run lint` passes in `UI/`.

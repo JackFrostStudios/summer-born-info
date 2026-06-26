@@ -175,23 +175,9 @@ Recommended local loop from the `UI` folder:
 
 ## CI Workflows
 
-Repository CI now lives in two separate GitHub Actions workflow files under `.github/workflows/`:
+For the shared repository workflow split, trigger behavior, and artifact overview, use [../Documentation/ci-workflows.md](../Documentation/ci-workflows.md).
 
-- `api-ci.yml` validates the .NET backend from `API/`.
-- `ui-ci.yml` validates the Angular frontend from `UI/`.
-
-That split lets API and UI changes report independently on the same pull request while still keeping both checks visible for branch protection on pull requests and pushes to `main`.
-
-Trigger behavior:
-
-- Both workflows trigger for pull requests targeting `main` and pushes to `main`, so `api-ci` and `ui-ci` still appear predictably as separate checks.
-- Each workflow detects whether its own area changed before doing the expensive work.
-- `api-ci` runs the full backend validation only when `API/**` or `.github/workflows/api-ci.yml` changed.
-- `ui-ci` runs the full frontend validation only when `UI/**` or `.github/workflows/ui-ci.yml` changed.
-- When a workflow's area did not change, the workflow exits quickly with a skip message instead of disappearing entirely.
-- `ui-ci` still supports `workflow_dispatch` for a deliberate full UI validation run.
-
-If `ui-ci` runs its full validation and fails, reproduce it from the `UI/` folder with the same commands CI runs:
+If `ui-ci` runs its full validation and fails, reproduce it from the `UI/` folder with the same commands CI uses:
 
 ```bash
 npm ci
@@ -202,21 +188,9 @@ npm run validate:i18n
 npm run test:ci
 ```
 
-What each UI command enforces:
+This sequence checks formatting, linting, strict Angular compilation, localized build validation, and the coverage-producing test run that `ui-ci` expects.
 
-- `npm run format:check` is the CI-safe, non-mutating Prettier gate. It fails when files are not formatted but does not rewrite them.
-- `npm run format` is the local fix-up command that applies Prettier changes.
-- `npm run lint` runs the type-aware Angular ESLint rules for TypeScript and templates, including the stricter Angular baseline and template i18n checks.
-- `npm run build` verifies the application still compiles under strict TypeScript and strict Angular template validation.
-- `npm run validate:i18n` refreshes the extracted source messages file, fails if the tracked `src/locale/messages.xlf` file was stale, and verifies the localized production build path.
-- `npm run test:ci` runs the unit tests once with coverage enabled and enforces the current global 90% thresholds for statements, branches, functions, and lines.
-
-Coverage reporting expectations:
-
-- Local coverage output is written under `UI/coverage/summer-born-info/`.
-- The coverage run emits a text summary in the terminal and also writes HTML, `lcov`, and `cobertura` outputs under `UI/coverage/summer-born-info/` for deeper inspection.
-- The coverage-producing CI run also writes machine-readable test outputs to `UI/test-results/junit.xml` and `UI/test-results/results.json`.
-- In GitHub Actions, `ui-ci` uploads the full `UI/coverage/` directory as the `ui-coverage` artifact, so reviewers can inspect the generated report when the workflow completes.
+Coverage output is written locally under `UI/coverage/summer-born-info/`, and the workflow uploads the full `UI/coverage/` directory as the `ui-coverage` artifact for pull request review.
 
 ## Current API Relationship
 
