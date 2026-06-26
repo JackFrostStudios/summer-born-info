@@ -124,8 +124,8 @@ Given a contributor reading repository docs to understand CI behavior, when they
 - [x] Shared CI documentation lives under `Documentation/`.
 - [x] `UI/README.md` keeps a shorter UI-specific CI summary with a link to the shared doc.
 - [x] Documentation links remain accurate from root and UI entry points.
-- [ ] Validation is completed for the touched surfaces.
-- [ ] `npm run lint` passes in `UI/`.
-- [ ] `npm run build` passes in `UI/`.
-- [ ] `npm run validate:i18n` passes in `UI/`.
-- [ ] `npm run test:ci` passes in `UI/`.
+- [x] Validation is completed for the touched surfaces.
+- [x] `npm run lint` passes in `UI/`.
+- [x] `npm run build` passes in `UI/`.
+- [x] `npm run validate:i18n` passes in `UI/`.
+- [x] `npm run test:ci` passes in `UI/`.

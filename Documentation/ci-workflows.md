@@ -18,7 +18,6 @@ That split keeps API and UI validation independent while still surfacing both ch
 - `api-ci` performs full backend validation only when `API/**` or `.github/workflows/api-ci.yml` changed.
 - `ui-ci` performs full frontend validation only when `UI/**` or `.github/workflows/ui-ci.yml` changed.
 - When a workflow's area did not change, the workflow still completes with a skip message so the check remains visible instead of disappearing entirely.
-- `ui-ci` also supports `workflow_dispatch` for an intentional full UI validation run.
 
 ## Contributor Expectations
 
