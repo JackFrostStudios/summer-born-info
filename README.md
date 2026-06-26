@@ -6,6 +6,7 @@ This repository contains the Summer Born Information platform split into separat
 
 - [`API/`](./API/) - .NET backend, local infrastructure, and automated tests. Start with [API/README.md](./API/README.md).
 - [`UI/`](./UI/) - Angular frontend application. Start with [UI/README.md](./UI/README.md).
+- [`Documentation/`](./Documentation/) - shared repository documentation, including [CI workflow guidance](./Documentation/ci-workflows.md).
 - [`Plans/`](./Plans/) - delivery-ready implementation plans.
 - [`Roadmap/`](./Roadmap/) - higher-level roadmap and initiative planning.
 - [`AI_PROJECT_GUIDE.md`](./AI_PROJECT_GUIDE.md) - top-level repository boundaries for AI helpers and contributors.
@@ -21,7 +22,7 @@ This repository contains the Summer Born Information platform split into separat
 
 ## CI Workflows
 
-Repository checks are split across `.github/workflows/api-ci.yml` for API validation and `.github/workflows/ui-ci.yml` for UI validation. For the exact UI commands and coverage expectations needed to reproduce a `ui-ci` failure locally, use [UI/README.md](./UI/README.md).
+Repository checks are split across `.github/workflows/api-ci.yml` for API validation and `.github/workflows/ui-ci.yml` for UI validation. For the shared workflow overview, trigger behavior, and artifact expectations, use [Documentation/ci-workflows.md](./Documentation/ci-workflows.md). For the exact UI commands and coverage expectations needed to reproduce a `ui-ci` failure locally, use [UI/README.md](./UI/README.md).
 
 The UI also documents its Angular localization workflow there, including how to mark user-facing template strings, refresh `UI/src/locale/messages.xlf`, and run the localized-build validation commands.
 
