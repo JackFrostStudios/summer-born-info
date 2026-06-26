@@ -115,7 +115,7 @@ Given a contributor reading repository docs to understand CI behavior, when they
 
 - [x] `api-ci` validation job checkout no longer uses `fetch-depth: 0`.
 - [x] `ui-ci` validation job checkout no longer uses `fetch-depth: 0`.
-- [ ] `UI/.vscode/extensions.json` recommends both Angular Language Service and Prettier.
+- [x] `UI/.vscode/extensions.json` recommends both Angular Language Service and Prettier.
 - [ ] Angular prefix configuration is updated from `app` to `sbi` in workspace config and lint rules.
 - [ ] Existing Angular selectors/bootstrap references are updated to match the `sbi` prefix.
 - [ ] `UI/package.json` includes a Node `engines` constraint.
