@@ -116,8 +116,8 @@ Given a contributor reading repository docs to understand CI behavior, when they
 - [x] `api-ci` validation job checkout no longer uses `fetch-depth: 0`.
 - [x] `ui-ci` validation job checkout no longer uses `fetch-depth: 0`.
 - [x] `UI/.vscode/extensions.json` recommends both Angular Language Service and Prettier.
-- [ ] Angular prefix configuration is updated from `app` to `sbi` in workspace config and lint rules.
-- [ ] Existing Angular selectors/bootstrap references are updated to match the `sbi` prefix.
+- [x] Angular prefix configuration is updated from `app` to `sbi` in workspace config and lint rules.
+- [x] Existing Angular selectors/bootstrap references are updated to match the `sbi` prefix.
 - [ ] `UI/package.json` includes a Node `engines` constraint.
 - [ ] UI locale configuration and documentation consistently use `en-GB`.
 - [ ] Any tracked localization artifact impacted by the locale change is refreshed and committed.

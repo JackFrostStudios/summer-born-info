@@ -39,6 +39,7 @@ The UI is currently an Angular application with server-side rendering support, a
 - Keep the root `App` component focused on app bootstrap concerns and router outlet composition.
 - Keep `RootShell` focused on shell concerns such as app-level layout, navigation framing, and nested router outlet composition.
 - Put feature-specific behaviour in feature components, routes, and services rather than in `App` or the root shell.
+- Use the `sbi` prefix for Angular selectors and bootstrap tags across workspace configuration and existing components.
 - Prefer standalone Angular APIs and keep module-era patterns out unless an existing dependency requires them.
 - When adding a reusable abstraction, make sure at least two consumers justify it.
 

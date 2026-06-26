@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-home-placeholder',
+  selector: 'sbi-home-placeholder',
   templateUrl: './home-placeholder.html',
   styleUrl: './home-placeholder.scss',
 })

@@ -16,7 +16,7 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "sbi",
       "i18n": {
         "sourceLocale": "en-US"
       },
