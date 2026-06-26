@@ -222,9 +222,9 @@ Then they should understand where visible strings belong, how to mark them, how 
 - [x] The existing UI app, templates, and tests pass under the stricter compiler configuration.
 - [x] `UI/eslint.config.js` uses type-aware `typescript-eslint` presets with `projectService: true`.
 - [x] Angular TypeScript, template, accessibility, and i18n lint rules are enforced from a strict baseline with only the documented repo-policy exceptions disabled.
-- [ ] The UI workspace includes standard Angular localize support with English configured as the source locale.
-- [ ] `UI/angular.json` and related files define a stable extraction output location and localized build path.
-- [ ] `UI/package.json` exposes stable scripts for extraction, localized build validation, and the revised single-pass CI test workflow.
+- [x] The UI workspace includes standard Angular localize support with English configured as the source locale.
+- [x] `UI/angular.json` and related files define a stable extraction output location and localized build path.
+- [x] `UI/package.json` exposes stable scripts for extraction, localized build validation, and the revised single-pass CI test workflow.
 - [ ] `.github/workflows/ui-ci.yml` runs the UI tests once, publishes test results, and publishes a readable coverage summary in addition to retaining any useful artifacts.
 - [ ] The UI CI workflow enforces the finalized i18n-ready lint/build contract.
 - [ ] `UI/README.md` documents the localization workflow, revised CI reproduction commands, and the contributor expectations for marking translatable strings.
