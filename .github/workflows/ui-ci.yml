@@ -11,7 +11,8 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
+  checks: write
+  pull-requests: write
 
 jobs:
   ui-ci:
@@ -54,17 +55,50 @@ jobs:
       - name: Build
         if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
         run: npm run build
-      - name: Run tests
+      - name: Validate i18n extraction and localized build
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
+        run: npm run validate:i18n
+      - name: Run tests with coverage
         if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
         run: npm run test:ci
-      - name: Run coverage
-        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
-        run: npm run test:coverage
       - name: Upload coverage report
         if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ui-coverage
           path: ${{ github.workspace }}/UI/coverage
           retention-days: 5
           if-no-files-found: error
+      - name: Publish code coverage summary
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
+        uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95 # v1.3.0
+        with:
+          filename: /UI/coverage/summer-born-info/cobertura-coverage.xml
+          badge: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: false
+          indicators: true
+          fail_below_min: false
+          output: both
+      - name: Add coverage PR comment
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
+        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
+        with:
+          recreate: true
+          path: code-coverage-results.md
+      - name: Upload test results
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ui-test-results
+          path: |
+            ${{ github.workspace }}/UI/test-results/junit.xml
+            ${{ github.workspace }}/UI/test-results/results.json
+          retention-days: 5
+          if-no-files-found: error
+      - name: Publish test results
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.ui == 'true'
+        uses: EnricoMi/publish-unit-test-result-action@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2.23.0
+        with:
+          files: ${{ github.workspace }}/UI/test-results/junit.xml
