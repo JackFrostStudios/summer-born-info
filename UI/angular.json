@@ -102,7 +102,14 @@
             },
             "reporters": [
               "default",
-              ["junit", { "outputFile": "test-results/junit.xml", "suiteName": "summer-born-info-ui", "addFileAttribute": true }],
+              [
+                "junit",
+                {
+                  "outputFile": "test-results/junit.xml",
+                  "suiteName": "summer-born-info-ui",
+                  "addFileAttribute": true
+                }
+              ],
               ["json", { "outputFile": "test-results/results.json" }]
             ]
           }
