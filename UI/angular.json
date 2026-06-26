@@ -87,13 +87,24 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "coverageReporters": ["text-summary", "html", "lcov", "cobertura"],
+            "coverageReporters": [
+              "text-summary",
+              "html",
+              "lcov",
+              "cobertura",
+              ["json-summary", { "file": "coverage-summary.json" }]
+            ],
             "coverageThresholds": {
               "statements": 90,
               "branches": 90,
               "functions": 90,
               "lines": 90
-            }
+            },
+            "reporters": [
+              "default",
+              ["junit", { "outputFile": "test-results/junit.xml", "suiteName": "summer-born-info-ui", "addFileAttribute": true }],
+              ["json", { "outputFile": "test-results/results.json" }]
+            ]
           }
         },
         "extract-i18n": {

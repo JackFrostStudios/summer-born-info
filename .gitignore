@@ -451,6 +451,7 @@ yarn-error.log
 /UI/.angular/cache
 /UI/connect.lock
 /UI/coverage
+/UI/test-results
 /UI/libpeerconnection.log
 /UI/testem.log
 /UI/typings
