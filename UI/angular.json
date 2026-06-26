@@ -18,7 +18,7 @@
       "sourceRoot": "src",
       "prefix": "sbi",
       "i18n": {
-        "sourceLocale": "en-US"
+        "sourceLocale": "en-GB"
       },
       "architect": {
         "build": {

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file source-language="en-US" datatype="plaintext" original="ng2.template">
+  <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
       <trans-unit id="homePlaceholderHeading" datatype="html">
-        <source> Summer Born Info </source>
+        <source>Summer Born Info</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home-placeholder.html</context>
-          <context context-type="linenumber">6,8</context>
+          <context context-type="linenumber">2,3</context>
         </context-group>
       </trans-unit>
       <trans-unit id="homePlaceholderSummary" datatype="html">
-        <source> Application shell ready for upcoming UI work. </source>
+        <source>Application shell ready for upcoming UI work.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home-placeholder.html</context>
-          <context context-type="linenumber">9,12</context>
+          <context context-type="linenumber">3,5</context>
         </context-group>
       </trans-unit>
     </body>

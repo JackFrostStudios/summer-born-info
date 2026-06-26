@@ -83,7 +83,7 @@ Use a meaningful description when it helps translators or reviewers, and add a c
 
 ## Localization Workflow
 
-The UI uses the standard Angular `@angular/localize` workflow with `en-US` as the source locale.
+The UI uses the standard Angular `@angular/localize` workflow with `en-GB` as the source locale.
 
 - Source-locale extraction output lives at `UI/src/locale/messages.xlf`.
 - Refresh extracted messages after adding, removing, or changing marked user-facing template strings.
