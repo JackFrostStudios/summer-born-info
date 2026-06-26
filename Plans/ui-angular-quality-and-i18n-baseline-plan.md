@@ -227,6 +227,6 @@ Then they should understand where visible strings belong, how to mark them, how 
 - [x] `UI/package.json` exposes stable scripts for extraction, localized build validation, and the revised single-pass CI test workflow.
 - [x] `.github/workflows/ui-ci.yml` runs the UI tests once, publishes test results, and publishes a readable coverage summary in addition to retaining any useful artifacts.
 - [x] The UI CI workflow enforces the finalized i18n-ready lint/build contract.
-- [ ] `UI/README.md` documents the localization workflow, revised CI reproduction commands, and the contributor expectations for marking translatable strings.
-- [ ] `UI/AI_PROJECT_GUIDE.md` records any new ownership rule for locale files or localization-related structure.
-- [ ] Final validation confirms lint, build, extraction, localized build, tests, and coverage all pass from the `UI/` workspace.
+- [x] `UI/README.md` documents the localization workflow, revised CI reproduction commands, and the contributor expectations for marking translatable strings.
+- [x] `UI/AI_PROJECT_GUIDE.md` records any new ownership rule for locale files or localization-related structure.
+- [x] Final validation confirms lint, build, extraction, localized build, tests, and coverage all pass from the `UI/` workspace.

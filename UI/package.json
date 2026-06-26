@@ -7,7 +7,7 @@
     "build": "ng build",
     "build:localize": "ng build --configuration production,localized",
     "extract:i18n": "ng run summer-born-info:extract-i18n",
-    "validate:i18n": "npm run extract:i18n && npm run build:localize",
+    "validate:i18n": "npm run extract:i18n && git diff --exit-code -- src/locale/messages.xlf && npm run build:localize",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:run": "ng test --watch=false",

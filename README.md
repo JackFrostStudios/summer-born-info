@@ -23,6 +23,8 @@ This repository contains the Summer Born Information platform split into separat
 
 Repository checks are split across `.github/workflows/api-ci.yml` for API validation and `.github/workflows/ui-ci.yml` for UI validation. For the exact UI commands and coverage expectations needed to reproduce a `ui-ci` failure locally, use [UI/README.md](./UI/README.md).
 
+The UI also documents its Angular localization workflow there, including how to mark user-facing template strings, refresh `UI/src/locale/messages.xlf`, and run the localized-build validation commands.
+
 ## License
 
 This project is licensed under the GNU General Public License. See [LICENSE](./LICENSE).
