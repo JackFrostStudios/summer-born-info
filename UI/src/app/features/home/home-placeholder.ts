@@ -5,4 +5,6 @@ import { Component } from '@angular/core';
   templateUrl: './home-placeholder.html',
   styleUrl: './home-placeholder.scss',
 })
-export class HomePlaceholder {}
+export class HomePlaceholder {
+  protected readonly headingId = 'home-placeholder-heading';
+}
