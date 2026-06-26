@@ -32,25 +32,34 @@ jobs:
             api:
               - '.github/workflows/api-ci.yml'
               - 'API/**'
+      - name: Decide whether to run full API validation
+        id: should-run
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "api=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "api=${{ steps.changes.outputs.api }}" >> "$GITHUB_OUTPUT"
       - name: Skip API validation when no API files changed
-        if: steps.changes.outputs.api != 'true'
+        if: steps.should-run.outputs.api != 'true'
         run: echo "No API changes detected; skipping API validation."
       - name: Set up dotnet
-        if: steps.changes.outputs.api == 'true'
+        if: steps.should-run.outputs.api == 'true'
         uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
         with:
           dotnet-version: 10.0.x
       - name: Install dotnet-coverage tool
-        if: steps.changes.outputs.api == 'true'
+        if: steps.should-run.outputs.api == 'true'
         run: dotnet tool install -g dotnet-coverage
       - name: Restore solution
-        if: steps.changes.outputs.api == 'true'
+        if: steps.should-run.outputs.api == 'true'
         run: dotnet restore SummerBornInfo.sln
       - name: Build solution
-        if: steps.changes.outputs.api == 'true'
+        if: steps.should-run.outputs.api == 'true'
         run: dotnet build SummerBornInfo.sln -c Release --no-restore
       - name: Run tests
-        if: steps.changes.outputs.api == 'true'
+        if: steps.should-run.outputs.api == 'true'
         run: >
           dotnet test SummerBornInfo.sln
           -c Release
@@ -60,10 +69,10 @@ jobs:
           --coverlet-exclude-assemblies-without-sources MissingAll
           --coverlet-output-format cobertura
       - name: Merge Coverage Reports
-        if: steps.changes.outputs.api == 'true'
+        if: steps.should-run.outputs.api == 'true'
         run: dotnet coverage merge --reports "**/coverage.cobertura*.xml" -f cobertura -o coverage-results/coverage.xml
       - name: Upload coverage report
-        if: steps.changes.outputs.api == 'true'
+        if: steps.should-run.outputs.api == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage
@@ -71,7 +80,7 @@ jobs:
           retention-days: 5
           if-no-files-found: ignore
       - name: Publish code coverage summary
-        if: steps.changes.outputs.api == 'true'
+        if: steps.should-run.outputs.api == 'true'
         uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95 # v1.3.0
         with:
           filename: /API/coverage-results/coverage.xml
@@ -84,13 +93,13 @@ jobs:
           output: both
           thresholds: "90 100"
       - name: Add coverage PR comment
-        if: steps.changes.outputs.api == 'true'
+        if: steps.should-run.outputs.api == 'true'
         uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
         with:
           recreate: true
           path: code-coverage-results.md
       - name: Upload test results
-        if: steps.changes.outputs.api == 'true'
+        if: steps.should-run.outputs.api == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: test-results
@@ -98,7 +107,7 @@ jobs:
           retention-days: 5
           if-no-files-found: ignore
       - name: Publish test results
-        if: steps.changes.outputs.api == 'true'
+        if: steps.should-run.outputs.api == 'true'
         uses: EnricoMi/publish-unit-test-result-action@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2.23.0
         with:
           files: ${{ github.workspace }}/**/TestResults/**/*.trx
