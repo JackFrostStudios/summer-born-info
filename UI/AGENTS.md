@@ -13,6 +13,8 @@ Use this file when the requested change belongs to the Angular UI in `UI/`.
 - Read the relevant plan before making changes and treat it as the delivery contract unless the user redirects the work.
 - If the plan is missing, incomplete, or no longer matches the requested change, pause and align with the user instead of inventing a new UI workflow.
 - Update the existing plan to reflect delivered tasks when the work changes its completion state.
+- Before handing over UI code changes, run the relevant workspace validation commands from `UI/` unless the user explicitly narrows the scope or accepts the risk of skipping them.
+- Treat formatting, linting, and localization artifact refresh as part of completing UI work, not optional polish after implementation.
 - Test in proportion to the UI change:
   - documentation-only work should be validated for command accuracy, links, and internal consistency,
   - component or routing behaviour changes should include or update automated tests where practical,
@@ -24,6 +26,15 @@ Use this file when the requested change belongs to the Angular UI in `UI/`.
 
 - Use [AI_PROJECT_GUIDE.md](./AI_PROJECT_GUIDE.md) as the source of truth for UI structure, conventions, and testing/layout expectations.
 - Use [../AI_PROJECT_GUIDE.md](../AI_PROJECT_GUIDE.md) first if you need to confirm whether a change belongs in `UI/` or somewhere else in the repository.
+
+## Completion Commands
+
+- Run `npm run format` when UI files were edited and formatting may have changed.
+- Run `npm run lint` for UI code changes unless the task is documentation-only.
+- Run `npm run extract:i18n` when user-facing template text changed so `src/locale/messages.xlf` stays in sync.
+- Prefer `npm run validate:i18n` before handoff when UI changes may affect localized output, because it checks extraction drift and the localized build path together.
+- Run `npm run test:run` when component, routing, or service behaviour changed, and add or update tests where practical.
+- If you skip one of these commands, explain why in the handoff.
 
 ## Angular And TypeScript Guidance
 
