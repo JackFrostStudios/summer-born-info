@@ -1,0 +1,203 @@
+:root {
+  color-scheme: light;
+  --bg: #f6f0e6;
+  --surface: #fbf7f0;
+  --text: #1e2c38;
+  --muted: #5d6772;
+  --line: rgba(30, 44, 56, 0.2);
+  --line-strong: rgba(30, 44, 56, 0.38);
+  --accent: #9b5a36;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: Baskerville, Georgia, 'Times New Roman', serif;
+  background:
+    linear-gradient(180deg, rgba(255, 252, 246, 0.92), rgba(246, 240, 230, 0.98)),
+    linear-gradient(135deg, #fdf9f1 0%, #f3e7d5 100%);
+}
+
+a {
+  color: inherit;
+}
+
+.site-header,
+main,
+footer {
+  width: min(1080px, calc(100% - 2.5rem));
+  margin: 0 auto;
+}
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+  padding: 1.5rem 0 0;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.brand-block {
+  padding-bottom: 1rem;
+}
+
+.brand-kicker,
+.section-label,
+.brand-mark {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.brand-kicker,
+.section-label {
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.brand-mark {
+  margin-top: 0.45rem;
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+}
+
+.site-header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-bottom: 0.9rem;
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.site-header nav a {
+  padding: 0.45rem 0.8rem;
+  border: 1px solid transparent;
+  text-decoration: none;
+}
+
+.site-header nav a:hover,
+.site-header nav a:focus-visible {
+  border-color: var(--line-strong);
+  outline: none;
+}
+
+.hero {
+  padding: 4.75rem 0 3.5rem;
+}
+
+.hero h1,
+.intro-block h2,
+.quote-band h2 {
+  margin: 0;
+  line-height: 0.98;
+  font-weight: 600;
+}
+
+.hero h1 {
+  max-width: 10.5ch;
+  font-size: clamp(3.4rem, 7vw, 6.4rem);
+}
+
+.lede,
+.editorial-grid article p,
+footer p,
+.secondary-note {
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.78;
+  color: var(--muted);
+}
+
+.lede {
+  max-width: 58ch;
+  margin: 1.5rem 0 0;
+  font-size: 1.08rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  align-items: center;
+  margin-top: 1.75rem;
+}
+
+.primary-link,
+footer a {
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 700;
+  text-underline-offset: 0.2em;
+}
+
+.editorial-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+  align-items: start;
+  padding: 1rem 0 2.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.intro-block,
+.editorial-grid article {
+  padding-top: 1.75rem;
+}
+
+.intro-block h2 {
+  font-size: clamp(2rem, 3vw, 3rem);
+}
+
+.editorial-grid article {
+  border-top: 1px solid var(--line);
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.editorial-grid article h3 {
+  margin: 0 0 0.85rem;
+  font-family: Baskerville, Georgia, 'Times New Roman', serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+
+.quote-band {
+  margin: 0 0 3rem;
+  padding: 2.25rem 0 0;
+  border-top: 1px solid var(--line-strong);
+}
+
+.quote-band h2 {
+  max-width: 18ch;
+  font-size: clamp(2.15rem, 4vw, 3.6rem);
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 0 2rem;
+  border-top: 1px solid var(--line);
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+@media (max-width: 920px) {
+  .site-header,
+  footer {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .editorial-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .hero {
+    padding-top: 3.5rem;
+  }
+}
