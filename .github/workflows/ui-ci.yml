@@ -1,0 +1,122 @@
+name: ui-ci
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      ui: ${{ steps.should-run.outputs.ui }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+      - name: Detect UI changes
+        id: changes
+        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
+        with:
+          filters: |
+            ui:
+              - '.github/workflows/ui-ci.yml'
+              - 'UI/**'
+      - name: Decide whether to run full UI validation
+        id: should-run
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "ui=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "ui=${{ steps.changes.outputs.ui }}" >> "$GITHUB_OUTPUT"
+      - name: Skip UI validation when no UI files changed
+        if: steps.should-run.outputs.ui != 'true'
+        run: echo "No UI changes detected; skipping UI validation."
+  ui-ci:
+    needs: changes
+    if: needs.changes.outputs.ui == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: UI
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Set up Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: UI/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Check formatting
+        run: npm run format:check
+      - name: Lint
+        run: npm run lint
+      - name: Build
+        run: npm run build
+      - name: Validate i18n extraction and localized build
+        run: npm run validate:i18n
+      - name: Run tests with coverage
+        id: tests
+        continue-on-error: true
+        run: npm run test:ci
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ui-coverage
+          path: ${{ github.workspace }}/UI/coverage
+          retention-days: 5
+          if-no-files-found: error
+      - name: Publish code coverage summary
+        if: always()
+        uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95 # v1.3.0
+        with:
+          filename: /UI/coverage/summer-born-info/cobertura-coverage.xml
+          badge: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: false
+          indicators: true
+          fail_below_min: false
+          output: both
+      - name: Add coverage PR comment
+        if: always()
+        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
+        with:
+          header: ui-coverage
+          recreate: true
+          path: code-coverage-results.md
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ui-test-results
+          path: |
+            ${{ github.workspace }}/UI/test-results/junit.xml
+            ${{ github.workspace }}/UI/test-results/results.json
+          retention-days: 5
+          if-no-files-found: error
+      - name: Publish test results
+        if: always()
+        uses: EnricoMi/publish-unit-test-result-action@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2.23.0
+        with:
+          check_name: UI Test Results
+          comment_title: UI Test Results
+          files: ${{ github.workspace }}/UI/test-results/junit.xml
+      - name: Fail job when UI tests fail
+        if: always() && steps.tests.outcome == 'failure'
+        run: exit 1

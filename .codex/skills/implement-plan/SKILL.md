@@ -79,8 +79,10 @@ For every plan step:
    - The minimum relevant files and constraints
    - The delivery instructions needed for that step
    - These additional instructions:
-     - Use the `architect` skill to design the implementation.
-     - Use the `automated-test-developer` skill to write tests.
+     - Use the surface-specific architect skill for the step (`api-architect` for `API/` work or `ui-architect` for `UI/` work).
+     - Use the surface-specific automated test skill for the step (`api-automated-test-developer` for `API/` work or `ui-automated-test-developer` for `UI/` work).
+     - Follow the surface-specific `AGENTS.md` and README validation workflow for the files being changed.
+     - For `UI/` work, treat formatting, linting, and i18n regeneration/validation as completion work when applicable, not optional cleanup.
      - Before handoff, ensure the build and tests are passing.
 3. Require the sub-agent to report:
    - What it changed
@@ -150,8 +152,10 @@ Relevant context:
 <files, constraints, behaviour notes>
 
 Requirements:
-- Use the architect skill to design the implementation.
-- Use the automated-test-developer skill to write tests.
+- Use the surface-specific architect skill to design the implementation.
+- Use the surface-specific automated test skill to write tests.
+- Follow the surface-specific `AGENTS.md` and README validation workflow for the files you change.
+- If this step changes `UI/`, run the applicable completion commands such as `npm run format`, `npm run lint`, and `npm run extract:i18n` or `npm run validate:i18n` when user-facing template text or localized output is affected.
 - Before handoff, ensure build and tests are passing.
 - Return a concise summary of changes, tests, validation, and any residual risks.
 ```

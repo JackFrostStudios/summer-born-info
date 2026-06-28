@@ -1,0 +1,7 @@
+interface:
+  display_name: "UI Architect"
+  short_description: "UI code placement and feature structure"
+  default_prompt: "Use $ui-architect to decide where Angular UI code belongs and how to fit it into the existing frontend structure."
+
+policy:
+  allow_implicit_invocation: true

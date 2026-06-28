@@ -1,0 +1,7 @@
+interface:
+  display_name: "API Automated Test Developer"
+  short_description: "Integration-first API testing"
+  default_prompt: "Use $api-automated-test-developer to write API tests that follow the project's existing xUnit and integration patterns."
+
+policy:
+  allow_implicit_invocation: true

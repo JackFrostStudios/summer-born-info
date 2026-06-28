@@ -1,0 +1,7 @@
+interface:
+  display_name: "API Architect"
+  short_description: "API code placement and slice structure"
+  default_prompt: "Use $api-architect to decide where API code belongs and how to wire it into the existing .NET vertical-slice structure."
+
+policy:
+  allow_implicit_invocation: true

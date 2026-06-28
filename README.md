@@ -1,62 +1,31 @@
 # Summer Born Information
 
-## Table of Contents
-- [Introduction](#introduction)
-- [Getting Started](#getting-started)
-- [Contributing](#contributing)
-- [License](#license)
-- [FAQ](#faq)
+This repository contains the Summer Born Information platform split into separate API and UI services.
 
-## Introduction
-This project provides a platform for UK parents of summer born children to access information about school admissions and delayed start options.
+## Repository map
 
-Summer born children are those born between April 1st and August 31st in the UK. Parents of these children often face challenges when deciding whether to start their child in school at the standard time or request a delayed start.
+- [`API/`](./API/) - .NET backend, local infrastructure, and automated tests. Start with [API/README.md](./API/README.md).
+- [`UI/`](./UI/) - Angular frontend application. Start with [UI/README.md](./UI/README.md).
+- [`Documentation/`](./Documentation/) - shared repository documentation, including [CI workflow guidance](./Documentation/ci-workflows.md).
+- [`Plans/`](./Plans/) - delivery-ready implementation plans.
+- [`Roadmap/`](./Roadmap/) - higher-level roadmap and initiative planning.
+- [`AI_PROJECT_GUIDE.md`](./AI_PROJECT_GUIDE.md) - top-level repository boundaries for AI helpers and contributors.
+- [`AGENTS.md`](./AGENTS.md) - routing instructions for repo-aware agents.
 
-The platform aims to:
-- Provide clear information about compulsory school age requirements
-- Share experiences from other parents who have requested delayed starts
-- Offer a content management system for administrators to create and manage informational articles
-- Create a community where parents can connect and share their experiences
+## Where to go next
 
-## Getting Started
+- Working on backend behaviour or infrastructure: [API/README.md](./API/README.md)
+- Working on frontend behaviour or styling: [UI/README.md](./UI/README.md)
+- Figuring out which part of the repo owns a change: [AI_PROJECT_GUIDE.md](./AI_PROJECT_GUIDE.md)
+- Updating implementation plans: [Plans/AGENTS.md](./Plans/AGENTS.md)
+- Updating roadmap documents: [Roadmap/AGENTS.md](./Roadmap/AGENTS.md)
 
-For API setup, local running, testing, development guidance, and the Milestone 2 admin auth/bootstrap flow, see [API/README.md](./API/README.md).
+## CI Workflows
 
-## Contributing
+Repository checks are split across `.github/workflows/api-ci.yml` for API validation and `.github/workflows/ui-ci.yml` for UI validation. For the shared workflow overview, trigger behavior, and artifact expectations, use [Documentation/ci-workflows.md](./Documentation/ci-workflows.md). For the exact UI commands and coverage expectations needed to reproduce a `ui-ci` failure locally, use [UI/README.md](./UI/README.md).
 
-We welcome contributions from the community! Here's how you can help:
-
-1. **Report Issues**: If you find any bugs or have suggestions, please open an issue in our GitHub repository.
-2. **Submit Pull Requests**: Create a feature branch, add the feature you think is important and submit a pull request.
-3. **Code Guidelines**: Please ensure your code follows our existing patterns and includes appropriate tests.
-4. **Documentation**: Help us improve our documentation by suggesting edits or adding new content.
+The UI also documents its Angular localization workflow there, including how to mark user-facing template strings, refresh `UI/src/locale/messages.xlf`, and run the localized-build validation commands.
 
 ## License
 
-This project is licensed under the GNU General Public License - see the [LICENSE](./LICENSE) file for details.
-
-## FAQ
-
-### What are summer born children?
-Summer born children are those born between April 1st and August 31st in the UK educational system.
-
-### Can I request a delayed start for my summer born child?
-Yes, parents have the right to request that their summer born child starts school one year later than the standard intake. However, this request must be approved by the local authority.
-
-### What are the benefits of delayed start?
-Potential benefits include:
-- Better emotional and social development
-- Improved academic readiness
-- Reduced pressure on young children
-- Better alignment with developmental stages
-
-### How do I apply for delayed start?
-The application process varies by local authority. Generally, you need to:
-1. Contact your preferred schools
-2. Submit a formal request to the local authority
-3. Provide supporting evidence if required
-4. Wait for the decision
-
-### Where can I find more information?
-For more information about summer born admissions, visit the [UK Government's website](https://www.gov.uk/government/publications/summer-born-children-school-admission) or contact your local authority's education department.
-The website will allow parents to share their experience of requesting delayed start for a specific schools or Authorities.
+This project is licensed under the GNU General Public License. See [LICENSE](./LICENSE).
