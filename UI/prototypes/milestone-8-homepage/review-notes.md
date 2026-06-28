@@ -24,6 +24,17 @@ framing and toward:
 - A more polished header composition than a title with native-looking links
 - Meaningfully different typography and colour schemes while staying editorial and warm
 
+## Stakeholder feedback driving the signal refinement pass
+
+Direction C remained compelling for its public-facing energy, but the next round should make that
+family feel more clearly designed and easier to review as a homepage rather than a loud concept
+sketch. The new options therefore focus on:
+
+- More clearly composed site headers with visible brand, navigation, and action framing
+- Different typography systems and colour palettes while staying bold and campaign-like
+- Strong public-facing hierarchy without drifting into generic app-shell styling
+- Meaningful variation within the same assertive neighbourhood-signal family
+
 ## Direction A: Civic Clarity
 
 **Intent**
@@ -158,3 +169,63 @@ hierarchy, and broad whitespace bands that feel composed rather than boxed in.
 - Large editorial headings need disciplined line length and spacing on narrow screens.
 - This is the most characterful refined option, but it may feel more brand-led than service-led
   compared with B1 or B2.
+
+## Refined Direction C1: Transit Beacon
+
+**Intent**
+
+Keep Direction C's visible neighbourhood energy, but translate it into a stronger civic-broadcast
+identity with a masthead-style header and a cleaner public-information cadence.
+
+**Strengths**
+
+- The header feels most like a finished public site frame rather than a prototype title bar.
+- Cobalt, cream, and signal yellow stay energetic while feeling grounded in service communication.
+- Condensed display typography makes the page highly scannable for announcements or updates.
+
+**Accessibility and implementation considerations**
+
+- Very large condensed headings will need careful line-breaking and spacing on narrow screens.
+- Bright accent yellow should remain paired with dark text to preserve contrast.
+- The stronger header architecture gives a clean translation path into a reusable homepage shell.
+
+## Refined Direction C2: Street Notice
+
+**Intent**
+
+Push Direction C toward a street-poster and local-campaign language, using warmer rust tones and a
+layered masthead to make the homepage feel visible and active.
+
+**Strengths**
+
+- The layered header has the clearest "designed header" feeling of the three C refinements.
+- Poster-inspired serif display type makes the direction feel more local and human than tech-like.
+- Rust, sand, and berry create urgency without relying on fluorescent contrast.
+
+**Accessibility and implementation considerations**
+
+- The warmer palette still needs deliberate contrast checks for secondary text and tinted panels.
+- Poster-style hierarchy can feel crowded if later implementation adds too many competing messages.
+- This is the most overtly campaign-like option, so it should be chosen only if that tone is wanted.
+
+## Refined Direction C3: Assembly Signal
+
+**Intent**
+
+Keep the campaign energy of Direction C, but shift it toward a community-organising tone with bold
+banners, stronger contrast blocks, and a fuller brand-and-navigation header.
+
+**Strengths**
+
+- The green and apricot palette feels distinct while remaining active and public-facing.
+- The banner-led header creates a memorable front door with clear separation between brand and nav.
+- The content blocks feel assertive without depending entirely on one loud accent colour.
+
+**Accessibility and implementation considerations**
+
+- The darker green sections are safer for contrast, but apricot accents should not carry important
+  text alone.
+- This direction has the strongest brand voice, which may be excellent or excessive depending on
+  how neutral the homepage should feel.
+- The visual energy is scalable, but only if later Angular implementation stays disciplined about
+  how many banner treatments appear on one page.
