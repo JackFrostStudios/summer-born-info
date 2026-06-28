@@ -97,6 +97,7 @@ jobs:
         if: always()
         uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
         with:
+          header: ui-coverage
           recreate: true
           path: code-coverage-results.md
       - name: Upload test results
@@ -113,6 +114,8 @@ jobs:
         if: always()
         uses: EnricoMi/publish-unit-test-result-action@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2.23.0
         with:
+          check_name: UI Test Results
+          comment_title: UI Test Results
           files: ${{ github.workspace }}/UI/test-results/junit.xml
       - name: Fail job when UI tests fail
         if: always() && steps.tests.outcome == 'failure'
