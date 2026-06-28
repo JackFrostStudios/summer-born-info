@@ -35,6 +35,16 @@ sketch. The new options therefore focus on:
 - Strong public-facing hierarchy without drifting into generic app-shell styling
 - Meaningful variation within the same assertive neighbourhood-signal family
 
+## Stakeholder feedback driving the C-family colour pass
+
+The later C-family refinements landed well on layout, hierarchy, and header composition, but the
+colour systems still did not feel right. The next pass therefore focuses on:
+
+- Keeping the strongest C-family layout and site-header baseline intact
+- Testing dramatically different palette directions without drifting toward Direction B
+- Making each option's primary colour obviously different at a glance
+- Preserving the assertive, campaign-like, public-facing tone of Direction C
+
 ## Direction A: Civic Clarity
 
 **Intent**
@@ -229,3 +239,65 @@ banners, stronger contrast blocks, and a fuller brand-and-navigation header.
   how neutral the homepage should feel.
 - The visual energy is scalable, but only if later Angular implementation stays disciplined about
   how many banner treatments appear on one page.
+
+## Colour Variant C4: Strike Poster
+
+**Intent**
+
+Keep the strongest Direction C masthead logic, but drive the page with a scarlet-led public-notice
+palette that feels urgent, visible, and unmistakably campaign-like.
+
+**Strengths**
+
+- The red-led system is the clearest urgency option in the whole prototype family.
+- Brass and cream supporting tones stop the page from feeling flat or purely warning-like.
+- The header still reads as a designed site frame rather than a title and utility links.
+
+**Accessibility and implementation considerations**
+
+- The scarlet should stay paired with light surfaces and dark text rather than carrying body copy.
+- This is the loudest palette, so the Angular implementation would need restraint around repeated
+  red blocks.
+- If the homepage should feel more supportive than urgent, this may overshoot the desired tone.
+
+## Colour Variant C5: Harbour Flare
+
+**Intent**
+
+Stay inside Direction C's public-signal family while testing a vivid teal-led palette that feels
+cleaner, more civic-broadcast, and less expected than the earlier greens and blues.
+
+**Strengths**
+
+- Teal gives the page a strong identity without reading as institutional navy or editorial neutral.
+- Acid-lime support colours keep the page active and visible without collapsing into warning red.
+- The broadcast-style header feels polished and directional while remaining highly scannable.
+
+**Accessibility and implementation considerations**
+
+- Lime accents should remain secondary and should not carry small text on their own.
+- Teal can feel fresher and more contemporary, but the team should confirm it still matches the
+  desired trust posture.
+- This is likely the easiest of the new palettes to scale across multiple public pages.
+
+## Colour Variant C6: Public Rhythm
+
+**Intent**
+
+Push Direction C into a more contemporary event-poster direction using electric violet as the
+primary colour while preserving the same campaign-style hierarchy and designed header framing.
+
+**Strengths**
+
+- Violet is the most unexpected of the C-family primaries and makes the comparison round feel
+  clearly different at a glance.
+- Peach and cream soften the palette enough to keep the page human rather than synthetic.
+- The stacked header and banner language still feel public-facing and deliberate.
+
+**Accessibility and implementation considerations**
+
+- Violet can become harsh if overused, so the final implementation should preserve generous neutral
+  space around it.
+- Peach accents need deliberate contrast checks whenever they sit behind text.
+- This option has strong personality, but it risks feeling more branded or event-like than the
+  service may ultimately want.
