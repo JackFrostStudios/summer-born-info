@@ -118,6 +118,12 @@ h1 {
   border-top: 4px solid var(--accent);
 }
 
+.prototype-card-signal {
+  border-top-color: #134b8c;
+  background:
+    linear-gradient(180deg, rgba(19, 75, 140, 0.05), rgba(19, 75, 140, 0)), var(--surface);
+}
+
 .prototype-card a,
 .notes-callout a {
   display: inline-flex;
