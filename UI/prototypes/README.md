@@ -2,12 +2,17 @@
 
 Use [Surge](https://surge.sh/) when you want to temporarily publish one of the static prototype folders for feedback without setting up a full deployment pipeline.
 
-## Milestone 8 Homepage Prototype
+## Milestone 8 Homepage Prototypes
 
-From the repository root, move into the prototype folder:
+The approved milestone 8 visual references are:
+
+- `UI/prototypes/stitch_summer_born_school_guide/`
+- `UI/prototypes/stitch_summer_born_school_guide_dark_mode/`
+
+From the repository root, move into the prototype folder you want to share:
 
 ```powershell
-cd UI/prototypes/milestone-8-homepage
+cd UI/prototypes/stitch_summer_born_school_guide
 ```
 
 Publish it with `npx` so Surge is not installed globally:
@@ -25,7 +30,7 @@ Notes:
 If you prefer to avoid changing directories, run the same deployment from the repository root:
 
 ```powershell
-npx surge .\UI\prototypes\milestone-8-homepage summer-born-homepage-prototype.surge.sh
+npx surge .\UI\prototypes\stitch_summer_born_school_guide summer-born-homepage-prototype.surge.sh
 ```
 
 ## Teardown

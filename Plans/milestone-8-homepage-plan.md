@@ -163,7 +163,7 @@ Given a contributor adds a future public UI area, when they need common colours,
 
 ## 11. Completion Checklist
 
-- [x] A milestone 8 prototype folder exists under `UI/` with multiple static HTML/CSS homepage directions.
+- [x] Milestone 8 prototype artifacts exist under `UI/prototypes/` with multiple static HTML/CSS homepage directions.
 - [x] The prototype set includes at least three visually distinct options.
 - [x] Each prototype includes enough context for the user to choose a preferred direction confidently.
 - [x] The approved direction is captured before Angular homepage implementation begins.
