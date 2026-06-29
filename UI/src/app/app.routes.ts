@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { HomePlaceholder } from './features/home/home-placeholder';
+import { Home } from './features/home/home';
 import { RootShell } from './shell/root-shell';
 
 export const routes: Routes = [
@@ -10,7 +10,7 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        component: HomePlaceholder,
+        component: Home,
       },
     ],
   },
