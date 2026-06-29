@@ -16,6 +16,8 @@ The UI is currently an Angular application with server-side rendering support, a
 - `UI/src/app/features/home/home-placeholder.*` is the current baseline feature route rendered inside the shell.
 - `UI/src/locale/messages.xlf` is the canonical extracted source-messages file for Angular i18n.
 - `UI/src/styles.scss` is the shared global stylesheet entry point.
+- `UI/src/styles/` holds modular shared CSS concerns such as font registration, reset rules,
+  tokens, base element defaults, and reusable primitives.
 - `UI/public/` holds static assets copied by the Angular build.
 
 ## Ownership And Placement Rules
@@ -52,7 +54,12 @@ The UI is currently an Angular application with server-side rendering support, a
 
 ### Styling And Layout
 
-- Keep global styling in `UI/src/styles.scss` minimal and intentional.
+- Keep `UI/src/styles.scss` as the shared stylesheet entry point and place reusable global concerns
+  in modular files under `UI/src/styles/`.
+- Use shared CSS custom properties from `UI/src/styles/_tokens.scss` for common colour, typography,
+  spacing, border, focus, surface, shadow, and page-width values.
+- Keep global primitives prefixed with `sbi-` and limited to reusable layout, surface, and
+  interaction patterns that are useful across multiple features.
 - Prefer component-scoped styles for feature-specific presentation.
 - Build layouts with semantic HTML first, then layer styling on top.
 - Treat responsive behaviour, keyboard flow, and focus visibility as part of the feature, not polish to defer.

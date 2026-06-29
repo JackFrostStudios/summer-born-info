@@ -1,0 +1,109 @@
+:root {
+  color-scheme: light dark;
+
+  --sbi-font-family-sans:
+    'Hanken Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --sbi-font-size-0: 0.875rem;
+  --sbi-font-size-1: 1rem;
+  --sbi-font-size-2: 1.125rem;
+  --sbi-font-size-3: 1.5rem;
+  --sbi-font-size-4: 2rem;
+  --sbi-font-size-5: 3rem;
+  --sbi-font-size-5-compact: 2rem;
+  --sbi-font-weight-regular: 400;
+  --sbi-font-weight-bold: 700;
+  --sbi-font-weight-extra-bold: 800;
+  --sbi-line-height-tight: 1.1;
+  --sbi-line-height-heading: 1.2;
+  --sbi-line-height-body: 1.6;
+  --sbi-letter-spacing: 0;
+
+  --sbi-space-1: 0.25rem;
+  --sbi-space-2: 0.5rem;
+  --sbi-space-3: 0.75rem;
+  --sbi-space-4: 1rem;
+  --sbi-space-5: 1.5rem;
+  --sbi-space-6: 2rem;
+  --sbi-space-7: 3rem;
+  --sbi-space-8: 4rem;
+
+  --sbi-size-container-max: 80rem;
+  --sbi-size-readable: 42rem;
+  --sbi-page-margin: clamp(1rem, 4vw, 3rem);
+  --sbi-grid-gutter: 1.5rem;
+
+  --sbi-radius-sm: 0.125rem;
+  --sbi-radius-md: 0.25rem;
+  --sbi-radius-lg: 0.5rem;
+  --sbi-radius-pill: 9999px;
+  --sbi-border-width: 2px;
+  --sbi-border-width-thin: 1px;
+  --sbi-shadow-offset: 0.25rem;
+  --sbi-shadow-offset-lg: 0.5rem;
+  --sbi-focus-ring-width: 0.1875rem;
+  --sbi-focus-ring-offset: 0.1875rem;
+
+  --sbi-color-background: #f7fafa;
+  --sbi-color-background: light-dark(#f7fafa, #131313);
+  --sbi-color-surface: #f7fafa;
+  --sbi-color-surface: light-dark(#f7fafa, #131313);
+  --sbi-color-surface-lowest: #ffffff;
+  --sbi-color-surface-lowest: light-dark(#ffffff, #0e0e0e);
+  --sbi-color-surface-low: #f1f4f4;
+  --sbi-color-surface-low: light-dark(#f1f4f4, #1c1b1b);
+  --sbi-color-surface-container: #ebeeef;
+  --sbi-color-surface-container: light-dark(#ebeeef, #1e2121);
+  --sbi-color-surface-high: #e6e9e9;
+  --sbi-color-surface-high: light-dark(#e6e9e9, #282a2a);
+  --sbi-color-surface-highest: #e0e3e3;
+  --sbi-color-surface-highest: light-dark(#e0e3e3, #333535);
+  --sbi-color-text: #181c1d;
+  --sbi-color-text: light-dark(#181c1d, #e1e3e3);
+  --sbi-color-text-muted: #3e494a;
+  --sbi-color-text-muted: light-dark(#3e494a, #bec8ca);
+  --sbi-color-inverse-surface: #2d3132;
+  --sbi-color-inverse-surface: light-dark(#2d3132, #e1e3e3);
+  --sbi-color-inverse-text: #eef1f2;
+  --sbi-color-inverse-text: light-dark(#eef1f2, #181c1d);
+  --sbi-color-border: #6f797a;
+  --sbi-color-border: light-dark(#6f797a, #899394);
+  --sbi-color-border-strong: #181c1d;
+  --sbi-color-border-strong: light-dark(#181c1d, #899394);
+  --sbi-color-border-subtle: #bec8ca;
+  --sbi-color-border-subtle: light-dark(#bec8ca, #3e494a);
+  --sbi-color-primary: #00535b;
+  --sbi-color-primary: light-dark(#00535b, #82d3de);
+  --sbi-color-on-primary: #ffffff;
+  --sbi-color-on-primary: light-dark(#ffffff, #00363c);
+  --sbi-color-primary-container: #006d77;
+  --sbi-color-primary-container: light-dark(#006d77, #004f56);
+  --sbi-color-on-primary-container: #9becf7;
+  --sbi-color-on-primary-container: light-dark(#9becf7, #9becf7);
+  --sbi-color-secondary: #236863;
+  --sbi-color-secondary: light-dark(#236863, #90d3cb);
+  --sbi-color-secondary-container: #a9ece5;
+  --sbi-color-secondary-container: light-dark(#a9ece5, #00504b);
+  --sbi-color-on-secondary-container: #286d67;
+  --sbi-color-on-secondary-container: light-dark(#286d67, #a9ece5);
+  --sbi-color-tertiary-container: #765d54;
+  --sbi-color-tertiary-container: light-dark(#765d54, #5d453e);
+  --sbi-color-on-tertiary-container: #fad8cd;
+  --sbi-color-on-tertiary-container: light-dark(#fad8cd, #fddbd0);
+  --sbi-color-accent-warm: #fddbd0;
+  --sbi-color-accent-warm: light-dark(#fddbd0, #5d453e);
+  --sbi-color-on-accent-warm: #291711;
+  --sbi-color-on-accent-warm: light-dark(#291711, #fddbd0);
+  --sbi-color-error: #ba1a1a;
+  --sbi-color-error: light-dark(#ba1a1a, #ffb4ab);
+  --sbi-color-on-error: #ffffff;
+  --sbi-color-on-error: light-dark(#ffffff, #690005);
+  --sbi-color-shadow: #181c1d;
+  --sbi-color-shadow: light-dark(#181c1d, #3e494a);
+
+  --sbi-border: var(--sbi-border-width) solid var(--sbi-color-border);
+  --sbi-border-strong: var(--sbi-border-width) solid var(--sbi-color-border-strong);
+  --sbi-border-subtle: var(--sbi-border-width-thin) solid var(--sbi-color-border-subtle);
+  --sbi-shadow-hard: var(--sbi-shadow-offset) var(--sbi-shadow-offset) 0 0 var(--sbi-color-shadow);
+  --sbi-shadow-hard-lg: var(--sbi-shadow-offset-lg) var(--sbi-shadow-offset-lg) 0 0
+    var(--sbi-color-shadow);
+}
