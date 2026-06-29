@@ -13,7 +13,7 @@ The UI is currently an Angular application with server-side rendering support, a
 - `UI/src/app/app.config.ts` and `app.config.server.ts` hold browser and server configuration.
 - `UI/src/app/app.routes.ts` is the route entry point for browser routes, with `app.routes.server.ts` holding the server route definitions.
 - `UI/src/app/shell/root-shell.*` owns shell-level layout and nested route composition.
-- `UI/src/app/features/home/home-placeholder.*` is the current baseline feature route rendered inside the shell.
+- `UI/src/app/features/home/home.*` is the current public homepage feature route rendered inside the shell.
 - `UI/src/locale/messages.xlf` is the canonical extracted source-messages file for Angular i18n.
 - `UI/src/styles.scss` is the shared global stylesheet entry point.
 - `UI/src/styles/` holds modular shared CSS concerns such as font registration, reset rules,
