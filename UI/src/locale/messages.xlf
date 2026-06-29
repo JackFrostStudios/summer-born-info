@@ -16,6 +16,43 @@
           <context context-type="linenumber">3,5</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="colourModeControlLabel" datatype="html">
+        <source>Colour mode</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shell/root-shell.html</context>
+          <context context-type="linenumber">8,13</context>
+        </context-group>
+        <note priority="1" from="description">Labels the application colour mode
+          selector</note>
+        <note priority="1" from="meaning">Colour mode control label</note>
+      </trans-unit>
+      <trans-unit id="colourModeSystemOption" datatype="html">
+        <source> System default </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shell/root-shell.html</context>
+          <context context-type="linenumber">20,22</context>
+        </context-group>
+        <note priority="1" from="description">Use system preference</note>
+        <note priority="1" from="meaning">Colour mode option</note>
+      </trans-unit>
+      <trans-unit id="colourModeLightOption" datatype="html">
+        <source> Light </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shell/root-shell.html</context>
+          <context context-type="linenumber">23,25</context>
+        </context-group>
+        <note priority="1" from="description">Use light scheme</note>
+        <note priority="1" from="meaning">Colour mode option</note>
+      </trans-unit>
+      <trans-unit id="colourModeDarkOption" datatype="html">
+        <source> Dark </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shell/root-shell.html</context>
+          <context context-type="linenumber">26,31</context>
+        </context-group>
+        <note priority="1" from="description">Use dark scheme</note>
+        <note priority="1" from="meaning">Colour mode option</note>
+      </trans-unit>
     </body>
   </file>
 </xliff>

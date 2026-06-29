@@ -26,8 +26,10 @@ is likely to be reused by more than one feature.
 ## Theme Readiness
 
 The colour tokens use `light-dark()` so they can follow the operating-system colour preference.
-The explicit light, dark, and system-default user control is a later milestone-8 step; do not add
-mode persistence or UI controls in this foundation layer.
+`:root` keeps `color-scheme: light dark` as the default. The shell colour-mode control stores only
+explicit light or dark choices under `sbi:colour-mode`, applies them through the
+`data-sbi-colour-mode` document-root attribute, and removes both the attribute and persisted value
+when reset to system default.
 
 ## Prototype Content
 

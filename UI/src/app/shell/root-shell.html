@@ -1,3 +1,35 @@
-<main class="app-shell">
-  <router-outlet />
-</main>
+<div class="app-shell">
+  <header class="app-shell__header">
+    <label class="colour-mode-control" for="sbi-colour-mode">
+      <span
+        i18n="
+          Colour mode control label|Labels the application colour mode
+          selector@@colourModeControlLabel"
+        >Colour mode</span
+      >
+      <select
+        id="sbi-colour-mode"
+        name="colour-mode"
+        [value]="selectedColourMode"
+        (change)="selectColourMode($event)"
+      >
+        <option
+          value="system"
+          i18n="Colour mode option|Use system preference@@colourModeSystemOption"
+        >
+          System default
+        </option>
+        <option value="light" i18n="Colour mode option|Use light scheme@@colourModeLightOption">
+          Light
+        </option>
+        <option value="dark" i18n="Colour mode option|Use dark scheme@@colourModeDarkOption">
+          Dark
+        </option>
+      </select>
+    </label>
+  </header>
+
+  <main class="app-shell__main">
+    <router-outlet />
+  </main>
+</div>

@@ -4,6 +4,37 @@
 }
 
 .app-shell {
+  display: grid;
+  gap: var(--sbi-space-5);
   min-height: 100dvh;
   padding: 1.5rem;
+}
+
+.app-shell__header {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.app-shell__main {
+  min-width: 0;
+}
+
+.colour-mode-control {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sbi-space-2);
+  justify-content: flex-end;
+}
+
+.colour-mode-control span {
+  color: var(--sbi-color-text-muted);
+  font-size: var(--sbi-font-size-0);
+  font-weight: var(--sbi-font-weight-bold);
+}
+
+.colour-mode-control select {
+  min-height: 2.75rem;
+  min-width: 10rem;
+  padding: var(--sbi-space-2) var(--sbi-space-4);
 }
