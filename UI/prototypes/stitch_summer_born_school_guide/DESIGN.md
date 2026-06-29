@@ -101,11 +101,13 @@ spacing:
 ---
 
 ## Brand & Style
-The design system adopts a **Soft Brutalist** aesthetic, balancing the structural integrity of educational institutions with the approachability required for student and educator engagement. It prioritizes clarity, hierarchy, and "structural honesty" by utilizing visible borders and grid-based layouts. 
+
+The design system adopts a **Soft Brutalist** aesthetic, balancing the structural integrity of educational institutions with the approachability required for student and educator engagement. It prioritizes clarity, hierarchy, and "structural honesty" by utilizing visible borders and grid-based layouts.
 
 The brand personality is authoritative yet optimistic. By replacing the harsh blacks and whites of traditional Brutalism with a refined pastel palette and subtle corner radii, the UI evokes a sense of organized creativity. The goal is to feel dependable and institutional without being cold or intimidating.
 
 ## Colors
+
 The palette centers on **Teal (#006D77)** as the primary anchor for headers, primary actions, and key brand moments. This is supported by a system of functional pastels used for section backgrounds and surface layering.
 
 - **Primary:** Teal (#006D77) – Used for high-emphasis elements and navigation.
@@ -115,6 +117,7 @@ The palette centers on **Teal (#006D77)** as the primary anchor for headers, pri
 - **Typography & Borders:** Always use Neutral Black (#1A1A1A) to ensure WCAG AA/AAA compliance and maintain the "Brutalist" structural definition.
 
 ## Typography
+
 **Hanken Grotesk** is the sole typeface for this design system. Its geometric purity aligns with the Brutalist structure while its contemporary finishing ensures legibility for educational content.
 
 - **Headlines:** Use heavy weights (700-800) with tighter letter spacing to create high-impact "blocks" of text.
@@ -122,13 +125,15 @@ The palette centers on **Teal (#006D77)** as the primary anchor for headers, pri
 - **Labels:** Use uppercase and bold weights for metadata and small UI triggers to ensure they hold their own against strong borders.
 
 ## Layout & Spacing
+
 The design system utilizes a **Fixed Grid** philosophy. Content is housed within defined containers that use a strict 8px-based spacing rhythm.
 
 - **Desktop:** 12-column grid with 24px gutters. Content should be boxed in defined containers with 2px borders.
-- **Mobile:** 4-column grid with 16px margins. 
+- **Mobile:** 4-column grid with 16px margins.
 - **Structure:** Spacing should feel "industrial." Instead of using whitespace to separate sections, use 2px solid borders. Padding within containers should be generous (typically 24px or 32px) to prevent the "Soft Brutalist" look from feeling cluttered.
 
 ## Elevation & Depth
+
 In line with Neo-Brutalism, this design system rejects naturalistic shadows and blurs.
 
 - **Hard Shadows:** Instead of blurs, use "Block Shadows." These are solid offsets of Neutral Black (#1A1A1A) at a 4px or 8px distance, usually placed at a 45-degree angle (bottom-right).
@@ -136,7 +141,8 @@ In line with Neo-Brutalism, this design system rejects naturalistic shadows and 
 - **Layering:** Depth is achieved by "stacking" cards. A secondary card may peek out from behind a primary card using a different pastel background color to indicate hierarchy.
 
 ## Shapes
-To soften the inherent rigidity of the Brutalist grid, a **Soft (0.25rem / 4px)** corner radius is applied to all components. 
+
+To soften the inherent rigidity of the Brutalist grid, a **Soft (0.25rem / 4px)** corner radius is applied to all components.
 
 - **Standard Radius:** 4px for buttons, input fields, and small cards.
 - **Large Radius:** 8px for major container blocks or sections.
@@ -145,16 +151,21 @@ To soften the inherent rigidity of the Brutalist grid, a **Soft (0.25rem / 4px)*
 ## Components
 
 ### Buttons
+
 Primary buttons use the Teal background with White or high-contrast text and a 2px black border. They must feature a 4px solid black block shadow. On hover, the shadow disappears and the button "moves" 2px down and right.
 
 ### Cards
+
 Cards are the primary vehicle for educational content. Use pastel backgrounds (Mint, Peach, Azure) to categorize different subjects or modules. Each card must have a 2px border. Use 8px block shadows for featured content.
 
 ### Input Fields
+
 Inputs are stark white with 2px black borders. Labels should be `label-bold` and positioned outside the field, aligned to the top-left. Focused states use a thick 3px Teal border.
 
 ### Chips & Tags
+
 Use secondary pastel colors with 1px black borders. These do not require shadows unless they are interactive (closable or filterable).
 
 ### Progress Indicators
+
 Educational progress is shown via "Chunked Bars"—solid blocks of Teal separated by 2px black lines, rather than a smooth fluid gradient or fill. This reinforces the modular, structured nature of the design system.
