@@ -107,3 +107,11 @@
   --sbi-shadow-hard-lg: var(--sbi-shadow-offset-lg) var(--sbi-shadow-offset-lg) 0 0
     var(--sbi-color-shadow);
 }
+
+:root[data-sbi-colour-mode='light'] {
+  color-scheme: light;
+}
+
+:root[data-sbi-colour-mode='dark'] {
+  color-scheme: dark;
+}

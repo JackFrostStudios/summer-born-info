@@ -175,8 +175,8 @@ Given a contributor adds a future public UI area, when they need common colours,
 - [x] The local Hanken Grotesk font is available to the Angular app without external font hosting.
 - [x] Shared theme tokens or layout primitives are introduced where they support the approved design and future reuse.
 - [x] Design-system styling usage is documented for future contributors.
-- [ ] Light and dark mode are implemented with `color-scheme: light dark` and `light-dark()`-based theme tokens.
-- [ ] Users can switch to light mode, switch to dark mode, and reset to the system default.
+- [x] Light and dark mode are implemented with `color-scheme: light dark` and `light-dark()`-based theme tokens.
+- [x] Users can switch to light mode, switch to dark mode, and reset to the system default.
 - [ ] Prototype-only unsupported claims, invented metrics, advocacy language, and unsupported CTAs are excluded from production homepage copy.
 - [ ] Homepage text is marked for i18n extraction where appropriate.
 - [ ] Responsive behaviour is verified for mobile and desktop layouts.
@@ -184,6 +184,6 @@ Given a contributor adds a future public UI area, when they need common colours,
 - [ ] Homepage tests are added or updated for the changed route output.
 - [x] `npm run format` has been run in `UI/`.
 - [x] `npm run lint` has been run in `UI/`.
-- [ ] `npm run extract:i18n` has been run in `UI/` if template text changed tracked messages.
-- [ ] `npm run validate:i18n` has been run in `UI/` if localization output was affected.
+- [x] `npm run extract:i18n` has been run in `UI/` if template text changed tracked messages.
+- [x] `npm run validate:i18n` has been run in `UI/` if localization output was affected.
 - [x] `npm run test:run` has been run in `UI/`.
