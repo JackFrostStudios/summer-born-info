@@ -1,0 +1,239 @@
+<article class="home" [attr.aria-labelledby]="headingId">
+  <header class="home__hero sbi-container">
+    <div class="home__hero-copy sbi-stack">
+      <p
+        class="home__eyebrow sbi-label"
+        i18n="Homepage status label|Labels the current preparation state of the site@@homeEyebrow"
+      >
+        Guide in preparation
+      </p>
+      <h1
+        i18n="Homepage main heading|Introduces the homepage purpose@@homeHeading"
+        [id]="headingId"
+      >
+        Information for parents and carers of summer-born children.
+      </h1>
+      <p
+        class="home__intro"
+        i18n="
+          Homepage introduction|Explains the site's planned purpose without claiming completed
+          functionality@@homeIntro"
+      >
+        Summer Born Info is being prepared as a clear guide to school-start and admission
+        information for families whose children are born from April to August.
+      </p>
+      <p
+        class="home__intro home__intro--muted"
+        i18n="
+          Homepage complexity note|Acknowledges that school-start and admission information can be
+          complex@@homeComplexityNote"
+      >
+        School-start choices and admission processes can be complex. This site will focus on plain
+        explanations, careful signposting, and future discovery tools.
+      </p>
+    </div>
+
+    <div
+      class="home__snapshot sbi-surface"
+      aria-label="Homepage preparation summary"
+      i18n-aria-label="
+        Homepage visual summary label|Labels the visual preparation summary panel@@homeSnapshotLabel"
+    >
+      <div class="home__snapshot-header">
+        <span
+          class="home__snapshot-mark"
+          aria-hidden="true"
+          i18n="
+            Homepage visual mark|Short project mark shown in the hero visual panel@@homeSnapshotMark"
+          >SBI</span
+        >
+        <span
+          class="sbi-label"
+          i18n="
+            Homepage visual panel label|Labels the homepage preparation panel@@homeSnapshotTitle"
+          >Public guide</span
+        >
+      </div>
+      <dl class="home__snapshot-list">
+        <div>
+          <dt
+            i18n="
+              Homepage visual panel item label|Labels the current homepage
+              state@@homeSnapshotStatusLabel"
+          >
+            Now
+          </dt>
+          <dd
+            i18n="
+              Homepage visual panel item value|Explains the current homepage
+              state@@homeSnapshotStatusValue"
+          >
+            Homepage foundation
+          </dd>
+        </div>
+        <div>
+          <dt i18n="Homepage visual panel item label|Labels future work@@homeSnapshotNextLabel">
+            Later
+          </dt>
+          <dd
+            i18n="
+              Homepage visual panel item value|Explains future planned public
+              tools@@homeSnapshotNextValue"
+          >
+            Discovery tools
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </header>
+
+  <section class="home__topics" [attr.aria-labelledby]="topicsHeadingId">
+    <div class="sbi-container">
+      <div class="home__section-heading sbi-stack">
+        <h2
+          i18n="
+            Homepage topics heading|Introduces the information areas planned for the
+            guide@@homeTopicsHeading"
+          [id]="topicsHeadingId"
+        >
+          What the guide will cover
+        </h2>
+        <p
+          i18n="
+            Homepage topics introduction|Explains that these are planned information
+            areas@@homeTopicsIntro"
+        >
+          The first public content will stay focused on common questions parents and carers may need
+          to understand before using later tools.
+        </p>
+      </div>
+
+      <div class="home__topic-grid">
+        <section class="home-card home-card--accent">
+          <p
+            class="home-card__number sbi-label"
+            i18n="Homepage topic number|Number for the first homepage topic@@homeTopicOneNumber"
+          >
+            01
+          </p>
+          <h3 i18n="Homepage topic heading|Topic about school-start timing@@homeSchoolStartHeading">
+            School-start timing
+          </h3>
+          <p
+            i18n="
+              Homepage topic text|Describes planned school-start timing
+              information@@homeSchoolStartText"
+          >
+            Plain information about common school-start terms and the questions families may want to
+            ask.
+          </p>
+        </section>
+
+        <section class="home-card home-card--warm">
+          <p
+            class="home-card__number sbi-label"
+            i18n="Homepage topic number|Number for the second homepage topic@@homeTopicTwoNumber"
+          >
+            02
+          </p>
+          <h3
+            i18n="Homepage topic heading|Topic about admissions information@@homeAdmissionsHeading"
+          >
+            Admission information
+          </h3>
+          <p
+            i18n="Homepage topic text|Describes planned admissions information@@homeAdmissionsText"
+          >
+            Careful signposting for school admission routes, decision points, and where official
+            information should be checked.
+          </p>
+        </section>
+
+        <section class="home-card">
+          <p
+            class="home-card__number sbi-label"
+            i18n="Homepage topic number|Number for the third homepage topic@@homeTopicThreeNumber"
+          >
+            03
+          </p>
+          <h3 i18n="Homepage topic heading|Topic about future tools@@homeDiscoveryHeading">
+            Discovery tools
+          </h3>
+          <p
+            i18n="
+              Homepage topic text|Describes future discovery tools without implying they are
+              currently available@@homeDiscoveryText"
+          >
+            Search and comparison features are planned for a later roadmap milestone and are not
+            part of this first homepage release.
+          </p>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="home__coming-soon sbi-container" [attr.aria-labelledby]="comingSoonHeadingId">
+    <div class="home__coming-panel sbi-surface sbi-surface--primary">
+      <div class="sbi-stack">
+        <p
+          class="sbi-label"
+          i18n="Homepage future work label|Labels planned future work@@homeComingLabel"
+        >
+          Coming later
+        </p>
+        <h2
+          i18n="
+            Homepage future work heading|Introduces later roadmap functionality@@homeComingHeading"
+          [id]="comingSoonHeadingId"
+        >
+          Public discovery features will follow the guide content.
+        </h2>
+      </div>
+      <p
+        i18n="
+          Homepage future work text|Explains future tools without implying current
+          availability@@homeComingText"
+      >
+        Later work is expected to add discovery tools for public visitors. For now, the homepage
+        sets the visual foundation and explains the site direction.
+      </p>
+    </div>
+  </section>
+
+  <aside class="home__note sbi-container" [attr.aria-labelledby]="noteHeadingId">
+    <div class="home__note-panel">
+      <h2
+        i18n="Homepage note heading|Introduces the homepage scope note@@homeScopeNoteHeading"
+        [id]="noteHeadingId"
+      >
+        Scope note
+      </h2>
+      <p
+        i18n="
+          Homepage note text|Clarifies limits without using legal or official
+          claims@@homeScopeNoteText"
+      >
+        This project is not an official admissions service and does not provide legal advice.
+        Families should check current information with the relevant official source when making
+        decisions.
+      </p>
+    </div>
+  </aside>
+
+  <footer class="home__footer">
+    <div class="sbi-container home__footer-inner">
+      <p
+        class="home__footer-brand"
+        i18n="Homepage footer brand|Displays the project name@@homeFooterBrand"
+      >
+        Summer Born Info
+      </p>
+      <p
+        i18n="
+          Homepage footer summary|Summarises the project purpose in the footer@@homeFooterSummary"
+      >
+        A developing guide for parents and carers of summer-born children.
+      </p>
+    </div>
+  </footer>
+</article>

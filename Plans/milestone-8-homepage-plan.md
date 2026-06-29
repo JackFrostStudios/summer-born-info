@@ -167,8 +167,8 @@ Given a contributor adds a future public UI area, when they need common colours,
 - [x] The prototype set includes at least three visually distinct options.
 - [x] Each prototype includes enough context for the user to choose a preferred direction confidently.
 - [x] The approved direction is captured before Angular homepage implementation begins.
-- [ ] The placeholder home feature is replaced by a real homepage implementation in `UI/src/app/features/home/`.
-- [ ] The Angular homepage includes a header, welcome content, and footer.
+- [x] The placeholder home feature is replaced by a real homepage implementation in `UI/src/app/features/home/`.
+- [x] The Angular homepage includes a header, welcome content, and footer.
 - [x] A modern CSS reset is added and wired into the global stylesheet entry point.
 - [x] Shared CSS is modularized into concern-specific files under `UI/src/styles/`.
 - [x] Reusable colour, border, spacing, typography, focus, layout, and surface tokens are defined for the approved design direction.
@@ -177,11 +177,11 @@ Given a contributor adds a future public UI area, when they need common colours,
 - [x] Design-system styling usage is documented for future contributors.
 - [x] Light and dark mode are implemented with `color-scheme: light dark` and `light-dark()`-based theme tokens.
 - [x] Users can switch to light mode, switch to dark mode, and reset to the system default.
-- [ ] Prototype-only unsupported claims, invented metrics, advocacy language, and unsupported CTAs are excluded from production homepage copy.
-- [ ] Homepage text is marked for i18n extraction where appropriate.
-- [ ] Responsive behaviour is verified for mobile and desktop layouts.
-- [ ] Accessibility checks are completed for semantics, focus states, and contrast at a minimum.
-- [ ] Homepage tests are added or updated for the changed route output.
+- [x] Prototype-only unsupported claims, invented metrics, advocacy language, and unsupported CTAs are excluded from production homepage copy.
+- [x] Homepage text is marked for i18n extraction where appropriate.
+- [x] Responsive behaviour is verified for mobile and desktop layouts.
+- [x] Accessibility checks are completed for semantics, focus states, and contrast at a minimum.
+- [x] Homepage tests are added or updated for the changed route output.
 - [x] `npm run format` has been run in `UI/`.
 - [x] `npm run lint` has been run in `UI/`.
 - [x] `npm run extract:i18n` has been run in `UI/` if template text changed tracked messages.

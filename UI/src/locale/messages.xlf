@@ -2,19 +2,277 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
-      <trans-unit id="homePlaceholderHeading" datatype="html">
-        <source>Summer Born Info</source>
+      <trans-unit id="homeEyebrow" datatype="html">
+        <source> Guide in preparation </source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/home/home-placeholder.html</context>
-          <context context-type="linenumber">2,3</context>
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">8,11</context>
         </context-group>
+        <note priority="1" from="description">Labels the current preparation state of the site</note>
+        <note priority="1" from="meaning">Homepage status label</note>
       </trans-unit>
-      <trans-unit id="homePlaceholderSummary" datatype="html">
-        <source>Application shell ready for upcoming UI work.</source>
+      <trans-unit id="homeHeading" datatype="html">
+        <source> Information for parents and carers of summer-born children. </source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/home/home-placeholder.html</context>
-          <context context-type="linenumber">3,5</context>
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">14,19</context>
         </context-group>
+        <note priority="1" from="description">Introduces the homepage purpose</note>
+        <note priority="1" from="meaning">Homepage main heading</note>
+      </trans-unit>
+      <trans-unit id="homeIntro" datatype="html">
+        <source> Summer Born Info is being prepared as a clear guide to school-start and admission information for families whose children are born from April to August. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">22,28</context>
+        </context-group>
+        <note priority="1" from="description">Explains the site&apos;s planned purpose without claiming completed
+          functionality</note>
+        <note priority="1" from="meaning">Homepage introduction</note>
+      </trans-unit>
+      <trans-unit id="homeComplexityNote" datatype="html">
+        <source> School-start choices and admission processes can be complex. This site will focus on plain explanations, careful signposting, and future discovery tools. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">31,39</context>
+        </context-group>
+        <note priority="1" from="description">Acknowledges that school-start and admission information can be
+          complex</note>
+        <note priority="1" from="meaning">Homepage complexity note</note>
+      </trans-unit>
+      <trans-unit id="homeSnapshotLabel" datatype="html">
+        <source>Homepage preparation summary</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">38,40</context>
+        </context-group>
+        <note priority="1" from="description">Labels the visual preparation summary panel</note>
+        <note priority="1" from="meaning">Homepage visual summary label</note>
+      </trans-unit>
+      <trans-unit id="homeSnapshotMark" datatype="html">
+        <source>SBI</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">48,53</context>
+        </context-group>
+        <note priority="1" from="description">Short project mark shown in the hero visual panel</note>
+        <note priority="1" from="meaning">Homepage visual mark</note>
+      </trans-unit>
+      <trans-unit id="homeSnapshotTitle" datatype="html">
+        <source>Public guide</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">54,60</context>
+        </context-group>
+        <note priority="1" from="description">Labels the homepage preparation panel</note>
+        <note priority="1" from="meaning">Homepage visual panel label</note>
+      </trans-unit>
+      <trans-unit id="homeSnapshotStatusLabel" datatype="html">
+        <source> Now </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">64,68</context>
+        </context-group>
+        <note priority="1" from="description">Labels the current homepage
+              state</note>
+        <note priority="1" from="meaning">Homepage visual panel item label</note>
+      </trans-unit>
+      <trans-unit id="homeSnapshotStatusValue" datatype="html">
+        <source> Homepage foundation </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">71,75</context>
+        </context-group>
+        <note priority="1" from="description">Explains the current homepage
+              state</note>
+        <note priority="1" from="meaning">Homepage visual panel item value</note>
+      </trans-unit>
+      <trans-unit id="homeSnapshotNextLabel" datatype="html">
+        <source> Later </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">76,80</context>
+        </context-group>
+        <note priority="1" from="description">Labels future work</note>
+        <note priority="1" from="meaning">Homepage visual panel item label</note>
+      </trans-unit>
+      <trans-unit id="homeSnapshotNextValue" datatype="html">
+        <source> Discovery tools </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">83,90</context>
+        </context-group>
+        <note priority="1" from="description">Explains future planned public
+              tools</note>
+        <note priority="1" from="meaning">Homepage visual panel item value</note>
+      </trans-unit>
+      <trans-unit id="homeTopicsHeading" datatype="html">
+        <source> What the guide will cover </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">99,103</context>
+        </context-group>
+        <note priority="1" from="description">Introduces the information areas planned for the
+            guide</note>
+        <note priority="1" from="meaning">Homepage topics heading</note>
+      </trans-unit>
+      <trans-unit id="homeTopicsIntro" datatype="html">
+        <source> The first public content will stay focused on common questions parents and carers may need to understand before using later tools. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">106,112</context>
+        </context-group>
+        <note priority="1" from="description">Explains that these are planned information
+            areas</note>
+        <note priority="1" from="meaning">Homepage topics introduction</note>
+      </trans-unit>
+      <trans-unit id="homeTopicOneNumber" datatype="html">
+        <source> 01 </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">117,119</context>
+        </context-group>
+        <note priority="1" from="description">Number for the first homepage topic</note>
+        <note priority="1" from="meaning">Homepage topic number</note>
+      </trans-unit>
+      <trans-unit id="homeSchoolStartHeading" datatype="html">
+        <source> School-start timing </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">120,124</context>
+        </context-group>
+        <note priority="1" from="description">Topic about school-start timing</note>
+        <note priority="1" from="meaning">Homepage topic heading</note>
+      </trans-unit>
+      <trans-unit id="homeSchoolStartText" datatype="html">
+        <source> Plain information about common school-start terms and the questions families may want to ask. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">127,133</context>
+        </context-group>
+        <note priority="1" from="description">Describes planned school-start timing
+              information</note>
+        <note priority="1" from="meaning">Homepage topic text</note>
+      </trans-unit>
+      <trans-unit id="homeTopicTwoNumber" datatype="html">
+        <source> 02 </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">137,140</context>
+        </context-group>
+        <note priority="1" from="description">Number for the second homepage topic</note>
+        <note priority="1" from="meaning">Homepage topic number</note>
+      </trans-unit>
+      <trans-unit id="homeAdmissionsHeading" datatype="html">
+        <source> Admission information </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">142,145</context>
+        </context-group>
+        <note priority="1" from="description">Topic about admissions information</note>
+        <note priority="1" from="meaning">Homepage topic heading</note>
+      </trans-unit>
+      <trans-unit id="homeAdmissionsText" datatype="html">
+        <source> Careful signposting for school admission routes, decision points, and where official information should be checked. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">147,152</context>
+        </context-group>
+        <note priority="1" from="description">Describes planned admissions information</note>
+        <note priority="1" from="meaning">Homepage topic text</note>
+      </trans-unit>
+      <trans-unit id="homeTopicThreeNumber" datatype="html">
+        <source> 03 </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">157,159</context>
+        </context-group>
+        <note priority="1" from="description">Number for the third homepage topic</note>
+        <note priority="1" from="meaning">Homepage topic number</note>
+      </trans-unit>
+      <trans-unit id="homeDiscoveryHeading" datatype="html">
+        <source> Discovery tools </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">160,164</context>
+        </context-group>
+        <note priority="1" from="description">Topic about future tools</note>
+        <note priority="1" from="meaning">Homepage topic heading</note>
+      </trans-unit>
+      <trans-unit id="homeDiscoveryText" datatype="html">
+        <source> Search and comparison features are planned for a later roadmap milestone and are not part of this first homepage release. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">167,175</context>
+        </context-group>
+        <note priority="1" from="description">Describes future discovery tools without implying they are
+              currently available</note>
+        <note priority="1" from="meaning">Homepage topic text</note>
+      </trans-unit>
+      <trans-unit id="homeComingLabel" datatype="html">
+        <source> Coming later </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">182,186</context>
+        </context-group>
+        <note priority="1" from="description">Labels planned future work</note>
+        <note priority="1" from="meaning">Homepage future work label</note>
+      </trans-unit>
+      <trans-unit id="homeComingHeading" datatype="html">
+        <source> Public discovery features will follow the guide content. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">189,194</context>
+        </context-group>
+        <note priority="1" from="description">Introduces later roadmap functionality</note>
+        <note priority="1" from="meaning">Homepage future work heading</note>
+      </trans-unit>
+      <trans-unit id="homeComingText" datatype="html">
+        <source> Later work is expected to add discovery tools for public visitors. For now, the homepage sets the visual foundation and explains the site direction. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">197,203</context>
+        </context-group>
+        <note priority="1" from="description">Explains future tools without implying current
+          availability</note>
+        <note priority="1" from="meaning">Homepage future work text</note>
+      </trans-unit>
+      <trans-unit id="homeScopeNoteHeading" datatype="html">
+        <source> Scope note </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">209,213</context>
+        </context-group>
+        <note priority="1" from="description">Introduces the homepage scope note</note>
+        <note priority="1" from="meaning">Homepage note heading</note>
+      </trans-unit>
+      <trans-unit id="homeScopeNoteText" datatype="html">
+        <source> This project is not an official admissions service and does not provide legal advice. Families should check current information with the relevant official source when making decisions. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">216,224</context>
+        </context-group>
+        <note priority="1" from="description">Clarifies limits without using legal or official
+          claims</note>
+        <note priority="1" from="meaning">Homepage note text</note>
+      </trans-unit>
+      <trans-unit id="homeFooterBrand" datatype="html">
+        <source> Summer Born Info </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">229,233</context>
+        </context-group>
+        <note priority="1" from="description">Displays the project name</note>
+        <note priority="1" from="meaning">Homepage footer brand</note>
+      </trans-unit>
+      <trans-unit id="homeFooterSummary" datatype="html">
+        <source> A developing guide for parents and carers of summer-born children. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">235,240</context>
+        </context-group>
+        <note priority="1" from="description">Summarises the project purpose in the footer</note>
+        <note priority="1" from="meaning">Homepage footer summary</note>
       </trans-unit>
       <trans-unit id="colourModeControlLabel" datatype="html">
         <source>Colour mode</source>

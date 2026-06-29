@@ -17,7 +17,7 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render the cleaned app shell', async () => {
+  it('should render the homepage route inside the app shell', async () => {
     const fixture = TestBed.createComponent(App);
     const router = TestBed.inject(Router);
 
@@ -29,9 +29,11 @@ describe('App', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('main')).not.toBeNull();
-    expect(compiled.querySelector('h1')?.textContent).toContain('Summer Born Info');
-    expect(compiled.querySelector('p')?.textContent).toContain(
-      'Application shell ready for upcoming UI work.',
+    expect(compiled.querySelector('h1')?.textContent).toContain(
+      'Information for parents and carers of summer-born children.',
+    );
+    expect(compiled.querySelector('footer')?.textContent).toContain(
+      'A developing guide for parents and carers of summer-born children.',
     );
   });
 });
