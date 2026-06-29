@@ -97,6 +97,8 @@ Given later roadmap work adds more public routes, when contributors extend the U
 2. Create the static prototype set first, because that review checkpoint is meant to reduce theme churn before Angular code is expanded.
 3. Review prototypes with the user and capture the approved direction, including any requested mix-and-match adjustments.
 4. Translate the approved direction into implementation-ready styling decisions: theme tokens, layout rules, content hierarchy, and any required asset choices.
+   Current conclusion:
+   Style and layout are approved for both light and dark mode via [milestone-8-homepage-style-decision.md](./milestone-8-homepage-style-decision.md). Final homepage content is intentionally still open and must be resolved during implementation.
 5. Implement the Angular homepage feature and any minimal shell/global style updates needed to support it.
 6. Add or update tests and refresh localization artifacts affected by the new homepage copy.
 7. Run UI validation commands and perform responsive and accessibility checks before considering the milestone complete.
@@ -118,17 +120,17 @@ Given later roadmap work adds more public routes, when contributors extend the U
 
 ## 10. Unknowns and Required Clarifications
 
-- Brand messaging remains lightly defined in the roadmap. The prototypes should therefore use placeholder or draft homepage copy that is easy to refine without changing the approved visual direction.
+- Brand messaging remains lightly defined in the roadmap. The selected prototypes settle style and layout, but final production homepage content still needs to be decided during implementation.
 - The exact final number of homepage content sections beyond header, welcome content, and footer can remain implementation-level flexible as long as the page stays simple and roadmap-aligned.
 - If the user wants external web fonts, illustration assets, or a more editorial content direction after prototype review, that should be treated as a follow-up decision and documented before implementation expands.
 - No blocking clarification is required to create the plan, because the proposed prototype-first workflow is specifically intended to resolve the biggest open visual decision safely.
 
 ## 11. Completion Checklist
 
-- [ ] A milestone 8 prototype folder exists under `UI/` with multiple static HTML/CSS homepage directions.
-- [ ] The prototype set includes at least three visually distinct options.
-- [ ] Each prototype includes enough context for the user to choose a preferred direction confidently.
-- [ ] The approved direction is captured before Angular homepage implementation begins.
+- [x] A milestone 8 prototype folder exists under `UI/` with multiple static HTML/CSS homepage directions.
+- [x] The prototype set includes at least three visually distinct options.
+- [x] Each prototype includes enough context for the user to choose a preferred direction confidently.
+- [x] The approved direction is captured before Angular homepage implementation begins.
 - [ ] The placeholder home feature is replaced by a real homepage implementation in `UI/src/app/features/home/`.
 - [ ] The Angular homepage includes a header, welcome content, and footer.
 - [ ] Shared theme tokens or layout primitives are introduced only where they support the approved design and future reuse.
