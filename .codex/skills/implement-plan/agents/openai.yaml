@@ -1,4 +1,4 @@
 interface:
   display_name: "Implement Plan"
   short_description: "Execute Plans folder implementation plans"
-  default_prompt: "Use $implement-plan to implement a delivery-ready plan from the Plans folder step by step, updating plan progress, validating each slice, and finishing with checklist and review passes."
+  default_prompt: "Use $implement-plan in the main thread to orchestrate a delivery-ready plan from the Plans folder across sequential sub-agents, updating plan progress, validating each slice, and finishing with checklist and review passes. Do not use it inside sub-agents or for single-step implementation."
