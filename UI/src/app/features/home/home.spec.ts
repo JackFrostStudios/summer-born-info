@@ -56,21 +56,21 @@ describe('Home', () => {
     }
   });
 
-  it('renders the approved hero image with a visible guide label', () => {
+  it('renders the approved hero image without extra overlay controls', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
     const heroArt = compiled.querySelector<HTMLElement>('.home__hero-art');
     const heroImage = compiled.querySelector<HTMLImageElement>('.home__hero-art-image');
-    const badge = compiled.querySelector<HTMLElement>('.home__hero-art-badge');
 
-    expect(heroArt?.querySelector('figcaption')?.id).toBe('home-hero-art-caption');
+    expect(heroArt).not.toBeNull();
     expect(heroImage?.getAttribute('src')).toContain('/images/hero-child-playing.png');
     expect(heroImage?.getAttribute('alt')).toBe(
       'Young child playing with wooden blocks in a bright room.',
     );
-    expect(badge?.textContent.trim()).toBe('Public guide');
+    expect(compiled.querySelector('.home__hero-art-badge')).toBeNull();
+    expect(heroArt?.querySelector('figcaption')).toBeNull();
   });
 
   it('keeps prototype-only claims and actions out of the rendered copy', () => {
