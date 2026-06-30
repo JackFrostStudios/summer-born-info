@@ -23,6 +23,14 @@
   --sbi-stack-gap: var(--sbi-space-5);
 }
 
+.home__hero-highlight {
+  color: var(--sbi-color-primary);
+  font-style: italic;
+  text-decoration: underline;
+  text-decoration-thickness: max(0.08em, 1px);
+  text-underline-offset: 0.18em;
+}
+
 .home__eyebrow {
   align-self: start;
   background: var(--sbi-color-secondary-container);

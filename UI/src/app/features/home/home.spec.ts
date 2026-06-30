@@ -29,6 +29,19 @@ describe('Home', () => {
     expect(compiled.textContent).toContain('Uicons by Flaticon');
   });
 
+  it('highlights the key phrase in the main title using the approved hero treatment', () => {
+    const fixture = TestBed.createComponent(Home);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const highlight = compiled.querySelector<HTMLElement>('.home__hero-highlight');
+
+    expect(highlight?.textContent.trim()).toBe('right time for them');
+    expect(compiled.querySelector('h1')?.textContent).toContain(
+      'Help your summer-born child start school at the right time for them.',
+    );
+  });
+
   it('labels the page and supporting sections for assistive technology', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
