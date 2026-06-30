@@ -139,7 +139,7 @@ This split keeps future public-page growth straightforward: the shell can evolve
 - [x] A small reset-to-system affordance is rendered below the toggle and clears the explicit override.
 - [x] The supplied icon assets are available through the production UI asset path.
 - [x] Footer attribution for `Uicons by Flaticon` is present and linked correctly.
-- [x] Accessibility expectations are covered for semantics, keyboard access, focus states, and reduced-motion handling.
+- [x] Accessibility semantics and reset-state behaviour are covered in unit tests where practical, with browser-level focus and reduced-motion verification left as manual follow-up.
 - [x] Automated tests are updated for shell structure and theme behaviour.
 - [x] `npm run format` has been run in `UI/`.
 - [x] `npm run lint` has been run in `UI/`.

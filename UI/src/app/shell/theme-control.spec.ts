@@ -8,6 +8,14 @@ type MatchMediaStub = MediaQueryList & {
   setMatches(matches: boolean): void;
 };
 
+function requireElement<T extends Element>(element: T | null, message: string): T {
+  if (element === null) {
+    throw new Error(message);
+  }
+
+  return element;
+}
+
 function installLocalStorageStub(): void {
   const storedValues = new Map<string, string>();
   const localStorageStub = {
@@ -124,8 +132,23 @@ describe('ThemeControl', () => {
       throw new Error('Expected the theme toggle and reset action to render.');
     }
 
+    const screenReaderLabel = requireElement(
+      toggle.querySelector('.theme-control__sr-only'),
+      'Expected the toggle screen-reader label to render.',
+    );
+    const track = requireElement(
+      toggle.querySelector('.theme-control__track'),
+      'Expected the toggle decorative track to render.',
+    );
+
+    expect(toggle.tagName).toBe('BUTTON');
+    expect(toggle.type).toBe('button');
     expect(toggle.getAttribute('aria-pressed')).toBe('false');
-    expect(toggle.textContent).toContain('Switch to dark mode');
+    expect(toggle.textContent.trim()).toContain('Switch to dark mode');
+    expect(screenReaderLabel.textContent.trim()).toBe('Switch to dark mode');
+    expect(track.getAttribute('aria-hidden')).toBe('true');
+    expect(reset.tagName).toBe('BUTTON');
+    expect(reset.type).toBe('button');
     expect(reset.textContent.trim()).toBe('Reset to system');
     expect(reset.disabled).toBe(true);
   });
@@ -147,10 +170,15 @@ describe('ThemeControl', () => {
 
     toggle.click();
     fixture.detectChanges();
+    const screenReaderLabel = requireElement(
+      toggle.querySelector('.theme-control__sr-only'),
+      'Expected the toggle screen-reader label to render after mode change.',
+    );
 
     expect(toggle.getAttribute('aria-pressed')).toBe('true');
     expect(toggle.classList.contains('theme-control__toggle--dark')).toBe(true);
-    expect(toggle.textContent).toContain('Switch to light mode');
+    expect(toggle.textContent.trim()).toContain('Switch to light mode');
+    expect(screenReaderLabel.textContent.trim()).toBe('Switch to light mode');
     expect(reset.disabled).toBe(false);
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('dark');
     expect(localStorage.getItem(storageKey)).toBe('dark');
@@ -207,9 +235,14 @@ describe('ThemeControl', () => {
 
     reset.click();
     fixture.detectChanges();
+    const screenReaderLabel = requireElement(
+      toggle.querySelector('.theme-control__sr-only'),
+      'Expected the toggle screen-reader label to render after reset.',
+    );
 
     expect(toggle.getAttribute('aria-pressed')).toBe('false');
-    expect(toggle.textContent).toContain('Switch to dark mode');
+    expect(toggle.textContent.trim()).toContain('Switch to dark mode');
+    expect(screenReaderLabel.textContent.trim()).toBe('Switch to dark mode');
     expect(reset.disabled).toBe(true);
     expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
     expect(localStorage.getItem(storageKey)).toBeNull();

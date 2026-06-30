@@ -116,9 +116,7 @@ describe('Home', () => {
     const attribution = compiled.querySelector<HTMLElement>('.home__footer-attribution');
     const attributionLink = attribution?.querySelector<HTMLAnchorElement>('a');
 
-    expect(attribution?.textContent.replace(/\s+/g, ' ').trim() ?? '').toBe(
-      'Uicons by Flaticon',
-    );
+    expect(attribution?.textContent.replace(/\s+/g, ' ').trim() ?? '').toBe('Uicons by Flaticon');
 
     if (attributionLink === undefined || attributionLink === null) {
       throw new Error('Expected the icon attribution link to render.');
