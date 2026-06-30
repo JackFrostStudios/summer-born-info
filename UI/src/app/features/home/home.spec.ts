@@ -56,23 +56,21 @@ describe('Home', () => {
     }
   });
 
-  it('renders the preparation summary as labelled descriptive content', () => {
+  it('renders the approved hero image with a visible guide label', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const snapshot = compiled.querySelector<HTMLElement>('.home__snapshot');
-    const terms = Array.from(compiled.querySelectorAll('.home__snapshot-list dt'), (term) =>
-      term.textContent.trim(),
-    );
-    const descriptions = Array.from(
-      compiled.querySelectorAll('.home__snapshot-list dd'),
-      (description) => description.textContent.trim(),
-    );
+    const heroArt = compiled.querySelector<HTMLElement>('.home__hero-art');
+    const heroImage = compiled.querySelector<HTMLImageElement>('.home__hero-art-image');
+    const badge = compiled.querySelector<HTMLElement>('.home__hero-art-badge');
 
-    expect(snapshot?.getAttribute('aria-label')).toBe('Homepage preparation summary');
-    expect(terms).toEqual(['Now', 'Later']);
-    expect(descriptions).toEqual(['Homepage foundation', 'Discovery tools']);
+    expect(heroArt?.querySelector('figcaption')?.id).toBe('home-hero-art-caption');
+    expect(heroImage?.getAttribute('src')).toContain('/images/hero-child-playing.png');
+    expect(heroImage?.getAttribute('alt')).toBe(
+      'Young child playing with wooden blocks in a bright room.',
+    );
+    expect(badge?.textContent.trim()).toBe('Public guide');
   });
 
   it('keeps prototype-only claims and actions out of the rendered copy', () => {
