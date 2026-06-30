@@ -26,10 +26,11 @@
       </span>
     }
 
-    <span class="theme-control__track" aria-hidden="true">
-      <span class="theme-control__icon theme-control__icon--sun"></span>
-      <span class="theme-control__icon theme-control__icon--moon"></span>
-      <span class="theme-control__thumb"></span>
+    <span class="theme-control__viewport" aria-hidden="true">
+      <span class="theme-control__reel" [class.theme-control__reel--dark]="darkModeActive">
+        <span class="theme-control__icon theme-control__icon--sun"></span>
+        <span class="theme-control__icon theme-control__icon--moon"></span>
+      </span>
     </span>
   </button>
 

@@ -1,5 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
-import { ColourModeService } from './colour-mode.service';
+import { ThemeControlService } from './theme-control.service';
 
 @Component({
   selector: 'sbi-theme-control',
@@ -7,7 +7,7 @@ import { ColourModeService } from './colour-mode.service';
   styleUrl: './theme-control.scss',
 })
 export class ThemeControl {
-  protected readonly colourMode = inject(ColourModeService);
+  protected readonly colourMode = inject(ThemeControlService);
   protected readonly selectedMode = this.colourMode.mode;
   protected readonly effectiveMode = this.colourMode.effectiveMode;
   protected readonly isDarkMode = computed(() => this.effectiveMode() === 'dark');

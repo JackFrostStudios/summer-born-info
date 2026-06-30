@@ -1,0 +1,22 @@
+.public-header {
+  align-items: center;
+  background: var(--sbi-color-surface);
+  border-block-end: var(--sbi-border-strong);
+  box-shadow: var(--sbi-shadow-hard);
+  display: flex;
+  gap: var(--sbi-space-4);
+  justify-content: space-between;
+  padding: var(--sbi-space-4) clamp(1rem, 3vw, 1.5rem);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.public-header__brand {
+  color: var(--sbi-color-primary);
+  font-size: clamp(1.5rem, 2vw + 1rem, 2rem);
+  font-weight: var(--sbi-font-weight-extra-bold);
+  letter-spacing: -0.02em;
+  line-height: var(--sbi-line-height-heading);
+  margin: 0;
+}

@@ -14,7 +14,7 @@ export function isColourMode(value: string): value is ColourMode {
 }
 
 @Injectable({ providedIn: 'root' })
-export class ColourModeService {
+export class ThemeControlService {
   private readonly document = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));

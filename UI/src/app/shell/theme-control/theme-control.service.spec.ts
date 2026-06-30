@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ColourModeService } from './colour-mode.service';
+import { ThemeControlService } from './theme-control.service';
 
 const storageKey = 'sbi:colour-mode';
 const rootAttribute = 'data-sbi-colour-mode';
@@ -94,7 +94,7 @@ function installMatchMediaStub(initialMatches = false): MatchMediaStub {
   return mediaQuery;
 }
 
-describe('ColourModeService', () => {
+describe('ThemeControlService', () => {
   beforeEach(() => {
     installLocalStorageStub();
     installMatchMediaStub();
@@ -106,7 +106,7 @@ describe('ColourModeService', () => {
   });
 
   it('starts in system mode without a persisted override', () => {
-    const service = TestBed.inject(ColourModeService);
+    const service = TestBed.inject(ThemeControlService);
 
     expect(service.mode()).toBe('system');
     expect(service.effectiveMode()).toBe('light');
@@ -115,7 +115,7 @@ describe('ColourModeService', () => {
   });
 
   it('applies and persists an explicit light mode selection', () => {
-    const service = TestBed.inject(ColourModeService);
+    const service = TestBed.inject(ThemeControlService);
 
     service.setMode('light');
 
@@ -125,7 +125,7 @@ describe('ColourModeService', () => {
   });
 
   it('applies and persists an explicit dark mode selection', () => {
-    const service = TestBed.inject(ColourModeService);
+    const service = TestBed.inject(ThemeControlService);
 
     service.setMode('dark');
 
@@ -137,14 +137,14 @@ describe('ColourModeService', () => {
   it('restores a persisted dark mode override on creation', () => {
     localStorage.setItem(storageKey, 'dark');
 
-    const service = TestBed.inject(ColourModeService);
+    const service = TestBed.inject(ThemeControlService);
 
     expect(service.mode()).toBe('dark');
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('dark');
   });
 
   it('clears persistence and the root override when reset to system default', () => {
-    const service = TestBed.inject(ColourModeService);
+    const service = TestBed.inject(ThemeControlService);
     service.setMode('dark');
 
     service.setMode('system');
@@ -156,7 +156,7 @@ describe('ColourModeService', () => {
 
   it('toggles from the current effective system preference when no explicit mode is set', () => {
     installMatchMediaStub(true);
-    const service = TestBed.inject(ColourModeService);
+    const service = TestBed.inject(ThemeControlService);
 
     expect(service.mode()).toBe('system');
     expect(service.effectiveMode()).toBe('dark');
@@ -171,7 +171,7 @@ describe('ColourModeService', () => {
 
   it('tracks system preference changes while following system mode', () => {
     const matchMediaStub = installMatchMediaStub(false);
-    const service = TestBed.inject(ColourModeService);
+    const service = TestBed.inject(ThemeControlService);
 
     expect(service.effectiveMode()).toBe('light');
 
