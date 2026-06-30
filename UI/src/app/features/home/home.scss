@@ -48,15 +48,24 @@
   color: var(--sbi-color-text-muted);
 }
 
-.home__snapshot {
-  background: var(--sbi-color-surface-lowest);
-  box-shadow: var(--sbi-shadow-hard-lg);
-  display: grid;
-  gap: var(--sbi-space-6);
-  padding: clamp(1.5rem, 5vw, 2.5rem);
+.home__hero-art,
+.home__footer-inner {
+  margin: 0;
 }
 
-.home__snapshot-header,
+.home__hero-art {
+  background: linear-gradient(
+    180deg,
+    var(--sbi-color-secondary-container) 0%,
+    var(--sbi-color-surface-lowest) 100%
+  );
+  border: var(--sbi-border-strong);
+  border-radius: var(--sbi-radius-lg);
+  box-shadow: var(--sbi-shadow-hard-lg);
+  overflow: hidden;
+  position: relative;
+}
+
 .home__footer-inner {
   display: flex;
   flex-wrap: wrap;
@@ -64,48 +73,32 @@
   justify-content: space-between;
 }
 
-.home__snapshot-header {
-  align-items: center;
-}
-
-.home__snapshot-mark {
-  align-items: center;
+.home__hero-art-image {
   aspect-ratio: 1;
-  background: var(--sbi-color-primary-container);
+  block-size: auto;
+  display: block;
+  inline-size: 100%;
+  object-fit: cover;
+}
+
+.home__hero-art-badge {
   border: var(--sbi-border-strong);
   border-radius: var(--sbi-radius-lg);
-  color: var(--sbi-color-on-primary-container);
-  display: inline-flex;
-  font-weight: var(--sbi-font-weight-extra-bold);
-  inline-size: 4rem;
-  justify-content: center;
+  background: var(--sbi-color-surface-lowest);
+  bottom: var(--sbi-space-4);
+  box-shadow: var(--sbi-shadow-hard);
+  color: var(--sbi-color-primary);
+  left: var(--sbi-space-4);
+  margin: 0;
+  padding: var(--sbi-space-3) var(--sbi-space-4);
+  position: absolute;
 }
 
-.home__snapshot-list {
-  align-items: stretch;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.home__snapshot-list div {
-  background: var(--sbi-color-surface-low);
-  border: var(--sbi-border-strong);
-  border-radius: var(--sbi-radius-lg);
-  padding: var(--sbi-space-4);
-}
-
-.home__snapshot-list dt,
 .home-card__number,
 .home__coming-panel .sbi-label {
   color: var(--sbi-color-primary);
   font-weight: var(--sbi-font-weight-bold);
   margin: 0 0 var(--sbi-space-2);
-}
-
-.home__snapshot-list dd {
-  color: var(--sbi-color-text);
-  font-weight: var(--sbi-font-weight-bold);
-  margin: 0;
 }
 
 .home__topics {
@@ -231,10 +224,6 @@
 }
 
 @media (max-width: 36rem) {
-  .home__snapshot-list {
-    grid-template-columns: 1fr;
-  }
-
   .home-card {
     min-block-size: auto;
   }

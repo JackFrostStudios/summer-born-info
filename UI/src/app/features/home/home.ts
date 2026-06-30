@@ -1,7 +1,9 @@
+import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'sbi-home',
+  imports: [NgOptimizedImage],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

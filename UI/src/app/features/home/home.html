@@ -27,58 +27,29 @@
       </p>
     </div>
 
-    <div
-      class="home__snapshot sbi-surface"
-      aria-label="Homepage preparation summary"
-      i18n-aria-label="
-        Homepage visual summary label|Labels the visual preparation summary panel@@homeSnapshotLabel"
-    >
-      <div class="home__snapshot-header">
-        <span
-          class="home__snapshot-mark"
-          aria-hidden="true"
-          i18n="
-            Homepage visual mark|Short project mark shown in the hero visual panel@@homeSnapshotMark"
-          >SBI</span
-        >
-        <span
-          class="sbi-label"
-          i18n="
-            Homepage visual panel label|Labels the homepage preparation panel@@homeSnapshotTitle"
-          >Public guide</span
-        >
-      </div>
-      <dl class="home__snapshot-list">
-        <div>
-          <dt
-            i18n="
-              Homepage visual panel item label|Labels the current homepage
-              state@@homeSnapshotStatusLabel"
-          >
-            Now
-          </dt>
-          <dd
-            i18n="
-              Homepage visual panel item value|Explains the current homepage
-              state@@homeSnapshotStatusValue"
-          >
-            Homepage foundation
-          </dd>
-        </div>
-        <div>
-          <dt i18n="Homepage visual panel item label|Labels future work@@homeSnapshotNextLabel">
-            Later
-          </dt>
-          <dd
-            i18n="
-              Homepage visual panel item value|Explains future planned public
-              tools@@homeSnapshotNextValue"
-          >
-            Discovery tools
-          </dd>
-        </div>
-      </dl>
-    </div>
+    <figure class="home__hero-art">
+      <img
+        class="home__hero-art-image"
+        ngSrc="/images/hero-child-playing.png"
+        i18n-ngSrc="
+          Homepage hero image source|References the local hero image asset@@homeHeroImageSource"
+        width="512"
+        height="512"
+        priority
+        alt="Young child playing with wooden blocks in a bright room."
+        i18n-alt="
+          Homepage hero image alt|Describes the hero image showing a child playing@@homeHeroImageAlt"
+      />
+      <figcaption
+        class="home__hero-art-badge sbi-label"
+        id="home-hero-art-caption"
+        i18n="
+          Homepage hero image caption|Labels the hero image as part of the public
+          guide@@homeHeroImageCaption"
+      >
+        Public guide
+      </figcaption>
+    </figure>
   </header>
 
   <section class="home__topics" [attr.aria-labelledby]="topicsHeadingId">
