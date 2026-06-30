@@ -283,41 +283,34 @@
         <note priority="1" from="description">Identifies the site in the shell header</note>
         <note priority="1" from="meaning">Application header brand</note>
       </trans-unit>
-      <trans-unit id="colourModeControlLabel" datatype="html">
-        <source>Colour mode</source>
+      <trans-unit id="themeToggleToLightLabel" datatype="html">
+        <source> Switch to light mode </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shell/theme-control.html</context>
-          <context context-type="linenumber">5,11</context>
+          <context context-type="linenumber">16,22</context>
         </context-group>
-        <note priority="1" from="description">Labels the application colour mode selector</note>
-        <note priority="1" from="meaning">Colour mode control label</note>
+        <note priority="1" from="description">Switches the app from dark mode to light
+          mode</note>
+        <note priority="1" from="meaning">Theme toggle button label</note>
       </trans-unit>
-      <trans-unit id="colourModeSystemOption" datatype="html">
-        <source> System default </source>
+      <trans-unit id="themeToggleToDarkLabel" datatype="html">
+        <source> Switch to dark mode </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shell/theme-control.html</context>
-          <context context-type="linenumber">14,16</context>
+          <context context-type="linenumber">25,30</context>
         </context-group>
-        <note priority="1" from="description">Use system preference</note>
-        <note priority="1" from="meaning">Colour mode option</note>
+        <note priority="1" from="description">Switches the app from light mode to dark
+          mode</note>
+        <note priority="1" from="meaning">Theme toggle button label</note>
       </trans-unit>
-      <trans-unit id="colourModeLightOption" datatype="html">
-        <source> Light </source>
+      <trans-unit id="themeResetToSystem" datatype="html">
+        <source> Reset to system </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shell/theme-control.html</context>
-          <context context-type="linenumber">17,19</context>
+          <context context-type="linenumber">43,46</context>
         </context-group>
-        <note priority="1" from="description">Use light scheme</note>
-        <note priority="1" from="meaning">Colour mode option</note>
-      </trans-unit>
-      <trans-unit id="colourModeDarkOption" datatype="html">
-        <source> Dark </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shell/theme-control.html</context>
-          <context context-type="linenumber">20,24</context>
-        </context-group>
-        <note priority="1" from="description">Use dark scheme</note>
-        <note priority="1" from="meaning">Colour mode option</note>
+        <note priority="1" from="description">Returns the app theme to the system preference</note>
+        <note priority="1" from="meaning">Theme reset action</note>
       </trans-unit>
     </body>
   </file>

@@ -1,9 +1,10 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { computed, DestroyRef, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 
 export type ColourMode = 'system' | 'light' | 'dark';
+export type ExplicitColourMode = Exclude<ColourMode, 'system'>;
 
-const storedColourModes = ['light', 'dark'] as const;
+const storedColourModes = ['light', 'dark'] as const satisfies readonly ExplicitColourMode[];
 const colourModes = ['system', ...storedColourModes] as const;
 const storageKey = 'sbi:colour-mode';
 const rootAttribute = 'data-sbi-colour-mode';
@@ -15,12 +16,16 @@ export function isColourMode(value: string): value is ColourMode {
 @Injectable({ providedIn: 'root' })
 export class ColourModeService {
   private readonly document = inject(DOCUMENT);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly selectedMode = signal<ColourMode>(this.readStoredMode());
+  private readonly systemMode = signal<ExplicitColourMode>(this.readSystemMode());
 
   readonly mode = this.selectedMode.asReadonly();
+  readonly effectiveMode = computed(() => this.currentExplicitMode());
 
   constructor() {
+    this.syncSystemModePreference();
     this.applyMode(this.selectedMode());
   }
 
@@ -28,6 +33,28 @@ export class ColourModeService {
     this.selectedMode.set(mode);
     this.persistMode(mode);
     this.applyMode(mode);
+  }
+
+  toggleMode(): void {
+    this.setMode(this.nextExplicitMode());
+  }
+
+  resetToSystemMode(): void {
+    this.setMode('system');
+  }
+
+  nextExplicitMode(): ExplicitColourMode {
+    return this.currentExplicitMode() === 'dark' ? 'light' : 'dark';
+  }
+
+  currentExplicitMode(): ExplicitColourMode {
+    const selectedMode = this.selectedMode();
+
+    if (selectedMode === 'system') {
+      return this.systemMode();
+    }
+
+    return selectedMode;
   }
 
   private readStoredMode(): ColourMode {
@@ -96,5 +123,31 @@ export class ColourModeService {
     } catch {
       // Storage can be unavailable in restricted browser contexts; clearing is best-effort.
     }
+  }
+
+  private readSystemMode(): ExplicitColourMode {
+    if (!this.isBrowser || typeof globalThis.matchMedia !== 'function') {
+      return 'light';
+    }
+
+    return globalThis.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  private syncSystemModePreference(): void {
+    if (!this.isBrowser || typeof globalThis.matchMedia !== 'function') {
+      return;
+    }
+
+    const mediaQuery = globalThis.matchMedia('(prefers-color-scheme: dark)');
+    const updateSystemMode = (event?: MediaQueryListEvent): void => {
+      this.systemMode.set((event?.matches ?? mediaQuery.matches) ? 'dark' : 'light');
+    };
+
+    updateSystemMode();
+
+    mediaQuery.addEventListener('change', updateSystemMode);
+    this.destroyRef.onDestroy(() => {
+      mediaQuery.removeEventListener('change', updateSystemMode);
+    });
   }
 }

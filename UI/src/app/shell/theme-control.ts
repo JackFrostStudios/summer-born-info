@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { ColourModeService, isColourMode } from './colour-mode.service';
+import { Component, computed, inject } from '@angular/core';
+import { ColourModeService } from './colour-mode.service';
 
 @Component({
   selector: 'sbi-theme-control',
@@ -8,14 +8,28 @@ import { ColourModeService, isColourMode } from './colour-mode.service';
 })
 export class ThemeControl {
   protected readonly colourMode = inject(ColourModeService);
-  protected selectedColourMode = this.colourMode.mode();
+  protected readonly selectedMode = this.colourMode.mode;
+  protected readonly effectiveMode = this.colourMode.effectiveMode;
+  protected readonly isDarkMode = computed(() => this.effectiveMode() === 'dark');
+  protected readonly isSystemMode = computed(() => this.selectedMode() === 'system');
 
-  protected selectColourMode(event: Event): void {
-    const mode = (event.target as HTMLSelectElement).value;
+  protected get ariaPressed(): 'true' | 'false' {
+    return this.isDarkMode() ? 'true' : 'false';
+  }
 
-    if (isColourMode(mode)) {
-      this.colourMode.setMode(mode);
-      this.selectedColourMode = mode;
-    }
+  protected get darkModeActive(): boolean {
+    return this.isDarkMode();
+  }
+
+  protected get systemModeActive(): boolean {
+    return this.isSystemMode();
+  }
+
+  protected toggleColourMode(): void {
+    this.colourMode.toggleMode();
+  }
+
+  protected resetToSystemMode(): void {
+    this.colourMode.resetToSystemMode();
   }
 }
