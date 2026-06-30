@@ -5,17 +5,18 @@
 
 .app-shell {
   display: grid;
-  gap: var(--sbi-space-5);
+  grid-template-rows: auto minmax(0, 1fr);
   min-height: 100dvh;
-  padding: 1.5rem;
 }
 
 .app-shell__header {
   display: flex;
   justify-content: flex-end;
+  padding: var(--sbi-space-4) clamp(1rem, 3vw, 1.5rem);
 }
 
 .app-shell__main {
+  display: block;
   min-width: 0;
 }
 
