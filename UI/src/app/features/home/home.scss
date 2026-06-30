@@ -81,19 +81,6 @@
   object-fit: cover;
 }
 
-.home__hero-art-badge {
-  border: var(--sbi-border-strong);
-  border-radius: var(--sbi-radius-lg);
-  background: var(--sbi-color-surface-lowest);
-  bottom: var(--sbi-space-4);
-  box-shadow: var(--sbi-shadow-hard);
-  color: var(--sbi-color-primary);
-  left: var(--sbi-space-4);
-  margin: 0;
-  padding: var(--sbi-space-3) var(--sbi-space-4);
-  position: absolute;
-}
-
 .home-card__number,
 .home__coming-panel .sbi-label {
   color: var(--sbi-color-primary);
