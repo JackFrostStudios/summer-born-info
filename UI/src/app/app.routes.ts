@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { Home } from './features/home/home';
-import { RootShell } from './shell/root-shell';
+import { RootShell } from './shell/root-shell/root-shell';
 
 export const routes: Routes = [
   {

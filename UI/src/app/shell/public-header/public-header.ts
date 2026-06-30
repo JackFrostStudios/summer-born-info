@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ThemeControl } from './theme-control';
+import { ThemeControl } from '../theme-control/theme-control';
 
 @Component({
   selector: 'sbi-public-header',

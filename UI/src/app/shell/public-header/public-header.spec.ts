@@ -32,4 +32,19 @@ describe('PublicHeader', () => {
     expect(header.children.length).toBe(2);
     expect(brand.textContent.trim()).toBe('Summer born info');
   });
+
+  it('keeps the brand in the stronger prototype-inspired wordmark style', () => {
+    const fixture = TestBed.createComponent(PublicHeader);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const brand = compiled.querySelector('.public-header__brand');
+
+    if (brand === null) {
+      throw new Error('Expected the public header brand to render.');
+    }
+
+    expect(brand.textContent).not.toContain('SummerBornTrust');
+    expect(brand.classList.contains('public-header__brand')).toBe(true);
+  });
 });

@@ -1,0 +1,128 @@
+.theme-control {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sbi-space-1);
+  justify-content: flex-end;
+  min-inline-size: 4.5rem;
+}
+
+.theme-control__toggle {
+  background: var(--sbi-color-surface);
+  border: var(--sbi-border-strong);
+  border-radius: var(--sbi-radius-lg);
+  box-shadow: var(--sbi-shadow-hard);
+  color: var(--sbi-color-primary);
+  display: grid;
+  place-items: center;
+  inline-size: 3.5rem;
+  line-height: 0;
+  min-block-size: 3.5rem;
+  padding: 0;
+  position: relative;
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.theme-control__toggle:hover {
+  background: var(--sbi-color-surface-low);
+}
+
+.theme-control__toggle:active {
+  box-shadow: none;
+  transform: translate(var(--sbi-shadow-offset), var(--sbi-shadow-offset));
+}
+
+.theme-control__viewport {
+  block-size: 1.5rem;
+  display: block;
+  inline-size: 1.5rem;
+  overflow: hidden;
+}
+
+.theme-control__toggle:focus-visible {
+  outline: none;
+}
+
+.theme-control__toggle:focus-visible .theme-control__viewport {
+  outline: var(--sbi-focus-ring-width) solid var(--sbi-color-primary);
+  outline-offset: var(--sbi-focus-ring-offset);
+}
+
+.theme-control__reel {
+  display: grid;
+  gap: var(--sbi-space-3);
+  transform: translateY(0);
+  transition: transform 240ms ease;
+}
+
+.theme-control__reel--dark {
+  transform: translateY(calc(-1 * (1.5rem + var(--sbi-space-3))));
+}
+
+.theme-control__icon {
+  background-color: var(--sbi-color-primary);
+  block-size: 1.5rem;
+  display: block;
+  inline-size: 1.5rem;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  transform: translateZ(0);
+}
+
+.theme-control__icon--sun {
+  -webkit-mask-image: url('/icons/sun.svg');
+  mask-image: url('/icons/sun.svg');
+}
+
+.theme-control__icon--moon {
+  -webkit-mask-image: url('/icons/moon-stars.svg');
+  mask-image: url('/icons/moon-stars.svg');
+}
+
+.theme-control__reset {
+  background: transparent;
+  border: 0;
+  border-radius: var(--sbi-radius-sm);
+  color: var(--sbi-color-text-muted);
+  font-size: 0.75rem;
+  padding: 0;
+  text-decoration: underline;
+  text-decoration-thickness: max(0.08em, 1px);
+  text-underline-offset: 0.18em;
+}
+
+.theme-control__reset:hover:not(:disabled) {
+  color: var(--sbi-color-primary);
+}
+
+.theme-control__reset:disabled {
+  color: color-mix(in srgb, var(--sbi-color-text-muted) 60%, transparent);
+  cursor: default;
+  text-decoration: none;
+}
+
+.theme-control__sr-only {
+  block-size: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-control__toggle,
+  .theme-control__reel {
+    transition: none;
+  }
+}

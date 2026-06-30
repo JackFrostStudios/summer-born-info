@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { PublicHeader } from './public-header';
+import { PublicHeader } from '../public-header/public-header';
 
 @Component({
   selector: 'sbi-root-shell',
