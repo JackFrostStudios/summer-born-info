@@ -52,7 +52,13 @@ function installMatchMediaStub(initialMatches = false): MatchMediaStub {
       }
 
       listener =
-        nextListener === null ? null : { handleEvent: (event) => nextListener.handleEvent(event) };
+        nextListener === null
+          ? null
+          : {
+              handleEvent: (event) => {
+                nextListener.handleEvent(event);
+              },
+            };
     },
     removeEventListener: () => {
       listener = null;

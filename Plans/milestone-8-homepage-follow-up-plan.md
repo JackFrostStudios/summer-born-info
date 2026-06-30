@@ -138,7 +138,7 @@ This split keeps future public-page growth straightforward: the shell can evolve
 - [x] The control visually animates between the supplied sun and moon-stars icons.
 - [x] A small reset-to-system affordance is rendered below the toggle and clears the explicit override.
 - [x] The supplied icon assets are available through the production UI asset path.
-- [ ] Footer attribution for `Uicons by Flaticon` is present and linked correctly.
+- [x] Footer attribution for `Uicons by Flaticon` is present and linked correctly.
 - [x] Accessibility expectations are covered for semantics, keyboard access, focus states, and reduced-motion handling.
 - [x] Automated tests are updated for shell structure and theme behaviour.
 - [x] `npm run format` has been run in `UI/`.
