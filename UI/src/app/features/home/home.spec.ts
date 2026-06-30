@@ -17,10 +17,13 @@ describe('Home', () => {
     expect(compiled.querySelector('header')).not.toBeNull();
     expect(compiled.querySelector('footer')).not.toBeNull();
     expect(compiled.querySelector('h1')?.textContent).toContain(
-      'Information for parents and carers of summer-born children.',
+      'Help your summer-born child start school at the right time for them.',
     );
     expect(compiled.textContent).toContain(
-      'Summer Born Info is being prepared as a clear guide to school-start and admission information',
+      `If your child was born in the summer, you may be able to delay their start to Reception until the September after their fifth birthday. It's not about holding them back — it's about giving them the best possible start.`,
+    );
+    expect(compiled.textContent).toContain(
+      `We'll help you understand your rights and make the case with confidence.`,
     );
     expect(compiled.textContent).toContain('Discovery tools');
     expect(compiled.textContent).toContain('Uicons by Flaticon');

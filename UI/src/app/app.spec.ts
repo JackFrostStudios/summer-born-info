@@ -30,7 +30,7 @@ describe('App', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('main')).not.toBeNull();
     expect(compiled.querySelector('h1')?.textContent).toContain(
-      'Information for parents and carers of summer-born children.',
+      'Help your summer-born child start school at the right time for them.',
     );
     expect(compiled.querySelector('footer')?.textContent).toContain(
       'A developing guide for parents and carers of summer-born children.',
