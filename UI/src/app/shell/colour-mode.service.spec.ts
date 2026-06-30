@@ -4,6 +4,10 @@ import { ColourModeService } from './colour-mode.service';
 const storageKey = 'sbi:colour-mode';
 const rootAttribute = 'data-sbi-colour-mode';
 
+type MatchMediaStub = MediaQueryList & {
+  setMatches(matches: boolean): void;
+};
+
 function installLocalStorageStub(): void {
   const storedValues = new Map<string, string>();
   const localStorageStub = {
@@ -29,9 +33,65 @@ function installLocalStorageStub(): void {
   });
 }
 
+function installMatchMediaStub(initialMatches = false): MatchMediaStub {
+  let matches = initialMatches;
+  let listener:
+    | ((event: MediaQueryListEvent) => void)
+    | { handleEvent(event: MediaQueryListEvent): void }
+    | null = null;
+
+  const mediaQuery = {
+    media: '(prefers-color-scheme: dark)',
+    onchange: null,
+    addEventListener: (_type: string, nextListener: EventListenerOrEventListenerObject | null) => {
+      if (typeof nextListener === 'function') {
+        listener = (event: MediaQueryListEvent) => {
+          nextListener(event);
+        };
+        return;
+      }
+
+      listener =
+        nextListener === null ? null : { handleEvent: (event) => nextListener.handleEvent(event) };
+    },
+    removeEventListener: () => {
+      listener = null;
+    },
+    addListener: (nextListener: ((event: MediaQueryListEvent) => void) | null) => {
+      listener = nextListener;
+    },
+    removeListener: () => {
+      listener = null;
+    },
+    dispatchEvent: () => true,
+    setMatches: (nextMatches: boolean) => {
+      matches = nextMatches;
+      if (typeof listener === 'function') {
+        listener({ matches: nextMatches } as MediaQueryListEvent);
+        return;
+      }
+
+      listener?.handleEvent({ matches: nextMatches } as MediaQueryListEvent);
+    },
+  } as unknown as MatchMediaStub;
+
+  Object.defineProperty(mediaQuery, 'matches', {
+    configurable: true,
+    get: () => matches,
+  });
+
+  Object.defineProperty(globalThis, 'matchMedia', {
+    configurable: true,
+    value: () => mediaQuery,
+  });
+
+  return mediaQuery;
+}
+
 describe('ColourModeService', () => {
   beforeEach(() => {
     installLocalStorageStub();
+    installMatchMediaStub();
   });
 
   afterEach(() => {
@@ -43,6 +103,7 @@ describe('ColourModeService', () => {
     const service = TestBed.inject(ColourModeService);
 
     expect(service.mode()).toBe('system');
+    expect(service.effectiveMode()).toBe('light');
     expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
     expect(localStorage.getItem(storageKey)).toBeNull();
   });
@@ -85,5 +146,33 @@ describe('ColourModeService', () => {
     expect(service.mode()).toBe('system');
     expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
     expect(localStorage.getItem(storageKey)).toBeNull();
+  });
+
+  it('toggles from the current effective system preference when no explicit mode is set', () => {
+    installMatchMediaStub(true);
+    const service = TestBed.inject(ColourModeService);
+
+    expect(service.mode()).toBe('system');
+    expect(service.effectiveMode()).toBe('dark');
+
+    service.toggleMode();
+
+    expect(service.mode()).toBe('light');
+    expect(service.effectiveMode()).toBe('light');
+    expect(document.documentElement.getAttribute(rootAttribute)).toBe('light');
+    expect(localStorage.getItem(storageKey)).toBe('light');
+  });
+
+  it('tracks system preference changes while following system mode', () => {
+    const matchMediaStub = installMatchMediaStub(false);
+    const service = TestBed.inject(ColourModeService);
+
+    expect(service.effectiveMode()).toBe('light');
+
+    matchMediaStub.setMatches(true);
+
+    expect(service.mode()).toBe('system');
+    expect(service.effectiveMode()).toBe('dark');
+    expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
   });
 });

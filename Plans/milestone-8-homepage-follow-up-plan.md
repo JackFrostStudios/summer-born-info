@@ -134,15 +134,15 @@ This split keeps future public-page growth straightforward: the shell can evolve
 - [x] The root shell renders a reusable public header bar.
 - [x] The header contains only `Summer born info` and the theme control.
 - [x] The theme control is implemented as a dedicated component separate from homepage content.
-- [ ] The primary theme control toggles between explicit light and dark mode.
-- [ ] The control visually animates between the supplied sun and moon-stars icons.
-- [ ] A small reset-to-system affordance is rendered below the toggle and clears the explicit override.
-- [ ] The supplied icon assets are available through the production UI asset path.
+- [x] The primary theme control toggles between explicit light and dark mode.
+- [x] The control visually animates between the supplied sun and moon-stars icons.
+- [x] A small reset-to-system affordance is rendered below the toggle and clears the explicit override.
+- [x] The supplied icon assets are available through the production UI asset path.
 - [ ] Footer attribution for `Uicons by Flaticon` is present and linked correctly.
-- [ ] Accessibility expectations are covered for semantics, keyboard access, focus states, and reduced-motion handling.
-- [ ] Automated tests are updated for shell structure and theme behaviour.
-- [ ] `npm run format` has been run in `UI/`.
-- [ ] `npm run lint` has been run in `UI/`.
-- [ ] `npm run extract:i18n` has been run in `UI/` if tracked messages changed.
-- [ ] `npm run validate:i18n` has been run in `UI/` if localization output changed.
-- [ ] `npm run test:run` has been run in `UI/`.
+- [x] Accessibility expectations are covered for semantics, keyboard access, focus states, and reduced-motion handling.
+- [x] Automated tests are updated for shell structure and theme behaviour.
+- [x] `npm run format` has been run in `UI/`.
+- [x] `npm run lint` has been run in `UI/`.
+- [x] `npm run extract:i18n` has been run in `UI/` if tracked messages changed.
+- [x] `npm run validate:i18n` has been run in `UI/` if localization output changed.
+- [x] `npm run test:run` has been run in `UI/`.
