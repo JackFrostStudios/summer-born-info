@@ -23,6 +23,7 @@ describe('Home', () => {
       'Summer Born Info is being prepared as a clear guide to school-start and admission information',
     );
     expect(compiled.textContent).toContain('Discovery tools');
+    expect(compiled.textContent).toContain('Uicons by Flaticon');
   });
 
   it('labels the page and supporting sections for assistive technology', () => {
@@ -77,6 +78,7 @@ describe('Home', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     const pageText = compiled.textContent;
+    const links = Array.from(compiled.querySelectorAll<HTMLAnchorElement>('a'));
 
     expect(pageText).not.toMatch(/success rate/i);
     expect(pageText).not.toMatch(/parents helped/i);
@@ -84,7 +86,15 @@ describe('Home', () => {
     expect(pageText).not.toMatch(/book a call/i);
     expect(pageText).not.toMatch(/join \d/i);
     expect(pageText).not.toMatch(/expert advocacy/i);
-    expect(compiled.querySelectorAll('a, button').length).toBe(0);
+    expect(compiled.querySelectorAll('button').length).toBe(0);
+    expect(links).toHaveLength(1);
+    const [attributionLink] = links;
+
+    if (attributionLink === undefined) {
+      throw new Error('Expected the footer attribution link to render.');
+    }
+
+    expect(attributionLink.textContent.trim()).toBe('Flaticon');
   });
 
   it('states scope limits without implying official status or legal advice', () => {
@@ -96,5 +106,24 @@ describe('Home', () => {
 
     expect(scopeNote?.textContent).toContain('not an official admissions service');
     expect(scopeNote?.textContent).toContain('does not provide legal advice');
+  });
+
+  it('renders the icon attribution as secondary footer metadata', () => {
+    const fixture = TestBed.createComponent(Home);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const attribution = compiled.querySelector<HTMLElement>('.home__footer-attribution');
+    const attributionLink = attribution?.querySelector<HTMLAnchorElement>('a');
+
+    expect(attribution?.textContent.replace(/\s+/g, ' ').trim() ?? '').toBe(
+      'Uicons by Flaticon',
+    );
+
+    if (attributionLink === undefined || attributionLink === null) {
+      throw new Error('Expected the icon attribution link to render.');
+    }
+
+    expect(attributionLink.getAttribute('href')).toBe('https://www.flaticon.com/uicons');
   });
 });
