@@ -1,10 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ColourModeService, isColourMode } from './colour-mode.service';
+import { PublicHeader } from './public-header';
 
 @Component({
   selector: 'sbi-root-shell',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, PublicHeader],
   templateUrl: './root-shell.html',
   styleUrl: './root-shell.scss',
   host: {
@@ -13,15 +13,4 @@ import { ColourModeService, isColourMode } from './colour-mode.service';
 })
 export class RootShell {
   protected readonly shellId = 'root-shell';
-  protected readonly colourMode = inject(ColourModeService);
-  protected selectedColourMode = this.colourMode.mode();
-
-  protected selectColourMode(event: Event): void {
-    const mode = (event.target as HTMLSelectElement).value;
-
-    if (isColourMode(mode)) {
-      this.colourMode.setMode(mode);
-      this.selectedColourMode = mode;
-    }
-  }
 }

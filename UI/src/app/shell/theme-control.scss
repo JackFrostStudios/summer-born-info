@@ -1,0 +1,19 @@
+.theme-control {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sbi-space-2);
+  justify-content: flex-end;
+}
+
+.theme-control span {
+  color: var(--sbi-color-text-muted);
+  font-size: var(--sbi-font-size-0);
+  font-weight: var(--sbi-font-weight-bold);
+}
+
+.theme-control select {
+  min-height: 2.75rem;
+  min-width: 10rem;
+  padding: var(--sbi-space-2) var(--sbi-space-4);
+}
