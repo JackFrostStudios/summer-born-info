@@ -14,6 +14,7 @@
     "test:coverage": "ng test --watch=false --coverage",
     "test:ci": "npm run test:coverage",
     "lint": "ng lint",
+    "lint:fix": "ng lint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "serve:ssr:summer-born-info": "node dist/summer-born-info/server/server.mjs"
