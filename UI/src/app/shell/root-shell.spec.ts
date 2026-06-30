@@ -78,6 +78,33 @@ describe('RootShell', () => {
     ]);
   });
 
+  it('renders the shell as a header plus routed main content composition', () => {
+    TestBed.configureTestingModule({
+      imports: [RootShell],
+      providers: [provideRouter([{ path: '', component: TestRouteContent }])],
+    });
+
+    const fixture = TestBed.createComponent(RootShell);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    const shell = compiled.querySelector('.app-shell');
+    const header = compiled.querySelector('.app-shell__header');
+    const main = compiled.querySelector('main.app-shell__main');
+
+    expect(shell).not.toBeNull();
+    expect(header).not.toBeNull();
+    expect(main).not.toBeNull();
+
+    if (shell === null || header === null || main === null) {
+      throw new Error('Expected the shell, header, and main regions to render.');
+    }
+
+    expect(shell.firstElementChild).toBe(header);
+    expect(shell.lastElementChild).toBe(main);
+    expect(main.querySelector('router-outlet')).not.toBeNull();
+  });
+
   it('updates persisted mode and the document root when the user selects a mode', () => {
     TestBed.configureTestingModule({
       imports: [RootShell],
