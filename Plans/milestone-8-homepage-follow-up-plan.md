@@ -131,9 +131,9 @@ This split keeps future public-page growth straightforward: the shell can evolve
 ## 12. Completion Checklist
 
 - [x] Shell-level outer padding no longer creates a visible frame around the homepage.
-- [ ] The root shell renders a reusable public header bar.
-- [ ] The header contains only `Summer born info` and the theme control.
-- [ ] The theme control is implemented as a dedicated component separate from homepage content.
+- [x] The root shell renders a reusable public header bar.
+- [x] The header contains only `Summer born info` and the theme control.
+- [x] The theme control is implemented as a dedicated component separate from homepage content.
 - [ ] The primary theme control toggles between explicit light and dark mode.
 - [ ] The control visually animates between the supplied sun and moon-stars icons.
 - [ ] A small reset-to-system affordance is rendered below the toggle and clears the explicit override.

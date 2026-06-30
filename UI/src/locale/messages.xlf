@@ -274,21 +274,29 @@
         <note priority="1" from="description">Summarises the project purpose in the footer</note>
         <note priority="1" from="meaning">Homepage footer summary</note>
       </trans-unit>
+      <trans-unit id="appHeaderBrand" datatype="html">
+        <source> Summer born info </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shell/public-header.html</context>
+          <context context-type="linenumber">6,11</context>
+        </context-group>
+        <note priority="1" from="description">Identifies the site in the shell header</note>
+        <note priority="1" from="meaning">Application header brand</note>
+      </trans-unit>
       <trans-unit id="colourModeControlLabel" datatype="html">
         <source>Colour mode</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shell/root-shell.html</context>
-          <context context-type="linenumber">8,13</context>
+          <context context-type="sourcefile">src/app/shell/theme-control.html</context>
+          <context context-type="linenumber">5,11</context>
         </context-group>
-        <note priority="1" from="description">Labels the application colour mode
-          selector</note>
+        <note priority="1" from="description">Labels the application colour mode selector</note>
         <note priority="1" from="meaning">Colour mode control label</note>
       </trans-unit>
       <trans-unit id="colourModeSystemOption" datatype="html">
         <source> System default </source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shell/root-shell.html</context>
-          <context context-type="linenumber">20,22</context>
+          <context context-type="sourcefile">src/app/shell/theme-control.html</context>
+          <context context-type="linenumber">14,16</context>
         </context-group>
         <note priority="1" from="description">Use system preference</note>
         <note priority="1" from="meaning">Colour mode option</note>
@@ -296,8 +304,8 @@
       <trans-unit id="colourModeLightOption" datatype="html">
         <source> Light </source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shell/root-shell.html</context>
-          <context context-type="linenumber">23,25</context>
+          <context context-type="sourcefile">src/app/shell/theme-control.html</context>
+          <context context-type="linenumber">17,19</context>
         </context-group>
         <note priority="1" from="description">Use light scheme</note>
         <note priority="1" from="meaning">Colour mode option</note>
@@ -305,8 +313,8 @@
       <trans-unit id="colourModeDarkOption" datatype="html">
         <source> Dark </source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shell/root-shell.html</context>
-          <context context-type="linenumber">26,31</context>
+          <context context-type="sourcefile">src/app/shell/theme-control.html</context>
+          <context context-type="linenumber">20,24</context>
         </context-group>
         <note priority="1" from="description">Use dark scheme</note>
         <note priority="1" from="meaning">Colour mode option</note>
