@@ -1,0 +1,48 @@
+<section class="under-construction sbi-container" [attr.aria-labelledby]="headingId">
+  <div class="under-construction__panel">
+    <figure class="under-construction__art" aria-hidden="true">
+      <img
+        class="under-construction__image"
+        ngSrc="/images/builder.svg"
+        i18n-ngSrc="
+          Under-construction image source|References the decorative builder asset@@underConstructionImageSource"
+        width="240"
+        height="240"
+        alt=""
+      />
+    </figure>
+
+    <div class="under-construction__copy sbi-stack">
+      <p
+        class="sbi-label under-construction__eyebrow"
+        i18n="Under-construction eyebrow|Introduces the temporary placeholder page@@underConstructionEyebrow"
+      >
+        Coming soon
+      </p>
+      <h1
+        i18n="Under-construction heading|Explains that the destination page is not ready yet@@underConstructionHeading"
+        [id]="headingId"
+      >
+        This page is still under construction
+      </h1>
+      <p
+        class="under-construction__body"
+        i18n="
+          Under-construction body|Reassures visitors and prompts them to return to the previous
+          page@@underConstructionBody"
+      >
+        We're still building this part of Summer-born Info. Please go back and we'll help you continue from where you
+        were.
+      </p>
+      <button
+        type="button"
+        class="sbi-button under-construction__back-button"
+        i18n="
+          Under-construction back button|Navigates the visitor back to the previous page@@underConstructionBackButton"
+        (click)="goBack()"
+      >
+        Click here to go back
+      </button>
+    </div>
+  </div>
+</section>

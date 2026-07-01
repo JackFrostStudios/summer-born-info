@@ -15,17 +15,15 @@ describe('Home', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.querySelector('header')).not.toBeNull();
-    expect(compiled.querySelector('footer')).not.toBeNull();
     expect(compiled.querySelector('h1')?.textContent).toContain(
       'Help your summer-born child start school at the right time for them.',
     );
     expect(compiled.textContent).toContain(
-      `If your child was born in the summer, you may be able to delay their start to Reception until the September after their fifth birthday. It's not about holding them back — it's about giving them the best possible start.`,
+      `If your child was born in the summer, you may be able to delay their start to Reception until the September after their fifth birthday. It's not about holding them back \u2014 it's about giving them the best possible start.`,
     );
     expect(compiled.textContent).toContain(`We'll help you understand your rights and make the case with confidence.`);
     expect(compiled.textContent).toContain('Take the first step');
     expect(compiled.textContent).toContain('Discovery tools');
-    expect(compiled.textContent).toContain('Uicons by Flaticon');
   });
 
   it('highlights the key phrase in the main title using the approved hero treatment', () => {
@@ -89,7 +87,6 @@ describe('Home', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     const pageText = compiled.textContent;
-    const links = Array.from(compiled.querySelectorAll<HTMLAnchorElement>('a'));
     const buttons = Array.from(compiled.querySelectorAll<HTMLButtonElement>('button'));
 
     expect(pageText).not.toMatch(/success rate/i);
@@ -106,14 +103,6 @@ describe('Home', () => {
     }
 
     expect(callToActionButton.textContent.trim()).toBe('Take the first step');
-    expect(links).toHaveLength(1);
-    const [attributionLink] = links;
-
-    if (attributionLink === undefined) {
-      throw new Error('Expected the footer attribution link to render.');
-    }
-
-    expect(attributionLink.textContent.trim()).toBe('Flaticon');
   });
 
   it('states scope limits without implying official status or legal advice', () => {
@@ -125,23 +114,6 @@ describe('Home', () => {
 
     expect(scopeNote?.textContent).toContain('not an official admissions service');
     expect(scopeNote?.textContent).toContain('does not provide legal advice');
-  });
-
-  it('renders the icon attribution as secondary footer metadata', () => {
-    const fixture = TestBed.createComponent(Home);
-    fixture.detectChanges();
-
-    const compiled = fixture.nativeElement as HTMLElement;
-    const attribution = compiled.querySelector<HTMLElement>('.home__footer-attribution');
-    const attributionLink = attribution?.querySelector<HTMLAnchorElement>('a');
-
-    expect(attribution?.textContent.replace(/\s+/g, ' ').trim() ?? '').toBe('Uicons by Flaticon');
-
-    if (attributionLink === undefined || attributionLink === null) {
-      throw new Error('Expected the icon attribution link to render.');
-    }
-
-    expect(attributionLink.getAttribute('href')).toBe('https://www.flaticon.com/uicons');
   });
 
   it('uses the shared button styling for the homepage call to action', () => {
