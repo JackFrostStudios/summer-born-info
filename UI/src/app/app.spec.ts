@@ -60,8 +60,9 @@ describe('App', () => {
       throw new Error('Expected the under-construction page heading to render.');
     }
 
-    expect(heading.textContent.trim()).toBe('This page is still under construction');
+    expect(heading.textContent.trim()).toBe(`We're still working on this page`);
     expect(compiled.textContent).toContain('Coming soon');
-    expect(compiled.textContent).toContain('Click here to go back');
+    expect(compiled.textContent).toContain(`This part of the site isn't ready yet, but the rest of our guidance on delayed starts is.`);
+    expect(compiled.textContent).toContain('Back to where you were');
   });
 });

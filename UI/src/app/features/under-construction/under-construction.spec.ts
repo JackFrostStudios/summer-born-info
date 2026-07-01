@@ -56,12 +56,12 @@ describe('UnderConstruction', () => {
     expect(section?.getAttribute('aria-labelledby')).toBe('under-construction-heading');
     expect(compiled.querySelectorAll('h1')).toHaveLength(1);
     expect(heading.id).toBe('under-construction-heading');
-    expect(heading.textContent.trim()).toBe('This page is still under construction');
+    expect(heading.textContent.trim()).toBe(`We're still working on this page`);
     expect(compiled.textContent).toContain('Coming soon');
     expect(compiled.textContent).toContain(
-      `We're still building this part of Summer-born Info. Please go back and we'll help you continue from where you were.`,
+      `This part of the site isn't ready yet, but the rest of our guidance on delayed starts is.`,
     );
-    expect(button.textContent.trim()).toBe('Click here to go back');
+    expect(button.textContent.trim()).toBe('Back to where you were');
     expect(button.type).toBe('button');
     expect(button.classList.contains('sbi-button')).toBe(true);
     expect(icon.getAttribute('aria-hidden')).toBe('true');

@@ -211,7 +211,7 @@
         <note priority="1" from="meaning">Under-construction eyebrow</note>
       </trans-unit>
       <trans-unit id="underConstructionHeading" datatype="html">
-        <source> This page is still under construction </source>
+        <source> We&apos;re still working on this page </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
           <context context-type="linenumber">16,21</context>
@@ -220,7 +220,7 @@
         <note priority="1" from="meaning">Under-construction heading</note>
       </trans-unit>
       <trans-unit id="underConstructionBody" datatype="html">
-        <source> We&apos;re still building this part of Summer-born Info. Please go back and we&apos;ll help you continue from where you were. </source>
+        <source> This part of the site isn&apos;t ready yet, but the rest of our guidance on delayed starts is. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
           <context context-type="linenumber">24,30</context>
@@ -230,10 +230,10 @@
         <note priority="1" from="meaning">Under-construction body</note>
       </trans-unit>
       <trans-unit id="underConstructionBackButton" datatype="html">
-        <source> Click here to go back </source>
+        <source> Back to where you were </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
-          <context context-type="linenumber">34,39</context>
+          <context context-type="linenumber">33,38</context>
         </context-group>
         <note priority="1" from="description">Navigates the visitor back to the previous page</note>
         <note priority="1" from="meaning">Under-construction back button</note>
