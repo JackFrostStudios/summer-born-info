@@ -1,13 +1,16 @@
+/* Shared layout primitives keep feature styles aligned to the same page structure. */
 .sbi-container {
   inline-size: min(calc(100% - (var(--sbi-page-margin) * 2)), var(--sbi-size-container-max));
   margin-inline: auto;
 }
 
+/* Stack vertically arranges related content with a single overridable gap token. */
 .sbi-stack {
   display: grid;
   gap: var(--sbi-stack-gap, var(--sbi-space-5));
 }
 
+/* Cluster keeps small related items together and lets them wrap naturally on narrow screens. */
 .sbi-cluster {
   align-items: center;
   display: flex;
@@ -15,12 +18,14 @@
   gap: var(--sbi-cluster-gap, var(--sbi-space-4));
 }
 
+/* Grid is the default responsive layout for peer cards or summary panels. */
 .sbi-grid {
   display: grid;
   gap: var(--sbi-grid-gutter);
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
 }
 
+/* Labels are short high-emphasis markers, not long-form body copy. */
 .sbi-label {
   font-size: var(--sbi-font-size-0);
   font-weight: var(--sbi-font-weight-bold);
@@ -28,6 +33,7 @@
   line-height: 1;
 }
 
+/* Surface is the default raised container for standalone panels and cards. */
 .sbi-surface {
   background: var(--sbi-color-surface-lowest);
   border: var(--sbi-border-strong);
@@ -36,20 +42,24 @@
   color: var(--sbi-color-text);
 }
 
+/* Muted surfaces support grouping without competing with the strongest content on the page. */
 .sbi-surface--muted {
   background: var(--sbi-color-surface-container);
 }
 
+/* Accent surfaces highlight supporting information with secondary emphasis. */
 .sbi-surface--accent {
   background: var(--sbi-color-secondary-container);
   color: var(--sbi-color-on-secondary-container);
 }
 
+/* Primary surfaces are reserved for the highest-attention callouts or actions. */
 .sbi-surface--primary {
   background: var(--sbi-color-primary-container);
   color: var(--sbi-color-on-primary-container);
 }
 
+/* Primary buttons should represent the main action in the current context. */
 .sbi-button {
   align-items: center;
   background: var(--sbi-color-primary-container);
@@ -76,6 +86,7 @@
   transform: translate(var(--sbi-shadow-offset), var(--sbi-shadow-offset));
 }
 
+/* Secondary buttons stay available without outranking the primary action. */
 .sbi-button--secondary {
   background: var(--sbi-color-surface-lowest);
   color: var(--sbi-color-text);
@@ -85,6 +96,7 @@
   color: var(--sbi-color-text);
 }
 
+/* Readable keeps text-heavy content at a comfortable line length. */
 .sbi-readable {
   max-inline-size: var(--sbi-size-readable);
 }
