@@ -1,6 +1,7 @@
 :root {
   color-scheme: light dark;
 
+  /* Typography tokens set the shared reading and emphasis scale for the whole UI. */
   --sbi-font-family-sans:
     'Hanken Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --sbi-font-size-0: 0.875rem;
@@ -18,6 +19,7 @@
   --sbi-line-height-body: 1.6;
   --sbi-letter-spacing: 0;
 
+  /* Spacing tokens create a consistent rhythm from tight control gaps to large section spacing. */
   --sbi-space-1: 0.25rem;
   --sbi-space-2: 0.5rem;
   --sbi-space-3: 0.75rem;
@@ -27,11 +29,13 @@
   --sbi-space-7: 3rem;
   --sbi-space-8: 4rem;
 
+  /* Layout tokens keep page width, reading width, and grid gutters consistent across features. */
   --sbi-size-container-max: 80rem;
   --sbi-size-readable: 42rem;
   --sbi-page-margin: clamp(1rem, 4vw, 3rem);
   --sbi-grid-gutter: 1.5rem;
 
+  /* Shape and interaction tokens define the tactile border, radius, shadow, and focus language. */
   --sbi-radius-sm: 0.125rem;
   --sbi-radius-md: 0.25rem;
   --sbi-radius-lg: 0.5rem;
@@ -43,6 +47,7 @@
   --sbi-focus-ring-width: 0.1875rem;
   --sbi-focus-ring-offset: 0.1875rem;
 
+  /* Surface and foreground colours define neutral layering plus readable text pairings. */
   --sbi-color-background: #f7fafa;
   --sbi-color-background: light-dark(#f7fafa, #131313);
   --sbi-color-surface: #f7fafa;
@@ -71,6 +76,8 @@
   --sbi-color-border-strong: light-dark(#181c1d, #899394);
   --sbi-color-border-subtle: #bec8ca;
   --sbi-color-border-subtle: light-dark(#bec8ca, #3e494a);
+
+  /* Primary and secondary accents are for emphasis; prefer them when attention needs to be guided. */
   --sbi-color-primary: #00535b;
   --sbi-color-primary: light-dark(#00535b, #82d3de);
   --sbi-color-on-primary: #ffffff;
@@ -93,6 +100,8 @@
   --sbi-color-accent-warm: light-dark(#fddbd0, #5d453e);
   --sbi-color-on-accent-warm: #291711;
   --sbi-color-on-accent-warm: light-dark(#291711, #fde9e2);
+
+  /* Error tokens are reserved for failures, destructive states, and validation feedback. */
   --sbi-color-error: #ba1a1a;
   --sbi-color-error: light-dark(#ba1a1a, #ffb4ab);
   --sbi-color-on-error: #ffffff;
@@ -100,6 +109,7 @@
   --sbi-color-shadow: #181c1d;
   --sbi-color-shadow: light-dark(#181c1d, #3e494a);
 
+  /* Composite tokens package the standard border and shadow recipes used by shared primitives. */
   --sbi-border: var(--sbi-border-width) solid var(--sbi-color-border);
   --sbi-border-strong: var(--sbi-border-width) solid var(--sbi-color-border-strong);
   --sbi-border-subtle: var(--sbi-border-width-thin) solid var(--sbi-color-border-subtle);

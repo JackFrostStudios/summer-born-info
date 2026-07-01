@@ -23,16 +23,114 @@ Feature-specific layout and presentation should stay in component-scoped styles 
 `UI/src/app/`. Add a new global token only when the value is part of the shared visual language and
 is likely to be reused by more than one feature.
 
-## Theme Readiness
+### Typography Tokens
 
-The colour tokens use `light-dark()` so they can follow the operating-system colour preference.
-`:root` keeps `color-scheme: light dark` as the default. The shell colour-mode control stores only
-explicit light or dark choices under `sbi:colour-mode`, applies them through the
-`data-sbi-colour-mode` document-root attribute, and falls back to the operating-system preference
-whenever no explicit choice has been stored yet.
+| Token | Meaning | When To Use |
+| --- | --- | --- |
+| `--sbi-font-family-sans` | Default UI typeface stack. | Use for standard application copy and headings rather than introducing feature-specific font stacks. |
+| `--sbi-font-size-0` | Small supporting text size. | Use for captions, labels, attribution, and other secondary text that still needs to remain readable. |
+| `--sbi-font-size-1` | Base body text size. | Use for standard paragraph copy and default control text. |
+| `--sbi-font-size-2` | Large body or intro text size. | Use to draw attention to key supporting copy, such as a lead paragraph or important explanatory text. |
+| `--sbi-font-size-3` | Section heading size. | Use for prominent headings inside a page section or card. |
+| `--sbi-font-size-4` | Large display heading size. | Use for major page headings that should anchor a section. |
+| `--sbi-font-size-5` | Largest display heading size. | Use sparingly for hero-scale messaging or the single most prominent headline on a screen. |
+| `--sbi-font-size-5-compact` | Reduced display heading size for constrained layouts. | Use when display text needs the same emphasis as `--sbi-font-size-5` but a smaller footprint on mobile or narrow containers. |
+| `--sbi-font-weight-regular` | Default reading weight. | Use for body copy and long-form text where readability matters more than emphasis. |
+| `--sbi-font-weight-bold` | Strong emphasis weight. | Use for labels, buttons, short emphasis, and text that needs to stand out without becoming the page focal point. |
+| `--sbi-font-weight-extra-bold` | Highest emphasis weight. | Use for brand moments, large headings, or numbers that should immediately catch the user's eye. |
+| `--sbi-line-height-tight` | Tight vertical rhythm. | Use on short display text where a compact silhouette is intentional. |
+| `--sbi-line-height-heading` | Balanced heading line height. | Use for most headings to keep them readable while still visually compact. |
+| `--sbi-line-height-body` | Comfortable paragraph line height. | Use for body copy, notes, and any multi-line content meant to be read carefully. |
+| `--sbi-letter-spacing` | Default letter spacing. | Use as the standard spacing unless a specific component has a justified typographic reason to deviate. |
 
-## Prototype Content
+### Spacing Tokens
 
-The approved prototype files are visual references only. Do not copy unsupported claims, invented
-metrics, advocacy wording, sample calls to action, external font links, CDN scripts, or hosted
-imagery from the prototypes into production Angular code.
+| Token | Meaning | When To Use |
+| --- | --- | --- |
+| `--sbi-space-1` | Tightest shared spacing step. | Use for very small gaps, icon-to-text separation, or compact badge padding. |
+| `--sbi-space-2` | Small spacing step. | Use for closely related items, such as label-to-value or compact chip padding. |
+| `--sbi-space-3` | Small-to-medium spacing step. | Use for grouped content that needs a little more breathing room without feeling loose. |
+| `--sbi-space-4` | Baseline layout spacing. | Use for common gaps between controls, stacked copy, or card internals. |
+| `--sbi-space-5` | Comfortable section-internal spacing. | Use when content blocks should feel clearly separated but still belong to the same surface. |
+| `--sbi-space-6` | Large spacing step. | Use for card padding, larger component spacing, or stronger separation between content groups. |
+| `--sbi-space-7` | Extra-large spacing step. | Use for major page sections or hero layouts that need deliberate openness. |
+| `--sbi-space-8` | Largest shared spacing step. | Use sparingly for top-level page rhythm between major sections. |
+
+### Layout Tokens
+
+| Token | Meaning | When To Use |
+| --- | --- | --- |
+| `--sbi-size-container-max` | Maximum width for full-page content containers. | Use to keep wide layouts readable on large screens. |
+| `--sbi-size-readable` | Maximum width for long-form reading content. | Use for paragraphs, notes, and any text-heavy block where shorter line lengths improve comprehension. |
+| `--sbi-page-margin` | Responsive page edge spacing. | Use for outer page gutters instead of hard-coding horizontal padding. |
+| `--sbi-grid-gutter` | Standard grid gap. | Use for multi-column layouts so cards and panels align with the rest of the system. |
+
+### Shape, Border, And Focus Tokens
+
+| Token | Meaning | When To Use |
+| --- | --- | --- |
+| `--sbi-radius-sm` | Small corner radius. | Use for small controls or subtle rounding where the shape should stay crisp. |
+| `--sbi-radius-md` | Medium corner radius. | Use for inputs or components that need a little more softness than `--sbi-radius-sm`. |
+| `--sbi-radius-lg` | Large shared corner radius. | Use for cards, buttons, panels, and other key surfaces in the current design language. |
+| `--sbi-radius-pill` | Fully rounded pill radius. | Use for badges, chips, and rounded toggles where the silhouette should feel intentionally soft. |
+| `--sbi-border-width` | Default thick border width. | Use when the border is a visible part of the visual identity, especially on cards and buttons. |
+| `--sbi-border-width-thin` | Thin border width. | Use for dividers or lower-emphasis outlines. |
+| `--sbi-shadow-offset` | Standard hard-shadow offset. | Use for small elevated elements that should feel tactile. |
+| `--sbi-shadow-offset-lg` | Large hard-shadow offset. | Use for more prominent surfaces that need extra lift or a more playful visual punch. |
+| `--sbi-focus-ring-width` | Focus outline thickness. | Use for keyboard-visible focus states rather than ad hoc outline sizes. |
+| `--sbi-focus-ring-offset` | Spacing between focus outline and element edge. | Use to keep focus treatment clear and uncluttered. |
+| `--sbi-border` | Default border recipe. | Use for standard outlined surfaces and controls. |
+| `--sbi-border-strong` | Highest-emphasis border recipe. | Use when the outline itself helps establish hierarchy or draw attention to an important interactive surface. |
+| `--sbi-border-subtle` | Lowest-emphasis border recipe. | Use for quiet separators and low-contrast container boundaries. |
+| `--sbi-shadow-hard` | Standard hard shadow recipe. | Use for cards and buttons that should feel slightly raised and interactive. |
+| `--sbi-shadow-hard-lg` | Larger hard shadow recipe. | Use when a key panel or hero element should stand out more strongly than surrounding content. |
+
+### Colour Tokens
+
+| Token | Meaning | When To Use |
+| --- | --- | --- |
+| `--sbi-color-background` | App-level page background. | Use for the canvas behind the main content area. |
+| `--sbi-color-surface` | Default neutral surface tone. | Use for shell elements or large shared sections that sit on the page background. |
+| `--sbi-color-surface-lowest` | Highest-contrast neutral surface. | Use for cards and panels that need to stand apart clearly from surrounding backgrounds. |
+| `--sbi-color-surface-low` | Slightly raised neutral surface. | Use for grouped regions that need light separation without becoming the primary focal point. |
+| `--sbi-color-surface-container` | Stronger neutral container surface. | Use for supporting panels, bands, and inset sections that should be visually distinct but still neutral. |
+| `--sbi-color-surface-high` | Elevated neutral surface step. | Use when a neutral layer needs more contrast than `surface-container` but should not switch to an accent colour. |
+| `--sbi-color-surface-highest` | Highest neutral elevation step. | Use sparingly for the strongest neutral separation in a stack of layered surfaces. |
+| `--sbi-color-text` | Default foreground text colour. | Use for primary reading content and standard UI text. |
+| `--sbi-color-text-muted` | Secondary text colour. | Use for supportive copy, metadata, and content that should recede slightly behind primary messaging. |
+| `--sbi-color-inverse-surface` | Dark-on-light or light-on-dark reversed surface. | Use for inverse treatments such as banners or overlays where the standard neutral surface would not provide enough contrast. |
+| `--sbi-color-inverse-text` | Foreground colour for inverse surfaces. | Use only on top of inverse surfaces to maintain contrast. |
+| `--sbi-color-border` | Default border colour. | Use for standard outlines that should be visible but not dominant. |
+| `--sbi-color-border-strong` | Strong border colour. | Use when the outline should help frame a surface or call attention to a control. |
+| `--sbi-color-border-subtle` | Gentle border colour. | Use for quiet dividers and understated boundaries. |
+| `--sbi-color-primary` | Core brand emphasis colour. | Use for links, heading accents, and moments where you want to draw the user's eye to important information or action. |
+| `--sbi-color-on-primary` | Foreground on top of `--sbi-color-primary`. | Use only for text or icons placed directly on a primary-coloured background. |
+| `--sbi-color-primary-container` | Strong primary-tinted surface. | Use for high-attention callouts, featured panels, or key actions that should stand out clearly from neutral content. |
+| `--sbi-color-on-primary-container` | Foreground for primary containers. | Use only inside a `primary-container` surface. |
+| `--sbi-color-secondary` | Supporting accent colour. | Use for secondary emphasis, alternative highlights, or moments that should feel distinct from the primary action colour. |
+| `--sbi-color-secondary-container` | Secondary-tinted surface. | Use for supportive highlights, category callouts, or accent cards that need attention without outranking primary call-to-action areas. |
+| `--sbi-color-on-secondary-container` | Foreground for secondary containers. | Use only inside a `secondary-container` surface. |
+| `--sbi-color-tertiary-container` | Tertiary accent surface. | Use sparingly for a third emphasis lane when primary and secondary are already doing separate jobs. |
+| `--sbi-color-on-tertiary-container` | Foreground for tertiary containers. | Use only inside a `tertiary-container` surface. |
+| `--sbi-color-accent-warm` | Warm accent surface colour. | Use when content should feel welcoming, human, or gently highlighted rather than urgent or action-oriented. |
+| `--sbi-color-on-accent-warm` | Foreground for warm accent surfaces. | Use only inside a warm accent surface. |
+| `--sbi-color-error` | Error and destructive state colour. | Use for validation errors, critical failures, and destructive affordances that require immediate recognition. |
+| `--sbi-color-on-error` | Foreground for error surfaces. | Use only on error-coloured backgrounds. |
+| `--sbi-color-shadow` | Shared shadow colour. | Use through the shadow recipes rather than applying it directly. |
+
+### Primitive Usage
+
+| Primitive | Meaning | When To Use |
+| --- | --- | --- |
+| `.sbi-container` | Centers content and constrains maximum page width. | Use as the outer wrapper for page sections and shell content that should align to the shared layout gutter. |
+| `.sbi-stack` | Vertical layout primitive with a configurable gap. | Use when items should flow top-to-bottom with consistent spacing, especially for copy blocks, forms, and card content. |
+| `.sbi-cluster` | Horizontal wrapping group for related items. | Use for button rows, tag groups, metadata, or any small set of items that should stay visually associated and wrap gracefully. |
+| `.sbi-grid` | Responsive card-style grid. | Use for collections of peer items such as cards, tiles, or summary panels. |
+| `.sbi-label` | Small, bold overline-style text treatment. | Use for short labels that orient the user, such as section markers, card eyebrows, or status-like headings. |
+| `.sbi-surface` | Default raised content container. | Use for standalone cards and panels that need a consistent shared shell. |
+| `.sbi-surface--muted` | Lower-energy surface variation. | Use when a panel should be visually grouped but not compete with the main focal content. |
+| `.sbi-surface--accent` | Secondary-accent surface variation. | Use for highlighted supporting content that should attract attention without becoming the primary call to action. |
+| `.sbi-surface--primary` | Primary-accent surface variation. | Use for the most important callouts, actions, or key information blocks that should immediately catch the user's eye. |
+| `.sbi-button` | Primary button/link treatment. | Use for the main action in a section or page. |
+| `.sbi-button--secondary` | Secondary button variation. | Use for lower-priority actions that should stay available without visually outranking the primary action. |
+| `.sbi-readable` | Readability width constraint. | Use on text-heavy blocks so line lengths stay comfortable. |
