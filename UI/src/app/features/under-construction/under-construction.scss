@@ -28,6 +28,7 @@
   background-color: currentColor;
   block-size: clamp(7rem, 20vw, 12rem);
   inline-size: clamp(7rem, 20vw, 12rem);
+  justify-self: center;
   mask-image: url('/images/builder.svg');
   mask-position: center;
   mask-repeat: no-repeat;
