@@ -201,20 +201,11 @@
         <note priority="1" from="description">Clarifies limits without using legal or official claims</note>
         <note priority="1" from="meaning">Homepage note text</note>
       </trans-unit>
-      <trans-unit id="underConstructionImageSource" datatype="html">
-        <source>/images/builder.svg</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
-          <context context-type="linenumber">6,8</context>
-        </context-group>
-        <note priority="1" from="description">References the decorative builder asset</note>
-        <note priority="1" from="meaning">Under-construction image source</note>
-      </trans-unit>
       <trans-unit id="underConstructionEyebrow" datatype="html">
         <source> Coming soon </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
-          <context context-type="linenumber">20,23</context>
+          <context context-type="linenumber">10,13</context>
         </context-group>
         <note priority="1" from="description">Introduces the temporary placeholder page</note>
         <note priority="1" from="meaning">Under-construction eyebrow</note>
@@ -223,7 +214,7 @@
         <source> This page is still under construction </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
-          <context context-type="linenumber">26,31</context>
+          <context context-type="linenumber">16,21</context>
         </context-group>
         <note priority="1" from="description">Explains that the destination page is not ready yet</note>
         <note priority="1" from="meaning">Under-construction heading</note>
@@ -232,7 +223,7 @@
         <source> We&apos;re still building this part of Summer-born Info. Please go back and we&apos;ll help you continue from where you were. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
-          <context context-type="linenumber">34,40</context>
+          <context context-type="linenumber">24,30</context>
         </context-group>
         <note priority="1" from="description">Reassures visitors and prompts them to return to the previous
           page</note>
@@ -242,7 +233,7 @@
         <source> Click here to go back </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
-          <context context-type="linenumber">44,49</context>
+          <context context-type="linenumber">34,39</context>
         </context-group>
         <note priority="1" from="description">Navigates the visitor back to the previous page</note>
         <note priority="1" from="meaning">Under-construction back button</note>

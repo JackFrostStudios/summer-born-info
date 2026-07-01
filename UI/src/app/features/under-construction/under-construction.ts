@@ -1,10 +1,9 @@
-import { DOCUMENT, Location, NgOptimizedImage } from '@angular/common';
+import { DOCUMENT, Location } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'sbi-under-construction',
-  imports: [NgOptimizedImage],
   templateUrl: './under-construction.html',
   styleUrl: './under-construction.scss',
 })

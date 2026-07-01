@@ -46,12 +46,11 @@ describe('UnderConstruction', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const section = compiled.querySelector<HTMLElement>('section.under-construction');
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
-    const image = compiled.querySelector<HTMLImageElement>('.under-construction__image');
-    const figure = compiled.querySelector<HTMLElement>('.under-construction__art');
+    const icon = compiled.querySelector<HTMLElement>('.under-construction__icon');
     const button = compiled.querySelector<HTMLButtonElement>('button.under-construction__back-button');
 
-    if (heading === null || image === null || figure === null || button === null) {
-      throw new Error('Expected the under-construction content, image, and back button to render.');
+    if (heading === null || icon === null || button === null) {
+      throw new Error('Expected the under-construction content, icon, and back button to render.');
     }
 
     expect(section?.getAttribute('aria-labelledby')).toBe('under-construction-heading');
@@ -65,9 +64,7 @@ describe('UnderConstruction', () => {
     expect(button.textContent.trim()).toBe('Click here to go back');
     expect(button.type).toBe('button');
     expect(button.classList.contains('sbi-button')).toBe(true);
-    expect(image.getAttribute('src')).toContain('/images/builder.svg');
-    expect(image.getAttribute('alt')).toBe('');
-    expect(figure.getAttribute('aria-hidden')).toBe('true');
+    expect(icon.getAttribute('aria-hidden')).toBe('true');
   });
 
   it('navigates back to the previous location when the visitor uses the button', () => {
