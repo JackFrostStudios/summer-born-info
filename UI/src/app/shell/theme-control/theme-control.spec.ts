@@ -43,10 +43,8 @@ function installLocalStorageStub(): void {
 
 function installMatchMediaStub(initialMatches = false): MatchMediaStub {
   let matches = initialMatches;
-  let listener:
-    | ((event: MediaQueryListEvent) => void)
-    | { handleEvent(event: MediaQueryListEvent): void }
-    | null = null;
+  let listener: ((event: MediaQueryListEvent) => void) | { handleEvent(event: MediaQueryListEvent): void } | null =
+    null;
 
   const mediaQuery = {
     media: '(prefers-color-scheme: dark)',
