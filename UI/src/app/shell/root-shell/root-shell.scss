@@ -5,11 +5,12 @@
 
 .app-shell {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
   min-height: 100dvh;
 }
 
 .app-shell__main {
   display: block;
+  min-block-size: 0;
   min-width: 0;
 }

@@ -36,4 +36,32 @@ describe('App', () => {
       'A developing guide for parents and carers of summer-born children.',
     );
   });
+
+  it('should render the under-construction route inside the shared shell with header and footer visible', async () => {
+    const fixture = TestBed.createComponent(App);
+    const router = TestBed.inject(Router);
+
+    router.initialNavigation();
+    await router.navigateByUrl('/under-construction');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const heading = compiled.querySelector('h1');
+
+    expect(compiled.querySelector('sbi-public-header')).not.toBeNull();
+    expect(compiled.querySelector('main')).not.toBeNull();
+    expect(compiled.querySelector('footer')?.textContent).toContain(
+      'A developing guide for parents and carers of summer-born children.',
+    );
+
+    if (heading === null) {
+      throw new Error('Expected the under-construction page heading to render.');
+    }
+
+    expect(heading.textContent.trim()).toBe('This page is still under construction');
+    expect(compiled.textContent).toContain('Coming soon');
+    expect(compiled.textContent).toContain('Click here to go back');
+  });
 });
