@@ -25,6 +25,7 @@ describe('Home', () => {
     expect(compiled.textContent).toContain(
       `We'll help you understand your rights and make the case with confidence.`,
     );
+    expect(compiled.textContent).toContain('Take the first step');
     expect(compiled.textContent).toContain('Discovery tools');
     expect(compiled.textContent).toContain('Uicons by Flaticon');
   });
@@ -86,13 +87,14 @@ describe('Home', () => {
     expect(heroArt?.querySelector('figcaption')).toBeNull();
   });
 
-  it('keeps prototype-only claims and actions out of the rendered copy', () => {
+  it('keeps prototype-only claims out of the rendered copy while allowing the homepage CTA', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
     const pageText = compiled.textContent;
     const links = Array.from(compiled.querySelectorAll<HTMLAnchorElement>('a'));
+    const buttons = Array.from(compiled.querySelectorAll<HTMLButtonElement>('button'));
 
     expect(pageText).not.toMatch(/success rate/i);
     expect(pageText).not.toMatch(/parents helped/i);
@@ -100,7 +102,14 @@ describe('Home', () => {
     expect(pageText).not.toMatch(/book a call/i);
     expect(pageText).not.toMatch(/join \d/i);
     expect(pageText).not.toMatch(/expert advocacy/i);
-    expect(compiled.querySelectorAll('button').length).toBe(0);
+    expect(buttons).toHaveLength(1);
+    const [callToActionButton] = buttons;
+
+    if (callToActionButton === undefined) {
+      throw new Error('Expected the homepage CTA button to render.');
+    }
+
+    expect(callToActionButton.textContent.trim()).toBe('Take the first step');
     expect(links).toHaveLength(1);
     const [attributionLink] = links;
 
@@ -137,5 +146,20 @@ describe('Home', () => {
     }
 
     expect(attributionLink.getAttribute('href')).toBe('https://www.flaticon.com/uicons');
+  });
+
+  it('uses the shared button styling for the homepage call to action', () => {
+    const fixture = TestBed.createComponent(Home);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const button = compiled.querySelector<HTMLButtonElement>('.home__cta-button');
+
+    if (button === null) {
+      throw new Error('Expected the homepage CTA button to render.');
+    }
+
+    expect(button.type).toBe('button');
+    expect(button.classList.contains('sbi-button')).toBe(true);
   });
 });

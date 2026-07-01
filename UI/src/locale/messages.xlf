@@ -25,17 +25,26 @@
         <source> We&apos;ll help you understand your rights and make the case with confidence. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">27,34</context>
+          <context context-type="linenumber">27,32</context>
         </context-group>
         <note priority="1" from="description">Promise to support parents in the summer-born
           journey</note>
         <note priority="1" from="meaning">Homepage help note</note>
       </trans-unit>
+      <trans-unit id="homeCtaButton" datatype="html">
+        <source> Take the first step </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.html</context>
+          <context context-type="linenumber">34,40</context>
+        </context-group>
+        <note priority="1" from="description">Encourages parents to begin the journey</note>
+        <note priority="1" from="meaning">Homepage call to action</note>
+      </trans-unit>
       <trans-unit id="homeHeroImageSource" datatype="html">
         <source>/images/hero-child-playing.png</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">34,36</context>
+          <context context-type="linenumber">41,43</context>
         </context-group>
         <note priority="1" from="description">References the local hero image asset</note>
         <note priority="1" from="meaning">Homepage hero image source</note>
@@ -44,7 +53,7 @@
         <source>Young child playing with wooden blocks in a bright room.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">40,42</context>
+          <context context-type="linenumber">47,49</context>
         </context-group>
         <note priority="1" from="description">Describes the hero image showing a child playing</note>
         <note priority="1" from="meaning">Homepage hero image alt</note>
@@ -53,7 +62,7 @@
         <source> What the guide will cover </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">56,60</context>
+          <context context-type="linenumber">63,67</context>
         </context-group>
         <note priority="1" from="description">Introduces the information areas planned for the
             guide</note>
@@ -63,7 +72,7 @@
         <source> The first public content will stay focused on common questions parents and carers may need to understand before using later tools. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">63,69</context>
+          <context context-type="linenumber">70,76</context>
         </context-group>
         <note priority="1" from="description">Explains that these are planned information
             areas</note>
@@ -73,7 +82,7 @@
         <source> 01 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">74,76</context>
+          <context context-type="linenumber">81,83</context>
         </context-group>
         <note priority="1" from="description">Number for the first homepage topic</note>
         <note priority="1" from="meaning">Homepage topic number</note>
@@ -82,7 +91,7 @@
         <source> School-start timing </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">77,81</context>
+          <context context-type="linenumber">84,88</context>
         </context-group>
         <note priority="1" from="description">Topic about school-start timing</note>
         <note priority="1" from="meaning">Homepage topic heading</note>
@@ -91,7 +100,7 @@
         <source> Plain information about common school-start terms and the questions families may want to ask. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">84,90</context>
+          <context context-type="linenumber">91,97</context>
         </context-group>
         <note priority="1" from="description">Describes planned school-start timing
               information</note>
@@ -101,7 +110,7 @@
         <source> 02 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">94,97</context>
+          <context context-type="linenumber">101,104</context>
         </context-group>
         <note priority="1" from="description">Number for the second homepage topic</note>
         <note priority="1" from="meaning">Homepage topic number</note>
@@ -110,7 +119,7 @@
         <source> Admission information </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">99,102</context>
+          <context context-type="linenumber">106,109</context>
         </context-group>
         <note priority="1" from="description">Topic about admissions information</note>
         <note priority="1" from="meaning">Homepage topic heading</note>
@@ -119,7 +128,7 @@
         <source> Careful signposting for school admission routes, decision points, and where official information should be checked. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">104,109</context>
+          <context context-type="linenumber">111,116</context>
         </context-group>
         <note priority="1" from="description">Describes planned admissions information</note>
         <note priority="1" from="meaning">Homepage topic text</note>
@@ -128,7 +137,7 @@
         <source> 03 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">114,116</context>
+          <context context-type="linenumber">121,123</context>
         </context-group>
         <note priority="1" from="description">Number for the third homepage topic</note>
         <note priority="1" from="meaning">Homepage topic number</note>
@@ -137,7 +146,7 @@
         <source> Discovery tools </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">117,121</context>
+          <context context-type="linenumber">124,128</context>
         </context-group>
         <note priority="1" from="description">Topic about future tools</note>
         <note priority="1" from="meaning">Homepage topic heading</note>
@@ -146,7 +155,7 @@
         <source> Search and comparison features are planned for a later roadmap milestone and are not part of this first homepage release. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">124,132</context>
+          <context context-type="linenumber">131,139</context>
         </context-group>
         <note priority="1" from="description">Describes future discovery tools without implying they are
               currently available</note>
@@ -156,7 +165,7 @@
         <source> Coming later </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">139,143</context>
+          <context context-type="linenumber">146,150</context>
         </context-group>
         <note priority="1" from="description">Labels planned future work</note>
         <note priority="1" from="meaning">Homepage future work label</note>
@@ -165,7 +174,7 @@
         <source> Public discovery features will follow the guide content. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">146,151</context>
+          <context context-type="linenumber">153,158</context>
         </context-group>
         <note priority="1" from="description">Introduces later roadmap functionality</note>
         <note priority="1" from="meaning">Homepage future work heading</note>
@@ -174,7 +183,7 @@
         <source> Later work is expected to add discovery tools for public visitors. For now, the homepage sets the visual foundation and explains the site direction. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">154,160</context>
+          <context context-type="linenumber">161,167</context>
         </context-group>
         <note priority="1" from="description">Explains future tools without implying current
           availability</note>
@@ -184,7 +193,7 @@
         <source> Scope note </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">166,170</context>
+          <context context-type="linenumber">173,177</context>
         </context-group>
         <note priority="1" from="description">Introduces the homepage scope note</note>
         <note priority="1" from="meaning">Homepage note heading</note>
@@ -193,7 +202,7 @@
         <source> This project is not an official admissions service and does not provide legal advice. Families should check current information with the relevant official source when making decisions. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">173,181</context>
+          <context context-type="linenumber">180,188</context>
         </context-group>
         <note priority="1" from="description">Clarifies limits without using legal or official
           claims</note>
@@ -203,7 +212,7 @@
         <source> Summer-born Info </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">187,191</context>
+          <context context-type="linenumber">194,198</context>
         </context-group>
         <note priority="1" from="description">Displays the project name</note>
         <note priority="1" from="meaning">Homepage footer brand</note>
@@ -212,7 +221,7 @@
         <source> A developing guide for parents and carers of summer-born children. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">193,198</context>
+          <context context-type="linenumber">200,205</context>
         </context-group>
         <note priority="1" from="description">Summarises the project purpose in the footer</note>
         <note priority="1" from="meaning">Homepage footer summary</note>
@@ -221,7 +230,7 @@
         <source> Uicons by <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://www.flaticon.com/uicons&quot;&gt;"/>Flaticon<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">202,204</context>
+          <context context-type="linenumber">209,211</context>
         </context-group>
         <note priority="1" from="description">Credits the source of the theme icons in the
           footer</note>
