@@ -62,7 +62,9 @@ describe('App', () => {
 
     expect(heading.textContent.trim()).toBe(`We're still working on this page`);
     expect(compiled.textContent).toContain('Coming soon');
-    expect(compiled.textContent).toContain(`This part of the site isn't ready yet, but the rest of our guidance on delayed starts is.`);
+    expect(compiled.textContent).toContain(
+      `This part of the site isn't ready yet, but the rest of our guidance on delayed starts is.`,
+    );
     expect(compiled.textContent).toContain('Back to where you were');
   });
 });
