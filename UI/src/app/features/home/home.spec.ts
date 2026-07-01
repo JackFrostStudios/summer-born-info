@@ -22,9 +22,7 @@ describe('Home', () => {
     expect(compiled.textContent).toContain(
       `If your child was born in the summer, you may be able to delay their start to Reception until the September after their fifth birthday. It's not about holding them back — it's about giving them the best possible start.`,
     );
-    expect(compiled.textContent).toContain(
-      `We'll help you understand your rights and make the case with confidence.`,
-    );
+    expect(compiled.textContent).toContain(`We'll help you understand your rights and make the case with confidence.`);
     expect(compiled.textContent).toContain('Take the first step');
     expect(compiled.textContent).toContain('Discovery tools');
     expect(compiled.textContent).toContain('Uicons by Flaticon');
@@ -80,9 +78,7 @@ describe('Home', () => {
 
     expect(heroArt).not.toBeNull();
     expect(heroImage?.getAttribute('src')).toContain('/images/hero-child-playing.png');
-    expect(heroImage?.getAttribute('alt')).toBe(
-      'Young child playing with wooden blocks in a bright room.',
-    );
+    expect(heroImage?.getAttribute('alt')).toBe('Young child playing with wooden blocks in a bright room.');
     expect(compiled.querySelector('.home__hero-art-badge')).toBeNull();
     expect(heroArt?.querySelector('figcaption')).toBeNull();
   });

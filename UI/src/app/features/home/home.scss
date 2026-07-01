@@ -67,11 +67,7 @@
 }
 
 .home__hero-art {
-  background: linear-gradient(
-    180deg,
-    var(--sbi-color-secondary-container) 0%,
-    var(--sbi-color-surface-lowest) 100%
-  );
+  background: linear-gradient(180deg, var(--sbi-color-secondary-container) 0%, var(--sbi-color-surface-lowest) 100%);
   border: var(--sbi-border-strong);
   border-radius: var(--sbi-radius-lg);
   box-shadow: var(--sbi-shadow-hard-lg);
