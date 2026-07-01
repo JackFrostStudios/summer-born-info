@@ -113,7 +113,7 @@ describe('ThemeControl', () => {
     TestBed.resetTestingModule();
   });
 
-  it('renders an accessible toggle with a reset action', () => {
+  it('renders an accessible toggle without a reset action', () => {
     TestBed.configureTestingModule({
       imports: [ThemeControl],
     });
@@ -123,13 +123,12 @@ describe('ThemeControl', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     const toggle = compiled.querySelector<HTMLButtonElement>('.theme-control__toggle');
-    const reset = compiled.querySelector<HTMLButtonElement>('.theme-control__reset');
 
     expect(toggle).not.toBeNull();
-    expect(reset).not.toBeNull();
+    expect(compiled.querySelector('.theme-control__reset')).toBeNull();
 
-    if (toggle === null || reset === null) {
-      throw new Error('Expected the theme toggle and reset action to render.');
+    if (toggle === null) {
+      throw new Error('Expected the theme toggle to render.');
     }
 
     const screenReaderLabel = requireElement(
@@ -154,13 +153,9 @@ describe('ThemeControl', () => {
     expect(viewport.getAttribute('aria-hidden')).toBe('true');
     expect(reel.classList.contains('theme-control__reel--dark')).toBe(false);
     expect(icons).toHaveLength(2);
-    expect(reset.tagName).toBe('BUTTON');
-    expect(reset.type).toBe('button');
-    expect(reset.textContent.trim()).toBe('Reset to system');
-    expect(reset.disabled).toBe(true);
   });
 
-  it('toggles to an explicit dark mode and enables reset when activated from light', () => {
+  it('toggles to an explicit dark mode and persists the override when activated from light', () => {
     TestBed.configureTestingModule({
       imports: [ThemeControl],
     });
@@ -169,10 +164,9 @@ describe('ThemeControl', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     const toggle = compiled.querySelector<HTMLButtonElement>('.theme-control__toggle');
-    const reset = compiled.querySelector<HTMLButtonElement>('.theme-control__reset');
 
-    if (toggle === null || reset === null) {
-      throw new Error('Expected the theme toggle and reset action to render.');
+    if (toggle === null) {
+      throw new Error('Expected the theme toggle to render.');
     }
 
     toggle.click();
@@ -191,7 +185,6 @@ describe('ThemeControl', () => {
     expect(reel.classList.contains('theme-control__reel--dark')).toBe(true);
     expect(toggle.textContent.trim()).toContain('Switch to light mode');
     expect(screenReaderLabel.textContent.trim()).toBe('Switch to light mode');
-    expect(reset.disabled).toBe(false);
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('dark');
     expect(localStorage.getItem(storageKey)).toBe('dark');
   });
@@ -207,14 +200,12 @@ describe('ThemeControl', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     const toggle = compiled.querySelector<HTMLButtonElement>('.theme-control__toggle');
-    const reset = compiled.querySelector<HTMLButtonElement>('.theme-control__reset');
 
-    if (toggle === null || reset === null) {
-      throw new Error('Expected the theme toggle and reset action to render.');
+    if (toggle === null) {
+      throw new Error('Expected the theme toggle to render.');
     }
 
     expect(toggle.getAttribute('aria-pressed')).toBe('true');
-    expect(reset.disabled).toBe(true);
 
     toggle.click();
     fixture.detectChanges();
@@ -225,48 +216,7 @@ describe('ThemeControl', () => {
 
     expect(toggle.getAttribute('aria-pressed')).toBe('false');
     expect(reel.classList.contains('theme-control__reel--dark')).toBe(false);
-    expect(reset.disabled).toBe(false);
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('light');
     expect(localStorage.getItem(storageKey)).toBe('light');
-  });
-
-  it('clears persisted mode and the document root override when reset to system default', () => {
-    localStorage.setItem(storageKey, 'light');
-
-    TestBed.configureTestingModule({
-      imports: [ThemeControl],
-    });
-
-    const fixture = TestBed.createComponent(ThemeControl);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    const toggle = compiled.querySelector<HTMLButtonElement>('.theme-control__toggle');
-    const reset = compiled.querySelector<HTMLButtonElement>('.theme-control__reset');
-
-    if (toggle === null || reset === null) {
-      throw new Error('Expected the theme toggle and reset action to render.');
-    }
-
-    expect(toggle.getAttribute('aria-pressed')).toBe('false');
-    expect(reset.disabled).toBe(false);
-
-    reset.click();
-    fixture.detectChanges();
-    const screenReaderLabel = requireElement(
-      toggle.querySelector('.theme-control__sr-only'),
-      'Expected the toggle screen-reader label to render after reset.',
-    );
-    const reel = requireElement(
-      toggle.querySelector('.theme-control__reel'),
-      'Expected the toggle icon reel to render after reset.',
-    );
-
-    expect(toggle.getAttribute('aria-pressed')).toBe('false');
-    expect(reel.classList.contains('theme-control__reel--dark')).toBe(false);
-    expect(toggle.textContent.trim()).toContain('Switch to dark mode');
-    expect(screenReaderLabel.textContent.trim()).toBe('Switch to dark mode');
-    expect(reset.disabled).toBe(true);
-    expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
-    expect(localStorage.getItem(storageKey)).toBeNull();
   });
 });
