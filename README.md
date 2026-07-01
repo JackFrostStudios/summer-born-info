@@ -1,6 +1,6 @@
-# Summer Born Information
+# Summer-born Infor
 
-This repository contains the Summer Born Information platform split into separate API and UI services.
+This repository contains the Summer-born Info platform split into separate API and UI services.
 
 ## Repository map
 

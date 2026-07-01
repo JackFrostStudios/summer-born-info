@@ -1,10 +1,10 @@
 # UI
 
-This folder contains the Summer Born Information Angular frontend application.
+This folder contains the Summer-born Info Angular frontend application.
 
 ## Project Aims
 
-The UI is the browser-facing surface for the Summer Born Information platform.
+The UI is the browser-facing surface for the Summer-born Info platform.
 
 - Present user journeys for parents and guardians.
 - Consume backend API capabilities once those contracts are wired into the frontend.
@@ -75,7 +75,7 @@ For example:
 
 ```html
 <h1 i18n="Home page heading|Introduces the page to parents and guardians@@homePageHeading">
-  Find summer born information
+  Find Summer-born Info
 </h1>
 ```
 

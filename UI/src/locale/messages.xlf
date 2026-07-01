@@ -200,7 +200,7 @@
         <note priority="1" from="meaning">Homepage note text</note>
       </trans-unit>
       <trans-unit id="homeFooterBrand" datatype="html">
-        <source> Summer Born Info </source>
+        <source> Summer-born Info </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home.html</context>
           <context context-type="linenumber">187,191</context>
@@ -228,7 +228,7 @@
         <note priority="1" from="meaning">Homepage footer icon attribution</note>
       </trans-unit>
       <trans-unit id="appHeaderBrand" datatype="html">
-        <source> Summer born info </source>
+        <source> Summer-born Info </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shell/public-header/public-header.html</context>
           <context context-type="linenumber">6,11</context>

@@ -10,7 +10,7 @@ Deliver a focused follow-up to the recently shipped homepage so the page fills t
 - Approved design direction: [milestone-8-homepage-style-decision.md](./milestone-8-homepage-style-decision.md)
 - Feedback to address:
   - The app shell padding creates an unwanted gap around the homepage and should allow the page to fill the browser window.
-  - The shell should now include a header bar with only the `Summer born info` brand and the theme selector.
+  - The shell should now include a header bar with only the `Summer-born Info` brand and the theme selector.
   - The light/dark selector should become a toggle button with animated sun and moon-stars icons.
   - The footer should include icon attribution: `Uicons by Flaticon`.
 - Relevant UI areas:
@@ -43,7 +43,7 @@ Given a visitor opens the homepage on desktop or mobile, when the root shell ren
 
 ### Scenario: The app shell provides a reusable public header
 
-Given the homepage route renders inside the root shell, when the page loads, then the shell should show a header bar containing only the `Summer born info` brand and the theme control, leaving feature-specific hero and content sections inside the homepage route.
+Given the homepage route renders inside the root shell, when the page loads, then the shell should show a header bar containing only the `Summer-born Info` brand and the theme control, leaving feature-specific hero and content sections inside the homepage route.
 
 ### Scenario: A visitor toggles between light and dark mode
 
@@ -119,14 +119,13 @@ This split keeps future public-page growth straightforward: the shell can evolve
 ## 11. Unknowns And Clarifications
 
 - No blocking clarification is required to plan this slice.
-- Assumption: the header brand text should use the requested casing `Summer born info` in the header, even though other existing homepage copy uses `Summer Born Info`.
 - If the user wants the header brand to navigate somewhere, that can be handled during implementation without changing the overall plan.
 
 ## 12. Completion Checklist
 
 - [x] Shell-level outer padding no longer creates a visible frame around the homepage.
 - [x] The root shell renders a reusable public header bar.
-- [x] The header contains only `Summer born info` and the theme control.
+- [x] The header contains only `Summer-born Info` and the theme control.
 - [x] The theme control is implemented as a dedicated component separate from homepage content.
 - [x] The primary theme control toggles between explicit light and dark mode.
 - [x] The control visually animates between the supplied sun and moon-stars icons.

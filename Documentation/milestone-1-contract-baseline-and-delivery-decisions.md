@@ -2,7 +2,7 @@
 
 ## 1. Purpose and Status
 
-This document is the Milestone 1 markdown contract baseline for the initial Summer Born Information API surface.
+This document is the Milestone 1 markdown contract baseline for the initial Summer-born Info API surface.
 
 It is the pre-implementation contract artifact that downstream milestones must implement and validate. The final contract handoff for the UI team remains generated OpenAPI output from the ASP.NET Core API project once Milestones 2 through 6 are complete.
 

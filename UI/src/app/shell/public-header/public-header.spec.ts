@@ -30,7 +30,7 @@ describe('PublicHeader', () => {
     }
 
     expect(header.children.length).toBe(2);
-    expect(brand.textContent.trim()).toBe('Summer born info');
+    expect(brand.textContent.trim()).toBe('Summer-born Info');
   });
 
   it('keeps the brand in the stronger prototype-inspired wordmark style', () => {
