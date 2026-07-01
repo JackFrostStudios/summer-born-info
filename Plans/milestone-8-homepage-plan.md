@@ -62,7 +62,7 @@ Given later roadmap work adds more public routes, when contributors extend the U
 
 ### Scenario: A visitor controls colour mode
 
-Given the application supports operating-system light and dark preferences, when a visitor switches between light mode, dark mode, and system default, then the application should persist the explicit choice, clear persistence when reset to system, and continue to expose `color-scheme: light dark` so native browser controls render appropriately.
+Given the application supports operating-system light and dark preferences, when a visitor first loads the site without a stored override, then the application should follow the operating-system preference. When the visitor later switches between explicit light and dark modes, then the application should persist that explicit choice and continue to expose `color-scheme: light dark` so native browser controls render appropriately.
 
 ### Scenario: Contributors use the shared design foundation
 
@@ -77,7 +77,7 @@ Given a contributor adds a future public UI area, when they need common colours,
 5. Replace the current `home-placeholder` implementation with a real homepage feature under `UI/src/app/features/home/`, preserving the route ownership pattern already defined in `UI/src/app/app.routes.ts`.
 6. Implement the in-scope homepage sections in Angular: header, welcome or hero content, supporting introductory content as needed, and footer.
 7. Introduce the shared styling foundation required by the approved design, including a modern CSS reset, local Hanken Grotesk font registration, CSS custom properties for colour, typography, spacing, borders, focus states, surfaces, shadows, and page width, with global styles split into modular files grouped by concern.
-8. Implement colour mode support with `color-scheme: light dark`, the modern `light-dark()` CSS function for theme-sensitive tokens, and a user-facing control that can select light, dark, or reset to the system default.
+8. Implement colour mode support with `color-scheme: light dark`, the modern `light-dark()` CSS function for theme-sensitive tokens, and a user-facing control that defaults to the system preference until the visitor selects explicit light or dark mode.
 9. Document shared design-system styling usage, including where the modular CSS files live, how tokens should be used, how theme mode works, and which prototype content must not be copied into production.
 10. Update shell-level layout only where the approved homepage requires app-level framing, while keeping feature-specific rendering out of `UI/src/app/shell/`.
 11. Mark visible homepage copy for Angular i18n extraction where required by the existing UI localization workflow.
@@ -97,7 +97,7 @@ Given a contributor adds a future public UI area, when they need common colours,
 - Modular shared CSS:
   Keep `UI/src/styles.scss` as the shared entry point and move reusable global concerns into imported files grouped by purpose, such as reset, font faces, tokens, base elements, utilities, and theme-mode behaviour.
 - Colour mode:
-  Set `color-scheme: light dark` at the document level. Use `light-dark()` for theme-sensitive design tokens, and drive explicit user overrides through a root attribute or equivalent class that changes the active `color-scheme`. Provide a reset path that removes the override and returns to the system preference.
+  Set `color-scheme: light dark` at the document level. Use `light-dark()` for theme-sensitive design tokens, and drive explicit user overrides through a root attribute or equivalent class that changes the active `color-scheme`, while leaving the initial no-override state to follow the system preference.
 - Fonts:
   Use the locally supplied Hanken Grotesk files from `UI/prototypes/Hanken_Grotesk/` by copying the required production font files into the Angular static asset area rather than relying on a hosted font service.
 - Prototype content:
@@ -122,7 +122,7 @@ Given a contributor adds a future public UI area, when they need common colours,
    - Define reusable colour, border, spacing, typography, focus, layout, and surface tokens.
    - Register the local Hanken Grotesk font for production use.
    - Document how contributors should use the shared styling.
-6. Add light and dark mode support using `light-dark()` and a user control for light, dark, and system default.
+6. Add light and dark mode support using `light-dark()` and a user control that starts from the system preference before allowing explicit light or dark selection.
 7. Implement the Angular homepage feature and any minimal shell/global style updates needed to support it, using production-safe copy that strips unsupported prototype claims and invented metrics.
 8. Add or update tests and refresh localization artifacts affected by the new homepage copy and theme controls.
 9. Run UI validation commands and perform responsive and accessibility checks before considering the milestone complete.
@@ -132,7 +132,7 @@ Given a contributor adds a future public UI area, when they need common colours,
 1. Design-system foundation:
    Create the modular shared CSS structure under `UI/src/styles/`, wire it through `UI/src/styles.scss`, add a modern reset, register the local Hanken Grotesk font from `UI/prototypes/Hanken_Grotesk/` via static assets, define reusable tokens and base primitives, and document their intended use for future UI contributors. Do not implement homepage-specific content in this step.
 2. Colour-mode support:
-   Add application support for light, dark, and system-default modes using `color-scheme: light dark`, `light-dark()`-based tokens, and a small accessible user control. Persist explicit light/dark choices and clear persistence when the user resets to system default. Add tests for mode selection and reset behaviour.
+   Add application support for an initial system-following mode plus explicit light and dark overrides using `color-scheme: light dark`, `light-dark()`-based tokens, and a small accessible user control. Persist explicit light/dark choices. Add tests for initial system behaviour and mode selection.
 3. Homepage implementation:
    Replace `home-placeholder` with the production homepage route using the approved prototype layout and visual system, but strip unsupported claims, invented metrics, advocacy language, and prototype-only CTAs. Keep final copy simple, factual, and roadmap-aligned. Mark user-facing template text for i18n extraction.
 4. Homepage tests and validation:
@@ -176,7 +176,7 @@ Given a contributor adds a future public UI area, when they need common colours,
 - [x] Shared theme tokens or layout primitives are introduced where they support the approved design and future reuse.
 - [x] Design-system styling usage is documented for future contributors.
 - [x] Light and dark mode are implemented with `color-scheme: light dark` and `light-dark()`-based theme tokens.
-- [x] Users can switch to light mode, switch to dark mode, and reset to the system default.
+- [x] Users start on the system preference until they pick explicit light or dark mode, and later toggles persist that explicit choice.
 - [x] Prototype-only unsupported claims, invented metrics, advocacy language, and unsupported CTAs are excluded from production homepage copy.
 - [x] Homepage text is marked for i18n extraction where appropriate.
 - [x] Responsive behaviour is verified for mobile and desktop layouts.

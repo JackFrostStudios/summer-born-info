@@ -28,8 +28,8 @@ is likely to be reused by more than one feature.
 The colour tokens use `light-dark()` so they can follow the operating-system colour preference.
 `:root` keeps `color-scheme: light dark` as the default. The shell colour-mode control stores only
 explicit light or dark choices under `sbi:colour-mode`, applies them through the
-`data-sbi-colour-mode` document-root attribute, and removes both the attribute and persisted value
-when reset to system default.
+`data-sbi-colour-mode` document-root attribute, and falls back to the operating-system preference
+whenever no explicit choice has been stored yet.
 
 ## Prototype Content
 

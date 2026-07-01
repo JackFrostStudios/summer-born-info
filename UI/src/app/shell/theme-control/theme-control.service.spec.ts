@@ -143,17 +143,6 @@ describe('ThemeControlService', () => {
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('dark');
   });
 
-  it('clears persistence and the root override when reset to system default', () => {
-    const service = TestBed.inject(ThemeControlService);
-    service.setMode('dark');
-
-    service.setMode('system');
-
-    expect(service.mode()).toBe('system');
-    expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
-    expect(localStorage.getItem(storageKey)).toBeNull();
-  });
-
   it('toggles from the current effective system preference when no explicit mode is set', () => {
     installMatchMediaStub(true);
     const service = TestBed.inject(ThemeControlService);

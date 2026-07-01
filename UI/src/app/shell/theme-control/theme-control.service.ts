@@ -39,10 +39,6 @@ export class ThemeControlService {
     this.setMode(this.nextExplicitMode());
   }
 
-  resetToSystemMode(): void {
-    this.setMode('system');
-  }
-
   nextExplicitMode(): ExplicitColourMode {
     return this.currentExplicitMode() === 'dark' ? 'light' : 'dark';
   }
