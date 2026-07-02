@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'sbi-home-hero',
@@ -7,10 +7,4 @@ import { Component, input } from '@angular/core';
   templateUrl: './home-hero.html',
   styleUrl: './home-hero.scss',
 })
-export class HomeHero {
-  readonly headingId = input.required<string>();
-
-  protected get heroHeadingId(): string {
-    return this.headingId();
-  }
-}
+export class HomeHero {}

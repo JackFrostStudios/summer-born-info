@@ -10,7 +10,6 @@ describe('HomeHero', () => {
 
   it('renders the approved homepage hero copy, heading treatment, and cta', () => {
     const fixture = TestBed.createComponent(HomeHero);
-    fixture.componentRef.setInput('headingId', 'home-heading');
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
@@ -40,7 +39,6 @@ describe('HomeHero', () => {
 
   it('renders the approved hero image semantics without extra overlay content', () => {
     const fixture = TestBed.createComponent(HomeHero);
-    fixture.componentRef.setInput('headingId', 'home-heading');
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
