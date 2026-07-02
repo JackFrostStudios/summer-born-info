@@ -1,12 +1,20 @@
-<article class="home" [attr.aria-labelledby]="headingId">
-  <sbi-home-hero [headingId]="headingId" />
+<article
+  class="home"
+  aria-labelledby="home-heading"
+  i18n-aria-labelledby="Homepage article label reference@@homeAriaLabelledBy"
+>
+  <sbi-home-hero />
 
-  <section class="home__topics" [attr.aria-labelledby]="topicsHeadingId">
+  <section
+    class="home__topics"
+    aria-labelledby="home-topics-heading"
+    i18n-aria-labelledby="Homepage topics section label reference@@homeTopicsAriaLabelledBy"
+  >
     <div class="sbi-container">
       <div class="home__section-heading sbi-stack">
         <h2
           i18n="Homepage topics heading|Introduces the information areas planned for the guide@@homeTopicsHeading"
-          [id]="topicsHeadingId"
+          id="home-topics-heading"
         >
           What the guide will cover
         </h2>
@@ -69,7 +77,11 @@
     </div>
   </section>
 
-  <section class="home__coming-soon sbi-container" [attr.aria-labelledby]="comingSoonHeadingId">
+  <section
+    class="home__coming-soon sbi-container"
+    aria-labelledby="home-coming-soon-heading"
+    i18n-aria-labelledby="Homepage future work section label reference@@homeComingAriaLabelledBy"
+  >
     <div class="home__coming-panel sbi-surface sbi-surface--primary">
       <div class="sbi-stack">
         <p class="sbi-label" i18n="Homepage future work label|Labels planned future work@@homeComingLabel">
@@ -77,7 +89,7 @@
         </p>
         <h2
           i18n="Homepage future work heading|Introduces later roadmap functionality@@homeComingHeading"
-          [id]="comingSoonHeadingId"
+          id="home-coming-soon-heading"
         >
           Public discovery features will follow the guide content.
         </h2>
@@ -89,9 +101,13 @@
     </div>
   </section>
 
-  <aside class="home__note sbi-container" [attr.aria-labelledby]="noteHeadingId">
+  <aside
+    class="home__note sbi-container"
+    aria-labelledby="home-note-heading"
+    i18n-aria-labelledby="Homepage scope note label reference@@homeNoteAriaLabelledBy"
+  >
     <div class="home__note-panel">
-      <h2 i18n="Homepage note heading|Introduces the homepage scope note@@homeScopeNoteHeading" [id]="noteHeadingId">
+      <h2 i18n="Homepage note heading|Introduces the homepage scope note@@homeScopeNoteHeading" id="home-note-heading">
         Scope note
       </h2>
       <p i18n="Homepage note text|Clarifies limits without using legal or official claims@@homeScopeNoteText">

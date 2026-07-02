@@ -42,6 +42,12 @@ module.exports = defineConfig([
       '@angular-eslint/directive-class-suffix': 'off',
       '@angular-eslint/no-developer-preview': 'off',
       '@angular-eslint/no-experimental': 'off',
+      '@typescript-eslint/no-extraneous-class': [
+        'error',
+        {
+          allowEmpty: true,
+        },
+      ],
     },
   },
   {
