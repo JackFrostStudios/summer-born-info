@@ -1,5 +1,6 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { Button } from '../../../../design-system/button/button';
 
 @Component({
@@ -8,4 +9,10 @@ import { Button } from '../../../../design-system/button/button';
   templateUrl: './home-hero.html',
   styleUrl: './home-hero.scss',
 })
-export class HomeHero {}
+export class HomeHero {
+  private readonly router = inject(Router);
+
+  protected goToUnderConstruction(): void {
+    void this.router.navigateByUrl('/under-construction');
+  }
+}

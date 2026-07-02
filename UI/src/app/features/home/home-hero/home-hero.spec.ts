@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { HomeHero } from './home-hero';
 
 function requireSharedButton(host: ParentNode): HTMLButtonElement {
@@ -12,9 +13,16 @@ function requireSharedButton(host: ParentNode): HTMLButtonElement {
 }
 
 describe('HomeHero', () => {
+  const router = {
+    navigateByUrl: vi.fn().mockResolvedValue(true),
+  };
+
   beforeEach(async () => {
+    router.navigateByUrl.mockClear();
+
     await TestBed.configureTestingModule({
       imports: [HomeHero],
+      providers: [{ provide: Router, useValue: router }],
     }).compileComponents();
   });
 
@@ -63,5 +71,16 @@ describe('HomeHero', () => {
     expect(heroImage?.getAttribute('alt')).toBe('Young child playing with wooden blocks in a bright room.');
     expect(compiled.querySelector('.home__hero-art-badge')).toBeNull();
     expect(heroArt?.querySelector('figcaption')).toBeNull();
+  });
+
+  it('routes the call to action to the under-construction page', () => {
+    const fixture = TestBed.createComponent(HomeHero);
+    fixture.detectChanges();
+
+    const button = requireSharedButton(fixture.nativeElement as HTMLElement);
+
+    button.click();
+
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/under-construction');
   });
 });
