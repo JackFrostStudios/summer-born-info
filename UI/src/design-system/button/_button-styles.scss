@@ -19,7 +19,7 @@
     box-shadow var(--sbi-button-transition-duration, 160ms) ease,
     transform var(--sbi-button-transition-duration, 160ms) ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     box-shadow: none;
     color: var(--sbi-button-hover-color, var(--sbi-button-color, var(--sbi-color-on-primary-container)));
     transform: translate(

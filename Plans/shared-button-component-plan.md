@@ -127,7 +127,7 @@ Given the hero CTA and theme control both use the shared component, when shared 
 7. [x] Migrate `theme-control` to the shared button component and update its styles/tests to keep toggle semantics, animation markup, and accessibility intact while aligning the outer button transitions with the primitive hover behaviour.
 8. [x] Delete the legacy button primitive rules from `UI/src/styles/_primitives.scss` once all current consumers in scope have been migrated to the component.
 9. [x] If the change establishes `UI/src/design-system/` as a canonical home for shared Angular UI components, update `UI/AI_PROJECT_GUIDE.md` to document that ownership convention.
-10. Run `npm run format`, `npm run lint`, `npm run test:run`, and the relevant i18n validation commands from `UI/`.
+10. [x] Run `npm run format`, `npm run lint`, `npm run test:run`, and the relevant i18n validation commands from `UI/`.
 
 ## 9. Risks and Mitigations
 
@@ -152,19 +152,19 @@ Given the hero CTA and theme control both use the shared component, when shared 
 
 ## 11. Completion Checklist
 
-- [ ] A reusable standalone button component exists under `UI/src/design-system/`.
-- [ ] The component supports `primary` and `secondary` visual variants through a typed input.
-- [ ] The component projects arbitrary inner content through Angular content projection.
-- [ ] The component emits a documented activation output when users click or tap it.
-- [ ] The component preserves native button semantics with an explicit `type="button"` default.
-- [ ] Shared button styling has one canonical source of truth in the component, and the legacy button primitive rules have been removed.
-- [ ] `home-hero` uses the shared button component for its CTA without changing copy or intended emphasis.
-- [ ] `theme-control` uses the shared button component while preserving toggle semantics and projected icon content, and its outer button transitions align with the shared primitive hover behaviour instead of the previous click-emphasised pattern.
-- [ ] Shared button component tests cover variant selection, projected content, and activation output.
-- [ ] Consumer tests are updated to reflect the new abstraction without losing accessibility assertions.
-- [ ] `UI/AI_PROJECT_GUIDE.md` is updated if `UI/src/design-system/` becomes an explicit documented convention for shared Angular components.
-- [ ] `npm run format` has been run in `UI/`.
-- [ ] `npm run lint` has been run in `UI/`.
-- [ ] `npm run test:run` has been run in `UI/`.
-- [ ] `npm run extract:i18n` has been run in `UI/` if template message locations or text changed.
-- [ ] `npm run validate:i18n` has been run in `UI/` if extraction output changed.
+- [x] A reusable standalone button component exists under `UI/src/design-system/`.
+- [x] The component supports `primary` and `secondary` visual variants through a typed input.
+- [x] The component projects arbitrary inner content through Angular content projection.
+- [x] The component emits a documented activation output when users click or tap it.
+- [x] The component preserves native button semantics with an explicit `type="button"` default.
+- [x] Shared button styling has one canonical source of truth in the component, and the legacy button primitive rules have been removed.
+- [x] `home-hero` uses the shared button component for its CTA without changing copy or intended emphasis.
+- [x] `theme-control` uses the shared button component while preserving toggle semantics and projected icon content, and its outer button transitions align with the shared primitive hover behaviour instead of the previous click-emphasised pattern.
+- [x] Shared button component tests cover variant selection, projected content, and activation output.
+- [x] Consumer tests are updated to reflect the new abstraction without losing accessibility assertions.
+- [x] `UI/AI_PROJECT_GUIDE.md` is updated if `UI/src/design-system/` becomes an explicit documented convention for shared Angular components.
+- [x] `npm run format` has been run in `UI/`.
+- [x] `npm run lint` has been run in `UI/`.
+- [x] `npm run test:run` has been run in `UI/`.
+- [x] `npm run extract:i18n` has been run in `UI/` if template message locations or text changed.
+- [x] `npm run validate:i18n` has been run in `UI/` if extraction output changed.
