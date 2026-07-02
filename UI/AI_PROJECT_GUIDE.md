@@ -15,6 +15,7 @@ The UI is currently an Angular application with server-side rendering support, a
 - `UI/src/app/shell/root-shell.*` owns shell-level layout and nested route composition.
 - `UI/src/app/shell/` can also hold focused shell-only subcomponents such as the public header and theme control when the root shell needs reusable structure without taking on feature logic.
 - `UI/src/app/features/home/home.*` is the current public homepage feature route rendered inside the shell.
+- `UI/src/design-system/` holds shared Angular UI components that are reused across multiple shell or feature consumers.
 - `UI/src/locale/messages.xlf` is the canonical extracted source-messages file for Angular i18n.
 - `UI/src/styles.scss` is the shared global stylesheet entry point.
 - `UI/src/styles/` holds modular shared CSS concerns such as font registration, reset rules,
@@ -28,6 +29,7 @@ The UI is currently an Angular application with server-side rendering support, a
 - Treat `UI/src/app/app.routes.ts` as the canonical place to grow the route tree until a feature area is large enough to justify a route-specific substructure.
 - Keep shell-only layout concerns in `UI/src/app/shell/` and keep feature-specific rendering out of the shell.
 - Add new routed user-facing areas under `UI/src/app/features/` so each feature keeps its component, template, styles, and tests together.
+- Put shared standalone Angular UI components under `UI/src/design-system/` once at least two consumers justify the abstraction and the code is not owned by a single feature or the shell alone.
 - Keep Angular localization artifacts owned by `UI/src/locale/`.
 - Treat `UI/src/locale/messages.xlf` as generated project state that should stay in sync with user-facing template text marked for translation.
 - Add shared static assets to `UI/public/`.
@@ -45,6 +47,7 @@ The UI is currently an Angular application with server-side rendering support, a
 - Use the `sbi` prefix for Angular selectors and bootstrap tags across workspace configuration and existing components.
 - Prefer standalone Angular APIs and keep module-era patterns out unless an existing dependency requires them.
 - When adding a reusable abstraction, make sure at least two consumers justify it.
+- Keep shared component APIs and their canonical styling together in `UI/src/design-system/` instead of splitting ownership between feature templates and global primitives.
 
 ### Localization Ownership
 
