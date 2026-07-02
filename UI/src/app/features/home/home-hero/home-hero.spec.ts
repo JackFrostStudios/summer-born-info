@@ -1,6 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { HomeHero } from './home-hero';
 
+function requireSharedButton(host: ParentNode): HTMLButtonElement {
+  const button = host.querySelector('sbi-button.home__cta-button button');
+
+  if (!(button instanceof HTMLButtonElement)) {
+    throw new Error('Expected the homepage hero shared CTA to render a native button.');
+  }
+
+  return button;
+}
+
 describe('HomeHero', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -15,10 +25,11 @@ describe('HomeHero', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
     const highlight = compiled.querySelector<HTMLElement>('.home__hero-highlight');
-    const button = compiled.querySelector<HTMLButtonElement>('.home__cta-button');
+    const buttonHost = compiled.querySelector<HTMLElement>('sbi-button.home__cta-button');
+    const button = requireSharedButton(compiled);
 
-    if (highlight === null || button === null) {
-      throw new Error('Expected the homepage hero highlight and CTA button to render.');
+    if (highlight === null || buttonHost === null) {
+      throw new Error('Expected the homepage hero highlight and shared CTA button to render.');
     }
 
     const highlightText = highlight.textContent;
@@ -32,9 +43,11 @@ describe('HomeHero', () => {
       `If your child was born in the summer, you may be able to delay their start to Reception until the September after their fifth birthday. It's not about holding them back \u2014 it's about giving them the best possible start.`,
     );
     expect(compiled.textContent).toContain(`We'll help you understand your rights and make the case with confidence.`);
+    expect(buttonHost.classList.contains('home__cta-button')).toBe(true);
     expect(button.type).toBe('button');
     expect(buttonText.trim()).toBe('Take the first step');
     expect(button.classList.contains('sbi-button')).toBe(true);
+    expect(button.classList.contains('sbi-button--secondary')).toBe(false);
   });
 
   it('renders the approved hero image semantics without extra overlay content', () => {

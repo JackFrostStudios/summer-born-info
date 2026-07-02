@@ -123,7 +123,7 @@ Given the hero CTA and theme control both use the shared component, when shared 
    - any required disabled/ARIA forwarding support.
 4. [x] Move the existing primary and secondary button styling into the shared component and remove duplication with the old primitives.
 5. [x] Add focused unit tests for the shared button component covering variant mapping, projected content, and output emission.
-6. Migrate `home-hero` to the shared button component and update its tests for the new rendered structure.
+6. [x] Migrate `home-hero` to the shared button component and update its tests for the new rendered structure.
 7. Migrate `theme-control` to the shared button component and update its styles/tests to keep toggle semantics, animation markup, and accessibility intact while aligning the outer button transitions with the primitive hover behaviour.
 8. Delete the legacy button primitive rules from `UI/src/styles/_primitives.scss` once all current consumers in scope have been migrated to the component.
 9. If the change establishes `UI/src/design-system/` as a canonical home for shared Angular UI components, update `UI/AI_PROJECT_GUIDE.md` to document that ownership convention.

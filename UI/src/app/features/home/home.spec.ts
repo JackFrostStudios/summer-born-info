@@ -1,6 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { Home } from './home';
 
+function requireSharedButton(host: ParentNode): HTMLButtonElement {
+  const button = host.querySelector('sbi-button.home__cta-button button');
+
+  if (!(button instanceof HTMLButtonElement)) {
+    throw new Error('Expected the homepage CTA shared button to render a native button.');
+  }
+
+  return button;
+}
+
 describe('Home', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -131,13 +141,16 @@ describe('Home', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const button = compiled.querySelector<HTMLButtonElement>('.home__cta-button');
+    const buttonHost = compiled.querySelector<HTMLElement>('sbi-button.home__cta-button');
+    const button = requireSharedButton(compiled);
 
-    if (button === null) {
-      throw new Error('Expected the homepage CTA button to render.');
+    if (buttonHost === null) {
+      throw new Error('Expected the homepage CTA shared button to render.');
     }
 
+    expect(buttonHost.classList.contains('home__cta-button')).toBe(true);
     expect(button.type).toBe('button');
     expect(button.classList.contains('sbi-button')).toBe(true);
+    expect(button.classList.contains('sbi-button--secondary')).toBe(false);
   });
 });
