@@ -47,9 +47,10 @@ describe('UnderConstruction', () => {
     const section = compiled.querySelector<HTMLElement>('section.under-construction');
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
     const icon = compiled.querySelector<HTMLElement>('.under-construction__icon');
-    const button = compiled.querySelector<HTMLButtonElement>('button.under-construction__back-button');
+    const buttonHost = compiled.querySelector<HTMLElement>('sbi-button.under-construction__back-button');
+    const button = buttonHost?.querySelector<HTMLButtonElement>('button') ?? null;
 
-    if (heading === null || icon === null || button === null) {
+    if (heading === null || icon === null || buttonHost === null || button === null) {
       throw new Error('Expected the under-construction content, icon, and back button to render.');
     }
 
@@ -64,6 +65,7 @@ describe('UnderConstruction', () => {
     expect(button.textContent.trim()).toBe('Back to where you were');
     expect(button.type).toBe('button');
     expect(button.classList.contains('sbi-button')).toBe(true);
+    expect(button.classList.contains('sbi-button--secondary')).toBe(false);
     expect(icon.getAttribute('aria-hidden')).toBe('true');
   });
 
@@ -72,7 +74,7 @@ describe('UnderConstruction', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const button = compiled.querySelector<HTMLButtonElement>('button.under-construction__back-button');
+    const button = compiled.querySelector<HTMLButtonElement>('sbi-button.under-construction__back-button button');
 
     if (button === null) {
       throw new Error('Expected the back button to render.');
@@ -91,7 +93,7 @@ describe('UnderConstruction', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const button = compiled.querySelector<HTMLButtonElement>('button.under-construction__back-button');
+    const button = compiled.querySelector<HTMLButtonElement>('sbi-button.under-construction__back-button button');
 
     if (button === null) {
       throw new Error('Expected the back button to render.');
