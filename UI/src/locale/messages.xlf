@@ -139,19 +139,19 @@
         <note priority="1" from="meaning">Application header brand</note>
       </trans-unit>
       <trans-unit id="themeToggleToLightLabel" datatype="html">
-        <source> Switch to light mode </source>
+        <source>Switch to light mode</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shell/theme-control/theme-control.html</context>
-          <context context-type="linenumber">14,19</context>
+          <context context-type="sourcefile">src/app/shell/theme-control/theme-control.ts</context>
+          <context context-type="linenumber">20</context>
         </context-group>
         <note priority="1" from="description">Switches the app from dark mode to light mode</note>
         <note priority="1" from="meaning">Theme toggle button label</note>
       </trans-unit>
       <trans-unit id="themeToggleToDarkLabel" datatype="html">
-        <source> Switch to dark mode </source>
+        <source>Switch to dark mode</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shell/theme-control/theme-control.html</context>
-          <context context-type="linenumber">21,26</context>
+          <context context-type="sourcefile">src/app/shell/theme-control/theme-control.ts</context>
+          <context context-type="linenumber">21</context>
         </context-group>
         <note priority="1" from="description">Switches the app from light mode to dark mode</note>
         <note priority="1" from="meaning">Theme toggle button label</note>

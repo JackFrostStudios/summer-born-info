@@ -53,6 +53,13 @@ module.exports = defineConfig([
   {
     files: ['src/app/**/*.html'],
     extends: [angular.configs.templateAll, angular.configs.templateAccessibility],
-    rules: {},
+    rules: {
+      '@angular-eslint/template/no-call-expression': [
+        'error',
+        {
+          allowPrefix: '$',
+        },
+      ],
+    },
   },
 ]);

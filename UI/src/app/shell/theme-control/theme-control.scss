@@ -8,15 +8,9 @@
 }
 
 .theme-control__toggle {
-  --sbi-button-background: var(--sbi-color-surface);
-  --sbi-button-color: var(--sbi-color-primary);
-  --sbi-button-hover-color: var(--sbi-color-primary);
   --sbi-button-inline-size: 3.5rem;
   --sbi-button-min-block-size: 3.5rem;
   --sbi-button-padding: 0;
-  --sbi-button-line-height: 0;
-  --sbi-button-focus-outline: none;
-  --sbi-button-focus-outline-offset: 0;
 
   display: block;
   line-height: 0;
@@ -29,11 +23,6 @@
   overflow: hidden;
 }
 
-.theme-control__toggle:has(button:focus-visible) .theme-control__viewport {
-  outline: var(--sbi-focus-ring-width) solid var(--sbi-color-primary);
-  outline-offset: var(--sbi-focus-ring-offset);
-}
-
 .theme-control__reel {
   display: grid;
   gap: var(--sbi-space-3);
@@ -41,8 +30,16 @@
   transition: transform 240ms ease;
 }
 
-.theme-control__reel--dark {
+html[data-sbi-colour-mode='dark'] .theme-control__reel,
+:host-context(html[data-sbi-colour-mode='dark']) .theme-control__reel {
   transform: translateY(calc(-1 * (1.5rem + var(--sbi-space-3))));
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-sbi-colour-mode]) .theme-control__reel,
+  :host-context(html:not([data-sbi-colour-mode])) .theme-control__reel {
+    transform: translateY(calc(-1 * (1.5rem + var(--sbi-space-3))));
+  }
 }
 
 .theme-control__icon {
@@ -67,18 +64,6 @@
 .theme-control__icon--moon {
   -webkit-mask-image: url('/icons/moon-stars.svg');
   mask-image: url('/icons/moon-stars.svg');
-}
-
-.theme-control__sr-only {
-  block-size: 1px;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  inline-size: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  white-space: nowrap;
 }
 
 @media (prefers-reduced-motion: reduce) {
