@@ -1,9 +1,9 @@
-import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
+import { HomeHero } from './home-hero/home-hero';
 
 @Component({
   selector: 'sbi-home',
-  imports: [NgOptimizedImage],
+  imports: [HomeHero],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
