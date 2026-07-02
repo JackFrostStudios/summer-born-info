@@ -115,7 +115,7 @@ Given the hero CTA and theme control both use the shared component, when shared 
 
 1. [x] Inspect the existing shared button primitive styles and use them as the migration reference for the new component-owned styling.
 2. [x] Create the new design-system button component files in `UI/src/design-system/`.
-3. Implement the core API:
+3. [x] Implement the core API:
    - typed variant input,
    - projected content,
    - explicit native button type,
