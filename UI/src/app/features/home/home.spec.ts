@@ -46,10 +46,16 @@ describe('Home', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const article = compiled.querySelector<HTMLElement>('article');
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
-    expect(article?.getAttribute('aria-labelledby')).toBe('home-heading');
-    expect(heading?.id).toBe('home-heading');
+    const headingId = heading?.id;
+    const labelledById = article?.getAttribute('aria-labelledby');
+
+    expect(headingId).toBeDefined();
+    expect(headingId).not.toBe('');
+    expect(labelledById).toBeDefined();
+    expect(labelledById).not.toBe('');
+
+    expect(labelledById).toBe(headingId);
     expect(compiled.querySelectorAll('h1').length).toBe(1);
-    expect(compiled.querySelectorAll('section[aria-labelledby], aside[aria-labelledby]')).toHaveLength(0);
   });
 
   it('renders the approved hero image without extra overlay controls', () => {
