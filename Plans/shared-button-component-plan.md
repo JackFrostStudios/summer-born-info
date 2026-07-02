@@ -121,7 +121,7 @@ Given the hero CTA and theme control both use the shared component, when shared 
    - explicit native button type,
    - activation output,
    - any required disabled/ARIA forwarding support.
-4. Move the existing primary and secondary button styling into the shared component and remove duplication with the old primitives.
+4. [x] Move the existing primary and secondary button styling into the shared component and remove duplication with the old primitives.
 5. Add focused unit tests for the shared button component covering variant mapping, projected content, and output emission.
 6. Migrate `home-hero` to the shared button component and update its tests for the new rendered structure.
 7. Migrate `theme-control` to the shared button component and update its styles/tests to keep toggle semantics, animation markup, and accessibility intact while aligning the outer button transitions with the primitive hover behaviour.
