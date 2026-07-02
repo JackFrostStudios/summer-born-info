@@ -106,8 +106,8 @@ describe('ThemeControlService', () => {
   it('starts in system mode without a persisted override', () => {
     const service = TestBed.inject(ThemeControlService);
 
-    expect(service.mode()).toBe('system');
-    expect(service.effectiveMode()).toBe('light');
+    expect(service.$mode()).toBe('system');
+    expect(service.$effectiveMode()).toBe('light');
     expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
     expect(localStorage.getItem(storageKey)).toBeNull();
   });
@@ -117,7 +117,7 @@ describe('ThemeControlService', () => {
 
     service.setMode('light');
 
-    expect(service.mode()).toBe('light');
+    expect(service.$mode()).toBe('light');
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('light');
     expect(localStorage.getItem(storageKey)).toBe('light');
   });
@@ -127,7 +127,7 @@ describe('ThemeControlService', () => {
 
     service.setMode('dark');
 
-    expect(service.mode()).toBe('dark');
+    expect(service.$mode()).toBe('dark');
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('dark');
     expect(localStorage.getItem(storageKey)).toBe('dark');
   });
@@ -137,7 +137,7 @@ describe('ThemeControlService', () => {
 
     const service = TestBed.inject(ThemeControlService);
 
-    expect(service.mode()).toBe('dark');
+    expect(service.$mode()).toBe('dark');
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('dark');
   });
 
@@ -145,13 +145,13 @@ describe('ThemeControlService', () => {
     installMatchMediaStub(true);
     const service = TestBed.inject(ThemeControlService);
 
-    expect(service.mode()).toBe('system');
-    expect(service.effectiveMode()).toBe('dark');
+    expect(service.$mode()).toBe('system');
+    expect(service.$effectiveMode()).toBe('dark');
 
     service.toggleMode();
 
-    expect(service.mode()).toBe('light');
-    expect(service.effectiveMode()).toBe('light');
+    expect(service.$mode()).toBe('light');
+    expect(service.$effectiveMode()).toBe('light');
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('light');
     expect(localStorage.getItem(storageKey)).toBe('light');
   });
@@ -160,12 +160,12 @@ describe('ThemeControlService', () => {
     const matchMediaStub = installMatchMediaStub(false);
     const service = TestBed.inject(ThemeControlService);
 
-    expect(service.effectiveMode()).toBe('light');
+    expect(service.$effectiveMode()).toBe('light');
 
     matchMediaStub.setMatches(true);
 
-    expect(service.mode()).toBe('system');
-    expect(service.effectiveMode()).toBe('dark');
+    expect(service.$mode()).toBe('system');
+    expect(service.$effectiveMode()).toBe('dark');
     expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
   });
 });

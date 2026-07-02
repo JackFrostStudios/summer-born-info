@@ -78,6 +78,7 @@ Use this file when the requested change belongs to the Angular UI in `UI/`.
 
 - Use signals for local component state.
 - Use `computed()` for derived state.
+- Prefix signal-backed and computed fields and variables with `$` so their reactive nature is obvious and Angular template call sites stay lint-allowed.
 - Keep state transformations pure and predictable.
 - Do NOT use `mutate` on signals; use `update` or `set` instead.
 
