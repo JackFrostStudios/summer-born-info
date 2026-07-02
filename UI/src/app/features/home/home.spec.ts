@@ -14,7 +14,8 @@ describe('Home', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.querySelector('header')).not.toBeNull();
+    expect(compiled.querySelector('sbi-home-hero')).not.toBeNull();
+    expect(compiled.querySelector('header.home__hero')).not.toBeNull();
     expect(compiled.querySelector('h1')?.textContent).toContain(
       'Help your summer-born child start school at the right time for them.',
     );
@@ -79,6 +80,21 @@ describe('Home', () => {
     expect(heroImage?.getAttribute('alt')).toBe('Young child playing with wooden blocks in a bright room.');
     expect(compiled.querySelector('.home__hero-art-badge')).toBeNull();
     expect(heroArt?.querySelector('figcaption')).toBeNull();
+  });
+
+  it('keeps the page-level labelling relationship explicit through the composed hero heading', () => {
+    const fixture = TestBed.createComponent(Home);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const article = compiled.querySelector<HTMLElement>('article.home');
+    const hero = compiled.querySelector<HTMLElement>('sbi-home-hero');
+    const heading = hero?.querySelector<HTMLHeadingElement>('h1');
+
+    expect(article?.getAttribute('aria-labelledby')).toBe('home-heading');
+    expect(hero).not.toBeNull();
+    expect(heading?.id).toBe('home-heading');
+    expect(compiled.querySelectorAll('h1')).toHaveLength(1);
   });
 
   it('keeps prototype-only claims out of the rendered copy while allowing the homepage CTA', () => {
