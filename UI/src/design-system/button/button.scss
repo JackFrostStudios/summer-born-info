@@ -1,0 +1,15 @@
+@use './button-styles' as buttonStyles;
+
+.sbi-button {
+  @include buttonStyles.button-base;
+}
+
+.sbi-button--secondary {
+  @include buttonStyles.button-secondary;
+}
+
+@media (forced-colors: active) {
+  .sbi-button {
+    @include buttonStyles.button-forced-colors;
+  }
+}
