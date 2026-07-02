@@ -8,14 +8,6 @@ type MatchMediaStub = MediaQueryList & {
   setMatches(matches: boolean): void;
 };
 
-function requireElement<T extends Element>(element: T | null, message: string): T {
-  if (element === null) {
-    throw new Error(message);
-  }
-
-  return element;
-}
-
 function installLocalStorageStub(): void {
   const storedValues = new Map<string, string>();
   const localStorageStub = {
@@ -144,30 +136,23 @@ describe('ThemeControl', () => {
 
     expect(compiled.querySelector('.theme-control__reset')).toBeNull();
 
-    const screenReaderLabel = requireElement(
-      toggle.querySelector('.theme-control__sr-only'),
-      'Expected the toggle screen-reader label to render.',
-    );
-    const viewport = requireElement(
-      toggle.querySelector('.theme-control__viewport'),
-      'Expected the toggle icon viewport to render.',
-    );
-    const reel = requireElement(
-      toggle.querySelector('.theme-control__reel'),
-      'Expected the toggle icon reel to render.',
-    );
+    const viewport = toggle.querySelector('.theme-control__viewport');
+
+    if (viewport === null) {
+      throw new Error('Expected the toggle icon viewport to render.');
+    }
+
     const icons = toggle.querySelectorAll('.theme-control__icon');
 
     expect(toggle.tagName).toBe('BUTTON');
     expect(toggle.type).toBe('button');
     expect(toggle.classList.contains('sbi-button')).toBe(true);
     expect(toggle.classList.contains('sbi-button--secondary')).toBe(true);
+    expect(toggle.getAttribute('aria-label')).toBe('Switch to dark mode');
     expect(toggle.getAttribute('aria-pressed')).toBe('false');
-    expect(toggle.textContent.trim()).toContain('Switch to dark mode');
+    expect(toggle.textContent.trim()).toBe('');
     expect(toggleHost.classList.contains('theme-control__toggle')).toBe(true);
-    expect(screenReaderLabel.textContent.trim()).toBe('Switch to dark mode');
     expect(viewport.getAttribute('aria-hidden')).toBe('true');
-    expect(reel.classList.contains('theme-control__reel--dark')).toBe(false);
     expect(icons).toHaveLength(2);
   });
 
@@ -184,20 +169,9 @@ describe('ThemeControl', () => {
 
     toggle.click();
     fixture.detectChanges();
-    const screenReaderLabel = requireElement(
-      toggle.querySelector('.theme-control__sr-only'),
-      'Expected the toggle screen-reader label to render after mode change.',
-    );
-    const reel = requireElement(
-      toggle.querySelector('.theme-control__reel'),
-      'Expected the toggle icon reel to render after mode change.',
-    );
 
+    expect(toggle.getAttribute('aria-label')).toBe('Switch to light mode');
     expect(toggle.getAttribute('aria-pressed')).toBe('true');
-    expect(toggleHost.classList.contains('theme-control__toggle--dark')).toBe(true);
-    expect(reel.classList.contains('theme-control__reel--dark')).toBe(true);
-    expect(toggle.textContent.trim()).toContain('Switch to light mode');
-    expect(screenReaderLabel.textContent.trim()).toBe('Switch to light mode');
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('dark');
     expect(localStorage.getItem(storageKey)).toBe('dark');
   });
@@ -214,18 +188,32 @@ describe('ThemeControl', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const toggle = requireToggleButton(requireToggleHost(compiled));
 
+    expect(toggle.getAttribute('aria-label')).toBe('Switch to light mode');
     expect(toggle.getAttribute('aria-pressed')).toBe('true');
 
     toggle.click();
     fixture.detectChanges();
-    const reel = requireElement(
-      toggle.querySelector('.theme-control__reel'),
-      'Expected the toggle icon reel to render after switching from system mode.',
-    );
-
+    expect(toggle.getAttribute('aria-label')).toBe('Switch to dark mode');
     expect(toggle.getAttribute('aria-pressed')).toBe('false');
-    expect(reel.classList.contains('theme-control__reel--dark')).toBe(false);
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('light');
     expect(localStorage.getItem(storageKey)).toBe('light');
+  });
+
+  it('renders the dark toggle state immediately from a persisted override', () => {
+    localStorage.setItem(storageKey, 'dark');
+    document.documentElement.setAttribute(rootAttribute, 'dark');
+
+    TestBed.configureTestingModule({
+      imports: [ThemeControl],
+    });
+
+    const fixture = TestBed.createComponent(ThemeControl);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const toggleHost = requireToggleHost(compiled);
+    const toggle = requireToggleButton(toggleHost);
+
+    expect(toggle.getAttribute('aria-label')).toBe('Switch to light mode');
+    expect(toggle.getAttribute('aria-pressed')).toBe('true');
   });
 });
