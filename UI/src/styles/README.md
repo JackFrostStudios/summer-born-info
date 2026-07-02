@@ -131,6 +131,6 @@ is likely to be reused by more than one feature.
 | `.sbi-surface--muted` | Lower-energy surface variation. | Use when a panel should be visually grouped but not compete with the main focal content. |
 | `.sbi-surface--accent` | Secondary-accent surface variation. | Use for highlighted supporting content that should attract attention without becoming the primary call to action. |
 | `.sbi-surface--primary` | Primary-accent surface variation. | Use for the most important callouts, actions, or key information blocks that should immediately catch the user's eye. |
-| `.sbi-button` | Primary button/link treatment. | Use for the main action in a section or page. |
-| `.sbi-button--secondary` | Secondary button variation. | Use for lower-priority actions that should stay available without visually outranking the primary action. |
 | `.sbi-readable` | Readability width constraint. | Use on text-heavy blocks so line lengths stay comfortable. |
+
+Shared button visuals are now owned by the Angular `sbi-button` component in `UI/src/design-system/button/` rather than by global primitive classes. Prefer that component for reusable application buttons instead of adding new global button selectors here.

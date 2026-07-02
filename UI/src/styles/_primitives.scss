@@ -1,5 +1,3 @@
-@use '../design-system/button/button-styles' as buttonStyles;
-
 /* Shared layout primitives keep feature styles aligned to the same page structure. */
 .sbi-container {
   inline-size: min(calc(100% - (var(--sbi-page-margin) * 2)), var(--sbi-size-container-max));
@@ -61,23 +59,14 @@
   color: var(--sbi-color-on-primary-container);
 }
 
-/* Temporary compatibility bridge: shared button visuals now live with the design-system component. */
-.sbi-button {
-  @include buttonStyles.button-base;
-}
-
-.sbi-button--secondary {
-  @include buttonStyles.button-secondary;
-}
-
 /* Readable keeps text-heavy content at a comfortable line length. */
 .sbi-readable {
   max-inline-size: var(--sbi-size-readable);
 }
 
 @media (forced-colors: active) {
-  .sbi-surface,
-  .sbi-button {
-    @include buttonStyles.button-forced-colors;
+  .sbi-surface {
+    outline: var(--sbi-border-width) solid CanvasText;
+    box-shadow: none;
   }
 }

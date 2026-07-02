@@ -23,15 +23,14 @@
       >
         This part of the site isn't ready yet, but the rest of our guidance on delayed starts is.
       </p>
-      <button
-        type="button"
-        class="sbi-button under-construction__back-button"
+      <sbi-button
+        class="under-construction__back-button"
         i18n="
           Under-construction back button|Navigates the visitor back to the previous page@@underConstructionBackButton"
-        (click)="goBack()"
+        (pressed)="goBack()"
       >
         Back to where you were
-      </button>
+      </sbi-button>
     </div>
   </div>
 </section>
