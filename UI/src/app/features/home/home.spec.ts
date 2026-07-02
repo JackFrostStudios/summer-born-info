@@ -44,7 +44,7 @@ describe('Home', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const article = compiled.querySelector<HTMLElement>('article.home');
+    const article = compiled.querySelector<HTMLElement>('article');
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
     expect(article?.getAttribute('aria-labelledby')).toBe('home-heading');
     expect(heading?.id).toBe('home-heading');
@@ -72,7 +72,7 @@ describe('Home', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const article = compiled.querySelector<HTMLElement>('article.home');
+    const article = compiled.querySelector<HTMLElement>('article');
     const hero = compiled.querySelector<HTMLElement>('sbi-home-hero');
     const heading = hero?.querySelector<HTMLHeadingElement>('h1');
 
