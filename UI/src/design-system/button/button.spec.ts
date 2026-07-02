@@ -107,4 +107,31 @@ describe('Button', () => {
     expect(host.lastPressedEvent).toBeInstanceOf(MouseEvent);
     expect(host.lastPressedEvent?.type).toBe('click');
   });
+
+  it('does not emit pressed when the native button is disabled', () => {
+    const fixture = TestBed.createComponent(TestHostComponent);
+    fixture.componentInstance.disabled = true;
+    fixture.detectChanges();
+
+    const host = fixture.componentInstance;
+    const compiled = fixture.nativeElement as HTMLElement;
+    const button = requireButton(compiled);
+
+    button.click();
+    fixture.detectChanges();
+
+    expect(host.lastPressedEvent).toBeNull();
+  });
+
+  it('keeps the native button shell focusable for keyboard users', () => {
+    const fixture = TestBed.createComponent(TestHostComponent);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const button = requireButton(compiled);
+
+    button.focus();
+
+    expect(document.activeElement).toBe(button);
+  });
 });
