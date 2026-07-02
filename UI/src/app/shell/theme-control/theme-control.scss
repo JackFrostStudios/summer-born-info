@@ -8,31 +8,18 @@
 }
 
 .theme-control__toggle {
-  background: var(--sbi-color-surface);
-  border: var(--sbi-border-strong);
-  border-radius: var(--sbi-radius-lg);
-  box-shadow: var(--sbi-shadow-hard);
-  color: var(--sbi-color-primary);
-  display: grid;
-  place-items: center;
-  inline-size: 3.5rem;
+  --sbi-button-background: var(--sbi-color-surface);
+  --sbi-button-color: var(--sbi-color-primary);
+  --sbi-button-hover-color: var(--sbi-color-primary);
+  --sbi-button-inline-size: 3.5rem;
+  --sbi-button-min-block-size: 3.5rem;
+  --sbi-button-padding: 0;
+  --sbi-button-line-height: 0;
+  --sbi-button-focus-outline: none;
+  --sbi-button-focus-outline-offset: 0;
+
+  display: block;
   line-height: 0;
-  min-block-size: 3.5rem;
-  padding: 0;
-  position: relative;
-  transition:
-    background-color 180ms ease,
-    box-shadow 180ms ease,
-    transform 180ms ease;
-}
-
-.theme-control__toggle:hover {
-  background: var(--sbi-color-surface-low);
-}
-
-.theme-control__toggle:active {
-  box-shadow: none;
-  transform: translate(var(--sbi-shadow-offset), var(--sbi-shadow-offset));
 }
 
 .theme-control__viewport {
@@ -42,11 +29,7 @@
   overflow: hidden;
 }
 
-.theme-control__toggle:focus-visible {
-  outline: none;
-}
-
-.theme-control__toggle:focus-visible .theme-control__viewport {
+.theme-control__toggle:focus-within .theme-control__viewport {
   outline: var(--sbi-focus-ring-width) solid var(--sbi-color-primary);
   outline-offset: var(--sbi-focus-ring-offset);
 }
@@ -101,6 +84,7 @@
 @media (prefers-reduced-motion: reduce) {
   .theme-control__toggle,
   .theme-control__reel {
+    --sbi-button-transition-duration: 0ms;
     transition: none;
   }
 }

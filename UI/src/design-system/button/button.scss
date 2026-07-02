@@ -2,6 +2,11 @@
 
 .sbi-button {
   @include buttonStyles.button-base;
+
+  &:focus-visible {
+    outline: var(--sbi-button-focus-outline, var(--sbi-focus-ring-width) solid var(--sbi-color-primary));
+    outline-offset: var(--sbi-button-focus-outline-offset, var(--sbi-focus-ring-offset));
+  }
 }
 
 .sbi-button--secondary {
