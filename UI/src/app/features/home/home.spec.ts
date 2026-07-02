@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { Home } from './home';
 
 function requireSharedButton(host: ParentNode): HTMLButtonElement {
@@ -12,9 +13,16 @@ function requireSharedButton(host: ParentNode): HTMLButtonElement {
 }
 
 describe('Home', () => {
+  const router = {
+    navigateByUrl: vi.fn().mockResolvedValue(true),
+  };
+
   beforeEach(async () => {
+    router.navigateByUrl.mockClear();
+
     await TestBed.configureTestingModule({
       imports: [Home],
+      providers: [{ provide: Router, useValue: router }],
     }).compileComponents();
   });
 
@@ -152,5 +160,16 @@ describe('Home', () => {
     expect(button.type).toBe('button');
     expect(button.classList.contains('sbi-button')).toBe(true);
     expect(button.classList.contains('sbi-button--secondary')).toBe(false);
+  });
+
+  it('routes the homepage call to action to the under-construction page', () => {
+    const fixture = TestBed.createComponent(Home);
+    fixture.detectChanges();
+
+    const button = requireSharedButton(fixture.nativeElement as HTMLElement);
+
+    button.click();
+
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/under-construction');
   });
 });
