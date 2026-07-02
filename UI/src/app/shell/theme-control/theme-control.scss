@@ -29,7 +29,7 @@
   overflow: hidden;
 }
 
-.theme-control__toggle:focus-within .theme-control__viewport {
+.theme-control__toggle:has(button:focus-visible) .theme-control__viewport {
   outline: var(--sbi-focus-ring-width) solid var(--sbi-color-primary);
   outline-offset: var(--sbi-focus-ring-offset);
 }
