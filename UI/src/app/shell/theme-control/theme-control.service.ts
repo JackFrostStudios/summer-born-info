@@ -18,19 +18,19 @@ export class ThemeControlService {
   private readonly document = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
-  private readonly selectedMode = signal<ColourMode>(this.readStoredMode());
-  private readonly systemMode = signal<ExplicitColourMode>(this.readSystemMode());
+  private readonly $selectedMode = signal<ColourMode>(this.readStoredMode());
+  private readonly $systemMode = signal<ExplicitColourMode>(this.readSystemMode());
 
-  readonly mode = this.selectedMode.asReadonly();
-  readonly effectiveMode = computed(() => this.currentExplicitMode());
+  readonly $mode = this.$selectedMode.asReadonly();
+  readonly $effectiveMode = computed(() => this.currentExplicitMode());
 
   constructor() {
     this.syncSystemModePreference();
-    this.applyMode(this.selectedMode());
+    this.applyMode(this.$selectedMode());
   }
 
   setMode(mode: ColourMode): void {
-    this.selectedMode.set(mode);
+    this.$selectedMode.set(mode);
     this.persistMode(mode);
     this.applyMode(mode);
   }
@@ -44,10 +44,10 @@ export class ThemeControlService {
   }
 
   currentExplicitMode(): ExplicitColourMode {
-    const selectedMode = this.selectedMode();
+    const selectedMode = this.$selectedMode();
 
     if (selectedMode === 'system') {
-      return this.systemMode();
+      return this.$systemMode();
     }
 
     return selectedMode;
@@ -136,7 +136,7 @@ export class ThemeControlService {
 
     const mediaQuery = globalThis.matchMedia('(prefers-color-scheme: dark)');
     const updateSystemMode = (event?: MediaQueryListEvent): void => {
-      this.systemMode.set((event?.matches ?? mediaQuery.matches) ? 'dark' : 'light');
+      this.$systemMode.set((event?.matches ?? mediaQuery.matches) ? 'dark' : 'light');
     };
 
     updateSystemMode();

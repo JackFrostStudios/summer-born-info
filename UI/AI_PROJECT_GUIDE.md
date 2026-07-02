@@ -49,6 +49,13 @@ The UI is currently an Angular application with server-side rendering support, a
 - When adding a reusable abstraction, make sure at least two consumers justify it.
 - Keep shared component APIs and their canonical styling together in `UI/src/design-system/` instead of splitting ownership between feature templates and global primitives.
 
+### Signal Naming
+
+- Prefix signal-backed and computed fields and variables with `$`.
+- Apply the same `$` prefix to readonly signal views such as `.asReadonly()` results.
+- Do not apply the `$` prefix to component inputs declared with `input()`.
+- Treat the `$` prefix as the standard way to signal signal-backed values that are meant to be invoked from Angular templates.
+
 ### Localization Ownership
 
 - Mark visible user-facing template strings where they are rendered by using Angular template `i18n` metadata instead of moving string ownership into shared constants prematurely.
