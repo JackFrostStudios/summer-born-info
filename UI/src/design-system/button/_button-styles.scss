@@ -1,36 +1,38 @@
 @mixin button-base {
   align-items: center;
-  background: var(--sbi-color-primary-container);
-  border: var(--sbi-border-strong);
-  border-radius: var(--sbi-radius-lg);
-  box-shadow: var(--sbi-shadow-hard);
-  color: var(--sbi-color-on-primary-container);
+  background: var(--sbi-button-background, var(--sbi-color-primary-container));
+  border: var(--sbi-button-border, var(--sbi-border-strong));
+  border-radius: var(--sbi-button-radius, var(--sbi-radius-lg));
+  box-shadow: var(--sbi-button-shadow, var(--sbi-shadow-hard));
+  color: var(--sbi-button-color, var(--sbi-color-on-primary-container));
   display: inline-flex;
   font-weight: var(--sbi-font-weight-bold);
-  gap: var(--sbi-space-2);
+  gap: var(--sbi-button-gap, var(--sbi-space-2));
+  inline-size: var(--sbi-button-inline-size, auto);
   justify-content: center;
-  line-height: 1;
-  min-block-size: 2.75rem;
-  padding: 0.75rem 1.25rem;
+  line-height: var(--sbi-button-line-height, 1);
+  min-block-size: var(--sbi-button-min-block-size, 2.75rem);
+  padding: var(--sbi-button-padding, 0.75rem 1.25rem);
+  position: relative;
   text-decoration: none;
   transition:
-    box-shadow 160ms ease,
-    transform 160ms ease;
+    box-shadow var(--sbi-button-transition-duration, 160ms) ease,
+    transform var(--sbi-button-transition-duration, 160ms) ease;
 
   &:hover {
     box-shadow: none;
-    color: var(--sbi-color-on-primary-container);
-    transform: translate(var(--sbi-shadow-offset), var(--sbi-shadow-offset));
+    color: var(--sbi-button-hover-color, var(--sbi-button-color, var(--sbi-color-on-primary-container)));
+    transform: translate(
+      var(--sbi-button-hover-translate-x, var(--sbi-shadow-offset)),
+      var(--sbi-button-hover-translate-y, var(--sbi-shadow-offset))
+    );
   }
 }
 
 @mixin button-secondary {
-  background: var(--sbi-color-surface-lowest);
-  color: var(--sbi-color-text);
-
-  &:hover {
-    color: var(--sbi-color-text);
-  }
+  --sbi-button-background: var(--sbi-color-surface-lowest);
+  --sbi-button-color: var(--sbi-color-text);
+  --sbi-button-hover-color: var(--sbi-color-text);
 }
 
 @mixin button-forced-colors {

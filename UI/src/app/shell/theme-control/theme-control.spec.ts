@@ -100,6 +100,26 @@ function installMatchMediaStub(initialMatches = false): MatchMediaStub {
   return mediaQuery;
 }
 
+function requireToggleHost(compiled: HTMLElement): HTMLElement {
+  const toggleHost = compiled.querySelector<HTMLElement>('sbi-button.theme-control__toggle');
+
+  if (toggleHost === null) {
+    throw new Error('Expected the theme toggle shared button host to render.');
+  }
+
+  return toggleHost;
+}
+
+function requireToggleButton(toggleHost: ParentNode): HTMLButtonElement {
+  const toggle = toggleHost.querySelector('button');
+
+  if (!(toggle instanceof HTMLButtonElement)) {
+    throw new Error('Expected the theme toggle to render a native button inside the shared button host.');
+  }
+
+  return toggle;
+}
+
 describe('ThemeControl', () => {
   beforeEach(() => {
     installLocalStorageStub();
@@ -119,15 +139,10 @@ describe('ThemeControl', () => {
     const fixture = TestBed.createComponent(ThemeControl);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
+    const toggleHost = requireToggleHost(compiled);
+    const toggle = requireToggleButton(toggleHost);
 
-    const toggle = compiled.querySelector<HTMLButtonElement>('.theme-control__toggle');
-
-    expect(toggle).not.toBeNull();
     expect(compiled.querySelector('.theme-control__reset')).toBeNull();
-
-    if (toggle === null) {
-      throw new Error('Expected the theme toggle to render.');
-    }
 
     const screenReaderLabel = requireElement(
       toggle.querySelector('.theme-control__sr-only'),
@@ -145,8 +160,11 @@ describe('ThemeControl', () => {
 
     expect(toggle.tagName).toBe('BUTTON');
     expect(toggle.type).toBe('button');
+    expect(toggle.classList.contains('sbi-button')).toBe(true);
+    expect(toggle.classList.contains('sbi-button--secondary')).toBe(true);
     expect(toggle.getAttribute('aria-pressed')).toBe('false');
     expect(toggle.textContent.trim()).toContain('Switch to dark mode');
+    expect(toggleHost.classList.contains('theme-control__toggle')).toBe(true);
     expect(screenReaderLabel.textContent.trim()).toBe('Switch to dark mode');
     expect(viewport.getAttribute('aria-hidden')).toBe('true');
     expect(reel.classList.contains('theme-control__reel--dark')).toBe(false);
@@ -161,11 +179,8 @@ describe('ThemeControl', () => {
     const fixture = TestBed.createComponent(ThemeControl);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    const toggle = compiled.querySelector<HTMLButtonElement>('.theme-control__toggle');
-
-    if (toggle === null) {
-      throw new Error('Expected the theme toggle to render.');
-    }
+    const toggleHost = requireToggleHost(compiled);
+    const toggle = requireToggleButton(toggleHost);
 
     toggle.click();
     fixture.detectChanges();
@@ -179,7 +194,7 @@ describe('ThemeControl', () => {
     );
 
     expect(toggle.getAttribute('aria-pressed')).toBe('true');
-    expect(toggle.classList.contains('theme-control__toggle--dark')).toBe(true);
+    expect(toggleHost.classList.contains('theme-control__toggle--dark')).toBe(true);
     expect(reel.classList.contains('theme-control__reel--dark')).toBe(true);
     expect(toggle.textContent.trim()).toContain('Switch to light mode');
     expect(screenReaderLabel.textContent.trim()).toBe('Switch to light mode');
@@ -197,11 +212,7 @@ describe('ThemeControl', () => {
     const fixture = TestBed.createComponent(ThemeControl);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    const toggle = compiled.querySelector<HTMLButtonElement>('.theme-control__toggle');
-
-    if (toggle === null) {
-      throw new Error('Expected the theme toggle to render.');
-    }
+    const toggle = requireToggleButton(requireToggleHost(compiled));
 
     expect(toggle.getAttribute('aria-pressed')).toBe('true');
 

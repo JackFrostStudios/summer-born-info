@@ -1,10 +1,10 @@
 <div class="theme-control">
-  <button
+  <sbi-button
     class="theme-control__toggle"
-    type="button"
-    [attr.aria-pressed]="ariaPressed"
+    [buttonType]="buttonType"
+    [ariaPressed]="ariaPressed"
     [class.theme-control__toggle--dark]="darkModeActive"
-    (click)="toggleColourMode()"
+    (pressed)="toggleColourMode()"
   >
     @if (darkModeActive) {
       <span
@@ -28,5 +28,5 @@
         <span class="theme-control__icon theme-control__icon--moon"></span>
       </span>
     </span>
-  </button>
+  </sbi-button>
 </div>
