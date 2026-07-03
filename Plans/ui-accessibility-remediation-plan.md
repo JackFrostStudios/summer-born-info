@@ -198,3 +198,8 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 - [ ] `npm run extract:i18n` has been run in `UI/` if template text or i18n metadata changed.
 - [ ] `npm run validate:i18n` has been run in `UI/` if localization output changed.
 - [ ] The new accessibility smoke test command has been run successfully in `UI/`.
+
+## 12. Implementation Progress
+
+- [x] Step 1 completed in commit `3096001`: defined the shared route accessibility contract, wired readable route titles and metadata into `UI/src/app/app.routes.ts`, added route contract coverage, and documented the ownership pattern in `UI/AI_PROJECT_GUIDE.md`.
+- [x] Step 2 completed in progress: enabled Angular `withInMemoryScrolling` in `UI/src/app/app.config.ts`, added route accessibility metadata lookup helpers for router-state consumption, and covered router title plus scrolling configuration in `UI/src/app/app.config.spec.ts`.
