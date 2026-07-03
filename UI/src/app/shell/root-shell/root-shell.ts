@@ -2,13 +2,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
-import { getRouteAccessibilityMetadata } from '../../app-route-accessibility';
+import { getRouteAccessibilityMetadata, type RouteSkipLink } from '../../app-route-accessibility';
 import { PublicFooter } from '../public-footer/public-footer';
 import { PublicHeader } from '../public-header/public-header';
+import { SkipLinks } from '../skip-links/skip-links';
 
 @Component({
   selector: 'sbi-root-shell',
-  imports: [RouterOutlet, PublicHeader, PublicFooter],
+  imports: [RouterOutlet, PublicHeader, PublicFooter, SkipLinks],
   templateUrl: './root-shell.html',
   styleUrl: './root-shell.scss',
   host: {
@@ -21,6 +22,7 @@ export class RootShell {
 
   protected readonly shellId = 'root-shell';
   protected readonly $navigationAnnouncement = signal('');
+  protected readonly $skipLinks = signal<readonly RouteSkipLink[]>([]);
 
   constructor() {
     this.router.events
@@ -48,6 +50,7 @@ export class RootShell {
 
     if (metadata === undefined) {
       this.$navigationAnnouncement.set('');
+      this.$skipLinks.set([]);
       return;
     }
 
@@ -56,6 +59,7 @@ export class RootShell {
     }
 
     this.$navigationAnnouncement.set(metadata.title);
+    this.$skipLinks.set(metadata.skipLinks);
 
     const focusTarget = this.resolveFocusTarget(metadata.focusTargetId);
 

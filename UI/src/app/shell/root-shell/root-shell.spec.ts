@@ -39,22 +39,32 @@ describe('RootShell', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     const shell = compiled.querySelector('.app-shell');
+    const skipLinks = compiled.querySelector('sbi-skip-links');
     const header = compiled.querySelector('sbi-public-header');
     const main = compiled.querySelector('main.app-shell__main');
     const footer = compiled.querySelector('sbi-public-footer');
     const routedContent = compiled.querySelector<HTMLElement>('.test-route-content');
 
     expect(shell).not.toBeNull();
+    expect(skipLinks).not.toBeNull();
     expect(header).not.toBeNull();
     expect(main).not.toBeNull();
     expect(footer).not.toBeNull();
     expect(routedContent).not.toBeNull();
 
-    if (shell === null || header === null || main === null || footer === null || routedContent === null) {
-      throw new Error('Expected the shell, header, main region, footer, and routed content to render.');
+    if (
+      shell === null ||
+      skipLinks === null ||
+      header === null ||
+      main === null ||
+      footer === null ||
+      routedContent === null
+    ) {
+      throw new Error('Expected the shell, skip links, header, main region, footer, and routed content to render.');
     }
 
-    expect(shell.firstElementChild?.classList.contains('app-shell__route-announcement')).toBe(true);
+    expect(shell.firstElementChild).toBe(skipLinks);
+    expect(skipLinks.nextElementSibling?.classList.contains('app-shell__route-announcement')).toBe(true);
     expect(header.nextElementSibling).toBe(main);
     expect(shell.lastElementChild).toBe(footer);
     expect(main.contains(routedContent)).toBe(true);
@@ -75,17 +85,25 @@ describe('RootShell', () => {
       },
     ]);
 
+    applyRouteAccessibility(fixture);
+    fixture.detectChanges();
+
     const compiled = fixture.nativeElement as HTMLElement;
     const heading = compiled.querySelector<HTMLElement>('#test-heading');
     const announcement = compiled.querySelector<HTMLElement>('.app-shell__route-announcement');
+    const skipLink = compiled.querySelector<HTMLAnchorElement>('sbi-skip-links a.skip-links__link');
 
     expect(document.title).toBe('Summer-born Info - Test route');
     expect(heading).not.toBeNull();
     expect(announcement).not.toBeNull();
+    expect(skipLink).not.toBeNull();
 
-    if (heading === null || announcement === null) {
-      throw new Error('Expected the default route heading and route announcement to render.');
+    if (heading === null || announcement === null || skipLink === null) {
+      throw new Error('Expected the default route heading, route announcement, and skip link to render.');
     }
+
+    expect(skipLink.textContent.trim()).toBe('Skip to main content');
+    expect(skipLink.getAttribute('href')).toBe('/#test-heading');
 
     const focusSpy = vi.spyOn(heading, 'focus');
 
