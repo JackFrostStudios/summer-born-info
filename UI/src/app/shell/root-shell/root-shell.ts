@@ -1,5 +1,5 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { afterNextRender, Component, DestroyRef, inject, Injector, runInInjectionContext, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { getRouteAccessibilityMetadata, type RouteSkipLink } from '../../app-route-accessibility';
@@ -17,6 +17,7 @@ import { SkipLinks } from '../skip-links/skip-links';
   },
 })
 export class RootShell {
+  private injector = inject(Injector);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -31,14 +32,13 @@ export class RootShell {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
-        this.scheduleRouteAccessibilityUpdate();
+        runInInjectionContext(this.injector, () => {
+          // Refresh accessibility after the initial render to ensure that elements are available to gain focus and page is ready before being anounced.
+          afterNextRender(() => {
+            this.applyRouteAccessibility();
+          });
+        });
       });
-
-    this.scheduleRouteAccessibilityUpdate();
-  }
-
-  protected handleRouteActivation(): void {
-    this.scheduleRouteAccessibilityUpdate();
   }
 
   private applyRouteAccessibility(): void {
@@ -46,6 +46,11 @@ export class RootShell {
       return;
     }
 
+    this.refreshAccessibilityMetadata();
+    this.setFocusToPageTarget();
+  }
+
+  private refreshAccessibilityMetadata() {
     const metadata = getRouteAccessibilityMetadata(this.router.routerState.snapshot);
 
     if (metadata === undefined) {
@@ -60,39 +65,36 @@ export class RootShell {
 
     this.$navigationAnnouncement.set(metadata.title);
     this.$skipLinks.set(metadata.skipLinks);
+  }
 
-    const focusTarget = this.resolveFocusTarget(metadata.focusTargetId);
+  private setFocusToPageTarget() {
+    const fragmentTarget = this.resolveFragmentFocusTarget();
 
-    if (focusTarget === null) {
+    if (fragmentTarget !== null) {
+      this.focusFragmentTarget(fragmentTarget);
       return;
     }
 
-    if (focusTarget.tabIndex < 0) {
-      focusTarget.setAttribute('tabindex', '-1');
-    }
-
-    focusTarget.focus();
+    this.focusBodyForSkipLinkEntry();
   }
 
-  private resolveFocusTarget(defaultTargetId: string): HTMLElement | null {
+  private focusBodyForSkipLinkEntry(): void {
+    document.body.focus();
+  }
+
+  private resolveFragmentFocusTarget(): HTMLElement | null {
     const fragment = this.router.parseUrl(this.router.url).fragment;
 
-    if (fragment !== null) {
-      const fragmentTarget = document.getElementById(fragment);
-
-      if (fragmentTarget instanceof HTMLElement) {
-        return fragmentTarget;
-      }
+    if (fragment === null) {
+      return null;
     }
 
-    const defaultTarget = document.getElementById(defaultTargetId);
+    const fragmentTarget = document.getElementById(fragment);
 
-    return defaultTarget instanceof HTMLElement ? defaultTarget : null;
+    return fragmentTarget instanceof HTMLElement ? fragmentTarget : null;
   }
 
-  private scheduleRouteAccessibilityUpdate(): void {
-    setTimeout(() => {
-      this.applyRouteAccessibility();
-    });
+  private focusFragmentTarget(target: HTMLElement): void {
+    target.focus();
   }
 }

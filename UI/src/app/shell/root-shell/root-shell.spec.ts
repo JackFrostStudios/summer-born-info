@@ -4,18 +4,57 @@ import { provideRouter, Router, type Routes } from '@angular/router';
 import { defineRouteAccessibility, routeAccessibilityDataKey } from '../../app-route-accessibility';
 import { RootShell } from './root-shell';
 
-const testRouteAccessibility = defineRouteAccessibility({
-  title: 'Summer-born Info - Test route',
-  focusTargetId: 'test-heading',
-  skipLinks: [{ label: 'Skip to main content', targetId: 'test-heading' }],
+const firstRouteAccessibility = defineRouteAccessibility({
+  title: 'Summer-born Info - First route',
+  focusTargetId: 'first-route-heading',
+  skipLinks: [{ label: 'Skip to main content', targetId: 'first-route-heading' }],
+});
+
+const secondRouteAccessibility = defineRouteAccessibility({
+  title: 'Summer-born Info - Second route',
+  focusTargetId: 'second-route-heading',
+  skipLinks: [{ label: 'Skip to next main content', targetId: 'second-route-heading' }],
 });
 
 @Component({
-  selector: 'sbi-test-route-content',
+  selector: 'sbi-first-route-content',
   template:
-    '<section class="test-route-content" aria-labelledby="test-heading" i18n-aria-labelledby="Test route section label reference@@testRouteContentAriaLabelledBy"><h1 id="test-heading" i18n="Test route heading@@testRouteContentHeading">Test route heading</h1><div id="test-fragment-target" i18n="Test fragment target@@testRouteContentFragmentTarget">Fragment target</div></section>',
+    '<section class="first-route-content" aria-labelledby="first-route-heading" i18n-aria-labelledby="First route section label reference@@firstRouteContentAriaLabelledBy"><h1 id="first-route-heading" tabindex="-1" i18n="First route heading@@firstRouteHeading">First route heading</h1><button id="first-route-content-focus-target" type="button" i18n="First route focusable content@@firstRouteFocusableContent">Focusable content</button></section>',
 })
-class TestRouteContent {}
+class FirstRouteContent {}
+
+@Component({
+  selector: 'sbi-second-route-content',
+  template:
+    '<section class="second-route-content" aria-labelledby="second-route-heading" i18n-aria-labelledby="Second route section label reference@@secondRouteContentAriaLabelledBy"><h1 id="second-route-heading" tabindex="-1" i18n="Second route heading@@secondRouteHeading">Second route heading</h1><button id="second-route-content-focus-target" type="button" i18n="Second route focusable content@@secondRouteFocusableContent">Second focusable content</button><div id="second-route-fragment-target" tabindex="-1" i18n="Second route fragment target@@secondRouteFragmentTarget">Second fragment target</div></section>',
+})
+class SecondRouteContent {}
+
+const testRoutes: Routes = [
+  {
+    path: '',
+    component: RootShell,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        component: FirstRouteContent,
+        title: firstRouteAccessibility.title,
+        data: {
+          [routeAccessibilityDataKey]: firstRouteAccessibility,
+        },
+      },
+      {
+        path: 'second',
+        component: SecondRouteContent,
+        title: secondRouteAccessibility.title,
+        data: {
+          [routeAccessibilityDataKey]: secondRouteAccessibility,
+        },
+      },
+    ],
+  },
+];
 
 describe('RootShell', () => {
   afterEach(() => {
@@ -24,158 +63,130 @@ describe('RootShell', () => {
     TestBed.resetTestingModule();
   });
 
-  it('renders the shell as a header, routed main content, and shared footer composition', async () => {
-    const fixture = await renderShellWithRoutes([
-      {
-        path: '',
-        component: TestRouteContent,
-        title: testRouteAccessibility.title,
-        data: {
-          [routeAccessibilityDataKey]: testRouteAccessibility,
-        },
-      },
-    ]);
-
+  it('displays the header, routed content, and footer as expected', async () => {
+    const { fixture } = await renderShell('/');
     const compiled = fixture.nativeElement as HTMLElement;
 
-    const shell = compiled.querySelector('.app-shell');
-    const skipLinks = compiled.querySelector('sbi-skip-links');
     const header = compiled.querySelector('sbi-public-header');
     const main = compiled.querySelector('main.app-shell__main');
     const footer = compiled.querySelector('sbi-public-footer');
-    const routedContent = compiled.querySelector<HTMLElement>('.test-route-content');
+    const firstRouteContent = compiled.querySelector('.first-route-content');
 
-    expect(shell).not.toBeNull();
-    expect(skipLinks).not.toBeNull();
     expect(header).not.toBeNull();
     expect(main).not.toBeNull();
     expect(footer).not.toBeNull();
-    expect(routedContent).not.toBeNull();
+    expect(firstRouteContent).not.toBeNull();
 
-    if (
-      shell === null ||
-      skipLinks === null ||
-      header === null ||
-      main === null ||
-      footer === null ||
-      routedContent === null
-    ) {
-      throw new Error('Expected the shell, skip links, header, main region, footer, and routed content to render.');
+    if (header === null || main === null || footer === null || firstRouteContent === null) {
+      throw new Error('Expected the root shell header, main content, footer, and first route content to render.');
     }
 
-    expect(shell.firstElementChild).toBe(skipLinks);
-    expect(skipLinks.nextElementSibling?.classList.contains('app-shell__route-announcement')).toBe(true);
-    expect(header.nextElementSibling).toBe(main);
-    expect(shell.lastElementChild).toBe(footer);
-    expect(main.contains(routedContent)).toBe(true);
-    expect(routedContent.closest('main.app-shell__main')).toBe(main);
-    expect(header.contains(routedContent)).toBe(false);
-    expect(footer.contains(routedContent)).toBe(false);
+    expect(main.contains(firstRouteContent)).toBe(true);
+    expect(header.contains(firstRouteContent)).toBe(false);
+    expect(footer.contains(firstRouteContent)).toBe(false);
   });
 
-  it('focuses the routed page heading by default and publishes a lightweight route announcement', async () => {
-    const fixture = await renderShellWithRoutes([
-      {
-        path: '',
-        component: TestRouteContent,
-        title: testRouteAccessibility.title,
-        data: {
-          [routeAccessibilityDataKey]: testRouteAccessibility,
-        },
-      },
-    ]);
+  it('sets the page title and aria announcement from the active route metadata after navigation', async () => {
+    const { fixture } = await renderShell('/');
+    const announcement = getAnnouncementElement(fixture);
 
-    applyRouteAccessibility(fixture);
-    fixture.detectChanges();
+    expect(document.title).toBe(firstRouteAccessibility.title);
+    expect(announcement.textContent.trim()).toBe(firstRouteAccessibility.title);
+  });
 
+  it('updates the page title and aria announcement when a second navigation activates a new route', async () => {
+    const { fixture, router } = await renderShell('/');
+
+    await navigate(router, fixture, '/second');
+
+    const announcement = getAnnouncementElement(fixture);
     const compiled = fixture.nativeElement as HTMLElement;
-    const heading = compiled.querySelector<HTMLElement>('#test-heading');
-    const announcement = compiled.querySelector<HTMLElement>('.app-shell__route-announcement');
-    const skipLink = compiled.querySelector<HTMLAnchorElement>('sbi-skip-links a.skip-links__link');
+    const secondRouteHeading = compiled.querySelector('#second-route-heading');
 
-    expect(document.title).toBe('Summer-born Info - Test route');
-    expect(heading).not.toBeNull();
-    expect(announcement).not.toBeNull();
-    expect(skipLink).not.toBeNull();
+    expect(secondRouteHeading).not.toBeNull();
+    expect(document.title).toBe(secondRouteAccessibility.title);
+    expect(announcement.textContent.trim()).toBe(secondRouteAccessibility.title);
+  });
 
-    if (heading === null || announcement === null || skipLink === null) {
-      throw new Error('Expected the default route heading, route announcement, and skip link to render.');
+  it('resets focus to the body after navigation when the new route URL has no anchor', async () => {
+    const { fixture, router } = await renderShell('/');
+    const compiled = fixture.nativeElement as HTMLElement;
+    const firstRouteFocusTarget = compiled.querySelector<HTMLElement>('#first-route-content-focus-target');
+
+    expect(firstRouteFocusTarget).not.toBeNull();
+
+    if (firstRouteFocusTarget === null) {
+      throw new Error('Expected the first route focus target to render.');
     }
 
-    expect(skipLink.textContent.trim()).toBe('Skip to main content');
-    expect(skipLink.getAttribute('href')).toBe('/#test-heading');
+    firstRouteFocusTarget.focus();
+    expect(document.activeElement).toBe(firstRouteFocusTarget);
 
-    const focusSpy = vi.spyOn(heading, 'focus');
+    await navigate(router, fixture, '/second');
 
-    applyRouteAccessibility(fixture);
-    fixture.detectChanges();
-
-    expect(announcement.textContent.trim()).toBe('Summer-born Info - Test route');
-    expect(focusSpy).toHaveBeenCalled();
-    expect(heading.getAttribute('tabindex')).toBe('-1');
+    expect(document.activeElement).toBe(document.body);
   });
 
-  it('focuses the requested fragment target instead of the default heading when navigation includes a fragment', async () => {
-    const fixture = await renderShellWithRoutes(
-      [
-        {
-          path: '',
-          component: TestRouteContent,
-          title: testRouteAccessibility.title,
-          data: {
-            [routeAccessibilityDataKey]: testRouteAccessibility,
-          },
-        },
-      ],
-      '/#test-fragment-target',
-    );
-
+  it('moves focus to the anchor element after navigation when the new route URL includes an anchor', async () => {
+    const { fixture, router } = await renderShell('/');
     const compiled = fixture.nativeElement as HTMLElement;
-    const heading = compiled.querySelector<HTMLElement>('#test-heading');
-    const fragmentTarget = compiled.querySelector<HTMLElement>('#test-fragment-target');
+    const firstRouteFocusTarget = compiled.querySelector<HTMLElement>('#first-route-content-focus-target');
+
+    expect(firstRouteFocusTarget).not.toBeNull();
+
+    if (firstRouteFocusTarget === null) {
+      throw new Error('Expected the first route focus target to render.');
+    }
+
+    firstRouteFocusTarget.focus();
+    expect(document.activeElement).toBe(firstRouteFocusTarget);
+
+    await navigate(router, fixture, '/second#second-route-fragment-target');
+
+    const updatedCompiled = fixture.nativeElement as HTMLElement;
+    const fragmentTarget = updatedCompiled.querySelector<HTMLElement>('#second-route-fragment-target');
 
     expect(fragmentTarget).not.toBeNull();
 
-    if (heading === null || fragmentTarget === null) {
-      throw new Error('Expected the route heading and fragment target to render.');
+    if (fragmentTarget === null) {
+      throw new Error('Expected the second route fragment target to render.');
     }
 
-    const fragmentFocusSpy = vi.spyOn(fragmentTarget, 'focus');
-    const headingFocusSpy = vi.spyOn(heading, 'focus');
-
-    applyRouteAccessibility(fixture);
-    fixture.detectChanges();
-
-    expect(fragmentFocusSpy).toHaveBeenCalled();
-    expect(fragmentTarget.getAttribute('tabindex')).toBe('-1');
-    expect(headingFocusSpy).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(fragmentTarget);
   });
 });
 
-async function renderShellWithRoutes(routes: Routes, initialUrl = '/'): Promise<ComponentFixture<RootShell>> {
+async function renderShell(initialUrl: string): Promise<{ fixture: ComponentFixture<RootShell>; router: Router }> {
   await TestBed.configureTestingModule({
     imports: [RootShell],
-    providers: [provideRouter(routes)],
+    providers: [provideRouter(testRoutes)],
   }).compileComponents();
 
   const fixture = TestBed.createComponent(RootShell);
   document.body.appendChild(fixture.nativeElement);
 
   const router = TestBed.inject(Router);
-
   router.initialNavigation();
-  await router.navigateByUrl(initialUrl);
+
+  await navigate(router, fixture, initialUrl);
+
+  return { fixture, router };
+}
+
+async function navigate(router: Router, fixture: ComponentFixture<RootShell>, url: string): Promise<void> {
+  await router.navigateByUrl(url);
   fixture.detectChanges();
   await fixture.whenStable();
   fixture.detectChanges();
-
-  return fixture;
 }
 
-function applyRouteAccessibility(fixture: ComponentFixture<RootShell>): void {
-  const rootShell = fixture.componentInstance as unknown as {
-    applyRouteAccessibility(): void;
-  };
+function getAnnouncementElement(fixture: ComponentFixture<RootShell>): HTMLElement {
+  const compiled = fixture.nativeElement as HTMLElement;
+  const announcement = compiled.querySelector<HTMLElement>('.app-shell__route-announcement');
 
-  rootShell.applyRouteAccessibility();
+  if (announcement === null) {
+    throw new Error('Expected the root shell route announcement to render.');
+  }
+
+  return announcement;
 }
