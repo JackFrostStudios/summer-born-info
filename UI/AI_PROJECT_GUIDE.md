@@ -12,6 +12,7 @@ The UI is currently an Angular application with server-side rendering support, a
 - `UI/src/app/app.ts` is the root app host and should stay focused on the top-level router outlet.
 - `UI/src/app/app.config.ts` and `app.config.server.ts` hold browser and server configuration.
 - `UI/src/app/app.routes.ts` is the route entry point for browser routes, with `app.routes.server.ts` holding the server route definitions.
+- `UI/src/app/app-route-accessibility.ts` holds the shared route-level accessibility metadata contract consumed by route definitions and shell-level route accessibility orchestration.
 - `UI/src/app/shell/root-shell.*` owns shell-level layout and nested route composition.
 - `UI/src/app/shell/` can also hold focused shell-only subcomponents such as the public header and theme control when the root shell needs reusable structure without taking on feature logic.
 - `UI/src/app/features/home/home.*` is the current public homepage feature route rendered inside the shell.
@@ -27,6 +28,7 @@ The UI is currently an Angular application with server-side rendering support, a
 - Put browser-facing UI work in `UI/src/app/` unless there is a clear reason to create a new top-level folder under `src/`.
 - Keep feature code close together: route definition, component, template, styles, and tests should stay near each other.
 - Treat `UI/src/app/app.routes.ts` as the canonical place to grow the route tree until a feature area is large enough to justify a route-specific substructure.
+- Keep route-owned page accessibility metadata beside the route tree by using `UI/src/app/app-route-accessibility.ts` for the shared contract and declaring each route's values directly in `app.routes.ts`.
 - Keep shell-only layout concerns in `UI/src/app/shell/` and keep feature-specific rendering out of the shell.
 - Add new routed user-facing areas under `UI/src/app/features/` so each feature keeps its component, template, styles, and tests together.
 - Put shared standalone Angular UI components under `UI/src/design-system/` once at least two consumers justify the abstraction and the code is not owned by a single feature or the shell alone.
