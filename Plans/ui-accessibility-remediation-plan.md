@@ -179,7 +179,7 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 - [x] Route definitions in `UI/src/app/app.routes.ts` declare readable route titles and accessibility metadata for in-scope routes.
 - [x] SPA route changes update the document title and move focus to the routed page `<h1>` by default.
 - [x] Fragment and skip-link navigation override the default focus target and focus the requested anchor element instead.
-- [ ] The homepage and under-construction page expose stable focusable `<h1>` targets that match the route metadata contract.
+- [x] The homepage and under-construction page expose stable focusable `<h1>` targets that match the route metadata contract.
 - [ ] A reusable skip-link component exists and renders as the first focusable shell element.
 - [ ] The skip-link component is visually hidden until focused, appears as a top-of-screen overlay while focused, and hides again when focus leaves.
 - [ ] Skip-link activation works with the configured Angular `withInMemoryScrolling` behaviour.
@@ -192,9 +192,9 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 - [ ] Accessibility smoke coverage verifies both light mode and dark mode with styles loaded correctly.
 - [ ] Existing unit/component tests are updated for route titles, route-change focus, skip links, theme-toggle semantics, and button naming behaviour.
 - [ ] `UI/AI_PROJECT_GUIDE.md` is updated if new shared ownership conventions are introduced.
-- [ ] `npm run format` has been run in `UI/`.
-- [ ] `npm run lint` has been run in `UI/`.
-- [ ] `npm run test:run` has been run in `UI/`.
+- [x] `npm run format` has been run in `UI/`.
+- [x] `npm run lint` has been run in `UI/`.
+- [x] `npm run test:run` has been run in `UI/`.
 - [ ] `npm run extract:i18n` has been run in `UI/` if template text or i18n metadata changed.
 - [ ] `npm run validate:i18n` has been run in `UI/` if localization output changed.
 - [ ] The new accessibility smoke test command has been run successfully in `UI/`.
@@ -204,3 +204,4 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 - [x] Step 1 completed in commit `3096001`: defined the shared route accessibility contract, wired readable route titles and metadata into `UI/src/app/app.routes.ts`, added route contract coverage, and documented the ownership pattern in `UI/AI_PROJECT_GUIDE.md`.
 - [x] Step 2 completed in progress: enabled Angular `withInMemoryScrolling` in `UI/src/app/app.config.ts`, added route accessibility metadata lookup helpers for router-state consumption, and covered router title plus scrolling configuration in `UI/src/app/app.config.spec.ts`.
 - [x] Step 3 completed in progress: added shell-level route accessibility orchestration in `UI/src/app/shell/root-shell/` for route announcements, default heading focus, and fragment-target focus overrides with focused shell tests.
+- [x] Step 4 completed in progress: confirmed the homepage and under-construction routes render `<h1>` targets that match their route accessibility metadata and added focused specs to prevent future drift between route focus/skip-link ids and the DOM.

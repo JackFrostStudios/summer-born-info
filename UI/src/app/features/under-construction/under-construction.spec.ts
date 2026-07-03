@@ -1,7 +1,25 @@
 import { Location } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import {
+  routeAccessibilityDataKey,
+  type RouteAccessibilityData,
+  type RouteAccessibilityMetadata,
+} from '../../app-route-accessibility';
+import { routes } from '../../app.routes';
 import { UnderConstruction } from './under-construction';
+
+function requireUnderConstructionRouteAccessibility(): RouteAccessibilityMetadata {
+  const shellRoute = routes.find((route) => route.path === '');
+  const underConstructionRoute = shellRoute?.children?.find((route) => route.path === 'under-construction');
+  const metadata = (underConstructionRoute?.data as RouteAccessibilityData | undefined)?.[routeAccessibilityDataKey];
+
+  if (metadata === undefined) {
+    throw new Error('Expected the under-construction route to declare accessibility metadata.');
+  }
+
+  return metadata;
+}
 
 describe('UnderConstruction', () => {
   const location = {
@@ -67,6 +85,26 @@ describe('UnderConstruction', () => {
     expect(button.classList.contains('sbi-button')).toBe(true);
     expect(button.classList.contains('sbi-button--secondary')).toBe(false);
     expect(icon.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('matches the route accessibility contract for the focus target and skip-link destination', () => {
+    const fixture = TestBed.createComponent(UnderConstruction);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const section = compiled.querySelector<HTMLElement>('section.under-construction');
+    const heading = compiled.querySelector<HTMLHeadingElement>('h1');
+    const metadata = requireUnderConstructionRouteAccessibility();
+    const [skipLink] = metadata.skipLinks;
+
+    if (skipLink === undefined) {
+      throw new Error('Expected the under-construction route to declare a skip-link target.');
+    }
+
+    expect(section?.getAttribute('aria-labelledby')).toBe(metadata.focusTargetId);
+    expect(heading?.id).toBe(metadata.focusTargetId);
+    expect(skipLink.targetId).toBe(metadata.focusTargetId);
+    expect(skipLink.label).toBe('Skip to main content');
   });
 
   it('navigates back to the previous location when the visitor uses the button', () => {

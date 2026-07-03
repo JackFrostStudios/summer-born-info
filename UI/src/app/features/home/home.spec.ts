@@ -1,5 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import {
+  routeAccessibilityDataKey,
+  type RouteAccessibilityData,
+  type RouteAccessibilityMetadata,
+} from '../../app-route-accessibility';
+import { routes } from '../../app.routes';
 import { Home } from './home';
 
 function requireSharedButton(host: ParentNode): HTMLButtonElement {
@@ -10,6 +16,18 @@ function requireSharedButton(host: ParentNode): HTMLButtonElement {
   }
 
   return button;
+}
+
+function requireHomeRouteAccessibility(): RouteAccessibilityMetadata {
+  const shellRoute = routes.find((route) => route.path === '');
+  const homeRoute = shellRoute?.children?.find((route) => route.path === '');
+  const metadata = (homeRoute?.data as RouteAccessibilityData | undefined)?.[routeAccessibilityDataKey];
+
+  if (metadata === undefined) {
+    throw new Error('Expected the homepage route to declare accessibility metadata.');
+  }
+
+  return metadata;
 }
 
 describe('Home', () => {
@@ -104,6 +122,26 @@ describe('Home', () => {
     expect(hero).not.toBeNull();
     expect(heading?.id).toBe('home-heading');
     expect(compiled.querySelectorAll('h1')).toHaveLength(1);
+  });
+
+  it('matches the homepage route accessibility contract for the focus target and skip-link destination', () => {
+    const fixture = TestBed.createComponent(Home);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const article = compiled.querySelector<HTMLElement>('article');
+    const heading = compiled.querySelector<HTMLHeadingElement>('h1');
+    const metadata = requireHomeRouteAccessibility();
+    const [skipLink] = metadata.skipLinks;
+
+    if (skipLink === undefined) {
+      throw new Error('Expected the homepage route to declare a skip-link target.');
+    }
+
+    expect(article?.getAttribute('aria-labelledby')).toBe(metadata.focusTargetId);
+    expect(heading?.id).toBe(metadata.focusTargetId);
+    expect(skipLink.targetId).toBe(metadata.focusTargetId);
+    expect(skipLink.label).toBe('Skip to main content');
   });
 
   it('keeps prototype-only claims out of the rendered copy while allowing the homepage CTA', () => {
