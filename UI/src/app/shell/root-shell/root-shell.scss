@@ -7,10 +7,24 @@
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   min-height: 100dvh;
+  position: relative;
 }
 
 .app-shell__main {
   display: block;
   min-block-size: 0;
   min-width: 0;
+}
+
+.app-shell__route-announcement {
+  block-size: 1px;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
 }
