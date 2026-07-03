@@ -1,0 +1,9 @@
+@if (skipLinks.length > 0) {
+  <div class="skip-links__overlay">
+    @for (link of skipLinks; track link.targetId) {
+      <a class="skip-links__link" [routerLink]="[]" [fragment]="link.targetId">
+        {{ link.label }}
+      </a>
+    }
+  </div>
+}
