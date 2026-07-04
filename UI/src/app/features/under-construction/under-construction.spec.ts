@@ -1,6 +1,5 @@
-import { Location } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { Router, type Navigation, type UrlTree } from '@angular/router';
 import {
   routeAccessibilityDataKey,
   type RouteAccessibilityData,
@@ -22,34 +21,34 @@ function requireUnderConstructionRouteAccessibility(): RouteAccessibilityMetadat
 }
 
 describe('UnderConstruction', () => {
-  const location = {
-    back: vi.fn(),
-  };
   const router = {
+    lastSuccessfulNavigation: vi.fn<() => Navigation | null>(),
     navigateByUrl: vi.fn().mockResolvedValue(true),
+    serializeUrl: vi.fn<(urlTree: UrlTree | string) => string>(),
   };
-  let historyLength = 2;
-  const historyWindow = {
-    history: {
-      get length() {
-        return historyLength;
-      },
-    },
-    location: window.location,
-  } as Window & typeof globalThis;
+
+  function createNavigation(url: string, previousNavigation: Navigation | null = null): Navigation {
+    return {
+      id: 1,
+      initialUrl: url as unknown as UrlTree,
+      extractedUrl: url as unknown as UrlTree,
+      finalUrl: url as unknown as UrlTree,
+      trigger: 'imperative',
+      extras: {},
+      previousNavigation,
+      abort: vi.fn(),
+    };
+  }
 
   beforeEach(async () => {
-    location.back.mockReset();
+    router.lastSuccessfulNavigation.mockReset();
+    router.lastSuccessfulNavigation.mockReturnValue(null);
     router.navigateByUrl.mockClear();
-    historyLength = 2;
-    vi.spyOn(document, 'defaultView', 'get').mockReturnValue(historyWindow);
+    router.serializeUrl.mockImplementation((urlTree) => urlTree as string);
 
     await TestBed.configureTestingModule({
       imports: [UnderConstruction],
-      providers: [
-        { provide: Location, useValue: location },
-        { provide: Router, useValue: router },
-      ],
+      providers: [{ provide: Router, useValue: router }],
     }).compileComponents();
   });
 
@@ -107,7 +106,11 @@ describe('UnderConstruction', () => {
     expect(skipLink.label).toBe('Skip to main content');
   });
 
-  it('navigates back to the previous location when the visitor uses the button', () => {
+  it('navigates to the previous non-under-construction route when the visitor uses the button', () => {
+    router.lastSuccessfulNavigation.mockReturnValue(
+      createNavigation('/under-construction', createNavigation('/guidance/term-dates')),
+    );
+
     const fixture = TestBed.createComponent(UnderConstruction);
     fixture.detectChanges();
 
@@ -120,12 +123,16 @@ describe('UnderConstruction', () => {
 
     button.click();
 
-    expect(location.back).toHaveBeenCalledTimes(1);
-    expect(router.navigateByUrl).not.toHaveBeenCalled();
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/guidance/term-dates');
   });
 
-  it('falls back to the homepage when there is no browser history to return to', () => {
-    historyLength = 1;
+  it('skips under-construction entries and preserves the last real route including its fragment', () => {
+    router.lastSuccessfulNavigation.mockReturnValue(
+      createNavigation(
+        '/under-construction',
+        createNavigation('/under-construction#under-construction-heading', createNavigation('/admissions#summer-born')),
+      ),
+    );
 
     const fixture = TestBed.createComponent(UnderConstruction);
     fixture.detectChanges();
@@ -139,7 +146,26 @@ describe('UnderConstruction', () => {
 
     button.click();
 
-    expect(location.back).not.toHaveBeenCalled();
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/admissions#summer-born');
+  });
+
+  it('falls back to the homepage when there is no prior non-under-construction route', () => {
+    router.lastSuccessfulNavigation.mockReturnValue(
+      createNavigation('/under-construction', createNavigation('/under-construction#under-construction-heading')),
+    );
+
+    const fixture = TestBed.createComponent(UnderConstruction);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const button = compiled.querySelector<HTMLButtonElement>('sbi-button.under-construction__back-button button');
+
+    if (button === null) {
+      throw new Error('Expected the back button to render.');
+    }
+
+    button.click();
+
     expect(router.navigateByUrl).toHaveBeenCalledWith('/');
   });
 });
