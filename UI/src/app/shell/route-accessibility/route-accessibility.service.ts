@@ -12,6 +12,8 @@ import { NavigationEnd, NavigationSkipped, NavigationStart, Router } from '@angu
 import { filter } from 'rxjs';
 import { getRouteAccessibilityMetadata, type RouteSkipLink } from '../../app-route-accessibility';
 
+const defaultDocumentTitle = 'Summer-born Info';
+
 @Injectable({ providedIn: 'root' })
 export class RouteAccessibilityService {
   private readonly injector = inject(Injector);
@@ -64,6 +66,10 @@ export class RouteAccessibilityService {
     const metadata = getRouteAccessibilityMetadata(this.router.routerState.snapshot);
 
     if (metadata === undefined) {
+      if (document.title !== defaultDocumentTitle) {
+        document.title = defaultDocumentTitle;
+      }
+
       this.$navigationAnnouncementState.set('');
       this.$skipLinksState.set([]);
       return;
