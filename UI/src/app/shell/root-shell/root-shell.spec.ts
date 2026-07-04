@@ -1,6 +1,14 @@
 import { Component } from '@angular/core';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
-import { provideRouter, Router, type Routes } from '@angular/router';
+import {
+  NavigationEnd,
+  NavigationSkipped,
+  provideRouter,
+  Router,
+  type Routes,
+  withInMemoryScrolling,
+} from '@angular/router';
+import { filter, firstValueFrom } from 'rxjs';
 import { defineRouteAccessibility, routeAccessibilityDataKey } from '../../app-route-accessibility';
 import { RootShell } from './root-shell';
 
@@ -154,12 +162,51 @@ describe('RootShell', () => {
 
     expect(document.activeElement).toBe(fragmentTarget);
   });
+
+  it('keeps the active child-route path in skip-link URLs and refocuses the anchor on repeated activation', async () => {
+    const { fixture, router } = await renderShell('/second');
+    const compiled = fixture.nativeElement as HTMLElement;
+    const skipLink = compiled.querySelector<HTMLAnchorElement>('a.skip-links__link');
+    const secondRouteHeading = compiled.querySelector<HTMLElement>('#second-route-heading');
+    const secondRouteFocusTarget = compiled.querySelector<HTMLElement>('#second-route-content-focus-target');
+
+    expect(skipLink).not.toBeNull();
+    expect(secondRouteHeading).not.toBeNull();
+    expect(secondRouteFocusTarget).not.toBeNull();
+
+    if (skipLink === null || secondRouteHeading === null || secondRouteFocusTarget === null) {
+      throw new Error('Expected the second-route skip-link flow to render its link, heading, and focus target.');
+    }
+
+    expect(skipLink.getAttribute('href')).toBe('/second#second-route-heading');
+
+    await activateLink(router, fixture, skipLink);
+
+    expect(router.url).toBe('/second#second-route-heading');
+    expect(document.activeElement).toBe(secondRouteHeading);
+
+    secondRouteFocusTarget.focus();
+    expect(document.activeElement).toBe(secondRouteFocusTarget);
+
+    await activateLink(router, fixture, skipLink);
+
+    expect(router.url).toBe('/second#second-route-heading');
+    expect(document.activeElement).toBe(secondRouteHeading);
+  });
 });
 
 async function renderShell(initialUrl: string): Promise<{ fixture: ComponentFixture<RootShell>; router: Router }> {
   await TestBed.configureTestingModule({
     imports: [RootShell],
-    providers: [provideRouter(testRoutes)],
+    providers: [
+      provideRouter(
+        testRoutes,
+        withInMemoryScrolling({
+          anchorScrolling: 'enabled',
+          scrollPositionRestoration: 'enabled',
+        }),
+      ),
+    ],
   }).compileComponents();
 
   const fixture = TestBed.createComponent(RootShell);
@@ -175,6 +222,28 @@ async function renderShell(initialUrl: string): Promise<{ fixture: ComponentFixt
 
 async function navigate(router: Router, fixture: ComponentFixture<RootShell>, url: string): Promise<void> {
   await router.navigateByUrl(url);
+  fixture.detectChanges();
+  await fixture.whenStable();
+  fixture.detectChanges();
+}
+
+async function activateLink(
+  router: Router,
+  fixture: ComponentFixture<RootShell>,
+  link: HTMLAnchorElement,
+): Promise<void> {
+  const navigationCompleted = firstValueFrom(
+    router.events.pipe(
+      filter(
+        (event): event is NavigationEnd | NavigationSkipped =>
+          event instanceof NavigationEnd || event instanceof NavigationSkipped,
+      ),
+    ),
+  );
+
+  link.dispatchEvent(new MouseEvent('click', { bubbles: true, button: 0, cancelable: true }));
+
+  await navigationCompleted;
   fixture.detectChanges();
   await fixture.whenStable();
   fixture.detectChanges();
