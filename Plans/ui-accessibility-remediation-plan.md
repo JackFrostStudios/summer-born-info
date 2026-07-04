@@ -206,7 +206,7 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 - [x] `npm run test:run` has been run in `UI/`.
 - [x] `npm run extract:i18n` has been run in `UI/` if template text or i18n metadata changed.
 - [ ] `npm run validate:i18n` has been run in `UI/` if localization output changed.
-- [ ] `npm run test:a11y` has been added for the browser accessibility smoke suite and run successfully in `UI/`.
+- [x] `npm run test:a11y` has been added for the browser accessibility smoke suite and run successfully in `UI/`.
 
 ## 12. Implementation Progress
 
@@ -220,5 +220,5 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 - [x] Step 8 completed in progress: updated `UI/src/index.html` to use the readable base title `Summer-born Info` and `lang="en-GB"`, and tightened the route accessibility service so routes without metadata fall back to the base document title instead of leaving stale route titles behind.
 - [x] Step 9 completed in progress: tightened the shared button accessible-name contract in `UI/src/design-system/button/`, only forward `aria-labelledby` when `ariaLabel` is absent and the supplied label reference is non-blank, added a development-only warning for conflicting explicit naming inputs, and expanded button tests to cover visible text, `aria-label`, `aria-labelledby`, blank references, and the warning path.
 - [x] Step 10 completed in progress: added a dedicated browser accessibility harness with Playwright-backed Angular browser tests, shared `axe-core` helpers that load the real `UI/src/styles.scss` entry point, and separate `component.a11y-spec.ts` smoke coverage for the root shell, homepage, under-construction route, and theme toggle in both light and dark mode.
-- [ ] Step 11 pending: add the dedicated `npm run test:a11y` command and any supporting browser-test configuration needed to execute the Chrome accessibility suite consistently in local development and CI.
+- [x] Step 11 completed in progress: added the dedicated `npm run test:a11y` command, documented the browser accessibility smoke workflow in `UI/README.md`, and made the Angular `test-a11y` target explicitly single-run so the Playwright browser accessibility path behaves consistently in local development and CI.
 - [ ] Step 12 pending: run and record the relevant validation commands, including `npm run test:run`, `npm run extract:i18n` and `npm run validate:i18n` if user-facing text changes, plus the new `npm run test:a11y` smoke suite.
