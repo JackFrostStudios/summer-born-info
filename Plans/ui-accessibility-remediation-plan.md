@@ -197,8 +197,8 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 - [x] `UI/src/index.html` uses `lang="en-GB"` or equivalent locale-correct output for the source locale.
 - [x] The shared button only applies the agreed `aria-labelledby` behaviour and emits a development-only warning for conflicting naming inputs.
 - [x] Shared button tests cover supported accessible-name strategies and the warning path.
-- [ ] Separate `component.a11y-spec.ts` coverage exists for representative shell and route states using Playwright, Chrome, and `axe-core`.
-- [ ] Accessibility smoke coverage verifies both light mode and dark mode with styles loaded correctly.
+- [x] Separate `component.a11y-spec.ts` coverage exists for representative shell and route states using Playwright, Chrome, and `axe-core`.
+- [x] Accessibility smoke coverage verifies both light mode and dark mode with styles loaded correctly.
 - [ ] Existing unit/component tests are updated for route titles, route-change focus, skip links, theme-toggle semantics, and button naming behaviour.
 - [ ] `UI/AI_PROJECT_GUIDE.md` is updated if new shared ownership conventions are introduced.
 - [x] `npm run format` has been run in `UI/`.
@@ -219,6 +219,6 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 - [x] Step 7 completed in progress: normalized `UI/src/app/shell/theme-control/` so the toggle keeps the stable accessible name `Dark mode`, continues to expose `aria-pressed` for state, adds focused semantics coverage, and refreshes the source locale catalog for the new label contract.
 - [x] Step 8 completed in progress: updated `UI/src/index.html` to use the readable base title `Summer-born Info` and `lang="en-GB"`, and tightened the route accessibility service so routes without metadata fall back to the base document title instead of leaving stale route titles behind.
 - [x] Step 9 completed in progress: tightened the shared button accessible-name contract in `UI/src/design-system/button/`, only forward `aria-labelledby` when `ariaLabel` is absent and the supplied label reference is non-blank, added a development-only warning for conflicting explicit naming inputs, and expanded button tests to cover visible text, `aria-label`, `aria-labelledby`, blank references, and the warning path.
-- [ ] Step 10 pending: add browser accessibility smoke coverage in separate `component.a11y-spec.ts` files for the shell, homepage, under-construction route, and theme toggle using Playwright-launched Chrome with `axe-core` and `UI/src/styles.scss` loaded into the browser session.
+- [x] Step 10 completed in progress: added a dedicated browser accessibility harness with Playwright-backed Angular browser tests, shared `axe-core` helpers that load the real `UI/src/styles.scss` entry point, and separate `component.a11y-spec.ts` smoke coverage for the root shell, homepage, under-construction route, and theme toggle in both light and dark mode.
 - [ ] Step 11 pending: add the dedicated `npm run test:a11y` command and any supporting browser-test configuration needed to execute the Chrome accessibility suite consistently in local development and CI.
 - [ ] Step 12 pending: run and record the relevant validation commands, including `npm run test:run`, `npm run extract:i18n` and `npm run validate:i18n` if user-facing text changes, plus the new `npm run test:a11y` smoke suite.
