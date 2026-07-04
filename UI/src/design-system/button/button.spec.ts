@@ -6,7 +6,7 @@ import { Button } from './button';
   selector: 'sbi-button-test-host',
   imports: [Button],
   template:
-    '<sbi-button [buttonType]="buttonType" [disabled]="disabled" [ariaPressed]="ariaPressed" [ariaLabel]="ariaLabel" [ariaLabelledBy]="ariaLabelledBy" [ariaDescribedBy]="ariaDescribedBy" [testId]="testId" (pressed)="handlePressed($event)"><span class="projected-content">Test action</span></sbi-button>',
+    '<span id="button-external-label">External button label</span><span id="button-external-description">External button description</span><sbi-button [buttonType]="buttonType" [disabled]="disabled" [ariaPressed]="ariaPressed" [ariaLabel]="ariaLabel" [ariaLabelledBy]="ariaLabelledBy" [ariaDescribedBy]="ariaDescribedBy" [testId]="testId" (pressed)="handlePressed($event)"><span class="projected-content">Test action</span></sbi-button>',
 })
 class TestHostComponent {
   buttonType: 'primary' | 'secondary' = 'primary';
@@ -34,6 +34,10 @@ function requireButton(compiled: HTMLElement): HTMLButtonElement {
 }
 
 describe('Button', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TestHostComponent],
@@ -72,13 +76,12 @@ describe('Button', () => {
     expect(button.classList.contains('sbi-button--secondary')).toBe(true);
   });
 
-  it('forwards disabled, aria, and test-hook inputs to the native button', () => {
+  it('forwards disabled, aria-label, aria-describedby, and test-hook inputs to the native button', () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     fixture.componentInstance.disabled = true;
     fixture.componentInstance.ariaPressed = 'true';
     fixture.componentInstance.ariaLabel = 'Toggle theme';
-    fixture.componentInstance.ariaLabelledBy = 'theme-label';
-    fixture.componentInstance.ariaDescribedBy = 'theme-description';
+    fixture.componentInstance.ariaDescribedBy = 'button-external-description';
     fixture.componentInstance.testId = 'theme-toggle';
     fixture.detectChanges();
 
@@ -88,9 +91,49 @@ describe('Button', () => {
     expect(button.disabled).toBe(true);
     expect(button.getAttribute('aria-pressed')).toBe('true');
     expect(button.getAttribute('aria-label')).toBe('Toggle theme');
-    expect(button.getAttribute('aria-labelledby')).toBe('theme-label');
-    expect(button.getAttribute('aria-describedby')).toBe('theme-description');
+    expect(button.getAttribute('aria-labelledby')).toBeNull();
+    expect(button.getAttribute('aria-describedby')).toBe('button-external-description');
     expect(button.getAttribute('data-testid')).toBe('theme-toggle');
+  });
+
+  it('forwards aria-labelledby when it is the only explicit accessible-name input', () => {
+    const fixture = TestBed.createComponent(TestHostComponent);
+    fixture.componentInstance.ariaLabelledBy = 'button-external-label';
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const button = requireButton(compiled);
+
+    expect(button.getAttribute('aria-label')).toBeNull();
+    expect(button.getAttribute('aria-labelledby')).toBe('button-external-label');
+  });
+
+  it('does not forward blank aria-labelledby values', () => {
+    const fixture = TestBed.createComponent(TestHostComponent);
+    fixture.componentInstance.ariaLabelledBy = '   ';
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const button = requireButton(compiled);
+
+    expect(button.getAttribute('aria-labelledby')).toBeNull();
+  });
+
+  it('warns in development mode and prefers aria-label when both explicit naming inputs are supplied', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const fixture = TestBed.createComponent(TestHostComponent);
+    fixture.componentInstance.ariaLabel = 'Toggle theme';
+    fixture.componentInstance.ariaLabelledBy = 'button-external-label';
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const button = requireButton(compiled);
+
+    expect(button.getAttribute('aria-label')).toBe('Toggle theme');
+    expect(button.getAttribute('aria-labelledby')).toBeNull();
+    expect(warnSpy).toHaveBeenCalledWith(
+      'sbi-button received both ariaLabel and ariaLabelledBy. Provide only one explicit accessible-name input; ariaLabel takes precedence and ariaLabelledBy will not be forwarded.',
+    );
   });
 
   it('re-emits the native click event through the pressed output', () => {
