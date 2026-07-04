@@ -193,8 +193,8 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 - [x] The skip-link component is visually hidden until focused, appears as a top-of-screen overlay while focused, and hides again when focus leaves.
 - [x] Skip-link activation works with the configured Angular `withInMemoryScrolling` behaviour.
 - [x] The theme toggle exposes the stable accessible name `Dark mode` and uses `aria-pressed` for state.
-- [ ] `UI/src/index.html` uses the readable base title `Summer-born Info`.
-- [ ] `UI/src/index.html` uses `lang="en-GB"` or equivalent locale-correct output for the source locale.
+- [x] `UI/src/index.html` uses the readable base title `Summer-born Info`.
+- [x] `UI/src/index.html` uses `lang="en-GB"` or equivalent locale-correct output for the source locale.
 - [ ] The shared button only applies the agreed `aria-labelledby` behaviour and emits a development-only warning for conflicting naming inputs.
 - [ ] Shared button tests cover supported accessible-name strategies and the warning path.
 - [ ] Separate `component.a11y-spec.ts` coverage exists for representative shell and route states using Playwright, Chrome, and `axe-core`.
@@ -217,7 +217,7 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 - [x] Step 5 completed in progress: added a reusable shell-owned skip-link component, rendered it before the header as the first focusable shell control, and covered route-driven skip-link rendering plus focus-triggered reveal behaviour with focused specs.
 - [x] Step 6 completed in progress: finished the shell/router skip-link path so repeated skip-link activation on the same fragment re-focuses correctly, explicit fragment navigation still focuses the requested anchor, and browser back/forward restoration no longer fights Angular `withInMemoryScrolling`, with focused shell and route-accessibility coverage.
 - [x] Step 7 completed in progress: normalized `UI/src/app/shell/theme-control/` so the toggle keeps the stable accessible name `Dark mode`, continues to expose `aria-pressed` for state, adds focused semantics coverage, and refreshes the source locale catalog for the new label contract.
-- [ ] Step 8 pending: update `UI/src/index.html` and any title bootstrap wiring so the default document metadata uses the readable base title `Summer-born Info` and `lang="en-GB"`.
+- [x] Step 8 completed in progress: updated `UI/src/index.html` to use the readable base title `Summer-born Info` and `lang="en-GB"`, and tightened the route accessibility service so routes without metadata fall back to the base document title instead of leaving stale route titles behind.
 - [ ] Step 9 pending: tighten the shared button accessible-name contract in `UI/src/design-system/button/`, only forward `aria-labelledby` when the agreed inputs are complete, and add a development-only warning plus test coverage for conflicting naming inputs.
 - [ ] Step 10 pending: add browser accessibility smoke coverage in separate `component.a11y-spec.ts` files for the shell, homepage, under-construction route, and theme toggle using Playwright-launched Chrome with `axe-core` and `UI/src/styles.scss` loaded into the browser session.
 - [ ] Step 11 pending: add the dedicated `npm run test:a11y` command and any supporting browser-test configuration needed to execute the Chrome accessibility suite consistently in local development and CI.

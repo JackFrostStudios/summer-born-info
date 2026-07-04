@@ -99,6 +99,7 @@ describe('RouteAccessibilityService', () => {
 
     await navigate(router, fixture, '/no-accessibility');
 
+    expect(document.title).toBe('Summer-born Info');
     expect(host.routeAccessibility.$navigationAnnouncement()).toBe('');
     expect(host.routeAccessibility.$skipLinks()).toEqual([]);
   });
