@@ -122,7 +122,8 @@
             "include": ["src/**/*.a11y-spec.ts"],
             "setupFiles": ["src/testing/a11y/a11y-browser.setup.ts"],
             "browsers": ["ChromiumHeadless"],
-            "browserViewport": "1440x1080"
+            "browserViewport": "1440x1080",
+            "watch": false
           }
         },
         "extract-i18n": {
