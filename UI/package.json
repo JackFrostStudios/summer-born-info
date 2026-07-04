@@ -11,7 +11,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:run": "ng test --watch=false",
-    "test:a11y": "ng run summer-born-info:test-a11y",
+    "test:a11y": "node ./scripts/run-a11y-tests.mjs",
     "test:coverage": "ng test --watch=false --coverage",
     "test:ci": "npm run test:coverage",
     "lint": "ng lint",

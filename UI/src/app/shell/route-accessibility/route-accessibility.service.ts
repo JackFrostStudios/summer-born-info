@@ -8,7 +8,7 @@ import {
   runInInjectionContext,
   signal,
 } from '@angular/core';
-import { NavigationEnd, NavigationSkipped, NavigationStart, Router } from '@angular/router';
+import { NavigationEnd, NavigationSkipped, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { getRouteAccessibilityMetadata, type RouteSkipLink } from '../../app-route-accessibility';
 
@@ -21,7 +21,6 @@ export class RouteAccessibilityService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly $navigationAnnouncementState = signal('');
   private readonly $skipLinksState = signal<readonly RouteSkipLink[]>([]);
-  private shouldPreserveHistoryScrollPosition = false;
 
   readonly $navigationAnnouncement = this.$navigationAnnouncementState.asReadonly();
   readonly $skipLinks = this.$skipLinksState.asReadonly();
@@ -30,36 +29,28 @@ export class RouteAccessibilityService {
     this.router.events
       .pipe(
         filter(
-          (event): event is NavigationStart | NavigationEnd | NavigationSkipped =>
-            event instanceof NavigationStart || event instanceof NavigationEnd || event instanceof NavigationSkipped,
+          (event): event is NavigationEnd | NavigationSkipped =>
+            event instanceof NavigationEnd || event instanceof NavigationSkipped,
         ),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe((event) => {
-        if (event instanceof NavigationStart) {
-          this.shouldPreserveHistoryScrollPosition =
-            event.navigationTrigger === 'popstate' && event.restoredState !== null;
-          return;
-        }
-
-        const shouldPreserveHistoryScrollPosition = this.shouldPreserveHistoryScrollPosition;
-
+      .subscribe(() => {
         runInInjectionContext(this.injector, () => {
           // Wait until the route view is rendered before reading or focusing its targets.
           afterNextRender(() => {
-            this.applyRouteAccessibility(shouldPreserveHistoryScrollPosition);
+            this.applyRouteAccessibility();
           });
         });
       });
   }
 
-  private applyRouteAccessibility(shouldPreserveHistoryScrollPosition: boolean): void {
+  private applyRouteAccessibility(): void {
     if (typeof document === 'undefined') {
       return;
     }
 
     this.refreshAccessibilityMetadata();
-    this.setFocusToPageTarget(shouldPreserveHistoryScrollPosition);
+    this.setFocusToPageTarget();
   }
 
   private refreshAccessibilityMetadata(): void {
@@ -83,12 +74,7 @@ export class RouteAccessibilityService {
     this.$skipLinksState.set(metadata.skipLinks);
   }
 
-  private setFocusToPageTarget(shouldPreserveHistoryScrollPosition: boolean): void {
-    if (shouldPreserveHistoryScrollPosition) {
-      this.focusBodyForSkipLinkEntry();
-      return;
-    }
-
+  private setFocusToPageTarget(): void {
     const fragmentTarget = this.resolveFragmentFocusTarget();
 
     if (fragmentTarget !== null) {

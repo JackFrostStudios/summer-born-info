@@ -199,8 +199,8 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 - [x] Shared button tests cover supported accessible-name strategies and the warning path.
 - [x] Separate `component.a11y-spec.ts` coverage exists for representative shell and route states using Playwright, Chrome, and `axe-core`.
 - [x] Accessibility smoke coverage verifies both light mode and dark mode with styles loaded correctly.
-- [ ] Existing unit/component tests are updated for route titles, route-change focus, skip links, theme-toggle semantics, and button naming behaviour.
-- [ ] `UI/AI_PROJECT_GUIDE.md` is updated if new shared ownership conventions are introduced.
+- [x] Existing unit/component tests are updated for route titles, route-change focus, skip links, theme-toggle semantics, and button naming behaviour.
+- [x] `UI/AI_PROJECT_GUIDE.md` is updated if new shared ownership conventions are introduced.
 - [x] `npm run format` has been run in `UI/`.
 - [x] `npm run lint` has been run in `UI/`.
 - [x] `npm run test:run` has been run in `UI/`.
@@ -220,5 +220,5 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 - [x] Step 8 completed in progress: updated `UI/src/index.html` to use the readable base title `Summer-born Info` and `lang="en-GB"`, and tightened the route accessibility service so routes without metadata fall back to the base document title instead of leaving stale route titles behind.
 - [x] Step 9 completed in progress: tightened the shared button accessible-name contract in `UI/src/design-system/button/`, only forward `aria-labelledby` when `ariaLabel` is absent and the supplied label reference is non-blank, added a development-only warning for conflicting explicit naming inputs, and expanded button tests to cover visible text, `aria-label`, `aria-labelledby`, blank references, and the warning path.
 - [x] Step 10 completed in progress: added a dedicated browser accessibility harness with Playwright-backed Angular browser tests, shared `axe-core` helpers that load the real `UI/src/styles.scss` entry point, and separate `component.a11y-spec.ts` smoke coverage for the root shell, homepage, under-construction route, and theme toggle in both light and dark mode.
-- [x] Step 11 completed in progress: added the dedicated `npm run test:a11y` command, documented the browser accessibility smoke workflow in `UI/README.md`, and made the Angular `test-a11y` target explicitly single-run so the Playwright browser accessibility path behaves consistently in local development and CI.
+- [x] Step 11 completed in progress: added the dedicated `npm run test:a11y` command, documented the browser accessibility smoke workflow in `UI/README.md`, made the Angular `test-a11y` target explicitly single-run so the Playwright browser accessibility path behaves consistently in local development and CI, and added repo-local Chrome executable resolution so the command truthfully validates the requested browser target.
 - [x] Step 12 completed in progress: ran `npm run lint` (pass), `npm run test:run` (pass: 14 test files, 62 tests), `npm run test:a11y` (pass: 4 test files, 8 tests), and `npm run validate:i18n` (pass, including extraction drift check plus localized production build) from `UI/`.

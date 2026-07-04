@@ -125,7 +125,7 @@ npm run test:ci
 ```
 
 - `npm run test:run` runs the unit tests once without watch mode.
-- `npm run test:a11y` runs the dedicated Playwright-driven Chromium accessibility smoke suite once with the real shared application styles loaded.
+- `npm run test:a11y` validates a local Google Chrome executable, then runs the dedicated Playwright-driven Chromium accessibility smoke suite once with the real shared application styles loaded.
 - `npm run test:coverage` runs the unit tests once with coverage and report output.
 - `npm run test:ci` is the CI-facing alias and currently matches `npm run test:coverage`.
 
@@ -163,6 +163,8 @@ Recommended local loop from the `UI` folder:
    ```bash
    npm run test:a11y
    ```
+
+   The command prefers an existing `CHROME_BIN` override and otherwise searches common Google Chrome install locations, including `C:\Program Files (x86)\Google\Chrome\Application\chrome.exe` on Windows. If Chrome is installed elsewhere, set `CHROME_BIN` before running the command.
 
 4. Check formatting before you commit. If Prettier reports changes, rerun the fix-up command.
 

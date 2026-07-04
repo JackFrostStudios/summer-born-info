@@ -140,7 +140,7 @@ describe('RouteAccessibilityService', () => {
     expect(document.activeElement).toBe(fragmentTarget);
   });
 
-  it('keeps history restoration in control when browser back returns to a fragment entry', async () => {
+  it('restores fragment focus when browser back returns to a fragment entry', async () => {
     const { fixture, router } = await renderHost('/');
 
     await navigate(router, fixture, '/second#second-route-fragment-target');
@@ -169,7 +169,12 @@ describe('RouteAccessibilityService', () => {
 
     expect(fragmentTarget).not.toBeNull();
     expect(router.url).toBe('/second#second-route-fragment-target');
-    expect(document.activeElement).toBe(document.body);
+
+    if (fragmentTarget === null) {
+      throw new Error('Expected the second route fragment target to render after browser back navigation.');
+    }
+
+    expect(document.activeElement).toBe(fragmentTarget);
   });
 });
 
