@@ -87,6 +87,7 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
+            "exclude": ["src/**/*.a11y-spec.ts"],
             "coverageReporters": [
               "text-summary",
               "html",
@@ -112,6 +113,16 @@
               ],
               ["json", { "outputFile": "test-results/results.json" }]
             ]
+          }
+        },
+        "test-a11y": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "buildTarget": "summer-born-info:build:development",
+            "include": ["src/**/*.a11y-spec.ts"],
+            "setupFiles": ["src/testing/a11y/a11y-browser.setup.ts"],
+            "browsers": ["ChromiumHeadless"],
+            "browserViewport": "1440x1080"
           }
         },
         "extract-i18n": {
