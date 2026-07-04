@@ -1,6 +1,5 @@
-import { DOCUMENT, Location } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Navigation, Router } from '@angular/router';
 import { Button } from '@design-system/button/button';
 
 @Component({
@@ -10,18 +9,30 @@ import { Button } from '@design-system/button/button';
   styleUrl: './under-construction.scss',
 })
 export class UnderConstruction {
-  private readonly document = inject(DOCUMENT);
-  private readonly location = inject(Location);
   private readonly router = inject(Router);
 
   protected readonly headingId = 'under-construction-heading';
 
   protected goBack(): void {
-    if ((this.document.defaultView?.history.length ?? 0) > 1) {
-      this.location.back();
-      return;
+    const previousUrl = this.findLastNonUnderConstructionUrl(this.router.lastSuccessfulNavigation());
+
+    void this.router.navigateByUrl(previousUrl ?? '/');
+  }
+
+  private findLastNonUnderConstructionUrl(navigation: Navigation | null | undefined): string | null {
+    let currentNavigation = navigation?.previousNavigation ?? null;
+
+    while (currentNavigation !== null) {
+      const currentUrlTree = currentNavigation.finalUrl ?? currentNavigation.extractedUrl;
+      const currentUrl = this.router.serializeUrl(currentUrlTree);
+
+      if (!currentUrl.includes('under-construction')) {
+        return currentUrl;
+      }
+
+      currentNavigation = currentNavigation.previousNavigation;
     }
 
-    void this.router.navigateByUrl('/');
+    return null;
   }
 }
