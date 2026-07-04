@@ -112,6 +112,11 @@ function requireToggleButton(toggleHost: ParentNode): HTMLButtonElement {
   return toggle;
 }
 
+function expectToggleSemantics(toggle: HTMLButtonElement, pressed: 'true' | 'false'): void {
+  expect(toggle.getAttribute('aria-label')).toBe('Dark mode');
+  expect(toggle.getAttribute('aria-pressed')).toBe(pressed);
+}
+
 describe('ThemeControl', () => {
   beforeEach(() => {
     installLocalStorageStub();
@@ -148,8 +153,7 @@ describe('ThemeControl', () => {
     expect(toggle.type).toBe('button');
     expect(toggle.classList.contains('sbi-button')).toBe(true);
     expect(toggle.classList.contains('sbi-button--secondary')).toBe(true);
-    expect(toggle.getAttribute('aria-label')).toBe('Switch to dark mode');
-    expect(toggle.getAttribute('aria-pressed')).toBe('false');
+    expectToggleSemantics(toggle, 'false');
     expect(toggle.textContent.trim()).toBe('');
     expect(toggleHost.classList.contains('theme-control__toggle')).toBe(true);
     expect(viewport.getAttribute('aria-hidden')).toBe('true');
@@ -170,8 +174,7 @@ describe('ThemeControl', () => {
     toggle.click();
     fixture.detectChanges();
 
-    expect(toggle.getAttribute('aria-label')).toBe('Switch to light mode');
-    expect(toggle.getAttribute('aria-pressed')).toBe('true');
+    expectToggleSemantics(toggle, 'true');
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('dark');
     expect(localStorage.getItem(storageKey)).toBe('dark');
   });
@@ -188,13 +191,11 @@ describe('ThemeControl', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const toggle = requireToggleButton(requireToggleHost(compiled));
 
-    expect(toggle.getAttribute('aria-label')).toBe('Switch to light mode');
-    expect(toggle.getAttribute('aria-pressed')).toBe('true');
+    expectToggleSemantics(toggle, 'true');
 
     toggle.click();
     fixture.detectChanges();
-    expect(toggle.getAttribute('aria-label')).toBe('Switch to dark mode');
-    expect(toggle.getAttribute('aria-pressed')).toBe('false');
+    expectToggleSemantics(toggle, 'false');
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('light');
     expect(localStorage.getItem(storageKey)).toBe('light');
   });
@@ -213,7 +214,22 @@ describe('ThemeControl', () => {
     const toggleHost = requireToggleHost(compiled);
     const toggle = requireToggleButton(toggleHost);
 
-    expect(toggle.getAttribute('aria-label')).toBe('Switch to light mode');
-    expect(toggle.getAttribute('aria-pressed')).toBe('true');
+    expectToggleSemantics(toggle, 'true');
+  });
+
+  it('keeps the stable toggle semantics while the control has keyboard focus', () => {
+    TestBed.configureTestingModule({
+      imports: [ThemeControl],
+    });
+
+    const fixture = TestBed.createComponent(ThemeControl);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const toggle = requireToggleButton(requireToggleHost(compiled));
+
+    toggle.focus();
+
+    expect(document.activeElement).toBe(toggle);
+    expectToggleSemantics(toggle, 'false');
   });
 });
