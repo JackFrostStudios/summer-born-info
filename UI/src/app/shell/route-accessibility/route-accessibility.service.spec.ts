@@ -1,6 +1,16 @@
+import { Location } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
-import { provideRouter, Router, RouterOutlet, type Routes } from '@angular/router';
+import {
+  NavigationEnd,
+  NavigationSkipped,
+  provideRouter,
+  Router,
+  RouterOutlet,
+  type Routes,
+  withInMemoryScrolling,
+} from '@angular/router';
+import { filter, firstValueFrom } from 'rxjs';
 import { defineRouteAccessibility, routeAccessibilityDataKey } from '../../app-route-accessibility';
 import { RouteAccessibilityService } from './route-accessibility.service';
 
@@ -128,6 +138,38 @@ describe('RouteAccessibilityService', () => {
 
     expect(document.activeElement).toBe(fragmentTarget);
   });
+
+  it('keeps history restoration in control when browser back returns to a fragment entry', async () => {
+    const { fixture, router } = await renderHost('/');
+
+    await navigate(router, fixture, '/second#second-route-fragment-target');
+    await navigate(router, fixture, '/');
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const firstRouteFocusTarget = compiled.querySelector<HTMLElement>('#first-route-content-focus-target');
+
+    expect(firstRouteFocusTarget).not.toBeNull();
+
+    if (firstRouteFocusTarget === null) {
+      throw new Error('Expected the first route focus target to render after returning to the first route.');
+    }
+
+    firstRouteFocusTarget.focus();
+    expect(document.activeElement).toBe(firstRouteFocusTarget);
+
+    const location = TestBed.inject(Location);
+
+    await triggerHistoryNavigation(router, fixture, () => {
+      location.back();
+    });
+
+    const updatedCompiled = fixture.nativeElement as HTMLElement;
+    const fragmentTarget = updatedCompiled.querySelector<HTMLElement>('#second-route-fragment-target');
+
+    expect(fragmentTarget).not.toBeNull();
+    expect(router.url).toBe('/second#second-route-fragment-target');
+    expect(document.activeElement).toBe(document.body);
+  });
 });
 
 async function renderHost(initialUrl: string): Promise<{
@@ -137,7 +179,15 @@ async function renderHost(initialUrl: string): Promise<{
 }> {
   await TestBed.configureTestingModule({
     imports: [RouteAccessibilityTestHost],
-    providers: [provideRouter(testRoutes)],
+    providers: [
+      provideRouter(
+        testRoutes,
+        withInMemoryScrolling({
+          anchorScrolling: 'enabled',
+          scrollPositionRestoration: 'enabled',
+        }),
+      ),
+    ],
   }).compileComponents();
 
   const fixture = TestBed.createComponent(RouteAccessibilityTestHost);
@@ -158,6 +208,27 @@ async function navigate(
   url: string,
 ): Promise<void> {
   await router.navigateByUrl(url);
+  fixture.detectChanges();
+  await fixture.whenStable();
+  fixture.detectChanges();
+}
+
+async function triggerHistoryNavigation(
+  router: Router,
+  fixture: ComponentFixture<RouteAccessibilityTestHost>,
+  action: () => void,
+): Promise<void> {
+  const navigationCompleted = firstValueFrom(
+    router.events.pipe(
+      filter(
+        (event): event is NavigationEnd | NavigationSkipped =>
+          event instanceof NavigationEnd || event instanceof NavigationSkipped,
+      ),
+    ),
+  );
+
+  action();
+  await navigationCompleted;
   fixture.detectChanges();
   await fixture.whenStable();
   fixture.detectChanges();

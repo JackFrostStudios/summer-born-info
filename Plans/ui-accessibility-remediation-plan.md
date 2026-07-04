@@ -10,7 +10,7 @@ Implement the accessibility improvements identified in `UI/review-findings/acces
 - Review source: `UI/review-findings/accessibility-expert.md`.
 - User-confirmed resolutions:
   - Theme toggle should keep a stable toggle name of `Dark mode`.
-  - Route-change focus should move to the routed page `<h1>`.
+  - Route changes should clear carried focus instead of moving focus to the routed page `<h1>`, so the skip link remains the first keyboard entry point after navigation.
   - Skip links should be implemented as a common component, with route components providing human-readable skip-link names and anchor targets.
   - Skip-link behaviour should account for Angular `withInMemoryScrolling`.
   - Accessibility automation should live in separate `component.a11y-spec.ts` tests using Playwright, Chrome, and `axe-core`, and should verify both light and dark mode with styles loaded correctly.
@@ -24,12 +24,12 @@ Implement the accessibility improvements identified in `UI/review-findings/acces
 ## 3. Scope
 
 - Add route-owned accessibility metadata for document titles, focus targets, and skip links.
-- Add shell-level route-change accessibility handling that updates the document title, announces the new page context, and moves focus to the routed page `<h1>`.
+- Add shell-level route-change accessibility handling that updates the document title, announces the new page context, and clears carried focus so the skip link remains the next keyboard action after navigation.
 - Add a reusable skip-link component that renders route-provided bypass links and works with the app shell.
 - Normalize the theme toggle to the stable-name toggle-button pattern with `aria-pressed`.
 - Update the base document metadata to use a readable title and `en-GB` language tag.
 - Tighten the shared button accessible-name API and development diagnostics.
-- Add dedicated automated accessibility smoke tests using Playwright, Chrome, and `axe-core`.
+- Add dedicated automated accessibility smoke tests using Playwright-driven Chrome and `axe-core`, exposed through a dedicated npm command that loads the shared application stylesheet entry point for realistic rendering.
 - Update existing component and route tests to cover the new accessibility behaviour.
 
 ## 4. Non-Goals
@@ -44,11 +44,11 @@ Implement the accessibility improvements identified in `UI/review-findings/acces
 
 ### Scenario: A visitor navigates between SPA routes
 
-Given a keyboard or screen-reader user activates navigation that changes the Angular route, when the new route finishes activation without a specific fragment target, then the document title should update to the route-specific title, the routed page `<h1>` should receive programmatic focus, and assistive technology should have a reliable cue that the main content changed.
+Given a keyboard or screen-reader user activates navigation that changes the Angular route, when the new route finishes activation, then the document title should update to the route-specific title, any carried focus from the previous view should be cleared, and assistive technology should have a reliable cue that the main content changed without skipping over the first shell skip link.
 
 ### Scenario: A visitor navigates to a specific in-page anchor
 
-Given navigation includes a fragment or is triggered by a skip link, when the destination route and target element are available, then focus should move to the requested anchor target instead of the default page `<h1>` so the user lands on the content they explicitly asked for.
+Given navigation includes a fragment or is triggered by a skip link, when the destination route and target element are available, then the shell should focus the requested anchor target so the user lands on the content they explicitly asked for.
 
 ### Scenario: A visitor lands on the homepage
 
@@ -87,8 +87,8 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 2. Update `UI/src/app/app.routes.ts` route definitions so the homepage and under-construction route declare their accessibility metadata and readable route titles.
 3. Implement shell-level route accessibility handling that responds to navigation completion by:
    - applying the route title,
-   - moving focus to the routed page `<h1>` by default,
-   - overriding the default focus target when navigation includes a fragment or skip-link anchor target,
+   - clearing carried focus so the next keyboard interaction reaches the shell skip link,
+   - preserving shell-managed focus only for explicit fragment or skip-link anchor targets,
    - providing any required announcement mechanism for SPA context changes.
 4. Update routed feature components in scope so each page exposes a stable `<h1 id="...">` target that matches its route metadata and is safe to focus programmatically.
 5. Add a reusable skip-link component in a common shared location appropriate for shell reuse, and render it as the first focusable shell element.
@@ -102,22 +102,23 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
     - conflicting accessible-name inputs trigger a development-only warning,
     - tests cover the supported naming strategies and the warning path.
 11. Add dedicated accessibility smoke tests using separate `component.a11y-spec.ts` files and the required tooling:
-    - Playwright,
-    - Chrome,
+    - Playwright component/browser execution,
+    - Chrome as the validated browser target,
     - `axe-core`.
-12. Ensure the accessibility smoke harness loads the real application styles and exercises both light and dark mode.
-13. Add or update existing unit/component tests for route titles, route-change focus, skip-link rendering and activation, and button naming behaviour.
-14. Update `UI/AI_PROJECT_GUIDE.md` if the change introduces a new canonical ownership pattern for route accessibility metadata or shared skip-link components.
-15. Run the standard UI validation commands plus the new accessibility test command(s).
+12. Add a dedicated npm command for the accessibility suite, with a clear project-local name such as `npm run test:a11y`, so developers and CI can run the browser accessibility smoke coverage intentionally.
+13. Ensure the accessibility smoke harness loads the real application styles by pulling in `UI/src/styles.scss` and therefore the shared CSS modules it composes, then exercises both light and dark mode.
+14. Add or update existing unit/component tests for route titles, route-change focus, skip-link rendering and activation, theme-toggle semantics, and button naming behaviour.
+15. Update `UI/AI_PROJECT_GUIDE.md` if the change introduces a new canonical ownership pattern for route accessibility metadata, shared skip-link components, or browser-based accessibility test placement.
+16. Run the standard UI validation commands plus the new accessibility test command(s).
 
 ## 7. Technology Requirements and Decisions
 
 - Route metadata ownership:
   Use Angular route metadata as the canonical ownership point for page titles and route-level skip-link declarations so each feature route owns its own accessibility context.
-- Focus target:
-  The shell should move focus to the routed page `<h1>` after navigation by default, not to `<main>` or the document root, because that gives screen-reader users the clearest page-context announcement.
-- Anchor-target override:
-  When navigation is intentionally directed to a fragment or skip-link target, that requested anchor should receive focus instead of the default `<h1>` so the app respects the user's explicit destination.
+- Focus handling:
+  The shell should clear carried focus after navigation instead of forcing focus to the routed page `<h1>`, because the skip link is intentionally the first keyboard action available after each route change.
+- Anchor-target behavior:
+  When navigation is intentionally directed to a fragment or skip-link target, that requested anchor should receive focus so the app respects the user's explicit destination.
 - Skip-link ownership:
   Implement the skip-link UI as a reusable shared component rather than embedding raw markup in the shell template so future routed areas can reuse the same pattern.
 - Skip-link presentation:
@@ -138,6 +139,12 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
   Adding Playwright and `axe-core` is a material tooling change and should be recorded in the implementation. The plan assumes Chrome-based execution because the user explicitly requested Chrome coverage.
 - Test harness:
   Keep the new accessibility tests separate from existing Vitest component specs if that separation is required to load browser styles and Playwright reliably.
+- Browser target:
+  The accessibility suite should execute against Playwright-launched Chrome rather than the default bundled browser so the validation matches the requested browser environment.
+- Style loading:
+  The accessibility harness should load the same `UI/src/styles.scss` entry point used by the app so the shared style modules, tokens, resets, and primitives participate in axe validation and visual semantics.
+- Validation command:
+  Provide a dedicated npm entry point for the accessibility suite, preferably `npm run test:a11y`, so local development and CI have an unambiguous command for the Chrome + Playwright + `axe-core` checks.
 
 ## 8. Dependencies and Sequencing
 
@@ -146,17 +153,19 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 3. Add shell-level route accessibility orchestration for title updates, default `<h1>` focus management, fragment-target focus overrides, and any lightweight announcement behaviour.
 4. Update the homepage and under-construction route components/templates so their `<h1>` ids and skip-link targets match the new contract.
 5. Add the reusable skip-link component and render it in the shell as the first focusable element.
-6. Normalize theme-toggle semantics and update its tests.
-7. Tighten the shared button naming API and add development-only warning coverage.
-8. Update base document metadata (`title`, `lang`) and any related bootstrap/title wiring.
-9. Introduce Playwright, Chrome-based accessibility smoke setup, and `axe-core` integration in separate `component.a11y-spec.ts` files with real styles loaded.
-10. Add or update validation scripts so the new accessibility suite has a clear execution path.
-11. Run formatting, linting, unit/component tests, i18n validation if user-facing template text changes, and the new accessibility suite.
+6. Finish the router/skip-link integration so `withInMemoryScrolling` preserves fragment scrolling and explicit anchor focus for shell skip links across forward/back navigation.
+7. Normalize theme-toggle semantics and update its tests.
+8. Tighten the shared button naming API and add development-only warning coverage.
+9. Update base document metadata (`title`, `lang`) and any related bootstrap/title wiring.
+10. Introduce Playwright, Chrome-based accessibility smoke setup and `axe-core` integration in separate `component.a11y-spec.ts` files, with `UI/src/styles.scss` loaded into the browser test harness.
+11. Add the dedicated npm accessibility command and any supporting browser-test configuration so `npm run test:a11y` executes the Chrome coverage path consistently.
+12. Add or update focused validation for route titles, route-change focus, skip-link activation, theme semantics, and button naming behaviour.
+13. Run formatting, linting, unit/component tests, i18n validation if user-facing template text changes, and the new accessibility suite.
 
 ## 9. Risks and Mitigations
 
-- Risk: Programmatic focus to the `<h1>` may race route rendering and fail intermittently.
-  - Mitigation: trigger focus only after navigation completion and rendered content availability, and cover it with deterministic tests.
+- Risk: Shell-managed focus changes may fight Angular navigation timing and skip-link expectations.
+  - Mitigation: keep the shell behavior to title/announcement updates plus clearing carried focus, and cover the behavior with deterministic tests.
 - Risk: Skip-link fragment navigation may conflict with Angular scroll restoration.
   - Mitigation: explicitly configure and test `withInMemoryScrolling` behaviour with shell skip links and route transitions.
 - Risk: Route metadata and component markup can drift out of sync if ids are hand-maintained.
@@ -170,19 +179,19 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 
 ## 10. Unknowns and Required Clarifications
 
-- No blocking clarification remains for this implementation plan after the user confirmed the `<h1>` focus target.
+- No blocking clarification remains for this implementation plan after the user confirmed the route-change focus strategy should preserve the skip link as the first keyboard action.
 - The implementation should document the exact route metadata shape and where it lives once the code change chooses the final TypeScript ownership pattern.
-- If Playwright-based accessibility coverage needs a new npm script, the implementation should choose a clear naming convention consistent with existing UI scripts.
+- The Playwright-based accessibility coverage should use a dedicated npm script named `npm run test:a11y` unless implementation constraints inside the Angular/Vitest browser runner force a repository-consistent variant with the same intent.
 
 ## 11. Completion Checklist
 
 - [x] Route definitions in `UI/src/app/app.routes.ts` declare readable route titles and accessibility metadata for in-scope routes.
-- [x] SPA route changes update the document title and move focus to the routed page `<h1>` by default.
-- [x] Fragment and skip-link navigation override the default focus target and focus the requested anchor element instead.
+- [x] SPA route changes update the document title and clear carried focus so the skip link remains the first keyboard action after navigation.
+- [x] Fragment and skip-link navigation focus the requested anchor element instead of clearing focus back to the skip-link flow.
 - [x] The homepage and under-construction page expose stable focusable `<h1>` targets that match the route metadata contract.
 - [x] A reusable skip-link component exists and renders as the first focusable shell element.
 - [x] The skip-link component is visually hidden until focused, appears as a top-of-screen overlay while focused, and hides again when focus leaves.
-- [ ] Skip-link activation works with the configured Angular `withInMemoryScrolling` behaviour.
+- [x] Skip-link activation works with the configured Angular `withInMemoryScrolling` behaviour.
 - [ ] The theme toggle exposes the stable accessible name `Dark mode` and uses `aria-pressed` for state.
 - [ ] `UI/src/index.html` uses the readable base title `Summer-born Info`.
 - [ ] `UI/src/index.html` uses `lang="en-GB"` or equivalent locale-correct output for the source locale.
@@ -197,12 +206,19 @@ Given the dedicated accessibility test suite executes, when it mounts the shell,
 - [x] `npm run test:run` has been run in `UI/`.
 - [ ] `npm run extract:i18n` has been run in `UI/` if template text or i18n metadata changed.
 - [ ] `npm run validate:i18n` has been run in `UI/` if localization output changed.
-- [ ] The new accessibility smoke test command has been run successfully in `UI/`.
+- [ ] `npm run test:a11y` has been added for the browser accessibility smoke suite and run successfully in `UI/`.
 
 ## 12. Implementation Progress
 
 - [x] Step 1 completed in commit `3096001`: defined the shared route accessibility contract, wired readable route titles and metadata into `UI/src/app/app.routes.ts`, added route contract coverage, and documented the ownership pattern in `UI/AI_PROJECT_GUIDE.md`.
 - [x] Step 2 completed in progress: enabled Angular `withInMemoryScrolling` in `UI/src/app/app.config.ts`, added route accessibility metadata lookup helpers for router-state consumption, and covered router title plus scrolling configuration in `UI/src/app/app.config.spec.ts`.
-- [x] Step 3 completed in progress: added shell-level route accessibility orchestration in `UI/src/app/shell/root-shell/` for route announcements, default heading focus, and fragment-target focus overrides with focused shell tests.
+- [x] Step 3 completed in progress: added shell-level route accessibility orchestration in `UI/src/app/shell/root-shell/` for route announcements, carried-focus clearing on default navigation, and explicit fragment-target focus behavior with focused shell tests.
 - [x] Step 4 completed in progress: confirmed the homepage and under-construction routes render `<h1>` targets that match their route accessibility metadata and added focused specs to prevent future drift between route focus/skip-link ids and the DOM.
 - [x] Step 5 completed in progress: added a reusable shell-owned skip-link component, rendered it before the header as the first focusable shell control, and covered route-driven skip-link rendering plus focus-triggered reveal behaviour with focused specs.
+- [x] Step 6 completed in progress: finished the shell/router skip-link path so repeated skip-link activation on the same fragment re-focuses correctly, explicit fragment navigation still focuses the requested anchor, and browser back/forward restoration no longer fights Angular `withInMemoryScrolling`, with focused shell and route-accessibility coverage.
+- [ ] Step 7 pending: normalize `UI/src/app/shell/theme-control/` so the toggle exposes the stable accessible name `Dark mode`, keeps `aria-pressed` as the state signal, and adds focused semantics coverage.
+- [ ] Step 8 pending: update `UI/src/index.html` and any title bootstrap wiring so the default document metadata uses the readable base title `Summer-born Info` and `lang="en-GB"`.
+- [ ] Step 9 pending: tighten the shared button accessible-name contract in `UI/src/design-system/button/`, only forward `aria-labelledby` when the agreed inputs are complete, and add a development-only warning plus test coverage for conflicting naming inputs.
+- [ ] Step 10 pending: add browser accessibility smoke coverage in separate `component.a11y-spec.ts` files for the shell, homepage, under-construction route, and theme toggle using Playwright-launched Chrome with `axe-core` and `UI/src/styles.scss` loaded into the browser session.
+- [ ] Step 11 pending: add the dedicated `npm run test:a11y` command and any supporting browser-test configuration needed to execute the Chrome accessibility suite consistently in local development and CI.
+- [ ] Step 12 pending: run and record the relevant validation commands, including `npm run test:run`, `npm run extract:i18n` and `npm run validate:i18n` if user-facing text changes, plus the new `npm run test:a11y` smoke suite.
