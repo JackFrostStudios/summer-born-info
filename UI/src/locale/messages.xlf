@@ -33,7 +33,7 @@
         <source> Take the first step </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home-hero/home-hero.html</context>
-          <context context-type="linenumber">24,30</context>
+          <context context-type="linenumber">25,31</context>
         </context-group>
         <note priority="1" from="description">Encourages parents to begin the journey</note>
         <note priority="1" from="meaning">Homepage call to action</note>
@@ -42,7 +42,7 @@
         <source>/images/hero-child-playing.png</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home-hero/home-hero.html</context>
-          <context context-type="linenumber">31,32</context>
+          <context context-type="linenumber">32,33</context>
         </context-group>
         <note priority="1" from="description">References the local hero image asset</note>
         <note priority="1" from="meaning">Homepage hero image source</note>
@@ -51,7 +51,7 @@
         <source>Young child playing with wooden blocks in a bright room.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/home/home-hero/home-hero.html</context>
-          <context context-type="linenumber">36,37</context>
+          <context context-type="linenumber">37,38</context>
         </context-group>
         <note priority="1" from="description">Describes the hero image showing a child playing</note>
         <note priority="1" from="meaning">Homepage hero image alt</note>
@@ -77,7 +77,7 @@
         <source> We&apos;re still working on this page </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
-          <context context-type="linenumber">16,21</context>
+          <context context-type="linenumber">17,22</context>
         </context-group>
         <note priority="1" from="description">Explains that the destination page is not ready yet</note>
         <note priority="1" from="meaning">Under-construction heading</note>
@@ -86,7 +86,7 @@
         <source> This part of the site isn&apos;t ready yet, but the rest of our guidance on delayed starts is. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
-          <context context-type="linenumber">24,29</context>
+          <context context-type="linenumber">25,30</context>
         </context-group>
         <note priority="1" from="description">Reassures visitors and prompts them to return to the previous
           page</note>
@@ -96,7 +96,7 @@
         <source> Back to where you were </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
-          <context context-type="linenumber">32,37</context>
+          <context context-type="linenumber">33,38</context>
         </context-group>
         <note priority="1" from="description">Navigates the visitor back to the previous page</note>
         <note priority="1" from="meaning">Under-construction back button</note>
@@ -138,22 +138,21 @@
         <note priority="1" from="description">Identifies the site in the shell header</note>
         <note priority="1" from="meaning">Application header brand</note>
       </trans-unit>
-      <trans-unit id="themeToggleToLightLabel" datatype="html">
-        <source>Switch to light mode</source>
+      <trans-unit id="rootShellRouteAnnouncementAriaLive" datatype="html">
+        <source>polite</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shell/theme-control/theme-control.ts</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="sourcefile">src/app/shell/root-shell/root-shell.html</context>
+          <context context-type="linenumber">7,8</context>
         </context-group>
-        <note priority="1" from="description">Switches the app from dark mode to light mode</note>
-        <note priority="1" from="meaning">Theme toggle button label</note>
+        <note priority="1" from="description">Route change announcement politeness</note>
       </trans-unit>
-      <trans-unit id="themeToggleToDarkLabel" datatype="html">
-        <source>Switch to dark mode</source>
+      <trans-unit id="themeToggleLabel" datatype="html">
+        <source>Dark mode</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shell/theme-control/theme-control.ts</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">17</context>
         </context-group>
-        <note priority="1" from="description">Switches the app from light mode to dark mode</note>
+        <note priority="1" from="description">Names the toggle that enables or disables dark mode</note>
         <note priority="1" from="meaning">Theme toggle button label</note>
       </trans-unit>
     </body>
