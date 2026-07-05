@@ -56,6 +56,43 @@
         <note priority="1" from="description">Describes the hero image showing a child playing</note>
         <note priority="1" from="meaning">Homepage hero image alt</note>
       </trans-unit>
+      <trans-unit id="notFoundEyebrow" datatype="html">
+        <source> Page not found </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/not-found/not-found.html</context>
+          <context context-type="linenumber">10,13</context>
+        </context-group>
+        <note priority="1" from="description">Introduces the missing page state</note>
+        <note priority="1" from="meaning">Not-found eyebrow</note>
+      </trans-unit>
+      <trans-unit id="notFoundHeading" datatype="html">
+        <source> We can&apos;t find that page </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/not-found/not-found.html</context>
+          <context context-type="linenumber">17,22</context>
+        </context-group>
+        <note priority="1" from="description">Explains that the requested page could not be found</note>
+        <note priority="1" from="meaning">Not-found heading</note>
+      </trans-unit>
+      <trans-unit id="notFoundBody" datatype="html">
+        <source> The page you were looking for may have moved, or the address may be wrong. You can return to the homepage and keep exploring from there. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/not-found/not-found.html</context>
+          <context context-type="linenumber">25,30</context>
+        </context-group>
+        <note priority="1" from="description">Explains that the destination does not exist and invites the visitor back to the
+          homepage</note>
+        <note priority="1" from="meaning">Not-found body</note>
+      </trans-unit>
+      <trans-unit id="notFoundHomeButton" datatype="html">
+        <source> Go to the homepage </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/not-found/not-found.html</context>
+          <context context-type="linenumber">33,38</context>
+        </context-group>
+        <note priority="1" from="description">Takes the visitor back to the homepage</note>
+        <note priority="1" from="meaning">Not-found home button</note>
+      </trans-unit>
       <trans-unit id="underConstructionEyebrow" datatype="html">
         <source> Coming soon </source>
         <context-group purpose="location">

@@ -49,4 +49,21 @@ describe('app config', () => {
       skipLinks: [{ label: 'Skip to main content', targetId: 'under-construction-heading' }],
     });
   });
+
+  it('uses the wildcard route metadata when navigation lands on an unknown URL', async () => {
+    const fixture = TestBed.createComponent(App);
+    const router = TestBed.inject(Router);
+
+    router.initialNavigation();
+    await router.navigateByUrl('/does-not-exist');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(document.title).toBe('Summer-born Info - Page not found');
+    expect(getRouteAccessibilityMetadata(router.routerState.snapshot)).toEqual({
+      title: 'Summer-born Info - Page not found',
+      focusTargetId: 'not-found-heading',
+      skipLinks: [{ label: 'Skip to main content', targetId: 'not-found-heading' }],
+    });
+  });
 });

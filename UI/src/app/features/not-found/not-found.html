@@ -1,0 +1,37 @@
+<section class="not-found sbi-container" [attr.aria-labelledby]="headingId">
+  <div class="not-found__panel">
+    <span class="not-found__icon" aria-hidden="true"></span>
+
+    <div class="not-found__copy sbi-stack">
+      <p
+        class="sbi-label not-found__eyebrow"
+        i18n="Not-found eyebrow|Introduces the missing page state@@notFoundEyebrow"
+      >
+        Page not found
+      </p>
+      <h1
+        i18n="Not-found heading|Explains that the requested page could not be found@@notFoundHeading"
+        tabindex="-1"
+        [id]="headingId"
+      >
+        We can't find that page
+      </h1>
+      <p
+        class="not-found__body"
+        i18n="
+          Not-found body|Explains that the destination does not exist and invites the visitor back to the
+          homepage@@notFoundBody"
+      >
+        The page you were looking for may have moved, or the address may be wrong. You can return to the homepage and
+        keep exploring from there.
+      </p>
+      <sbi-button
+        class="not-found__home-button"
+        i18n="Not-found home button|Takes the visitor back to the homepage@@notFoundHomeButton"
+        (pressed)="goHome()"
+      >
+        Go to the homepage
+      </sbi-button>
+    </div>
+  </div>
+</section>

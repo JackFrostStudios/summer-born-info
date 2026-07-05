@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { defineRouteAccessibility, routeAccessibilityDataKey } from './app-route-accessibility';
 import { Home } from './features/home/home';
+import { NotFound } from './features/not-found/not-found';
 import { RootShell } from './shell/root-shell/root-shell';
 
 const homeRouteAccessibility = defineRouteAccessibility({
@@ -13,6 +14,12 @@ const underConstructionRouteAccessibility = defineRouteAccessibility({
   title: 'Summer-born Info - Page coming soon',
   focusTargetId: 'under-construction-heading',
   skipLinks: [{ label: 'Skip to main content', targetId: 'under-construction-heading' }],
+});
+
+const notFoundRouteAccessibility = defineRouteAccessibility({
+  title: 'Summer-born Info - Page not found',
+  focusTargetId: 'not-found-heading',
+  skipLinks: [{ label: 'Skip to main content', targetId: 'not-found-heading' }],
 });
 
 export const routes: Routes = [
@@ -35,6 +42,14 @@ export const routes: Routes = [
         title: underConstructionRouteAccessibility.title,
         data: {
           [routeAccessibilityDataKey]: underConstructionRouteAccessibility,
+        },
+      },
+      {
+        path: '**',
+        component: NotFound,
+        title: notFoundRouteAccessibility.title,
+        data: {
+          [routeAccessibilityDataKey]: notFoundRouteAccessibility,
         },
       },
     ],
