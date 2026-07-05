@@ -8,10 +8,6 @@
 }
 
 .theme-control__toggle {
-  --sbi-button-inline-size: 3.5rem;
-  --sbi-button-min-block-size: 3.5rem;
-  --sbi-button-padding: 0;
-
   display: block;
   line-height: 0;
 }
@@ -67,9 +63,7 @@ html[data-sbi-colour-mode='dark'] .theme-control__reel,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .theme-control__toggle,
   .theme-control__reel {
-    --sbi-button-transition-duration: 0ms;
     transition: none;
   }
 }

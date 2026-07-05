@@ -6,10 +6,11 @@ import { Button } from './button';
   selector: 'sbi-button-test-host',
   imports: [Button],
   template:
-    '<span id="button-external-label" i18n="Button test host external label@@buttonTestHostExternalLabel">External button label</span><span id="button-external-description" i18n="Button test host external description@@buttonTestHostExternalDescription">External button description</span><sbi-button [$buttonType]="buttonType" [$disabled]="disabled" [$ariaPressed]="ariaPressed" [$ariaLabel]="ariaLabel" [$ariaLabelledBy]="ariaLabelledBy" [$ariaDescribedBy]="ariaDescribedBy" [$testId]="testId" (pressed)="handlePressed($event)"><span class="projected-content" i18n="Button test host projected content@@buttonTestHostProjectedContent">Test action</span></sbi-button>',
+    '<span id="button-external-label" i18n="Button test host external label@@buttonTestHostExternalLabel">External button label</span><span id="button-external-description" i18n="Button test host external description@@buttonTestHostExternalDescription">External button description</span><sbi-button [$variant]="variant" [$layout]="layout" [$disabled]="disabled" [$ariaPressed]="ariaPressed" [$ariaLabel]="ariaLabel" [$ariaLabelledBy]="ariaLabelledBy" [$ariaDescribedBy]="ariaDescribedBy" [$testId]="testId" (pressed)="handlePressed($event)"><span class="projected-content" i18n="Button test host projected content@@buttonTestHostProjectedContent">Test action</span></sbi-button>',
 })
 class TestHostComponent {
-  buttonType: 'primary' | 'secondary' = 'primary';
+  variant: 'primary' | 'secondary' = 'primary';
+  layout: 'default' | 'icon-only' = 'default';
   disabled = false;
   ariaPressed: 'true' | 'false' | null = null;
   ariaLabel: string | null = null;
@@ -60,6 +61,7 @@ describe('Button', () => {
     expect(button.getAttribute('type')).toBe('button');
     expect(button.classList.contains('sbi-button')).toBe(true);
     expect(button.classList.contains('sbi-button--secondary')).toBe(false);
+    expect(button.classList.contains('sbi-button--icon-only')).toBe(false);
     expect(button.textContent.trim()).toBe('Test action');
     expect(projectedContent.textContent.trim()).toBe('Test action');
     expect(host.lastPressedEvent).toBeNull();
@@ -67,13 +69,24 @@ describe('Button', () => {
 
   it('maps the secondary variant to the secondary button class', () => {
     const fixture = TestBed.createComponent(TestHostComponent);
-    fixture.componentInstance.buttonType = 'secondary';
+    fixture.componentInstance.variant = 'secondary';
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
     const button = requireButton(compiled);
 
     expect(button.classList.contains('sbi-button--secondary')).toBe(true);
+  });
+
+  it('maps the icon-only layout to the compact button class', () => {
+    const fixture = TestBed.createComponent(TestHostComponent);
+    fixture.componentInstance.layout = 'icon-only';
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const button = requireButton(compiled);
+
+    expect(button.classList.contains('sbi-button--icon-only')).toBe(true);
   });
 
   it('forwards disabled, aria-label, aria-describedby, and test-hook inputs to the native button', () => {

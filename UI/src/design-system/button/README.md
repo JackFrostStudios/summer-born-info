@@ -5,8 +5,8 @@ This folder owns the shared Angular `sbi-button` component and its canonical sty
 ## Purpose
 
 Use `sbi-button` when a feature or shell consumer needs the shared application button treatment.
-The component currently supports primary and secondary visual variants while preserving native button
-semantics.
+The component currently supports primary and secondary visual variants plus a sanctioned icon-only layout
+while preserving native button semantics.
 
 ## Supported Public Contract
 
@@ -17,9 +17,11 @@ semantics.
 
 ### Inputs
 
-- `$buttonType`: `'primary' | 'secondary'`
-  This controls the visual variant. Despite the current input name, this is a styling choice rather than the
-  native HTML button `type`.
+- `$variant`: `'primary' | 'secondary'`
+  This controls the visual treatment. It is intentionally separate from the native HTML button `type`.
+- `$layout`: `'default' | 'icon-only'`
+  Use `icon-only` for compact square buttons whose visible content is decorative or icon-driven, such as the
+  shared theme toggle.
 - `$disabled`: `boolean`
   Forwards to the native `disabled` attribute.
 - `$ariaPressed`: `'true' | 'false' | null`
@@ -47,6 +49,7 @@ semantics.
 ## Accessibility And Behavior Expectations
 
 - The component renders a native `<button>` element and currently fixes `type="button"`.
+- Icon-only buttons still require an accessible name, usually through `$ariaLabel`.
 - Keyboard focus remains on the native button element.
 - Disabled buttons do not emit the `pressed` output because native button behavior suppresses click
   interaction.
@@ -58,23 +61,25 @@ semantics.
 
 The supported styling contract is intentionally narrow:
 
-- Supported: choose the documented visual variant through `$buttonType`.
+- Supported: choose the documented visual variant through `$variant`.
+- Supported: choose the documented compact composition through `$layout="icon-only"` when a square icon button is
+  appropriate.
 - Supported: provide appropriate projected content and accessibility inputs.
-- Not supported: overriding internal `--sbi-button-*` custom properties from feature or shell styles.
+- Not supported: reintroducing feature-level CSS-variable overrides to resize or restyle the shared button.
 - Not supported: depending on `.sbi-button`, `.sbi-button--secondary`, or the internal DOM structure as a
   consumer API.
 
 The following implementation hooks are internal-only and may change in a future slice without a consumer API
 guarantee:
 
-- `--sbi-button-*` custom properties used inside `button.scss` and `_button-styles.scss`
-- `.sbi-button` and `.sbi-button--secondary`
+- `.sbi-button`, `.sbi-button--secondary`, and `.sbi-button--icon-only`
 - SCSS mixins in [`_button-styles.scss`](./_button-styles.scss)
 
 ## Current Limitations
 
-- The public visual-variant input is currently named `$buttonType`; a later remediation slice is expected to
-  rename this API to better separate visual variant from native button semantics.
-- The component does not yet expose a public size, icon-only, or native submit/reset API.
+- The component still fixes the native element to `type="button"`.
+- A separate native `type` input is intentionally deferred until a real form feature needs submit or reset
+  semantics, so the current API change stays focused on visual contract hardening rather than adding premature
+  surface area.
 - If a consumer needs a new sanctioned composition pattern, add it here as a documented contract instead of
   reaching for feature-level CSS overrides.

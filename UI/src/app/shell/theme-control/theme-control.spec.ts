@@ -153,6 +153,7 @@ describe('ThemeControl', () => {
     expect(toggle.type).toBe('button');
     expect(toggle.classList.contains('sbi-button')).toBe(true);
     expect(toggle.classList.contains('sbi-button--secondary')).toBe(true);
+    expect(toggle.classList.contains('sbi-button--icon-only')).toBe(true);
     expectToggleSemantics(toggle, 'false');
     expect(toggle.textContent.trim()).toBe('');
     expect(toggleHost.classList.contains('theme-control__toggle')).toBe(true);

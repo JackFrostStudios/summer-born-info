@@ -44,4 +44,5 @@ currently visible in DevTools or source.
 
 ## Current Components
 
-- [Button](./button/README.md): shared `sbi-button` component for primary and secondary button presentation.
+- [Button](./button/README.md): shared `sbi-button` component for primary and secondary button presentation,
+  including the sanctioned icon-only toggle layout.
