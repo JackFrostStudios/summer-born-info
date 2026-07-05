@@ -60,7 +60,7 @@
         <source> Page not found </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/not-found/not-found.html</context>
-          <context context-type="linenumber">10,13</context>
+          <context context-type="linenumber">6,9</context>
         </context-group>
         <note priority="1" from="description">Introduces the missing page state</note>
         <note priority="1" from="meaning">Not-found eyebrow</note>
@@ -69,7 +69,7 @@
         <source> We can&apos;t find that page </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/not-found/not-found.html</context>
-          <context context-type="linenumber">17,22</context>
+          <context context-type="linenumber">13,18</context>
         </context-group>
         <note priority="1" from="description">Explains that the requested page could not be found</note>
         <note priority="1" from="meaning">Not-found heading</note>
@@ -78,17 +78,17 @@
         <source> The page you were looking for may have moved, or the address may be wrong. You can return to the homepage and keep exploring from there. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/not-found/not-found.html</context>
-          <context context-type="linenumber">25,30</context>
+          <context context-type="linenumber">21,26</context>
         </context-group>
         <note priority="1" from="description">Explains that the destination does not exist and invites the visitor back to the
-          homepage</note>
+        homepage</note>
         <note priority="1" from="meaning">Not-found body</note>
       </trans-unit>
       <trans-unit id="notFoundHomeButton" datatype="html">
         <source> Go to the homepage </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/not-found/not-found.html</context>
-          <context context-type="linenumber">33,38</context>
+          <context context-type="linenumber">29,33</context>
         </context-group>
         <note priority="1" from="description">Takes the visitor back to the homepage</note>
         <note priority="1" from="meaning">Not-found home button</note>
@@ -97,7 +97,7 @@
         <source> Coming soon </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
-          <context context-type="linenumber">10,13</context>
+          <context context-type="linenumber">9,12</context>
         </context-group>
         <note priority="1" from="description">Introduces the temporary placeholder page</note>
         <note priority="1" from="meaning">Under-construction eyebrow</note>
@@ -106,7 +106,7 @@
         <source> We&apos;re still working on this page </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
-          <context context-type="linenumber">17,22</context>
+          <context context-type="linenumber">16,21</context>
         </context-group>
         <note priority="1" from="description">Explains that the destination page is not ready yet</note>
         <note priority="1" from="meaning">Under-construction heading</note>
@@ -115,17 +115,17 @@
         <source> This part of the site isn&apos;t ready yet, but the rest of our guidance on delayed starts is. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
-          <context context-type="linenumber">25,30</context>
+          <context context-type="linenumber">24,28</context>
         </context-group>
         <note priority="1" from="description">Reassures visitors and prompts them to return to the previous
-          page</note>
+        page</note>
         <note priority="1" from="meaning">Under-construction body</note>
       </trans-unit>
       <trans-unit id="underConstructionBackButton" datatype="html">
         <source> Back to where you were </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
-          <context context-type="linenumber">33,38</context>
+          <context context-type="linenumber">31,35</context>
         </context-group>
         <note priority="1" from="description">Navigates the visitor back to the previous page</note>
         <note priority="1" from="meaning">Under-construction back button</note>

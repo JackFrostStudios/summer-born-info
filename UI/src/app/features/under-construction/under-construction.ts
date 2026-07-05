@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { Navigation, Router } from '@angular/router';
 import { Button } from '@design-system/button/button';
+import { Panel } from '@design-system/panel/panel';
 
 @Component({
   selector: 'sbi-under-construction',
-  imports: [Button],
+  imports: [Button, Panel],
   templateUrl: './under-construction.html',
   styleUrl: './under-construction.scss',
 })

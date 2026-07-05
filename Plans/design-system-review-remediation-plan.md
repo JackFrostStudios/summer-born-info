@@ -196,7 +196,10 @@ Given a contributor wants to know whether visual regression tooling exists, when
   `$layout="icon-only"` composition for compact toggle-style consumers, removed the live theme-control dependency
   on private button CSS-variable overrides, and documented that native button `type` remains intentionally
   deferred until a real form feature needs it.
-- [ ] Slice 3 pending: shared panel component.
+- [x] Slice 3 complete on 2026-07-05: added the shared `sbi-panel` component for repeated placeholder/status
+  panel shells, migrated `under-construction` and `not-found` to it, and explicitly kept the homepage hero art
+  custom because its media-first `figure` treatment and accent-surface gradient do not match the placeholder-panel
+  contract.
 - [ ] Slice 4 pending: shared style governance updates.
 
 ## 9. Risks and Mitigations

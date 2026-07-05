@@ -32,6 +32,8 @@ The UI is currently an Angular application with server-side rendering support, a
 - Keep shell-only layout concerns in `UI/src/app/shell/` and keep feature-specific rendering out of the shell.
 - Add new routed user-facing areas under `UI/src/app/features/` so each feature keeps its component, template, styles, and tests together.
 - Put shared standalone Angular UI components under `UI/src/design-system/` once at least two consumers justify the abstraction and the code is not owned by a single feature or the shell alone.
+- Prefer the shared `UI/src/design-system/panel/` component for repeated raised placeholder or status panel
+  shells instead of reimplementing the gradient-border-shadow recipe in feature styles.
 - Keep Angular localization artifacts owned by `UI/src/locale/`.
 - Treat `UI/src/locale/messages.xlf` as generated project state that should stay in sync with user-facing template text marked for translation.
 - Add shared static assets to `UI/public/`.

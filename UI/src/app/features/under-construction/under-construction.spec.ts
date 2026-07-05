@@ -62,16 +62,18 @@ describe('UnderConstruction', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     const section = compiled.querySelector<HTMLElement>('section.under-construction');
+    const panel = compiled.querySelector<HTMLElement>('sbi-panel.under-construction__panel');
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
     const icon = compiled.querySelector<HTMLElement>('.under-construction__icon');
     const buttonHost = compiled.querySelector<HTMLElement>('sbi-button.under-construction__back-button');
     const button = buttonHost?.querySelector<HTMLButtonElement>('button') ?? null;
 
-    if (heading === null || icon === null || buttonHost === null || button === null) {
-      throw new Error('Expected the under-construction content, icon, and back button to render.');
+    if (panel === null || heading === null || icon === null || buttonHost === null || button === null) {
+      throw new Error('Expected the under-construction panel, content, icon, and back button to render.');
     }
 
     expect(section?.getAttribute('aria-labelledby')).toBe('under-construction-heading');
+    expect(panel).not.toBeNull();
     expect(compiled.querySelectorAll('h1')).toHaveLength(1);
     expect(heading.id).toBe('under-construction-heading');
     expect(heading.textContent.trim()).toBe(`We're still working on this page`);
