@@ -188,6 +188,14 @@ Given a contributor wants to know whether visual regression tooling exists, when
    - spelling convention note
    - current visual-quality posture note
 
+### Implementation Progress
+
+- [x] Slice 1 complete on 2026-07-05: added `UI/src/design-system/README.md` and `UI/src/design-system/button/README.md` to document design-system ownership, the current `sbi-button` contract, and the supported-versus-internal styling boundary.
+- [x] Slice 1 validation: `npx prettier --write src/design-system/README.md src/design-system/button/README.md` from `UI/`.
+- [ ] Slice 2 pending: shared button API hardening.
+- [ ] Slice 3 pending: shared panel component.
+- [ ] Slice 4 pending: shared style governance updates.
+
 ## 9. Risks and Mitigations
 
 - Risk: Removing button CSS custom-property overrides could break current layouts such as the theme toggle.
