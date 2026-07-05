@@ -55,12 +55,14 @@ describe('app routes', () => {
     });
   });
 
-  it('keeps the under-construction title, focus target, and skip links together in route metadata', () => {
+  it('keeps the under-construction route lazy-loaded while preserving its title and accessibility metadata', async () => {
     const shellRoute = requireRoute(routes, '');
     const underConstructionRoute = requireRoute(shellRoute.children ?? [], 'under-construction');
     const metadata = requireAccessibilityMetadata(underConstructionRoute);
 
-    expect(underConstructionRoute.component).toBe(UnderConstruction);
+    expect(underConstructionRoute.component).toBeUndefined();
+    expect(underConstructionRoute.loadComponent).toBeDefined();
+    await expect(underConstructionRoute.loadComponent?.()).resolves.toBe(UnderConstruction);
     expect(underConstructionRoute.title).toBe('Summer-born Info - Page coming soon');
     expect(metadata).toEqual({
       title: 'Summer-born Info - Page coming soon',

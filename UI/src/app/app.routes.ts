@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { defineRouteAccessibility, routeAccessibilityDataKey } from './app-route-accessibility';
 import { Home } from './features/home/home';
-import { UnderConstruction } from './features/under-construction/under-construction';
 import { RootShell } from './shell/root-shell/root-shell';
 
 const homeRouteAccessibility = defineRouteAccessibility({
@@ -32,7 +31,7 @@ export const routes: Routes = [
       },
       {
         path: 'under-construction',
-        component: UnderConstruction,
+        loadComponent: async () => (await import('./features/under-construction/under-construction')).UnderConstruction,
         title: underConstructionRouteAccessibility.title,
         data: {
           [routeAccessibilityDataKey]: underConstructionRouteAccessibility,
