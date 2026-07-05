@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { HydrationFeatureKind } from '@angular/platform-browser';
 
 import { App } from './app';
-import { appConfig, appInMemoryScrollingOptions } from './app.config';
+import { appConfig, appHydrationFeatures, appInMemoryScrollingOptions } from './app.config';
 import { getRouteAccessibilityMetadata } from './app-route-accessibility';
 
 describe('app config', () => {
@@ -23,6 +24,13 @@ describe('app config', () => {
       anchorScrolling: 'enabled',
       scrollPositionRestoration: 'enabled',
     });
+  });
+
+  it('enables hydration support for i18n blocks and pre-hydration event replay', () => {
+    expect(appHydrationFeatures.map((feature) => Reflect.get(feature, 'ɵkind'))).toEqual([
+      HydrationFeatureKind.I18nSupport,
+      HydrationFeatureKind.EventReplay,
+    ]);
   });
 
   it('updates the document title from the active route and keeps accessibility metadata available', async () => {

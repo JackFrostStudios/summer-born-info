@@ -116,6 +116,10 @@ Given a visitor navigates to a path that does not match a known client route, wh
 7. Add the not-found feature route, route title, and wildcard registration, then add unmatched-route coverage.
 8. Finish with formatting, linting, tests, and i18n validation.
 
+### Execution Progress
+
+- [x] Hydration configuration and app-config tests updated on 2026-07-05.
+
 ## 9. Risks and Mitigations
 
 - Risk: Hydration changes can be easy to misconfigure without obvious local failures.
@@ -137,8 +141,8 @@ Given a visitor navigates to a path that does not match a known client route, wh
 
 ## 11. Completion Checklist
 
-- [ ] Issue 1 open finding is resolved by enabling hydration i18n support and event replay.
-- [ ] Hydration configuration has direct automated coverage or a documented manual verification step.
+- [x] Issue 1 open finding is resolved by enabling hydration i18n support and event replay.
+- [x] Hydration configuration has direct automated coverage or a documented manual verification step.
 - [ ] Issue 2 open finding is resolved by keeping the homepage eager and lazy-loading the secondary route.
 - [x] Issue 3 remains resolved: route titles exist and stay covered by tests.
 - [ ] Issue 4 open finding is resolved by linting all Angular HTML templates under `src/**/*.html`.
