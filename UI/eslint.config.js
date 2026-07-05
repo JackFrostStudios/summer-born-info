@@ -76,12 +76,14 @@ module.exports = defineConfig([
     },
   },
   {
-    files: ['src/app/**/*.html'],
+    files: ['src/**/*.html'],
+    ignores: ['src/index.html'],
     extends: [angular.configs.templateAll, angular.configs.templateAccessibility],
     rules: {
       '@angular-eslint/template/no-call-expression': [
         'error',
         {
+          allowList: ['buttonType', 'disabled', 'ariaPressed', 'ariaDescribedBy', 'testId'],
           allowPrefix: '$',
         },
       ],

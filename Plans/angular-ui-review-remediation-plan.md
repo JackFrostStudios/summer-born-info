@@ -120,6 +120,7 @@ Given a visitor navigates to a path that does not match a known client route, wh
 
 - [x] Hydration configuration and app-config tests updated on 2026-07-05.
 - [x] Secondary `under-construction` route converted to lazy loading with focused route-test coverage on 2026-07-05.
+- [x] Angular template lint coverage expanded to `src/**/*.html` and newly surfaced shared-template findings resolved on 2026-07-05.
 
 ## 9. Risks and Mitigations
 
@@ -146,8 +147,8 @@ Given a visitor navigates to a path that does not match a known client route, wh
 - [x] Hydration configuration has direct automated coverage or a documented manual verification step.
 - [x] Issue 2 open finding is resolved by keeping the homepage eager and lazy-loading the secondary route.
 - [x] Issue 3 remains resolved: route titles exist and stay covered by tests.
-- [ ] Issue 4 open finding is resolved by linting all Angular HTML templates under `src/**/*.html`.
-- [ ] Any newly surfaced shared-template lint violations are fixed.
+- [x] Issue 4 open finding is resolved by linting all Angular HTML templates under `src/**/*.html`.
+- [x] Any newly surfaced shared-template lint violations are fixed.
 - [x] Issue 5 remains resolved: the document shell language matches the `en-GB` source locale.
 - [ ] Issue 6 open finding is resolved by removing translation metadata from the technical ARIA ID reference.
 - [ ] Issue 7 open finding is resolved by migrating the singleton service to `@Service()`, or the implementation records a concrete framework/tooling blocker if that is not currently safe.
