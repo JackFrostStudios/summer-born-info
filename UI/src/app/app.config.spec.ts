@@ -6,6 +6,34 @@ import { App } from './app';
 import { appConfig, appHydrationFeatures, appInMemoryScrollingOptions } from './app.config';
 import { getRouteAccessibilityMetadata } from './app-route-accessibility';
 
+interface ProviderLike {
+  provide?: { _desc?: string };
+  ɵproviders?: readonly unknown[];
+}
+
+function hasEnvironmentProviders(provider: unknown): provider is Required<Pick<ProviderLike, 'ɵproviders'>> {
+  return (
+    provider !== null &&
+    typeof provider === 'object' &&
+    'ɵproviders' in provider &&
+    Array.isArray((provider as ProviderLike).ɵproviders)
+  );
+}
+
+function flattenProviders(providers: readonly unknown[]): ProviderLike[] {
+  return providers.flatMap((provider) => {
+    if (Array.isArray(provider)) {
+      return flattenProviders(provider);
+    }
+
+    if (hasEnvironmentProviders(provider)) {
+      return flattenProviders(provider.ɵproviders);
+    }
+
+    return provider !== null && typeof provider === 'object' ? [provider] : [];
+  });
+}
+
 describe('app config', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -31,6 +59,13 @@ describe('app config', () => {
       HydrationFeatureKind.I18nSupport,
       HydrationFeatureKind.EventReplay,
     ]);
+
+    const hydrationProviderDescriptions = flattenProviders(appConfig.providers)
+      .map((provider) => provider.provide?._desc)
+      .filter((description): description is string => description !== undefined);
+
+    expect(hydrationProviderDescriptions).toContain('IS_I18N_HYDRATION_ENABLED');
+    expect(hydrationProviderDescriptions).toContain('IS_EVENT_REPLAY_ENABLED');
   });
 
   it('updates the document title from the active route and keeps accessibility metadata available', async () => {

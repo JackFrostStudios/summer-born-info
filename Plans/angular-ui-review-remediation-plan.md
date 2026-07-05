@@ -158,8 +158,8 @@ Given a visitor navigates to a path that does not match a known client route, wh
 - [x] Issue 8 open finding is resolved by adding a client-side wildcard route and not-found experience.
 - [x] Router tests cover lazy secondary routing and unmatched-route handling.
 - [x] Any affected service, route, or template tests are updated and passing.
-- [ ] `npm run format` has been run in `UI/`.
-- [ ] `npm run lint` has been run in `UI/`.
-- [ ] `npm run test:run` has been run in `UI/`.
-- [ ] `npm run extract:i18n` has been run in `UI/` if extraction-relevant template metadata changed.
-- [ ] `npm run validate:i18n` has been run in `UI/` if localization output changed.
+- [x] `npm run format` has been run in `UI/`.
+- [x] `npm run lint` has been run in `UI/`.
+- [x] `npm run test:run` has been run in `UI/`.
+- [x] `npm run extract:i18n` has been run in `UI/` if extraction-relevant template metadata changed.
+- [x] `npm run validate:i18n` has been run in `UI/` if localization output changed.
