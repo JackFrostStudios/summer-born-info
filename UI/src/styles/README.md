@@ -9,8 +9,8 @@ global stylesheet entry point and add shared concerns here when they are useful 
 - `_reset.scss` contains the modern reset and browser-normalisation rules.
 - `_tokens.scss` defines design-system custom properties for colour, typography, spacing, borders,
   focus states, surfaces, shadows, and page width.
-- `_base.scss` applies safe document-level defaults for typography, links, form controls, focus,
-  and selection.
+- `_base.scss` applies safe document-level defaults for typography, links, reset-level form
+  controls, focus, and selection.
 - `_primitives.scss` provides small reusable layout and surface classes prefixed with `sbi-`.
 
 ## Token Usage
@@ -22,6 +22,88 @@ prefer `var(--sbi-color-primary)`, `var(--sbi-space-5)`, `var(--sbi-border-stron
 Feature-specific layout and presentation should stay in component-scoped styles under
 `UI/src/app/`. Add a new global token only when the value is part of the shared visual language and
 is likely to be reused by more than one feature.
+
+## Shared Governance
+
+### Surface Stack
+
+Choose neutral surface tokens by the job the layer is doing in the page, not by trying to climb the
+whole scale one step at a time.
+
+| Typical Usage | Preferred Token | Why |
+| --- | --- | --- |
+| Page canvas behind the whole app | `--sbi-color-background` | This is the document-level baseline and should stay the calmest neutral layer. |
+| Shell chrome such as the sticky header or other app framing | `--sbi-color-surface` | Use the first neutral lift above the canvas for persistent app structure. |
+| Section band or grouped page region | `--sbi-color-surface-low` or `--sbi-color-surface-container` | Start with `surface-low` for gentle grouping; step up to `surface-container` when the band needs clearer separation from the surrounding page. |
+| Card or panel shell | `--sbi-color-surface-lowest` | Use this for the main neutral card layer when the content needs to read as its own object. |
+| Inset container inside another neutral surface | `--sbi-color-surface-container` or `--sbi-color-surface-high` | Use these for nested neutral regions that need to read as intentional sub-sections rather than separate cards. |
+| Strongest neutral separation in a stack | `--sbi-color-surface-highest` | Reserve this for the most pronounced neutral contrast, such as a highlighted inset or a dense layered stack that still should not switch to an accent colour. |
+
+If a layer needs semantic emphasis rather than just neutral separation, switch to the accent or
+status tokens instead of continuing up the neutral surface scale.
+
+### Typography Exception Policy
+
+The shared typography tokens are the default contract. Reach for feature-local typography only when a
+component has a clear product reason that the current token set does not express cleanly.
+
+- Use a local `clamp()` size when the treatment is intentionally responsive, belongs to one feature
+  or one shell element, and would be misleading as a shared named token today. The public-header
+  wordmark is the current example of this kind of exception.
+- Use local non-zero letter spacing only for short-form brand, display, or label treatments where
+  the spacing change is part of the visual identity rather than a general reading default.
+- Introduce or extend a named token when the same type treatment appears in more than one place, is
+  likely to become a reusable design-system pattern, or would otherwise force multiple features to
+  copy the same `clamp()` or spacing recipe.
+- Do not use feature-local typography to solve ordinary hierarchy or spacing problems that the
+  existing size, weight, and line-height tokens already cover.
+
+### Minimum Form Baseline
+
+The application does not yet provide shared field primitives or form components. Global form-control
+rules in `_base.scss` are intentionally limited to reset-level defaults so plain `input`, `select`,
+and `textarea` elements remain readable without implying that labels, hint text, validation,
+disabled messaging, spacing, or error presentation are already part of a shared form system.
+
+When the first substantial form feature lands, it should define the real shared contract for field
+structure and validation states rather than extending these base rules ad hoc.
+
+### Interaction-State Model
+
+The current design system documents the shared state model first and only promotes additional tokens
+when a second real consumer needs the same values.
+
+| State | Current Expectation |
+| --- | --- |
+| Default | Start from the component's resting visual treatment with clear text contrast and hit area. |
+| Hover | Use hover for pointer affordance only; it may add emphasis or motion, but it should not be required to understand the control. |
+| Active | Keep active feedback brief and tactile, usually as a pressed or reduced-offset variation of the hover/default state. |
+| Focus-visible | Always provide a keyboard-visible indicator. The current shared contract is the global `:focus-visible` ring backed by `--sbi-focus-ring-width`, `--sbi-focus-ring-offset`, and `--sbi-color-primary`. |
+| Disabled | Disabled controls should remove interactive affordance, keep readable contrast where possible, and avoid looking like selected or current state. Prefer native semantics first. |
+| Selected/current | Use a persistent visual distinction that survives hover loss so users can tell what is active, chosen, or represents the current location. |
+
+Today only focus-ring and shadow-offset values are shared as tokens. Hover motion, active motion,
+disabled opacity, or selected-state recipes should stay component-owned until at least one more
+interactive component needs the same contract.
+
+### Naming Conventions
+
+CSS custom properties and token names use `color` because they follow CSS terminology and align with
+the property names contributors will already search for in stylesheets. App-facing theme language
+uses `colour`, such as `data-sbi-colour-mode`, because the product copy and source locale follow
+British English. The mixed spelling is intentional unless the project later chooses to standardize
+on one vocabulary for both layers.
+
+### Visual Quality Posture
+
+The current UI quality baseline already includes automated accessibility and browser-level checks:
+`npm run test:run` covers the Angular unit suite, and `npm run test:a11y` exercises the shared UI in
+a real Chromium-based browser with the accessibility smoke coverage described in `UI/README.md`.
+
+Dedicated visual regression tooling is intentionally deferred for now. Revisit that decision when
+the UI has multiple stable shared components, light/dark or forced-colors regressions become a
+meaningful recurring risk, or manual review of shared visual changes is no longer keeping pace with
+the component surface area.
 
 ### Typography Tokens
 
