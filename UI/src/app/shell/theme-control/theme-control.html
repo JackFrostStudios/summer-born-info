@@ -1,9 +1,9 @@
 <div class="theme-control">
   <sbi-button
     class="theme-control__toggle"
-    [buttonType]="buttonType"
-    [ariaLabel]="ariaLabel"
-    [ariaPressed]="$ariaPressed()"
+    [$buttonType]="buttonType"
+    [$ariaLabel]="ariaLabel"
+    [$ariaPressed]="$ariaPressed()"
     (pressed)="toggleColourMode()"
   >
     <span class="theme-control__viewport" aria-hidden="true">

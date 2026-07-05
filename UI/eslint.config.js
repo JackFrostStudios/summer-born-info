@@ -58,6 +58,18 @@ module.exports = defineConfig([
         },
         {
           selector:
+            "PropertyDefinition[key.type='Identifier']:not([key.name=/^\\$/])[value.type='CallExpression'][value.callee.type='Identifier'][value.callee.name='input']",
+          message:
+            "Prefix signal-backed input class fields with '$' so input() declarations follow the same template-safe naming convention as other signal-backed values.",
+        },
+        {
+          selector:
+            "PropertyDefinition[key.type='Identifier']:not([key.name=/^\\$/])[value.type='CallExpression'][value.callee.type='MemberExpression'][value.callee.object.type='Identifier'][value.callee.object.name='input'][value.callee.property.name='required']",
+          message:
+            "Prefix signal-backed input class fields with '$' so input() declarations follow the same template-safe naming convention as other signal-backed values.",
+        },
+        {
+          selector:
             "PropertyDefinition[key.type='Identifier']:not([key.name=/^\\$/])[value.type='CallExpression'][value.callee.type='MemberExpression'][value.callee.property.name='asReadonly']",
           message: "Prefix readonly signal views with '$' so their signal nature stays obvious and template-safe.",
         },
@@ -83,7 +95,6 @@ module.exports = defineConfig([
       '@angular-eslint/template/no-call-expression': [
         'error',
         {
-          allowList: ['buttonType', 'disabled', 'ariaPressed', 'ariaDescribedBy', 'testId'],
           allowPrefix: '$',
         },
       ],

@@ -16,14 +16,14 @@ import { type RouteSkipLink } from '../../app-route-accessibility';
 })
 export class SkipLinks {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
-  readonly links = input<readonly RouteSkipLink[]>([]);
+  readonly $links = input<readonly RouteSkipLink[]>([]);
 
   protected readonly $isVisible = signal(false);
   protected skipLinks: readonly RouteSkipLink[] = [];
 
   constructor() {
     effect(() => {
-      this.skipLinks = this.links();
+      this.skipLinks = this.$links();
       this.changeDetectorRef.markForCheck();
     });
   }

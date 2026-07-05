@@ -10,7 +10,7 @@ describe('SkipLinks', () => {
   it('renders route-provided skip-link entries as fragment links', async () => {
     const fixture = await renderComponent();
 
-    fixture.componentRef.setInput('links', [
+    fixture.componentRef.setInput('$links', [
       { label: 'Skip to main content', targetId: 'main-content' },
       { label: 'Skip to filters', targetId: 'filter-panel' },
     ]);
@@ -27,7 +27,7 @@ describe('SkipLinks', () => {
   it('stays hidden until a skip link receives focus and hides again when focus leaves the component', async () => {
     const fixture = await renderComponent();
 
-    fixture.componentRef.setInput('links', [{ label: 'Skip to main content', targetId: 'main-content' }]);
+    fixture.componentRef.setInput('$links', [{ label: 'Skip to main content', targetId: 'main-content' }]);
     fixture.detectChanges();
 
     const host = fixture.nativeElement as HTMLElement;
