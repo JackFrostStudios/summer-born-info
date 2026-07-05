@@ -77,14 +77,15 @@ input,
 select,
 textarea {
   color: inherit;
+  font: inherit;
 }
 
 input,
 select,
 textarea {
   background: var(--sbi-color-surface-lowest);
-  border: var(--sbi-border-strong);
-  border-radius: var(--sbi-radius-md);
+  border: var(--sbi-border);
+  border-radius: var(--sbi-radius-sm);
   color: var(--sbi-color-text);
 }
 

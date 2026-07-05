@@ -200,7 +200,10 @@ Given a contributor wants to know whether visual regression tooling exists, when
   panel shells, migrated `under-construction` and `not-found` to it, and explicitly kept the homepage hero art
   custom because its media-first `figure` treatment and accent-surface gradient do not match the placeholder-panel
   contract.
-- [ ] Slice 4 pending: shared style governance updates.
+- [x] Slice 4 complete on 2026-07-05: extended `UI/src/styles/README.md` with the shared surface-stack
+  decision model, typography exception policy, minimum form-baseline guidance, interaction-state
+  model, spelling convention note, and current visual-quality posture; also reduced the base
+  form-control styling in `UI/src/styles/_base.scss` to keep it closer to reset-level defaults.
 
 ## 9. Risks and Mitigations
 
@@ -235,16 +238,16 @@ Given a contributor wants to know whether visual regression tooling exists, when
 - [ ] The implementation records whether a separate native button `type` input was added now or intentionally deferred until real form usage.
 - [ ] Issue 3 is resolved by introducing a shared reusable panel abstraction and removing duplicated panel recipes from repeated feature styles.
 - [ ] The implementation records whether the homepage hero is part of that reusable panel family or an intentional exception.
-- [ ] Issue 4 is resolved by adding a surface-stack decision model to `UI/src/styles/README.md`.
-- [ ] Issue 5 is resolved by documenting the typography exception policy and either formalizing or explicitly documenting the current brand exception approach.
-- [ ] Issue 6 is resolved with minimum scope only: base form styles are documented as defaults/reset-level, and no premature form component system is introduced.
-- [ ] Issue 7 is resolved by documenting a shared interaction-state model, with new tokens added only if current implementation reveals a justified second consumer.
+- [x] Issue 4 is resolved by adding a surface-stack decision model to `UI/src/styles/README.md`.
+- [x] Issue 5 is resolved by documenting the typography exception policy and either formalizing or explicitly documenting the current brand exception approach.
+- [x] Issue 6 is resolved with minimum scope only: base form styles are documented as defaults/reset-level, and no premature form component system is introduced.
+- [x] Issue 7 is resolved by documenting a shared interaction-state model, with new tokens added only if current implementation reveals a justified second consumer.
 - [ ] Issue 8 is resolved by adding a discoverable design-system index and clear import/documentation conventions.
-- [ ] Issue 9 is resolved by documenting the `colour` versus `color` naming convention or intentionally standardizing it if the implementation chooses to do so.
-- [ ] Issue 10 is resolved by documenting the current UI quality-tooling posture and the trigger for future visual-regression tooling, without adding heavy tooling prematurely.
+- [x] Issue 9 is resolved by documenting the `colour` versus `color` naming convention or intentionally standardizing it if the implementation chooses to do so.
+- [x] Issue 10 is resolved by documenting the current UI quality-tooling posture and the trigger for future visual-regression tooling, without adding heavy tooling prematurely.
 - [ ] Any affected shared-component tests are updated and passing.
-- [ ] `npm run format` has been run in `UI/` for implementation slices that edit UI files.
-- [ ] `npm run lint` has been run in `UI/` for implementation slices that edit UI files.
-- [ ] `npm run test:run` has been run in `UI/` for implementation slices that change component or shared behavior.
+- [x] `npm run format` has been run in `UI/` for implementation slices that edit UI files.
+- [x] `npm run lint` has been run in `UI/` for implementation slices that edit UI files.
+- [x] `npm run test:run` has been run in `UI/` for implementation slices that change component or shared behavior.
 - [ ] `npm run extract:i18n` has been run in `UI/` if template text changed.
 - [ ] `npm run validate:i18n` has been run in `UI/` when localization-relevant output changed.
