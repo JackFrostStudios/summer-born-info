@@ -56,14 +56,6 @@
         <note priority="1" from="description">Describes the hero image showing a child playing</note>
         <note priority="1" from="meaning">Homepage hero image alt</note>
       </trans-unit>
-      <trans-unit id="homeAriaLabelledBy" datatype="html">
-        <source>home-heading</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/home/home.html</context>
-          <context context-type="linenumber">1</context>
-        </context-group>
-        <note priority="1" from="description">Homepage article label reference</note>
-      </trans-unit>
       <trans-unit id="underConstructionEyebrow" datatype="html">
         <source> Coming soon </source>
         <context-group purpose="location">

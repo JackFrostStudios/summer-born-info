@@ -119,6 +119,7 @@ describe('Home', () => {
     const heading = hero?.querySelector<HTMLHeadingElement>('h1');
 
     expect(article?.getAttribute('aria-labelledby')).toBe('home-heading');
+    expect(article?.hasAttribute('i18n-aria-labelledby')).toBe(false);
     expect(hero).not.toBeNull();
     expect(heading?.id).toBe('home-heading');
     expect(compiled.querySelectorAll('h1')).toHaveLength(1);
