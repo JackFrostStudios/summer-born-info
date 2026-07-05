@@ -1,37 +1,34 @@
 <section class="under-construction sbi-container" [attr.aria-labelledby]="headingId">
-  <div class="under-construction__panel">
-    <span class="under-construction__icon" aria-hidden="true"></span>
+  <sbi-panel class="under-construction__panel">
+    <span panelMedia class="under-construction__icon" aria-hidden="true"></span>
 
-    <div class="under-construction__copy sbi-stack">
-      <p
-        class="sbi-label under-construction__eyebrow"
-        i18n="Under-construction eyebrow|Introduces the temporary placeholder page@@underConstructionEyebrow"
-      >
-        Coming soon
-      </p>
-      <h1
-        i18n="Under-construction heading|Explains that the destination page is not ready yet@@underConstructionHeading"
-        tabindex="-1"
-        [id]="headingId"
-      >
-        We're still working on this page
-      </h1>
-      <p
-        class="under-construction__body"
-        i18n="
-          Under-construction body|Reassures visitors and prompts them to return to the previous
-          page@@underConstructionBody"
-      >
-        This part of the site isn't ready yet, but the rest of our guidance on delayed starts is.
-      </p>
-      <sbi-button
-        class="under-construction__back-button"
-        i18n="
-          Under-construction back button|Navigates the visitor back to the previous page@@underConstructionBackButton"
-        (pressed)="goBack()"
-      >
-        Back to where you were
-      </sbi-button>
-    </div>
-  </div>
+    <p
+      class="sbi-label under-construction__eyebrow"
+      i18n="Under-construction eyebrow|Introduces the temporary placeholder page@@underConstructionEyebrow"
+    >
+      Coming soon
+    </p>
+    <h1
+      i18n="Under-construction heading|Explains that the destination page is not ready yet@@underConstructionHeading"
+      tabindex="-1"
+      [id]="headingId"
+    >
+      We're still working on this page
+    </h1>
+    <p
+      class="under-construction__body"
+      i18n="
+        Under-construction body|Reassures visitors and prompts them to return to the previous
+        page@@underConstructionBody"
+    >
+      This part of the site isn't ready yet, but the rest of our guidance on delayed starts is.
+    </p>
+    <sbi-button
+      class="under-construction__back-button"
+      i18n="Under-construction back button|Navigates the visitor back to the previous page@@underConstructionBackButton"
+      (pressed)="goBack()"
+    >
+      Back to where you were
+    </sbi-button>
+  </sbi-panel>
 </section>
