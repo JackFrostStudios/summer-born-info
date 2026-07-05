@@ -119,6 +119,7 @@ Given a visitor navigates to a path that does not match a known client route, wh
 ### Execution Progress
 
 - [x] Hydration configuration and app-config tests updated on 2026-07-05.
+- [x] Secondary `under-construction` route converted to lazy loading with focused route-test coverage on 2026-07-05.
 
 ## 9. Risks and Mitigations
 
@@ -143,7 +144,7 @@ Given a visitor navigates to a path that does not match a known client route, wh
 
 - [x] Issue 1 open finding is resolved by enabling hydration i18n support and event replay.
 - [x] Hydration configuration has direct automated coverage or a documented manual verification step.
-- [ ] Issue 2 open finding is resolved by keeping the homepage eager and lazy-loading the secondary route.
+- [x] Issue 2 open finding is resolved by keeping the homepage eager and lazy-loading the secondary route.
 - [x] Issue 3 remains resolved: route titles exist and stay covered by tests.
 - [ ] Issue 4 open finding is resolved by linting all Angular HTML templates under `src/**/*.html`.
 - [ ] Any newly surfaced shared-template lint violations are fixed.
