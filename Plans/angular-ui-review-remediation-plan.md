@@ -122,6 +122,7 @@ Given a visitor navigates to a path that does not match a known client route, wh
 - [x] Secondary `under-construction` route converted to lazy loading with focused route-test coverage on 2026-07-05.
 - [x] Angular template lint coverage expanded to `src/**/*.html` and newly surfaced shared-template findings resolved on 2026-07-05.
 - [x] Technical homepage ARIA ID translation metadata removed and source extraction refreshed on 2026-07-05.
+- [x] `ThemeControlService` migrated from `@Injectable({ providedIn: 'root' })` to `@Service()` with focused service validation on 2026-07-05.
 
 ## 9. Risks and Mitigations
 
@@ -152,7 +153,7 @@ Given a visitor navigates to a path that does not match a known client route, wh
 - [x] Any newly surfaced shared-template lint violations are fixed.
 - [x] Issue 5 remains resolved: the document shell language matches the `en-GB` source locale.
 - [x] Issue 6 open finding is resolved by removing translation metadata from the technical ARIA ID reference.
-- [ ] Issue 7 open finding is resolved by migrating the singleton service to `@Service()`, or the implementation records a concrete framework/tooling blocker if that is not currently safe.
+- [x] Issue 7 open finding is resolved by migrating the singleton service to `@Service()`, or the implementation records a concrete framework/tooling blocker if that is not currently safe.
 - [ ] Issue 8 open finding is resolved by adding a client-side wildcard route and not-found experience.
 - [ ] Router tests cover lazy secondary routing and unmatched-route handling.
 - [ ] Any affected service, route, or template tests are updated and passing.

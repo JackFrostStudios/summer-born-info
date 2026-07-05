@@ -1,5 +1,5 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { computed, DestroyRef, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { computed, DestroyRef, inject, PLATFORM_ID, Service, signal } from '@angular/core';
 
 export type ColourMode = 'system' | 'light' | 'dark';
 export type ExplicitColourMode = Exclude<ColourMode, 'system'>;
@@ -13,7 +13,7 @@ export function isColourMode(value: string): value is ColourMode {
   return colourModes.includes(value as ColourMode);
 }
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ThemeControlService {
   private readonly document = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
