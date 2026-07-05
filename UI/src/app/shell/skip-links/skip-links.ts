@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, effect, inject, input, signal } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { type RouteSkipLink } from '../../app-route-accessibility';
 
@@ -15,18 +15,9 @@ import { type RouteSkipLink } from '../../app-route-accessibility';
   },
 })
 export class SkipLinks {
-  private readonly changeDetectorRef = inject(ChangeDetectorRef);
   readonly $links = input<readonly RouteSkipLink[]>([]);
 
   protected readonly $isVisible = signal(false);
-  protected skipLinks: readonly RouteSkipLink[] = [];
-
-  constructor() {
-    effect(() => {
-      this.skipLinks = this.$links();
-      this.changeDetectorRef.markForCheck();
-    });
-  }
 
   protected handleFocusIn(): void {
     this.$isVisible.set(true);

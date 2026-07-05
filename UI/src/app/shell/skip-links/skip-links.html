@@ -1,6 +1,6 @@
-@if (skipLinks.length > 0) {
+@if ($links().length > 0) {
   <div class="skip-links__overlay">
-    @for (link of skipLinks; track link.targetId) {
+    @for (link of $links(); track link.targetId) {
       <a class="skip-links__link" [routerLink]="[]" [fragment]="link.targetId">
         {{ link.label }}
       </a>
