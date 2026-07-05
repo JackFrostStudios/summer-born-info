@@ -1,7 +1,8 @@
 <button
   class="sbi-button"
   type="button"
-  [class.sbi-button--secondary]="$buttonType() === 'secondary'"
+  [class.sbi-button--secondary]="$variant() === 'secondary'"
+  [class.sbi-button--icon-only]="$layout() === 'icon-only'"
   [disabled]="$disabled()"
   [attr.aria-pressed]="$ariaPressed()"
   [attr.aria-label]="$forwardedAriaLabel()"

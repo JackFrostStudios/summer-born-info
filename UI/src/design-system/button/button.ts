@@ -1,6 +1,7 @@
 import { booleanAttribute, Component, computed, effect, input, isDevMode, output } from '@angular/core';
 
 export type ButtonVariant = 'primary' | 'secondary';
+export type ButtonLayout = 'default' | 'icon-only';
 
 @Component({
   selector: 'sbi-button',
@@ -8,7 +9,8 @@ export type ButtonVariant = 'primary' | 'secondary';
   styleUrl: './button.scss',
 })
 export class Button {
-  readonly $buttonType = input<ButtonVariant>('primary');
+  readonly $variant = input<ButtonVariant>('primary');
+  readonly $layout = input<ButtonLayout>('default');
   readonly $disabled = input(false, { transform: booleanAttribute });
   readonly $ariaPressed = input<'true' | 'false' | null>(null);
   readonly $ariaLabel = input<string | null>(null);

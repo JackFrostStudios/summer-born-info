@@ -192,7 +192,10 @@ Given a contributor wants to know whether visual regression tooling exists, when
 
 - [x] Slice 1 complete on 2026-07-05: added `UI/src/design-system/README.md` and `UI/src/design-system/button/README.md` to document design-system ownership, the current `sbi-button` contract, and the supported-versus-internal styling boundary.
 - [x] Slice 1 validation: `npx prettier --write src/design-system/README.md src/design-system/button/README.md` from `UI/`.
-- [ ] Slice 2 pending: shared button API hardening.
+- [x] Slice 2 complete on 2026-07-05: renamed the public button visual API to `$variant`, added the sanctioned
+  `$layout="icon-only"` composition for compact toggle-style consumers, removed the live theme-control dependency
+  on private button CSS-variable overrides, and documented that native button `type` remains intentionally
+  deferred until a real form feature needs it.
 - [ ] Slice 3 pending: shared panel component.
 - [ ] Slice 4 pending: shared style governance updates.
 
