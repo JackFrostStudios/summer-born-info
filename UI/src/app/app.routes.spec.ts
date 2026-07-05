@@ -6,6 +6,7 @@ import {
 } from './app-route-accessibility';
 import { routes } from './app.routes';
 import { Home } from './features/home/home';
+import { NotFound } from './features/not-found/not-found';
 import { UnderConstruction } from './features/under-construction/under-construction';
 import { RootShell } from './shell/root-shell/root-shell';
 
@@ -68,6 +69,20 @@ describe('app routes', () => {
       title: 'Summer-born Info - Page coming soon',
       focusTargetId: 'under-construction-heading',
       skipLinks: [{ label: 'Skip to main content', targetId: 'under-construction-heading' }],
+    });
+  });
+
+  it('registers the final wildcard route inside the shared shell with a title and accessibility metadata', () => {
+    const shellRoute = requireRoute(routes, '');
+    const notFoundRoute = requireRoute(shellRoute.children ?? [], '**');
+    const metadata = requireAccessibilityMetadata(notFoundRoute);
+
+    expect(notFoundRoute.component).toBe(NotFound);
+    expect(notFoundRoute.title).toBe('Summer-born Info - Page not found');
+    expect(metadata).toEqual({
+      title: 'Summer-born Info - Page not found',
+      focusTargetId: 'not-found-heading',
+      skipLinks: [{ label: 'Skip to main content', targetId: 'not-found-heading' }],
     });
   });
 });
