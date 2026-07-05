@@ -8,17 +8,17 @@ export type ButtonVariant = 'primary' | 'secondary';
   styleUrl: './button.scss',
 })
 export class Button {
-  readonly buttonType = input<ButtonVariant>('primary');
-  readonly disabled = input(false, { transform: booleanAttribute });
-  readonly ariaPressed = input<'true' | 'false' | null>(null);
-  readonly ariaLabel = input<string | null>(null);
-  readonly ariaLabelledBy = input<string | null>(null);
-  readonly ariaDescribedBy = input<string | null>(null);
-  readonly testId = input<string | null>(null);
+  readonly $buttonType = input<ButtonVariant>('primary');
+  readonly $disabled = input(false, { transform: booleanAttribute });
+  readonly $ariaPressed = input<'true' | 'false' | null>(null);
+  readonly $ariaLabel = input<string | null>(null);
+  readonly $ariaLabelledBy = input<string | null>(null);
+  readonly $ariaDescribedBy = input<string | null>(null);
+  readonly $testId = input<string | null>(null);
   readonly pressed = output<MouseEvent>();
-  protected readonly $forwardedAriaLabel = computed(() => this.normaliseAriaReference(this.ariaLabel()));
+  protected readonly $forwardedAriaLabel = computed(() => this.normaliseAriaReference(this.$ariaLabel()));
   protected readonly $forwardedAriaLabelledBy = computed(() => {
-    const ariaLabelledBy = this.normaliseAriaReference(this.ariaLabelledBy());
+    const ariaLabelledBy = this.normaliseAriaReference(this.$ariaLabelledBy());
 
     return this.$forwardedAriaLabel() === null ? ariaLabelledBy : null;
   });
@@ -29,7 +29,7 @@ export class Button {
         return;
       }
 
-      if (this.$forwardedAriaLabel() !== null && this.normaliseAriaReference(this.ariaLabelledBy()) !== null) {
+      if (this.$forwardedAriaLabel() !== null && this.normaliseAriaReference(this.$ariaLabelledBy()) !== null) {
         console.warn(
           'sbi-button received both ariaLabel and ariaLabelledBy. Provide only one explicit accessible-name input; ariaLabel takes precedence and ariaLabelledBy will not be forwarded.',
         );

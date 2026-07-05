@@ -55,7 +55,7 @@ The UI is currently an Angular application with server-side rendering support, a
 
 - Prefix signal-backed and computed fields and variables with `$`.
 - Apply the same `$` prefix to readonly signal views such as `.asReadonly()` results.
-- Do not apply the `$` prefix to component inputs declared with `input()`.
+- Apply the same `$` prefix to component inputs declared with `input()` so template-bound input signals follow the same naming convention.
 - Treat the `$` prefix as the standard way to signal signal-backed values that are meant to be invoked from Angular templates.
 
 ### Localization Ownership

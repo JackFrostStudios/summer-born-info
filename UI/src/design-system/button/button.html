@@ -1,13 +1,13 @@
 <button
   class="sbi-button"
   type="button"
-  [class.sbi-button--secondary]="buttonType() === 'secondary'"
-  [disabled]="disabled()"
-  [attr.aria-pressed]="ariaPressed()"
+  [class.sbi-button--secondary]="$buttonType() === 'secondary'"
+  [disabled]="$disabled()"
+  [attr.aria-pressed]="$ariaPressed()"
   [attr.aria-label]="$forwardedAriaLabel()"
   [attr.aria-labelledby]="$forwardedAriaLabelledBy()"
-  [attr.aria-describedby]="ariaDescribedBy()"
-  [attr.data-testid]="testId()"
+  [attr.aria-describedby]="$ariaDescribedBy()"
+  [attr.data-testid]="$testId()"
   (click)="handleClick($event)"
 >
   <ng-content />

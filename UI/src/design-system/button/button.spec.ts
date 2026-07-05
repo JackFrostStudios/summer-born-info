@@ -6,7 +6,7 @@ import { Button } from './button';
   selector: 'sbi-button-test-host',
   imports: [Button],
   template:
-    '<span id="button-external-label" i18n="Button test host external label@@buttonTestHostExternalLabel">External button label</span><span id="button-external-description" i18n="Button test host external description@@buttonTestHostExternalDescription">External button description</span><sbi-button [buttonType]="buttonType" [disabled]="disabled" [ariaPressed]="ariaPressed" [ariaLabel]="ariaLabel" [ariaLabelledBy]="ariaLabelledBy" [ariaDescribedBy]="ariaDescribedBy" [testId]="testId" (pressed)="handlePressed($event)"><span class="projected-content" i18n="Button test host projected content@@buttonTestHostProjectedContent">Test action</span></sbi-button>',
+    '<span id="button-external-label" i18n="Button test host external label@@buttonTestHostExternalLabel">External button label</span><span id="button-external-description" i18n="Button test host external description@@buttonTestHostExternalDescription">External button description</span><sbi-button [$buttonType]="buttonType" [$disabled]="disabled" [$ariaPressed]="ariaPressed" [$ariaLabel]="ariaLabel" [$ariaLabelledBy]="ariaLabelledBy" [$ariaDescribedBy]="ariaDescribedBy" [$testId]="testId" (pressed)="handlePressed($event)"><span class="projected-content" i18n="Button test host projected content@@buttonTestHostProjectedContent">Test action</span></sbi-button>',
 })
 class TestHostComponent {
   buttonType: 'primary' | 'secondary' = 'primary';
