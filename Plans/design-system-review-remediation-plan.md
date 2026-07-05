@@ -231,23 +231,23 @@ Given a contributor wants to know whether visual regression tooling exists, when
 
 ## 11. Completion Checklist
 
-- [ ] Issue 1 is resolved by documented component-level design-system guidance and a clear public-versus-internal button styling contract.
-- [ ] Button styling is no longer treated as a consumer-overridable API by default.
-- [ ] Any remaining `--sbi-button-*` properties are either removed or explicitly documented as internal-only.
-- [ ] Issue 2 is resolved by renaming the visual button API from `buttonType` to `variant`.
-- [ ] The implementation records whether a separate native button `type` input was added now or intentionally deferred until real form usage.
-- [ ] Issue 3 is resolved by introducing a shared reusable panel abstraction and removing duplicated panel recipes from repeated feature styles.
-- [ ] The implementation records whether the homepage hero is part of that reusable panel family or an intentional exception.
+- [x] Issue 1 is resolved by documented component-level design-system guidance and a clear public-versus-internal button styling contract.
+- [x] Button styling is no longer treated as a consumer-overridable API by default.
+- [x] Any remaining `--sbi-button-*` properties are either removed or explicitly documented as internal-only.
+- [x] Issue 2 is resolved by renaming the visual button API from `buttonType` to `variant`.
+- [x] The implementation records whether a separate native button `type` input was added now or intentionally deferred until real form usage.
+- [x] Issue 3 is resolved by introducing a shared reusable panel abstraction and removing duplicated panel recipes from repeated feature styles.
+- [x] The implementation records whether the homepage hero is part of that reusable panel family or an intentional exception.
 - [x] Issue 4 is resolved by adding a surface-stack decision model to `UI/src/styles/README.md`.
 - [x] Issue 5 is resolved by documenting the typography exception policy and either formalizing or explicitly documenting the current brand exception approach.
 - [x] Issue 6 is resolved with minimum scope only: base form styles are documented as defaults/reset-level, and no premature form component system is introduced.
 - [x] Issue 7 is resolved by documenting a shared interaction-state model, with new tokens added only if current implementation reveals a justified second consumer.
-- [ ] Issue 8 is resolved by adding a discoverable design-system index and clear import/documentation conventions.
+- [x] Issue 8 is resolved by adding a discoverable design-system index and clear import/documentation conventions.
 - [x] Issue 9 is resolved by documenting the `colour` versus `color` naming convention or intentionally standardizing it if the implementation chooses to do so.
 - [x] Issue 10 is resolved by documenting the current UI quality-tooling posture and the trigger for future visual-regression tooling, without adding heavy tooling prematurely.
-- [ ] Any affected shared-component tests are updated and passing.
+- [x] Any affected shared-component tests are updated and passing.
 - [x] `npm run format` has been run in `UI/` for implementation slices that edit UI files.
 - [x] `npm run lint` has been run in `UI/` for implementation slices that edit UI files.
 - [x] `npm run test:run` has been run in `UI/` for implementation slices that change component or shared behavior.
-- [ ] `npm run extract:i18n` has been run in `UI/` if template text changed.
-- [ ] `npm run validate:i18n` has been run in `UI/` when localization-relevant output changed.
+- [x] `npm run extract:i18n` has been run in `UI/` if template text changed.
+- [x] `npm run validate:i18n` has been run in `UI/` when localization-relevant output changed.
