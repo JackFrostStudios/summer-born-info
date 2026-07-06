@@ -137,15 +137,15 @@ Given a contributor revisits this plan later, when they review issue status, the
 
 ## 11. Completion Checklist
 
-- [ ] Issue 1 remains explicitly tracked as `WON'T DO` with no remediation work performed in this slice.
+- [x] Issue 1 remains explicitly tracked as `WON'T DO` with no remediation work performed in this slice.
 - [ ] Issue 2 is resolved by introducing a documented folder-level public API boundary for the current shared design-system components and migrating in-repo consumers away from deep implementation-file imports.
 - [ ] Button and panel consumers no longer import from implementation-file paths such as `@design-system/button/button` or `@design-system/panel/panel`.
 - [ ] Design-system documentation reflects the implemented public import convention and continues treating internal styling files as private.
-- [ ] Issue 3 remains explicitly tracked as `Resolved`.
-- [ ] Issue 4 remains explicitly tracked as `WON'T DO` with no remediation work performed in this slice.
-- [ ] Issue 5 remains explicitly tracked as `WON'T DO` with no remediation work performed in this slice.
-- [ ] Issue 6 remains explicitly tracked as `Resolved`.
-- [ ] Issue 7 remains explicitly tracked as `WON'T DO` with no remediation work performed in this slice.
+- [x] Issue 3 remains explicitly tracked as `Resolved`.
+- [x] Issue 4 remains explicitly tracked as `WON'T DO` with no remediation work performed in this slice.
+- [x] Issue 5 remains explicitly tracked as `WON'T DO` with no remediation work performed in this slice.
+- [x] Issue 6 remains explicitly tracked as `Resolved`.
+- [x] Issue 7 remains explicitly tracked as `WON'T DO` with no remediation work performed in this slice.
 - [ ] `npm run format` has been run in `UI/` if implementation edits UI files.
 - [ ] `npm run lint` has been run in `UI/` if implementation edits UI files.
 - [ ] `npm run test:run` has been run in `UI/` if implementation edits UI files.
