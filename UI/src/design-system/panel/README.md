@@ -12,7 +12,7 @@ and stacked supporting content, such as route-level placeholder or status pages.
 ### Selector And Import
 
 - selector: `sbi-panel`
-- import: import `Panel` from `UI/src/design-system/panel/panel`
+- import: `import { Panel } from '@design-system/panel'`
 
 ### Inputs
 
@@ -49,6 +49,8 @@ The supported styling contract is intentionally narrow:
   a consumer API beyond the documented component inputs and projection pattern.
 - Not supported: overriding the shared gradient, border, radius, or shadow recipe from feature code to create
   one-off panel variants.
+- Not supported: importing from the implementation file [`panel.ts`](./panel.ts) instead of the folder public API
+  in [`index.ts`](./index.ts).
 
 ## Current Limitations
 

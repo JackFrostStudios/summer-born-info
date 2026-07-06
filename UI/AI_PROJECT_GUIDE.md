@@ -34,6 +34,8 @@ The UI is currently an Angular application with server-side rendering support, a
 - Put shared standalone Angular UI components under `UI/src/design-system/` once at least two consumers justify the abstraction and the code is not owned by a single feature or the shell alone.
 - Prefer the shared `UI/src/design-system/panel/` component for repeated raised placeholder or status panel
   shells instead of reimplementing the gradient-border-shadow recipe in feature styles.
+- Import shared design-system components through their folder-level public API, such as `@design-system/button`
+  or `@design-system/panel`, rather than through deep implementation paths.
 - Keep Angular localization artifacts owned by `UI/src/locale/`.
 - Treat `UI/src/locale/messages.xlf` as generated project state that should stay in sync with user-facing template text marked for translation.
 - Add shared static assets to `UI/public/`.
@@ -52,6 +54,9 @@ The UI is currently an Angular application with server-side rendering support, a
 - Prefer standalone Angular APIs and keep module-era patterns out unless an existing dependency requires them.
 - When adding a reusable abstraction, make sure at least two consumers justify it.
 - Keep shared component APIs and their canonical styling together in `UI/src/design-system/` instead of splitting ownership between feature templates and global primitives.
+- Treat each design-system folder `index.ts` as the supported TypeScript public boundary for that component.
+- Keep implementation files such as `button.ts`, `panel.ts`, component-internal classes, and Sass partials private
+  unless a future change intentionally documents and exposes additional surface area.
 
 ### Signal Naming
 

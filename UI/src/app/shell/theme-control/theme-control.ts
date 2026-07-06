@@ -1,5 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
-import { Button } from '@design-system/button/button';
+import { Button } from '@design-system/button';
 import { ThemeControlService } from './theme-control.service';
 
 @Component({

@@ -48,6 +48,18 @@ module.exports = defineConfig([
           allowEmpty: true,
         },
       ],
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@design-system/*/*'],
+              message:
+                "Import design-system components through their folder public API, such as '@design-system/button', instead of deep implementation paths.",
+            },
+          ],
+        },
+      ],
       'no-restricted-syntax': [
         'error',
         {

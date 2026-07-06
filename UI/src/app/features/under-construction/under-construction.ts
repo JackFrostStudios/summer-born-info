@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Navigation, Router } from '@angular/router';
-import { Button } from '@design-system/button/button';
-import { Panel } from '@design-system/panel/panel';
+import { Button } from '@design-system/button';
+import { Panel } from '@design-system/panel';
 
 @Component({
   selector: 'sbi-under-construction',
