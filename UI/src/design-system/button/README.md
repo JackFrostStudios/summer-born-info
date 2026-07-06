@@ -13,7 +13,7 @@ while preserving native button semantics.
 ### Selector And Import
 
 - selector: `sbi-button`
-- import: import `Button` from `UI/src/design-system/button/button`
+- import: `import { Button } from '@design-system/button'`
 
 ### Inputs
 
@@ -74,6 +74,7 @@ guarantee:
 
 - `.sbi-button`, `.sbi-button--secondary`, and `.sbi-button--icon-only`
 - SCSS mixins in [`_button-styles.scss`](./_button-styles.scss)
+- the implementation file [`button.ts`](./button.ts), which is re-exported through [`index.ts`](./index.ts)
 
 ## Current Limitations
 

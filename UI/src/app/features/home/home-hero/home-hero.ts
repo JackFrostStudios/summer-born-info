@@ -1,7 +1,7 @@
 import { NgOptimizedImage } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Button } from '@design-system/button/button';
+import { Button } from '@design-system/button';
 
 @Component({
   selector: 'sbi-home-hero',

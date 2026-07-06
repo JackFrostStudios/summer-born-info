@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Button } from '@design-system/button/button';
-import { Panel, type PanelMediaWidth } from '@design-system/panel/panel';
+import { Button } from '@design-system/button';
+import { Panel, type PanelMediaWidth } from '@design-system/panel';
 
 @Component({
   selector: 'sbi-not-found',

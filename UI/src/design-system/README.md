@@ -31,8 +31,12 @@ currently visible in DevTools or source.
 
 ## Import And Usage Conventions
 
-- Import shared components directly from their owning folder until the UI explicitly adds a design-system
-  barrel or component index.
+- Import shared components through their folder-level public API, such as `@design-system/button` or
+  `@design-system/panel`.
+- Keep each component folder's `index.ts` narrow and limited to the supported Angular component class and
+  intentionally public types.
+- Do not import from implementation paths such as `@design-system/button/button` or expose Sass partials,
+  internal classes, or other implementation details through a public barrel.
 - Prefer Angular composition over feature-level CSS overrides when adapting a shared component.
 - Keep tests beside the shared component or behavior they validate.
 
