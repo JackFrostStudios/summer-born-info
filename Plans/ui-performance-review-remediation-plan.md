@@ -29,20 +29,22 @@ Resolve the actionable findings captured in `UI/review-findings/performance-expe
 ### Current-State Notes That Shape The Plan
 
 - The homepage hero still uses a single priority PNG from `UI/public/images/hero-child-playing.png`, and the current source file remains large enough to stay on the critical path.
-- Font delivery is still backed by `Hanken Grotesk` variable TTF assets referenced from `UI/src/styles/_fonts.scss`; no WOFF2 assets are present yet.
+- Delivery-prepared replacement assets now exist in the repo: WOFF2 font files have been added under `UI/public/fonts/`, and an AVIF hero image has been added under `UI/public/images/`.
+- Font delivery is still backed by `Hanken Grotesk` variable TTF assets referenced from `UI/src/styles/_fonts.scss`; implementation should switch to the already-added WOFF2 assets rather than introducing a new conversion workflow in this slice.
 - The route-loading issue is no longer fully open because `under-construction` already uses `loadComponent` in `UI/src/app/app.routes.ts`, but the broader route-growth strategy still needs to be tightened and documented.
 - Existing production budgets cover only `initial` and `anyComponentStyle`, and the current UI CI workflow does not add image/font payload checks.
 - The localized output currently combines `<base href="/en-GB/">` with root-relative asset URLs like `/fonts/...`, `/images/...`, and `/icons/...`, so the deployment-path risk remains active until it is proven safe in a production-like host.
+- Theme icons should now be remediated by creating a reusable `UI/src/design-system/icons/` folder with inline SVG assets/components so icon colour can be controlled directly in CSS, eliminating the need for CSS background-mask delivery in the final implementation.
 - The theme boot script is intentionally tiny and acceptable today, so this plan treats it as a guardrail item rather than a refactor mandate.
 
 ## 3. Scope
 
 - Reduce critical-path asset weight for the homepage hero image.
-- Move font delivery from TTF to WOFF2, with a documented path for manual asset preparation if conversion tooling is not added to the repo.
+- Move font delivery from TTF to the already-prepared WOFF2 assets in `UI/public/fonts/`.
 - Lock in the current lazy-route improvement and extend route-loading guidance so future feature growth does not bloat the initial bundle.
 - Add CI-visible bundle and static-asset guardrails.
 - Resolve or explicitly validate the localized asset-path strategy.
-- Reassess the low-priority theme icon and inline theme-script findings without over-optimizing them.
+- Reassess the low-priority theme icon and inline theme-script findings without over-optimizing them, with icons delivered through reusable inline SVGs rather than external masked assets.
 
 ## 4. Non-Goals
 
@@ -81,12 +83,12 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
 ## 6. Deliverables
 
 1. Replace the current hero-image delivery strategy with optimized assets for the homepage LCP image:
-   - generate a smaller modern-format asset, preferably AVIF or WebP, for the primary homepage image
+   - adopt the already-added modern-format asset in `UI/public/images/` as the primary homepage image source
    - keep a compatible fallback only if the chosen Angular image setup still needs one
    - preserve `priority` on the final LCP candidate
    - add responsive variants only if the implemented layout genuinely benefits from them
 2. Update homepage hero image usage and any related tests so the optimized asset path is the canonical source in `UI/src/app/features/home/home-hero/`.
-3. Convert the Hanken Grotesk font assets from TTF delivery to WOFF2 delivery and update `UI/src/styles/_fonts.scss` accordingly.
+3. Convert the Hanken Grotesk font assets from TTF delivery to the already-added WOFF2 files and update `UI/src/styles/_fonts.scss` accordingly.
 4. Narrow the font payload where practical during the same slice:
    - confirm which weights are actually used in current UI
    - decide whether the current full `100 900` variable range is still required
@@ -102,7 +104,8 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
    - verify the chosen approach against a production-like localized build, not only `ng serve`
 8. Reassess the low-priority theme-icon implementation:
    - remove `translateZ(0)` if profiling or review confirms it is unnecessary
-   - keep external SVG masks only if they remain the clearest low-cost option after the asset-path remediation is done
+   - replace external SVG masks with reusable inline SVG assets/components under `UI/src/design-system/icons/`
+   - update icon consumers so colour is controlled directly through CSS rather than via background-mask styling
 9. Preserve the inline theme boot script as a minimal early-execution snippet unless another change proves it can stay flash-free with less parser-blocking work.
 10. Run the normal UI validation commands required by the touched implementation slice, including `npm run format`, `npm run lint`, `npm run test:run`, and `npm run validate:i18n` when localization-sensitive asset or build-path changes are made.
 
@@ -111,7 +114,9 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
 - Hero image strategy:
   Prefer modern compressed image formats for the LCP image, with a targeted optimization pass rather than a broad media-pipeline rollout.
 - Font conversion strategy:
-  Treat WOFF2 as the target delivery format. Do not assume a new build-time font-conversion dependency will be introduced automatically; implementation may instead rely on manually prepared WOFF2 files checked into `UI/public/fonts/` if that is the safer path.
+  Treat WOFF2 as the target delivery format and use the already-added files in `UI/public/fonts/`. Do not introduce a new conversion dependency or repo-owned conversion workflow in this slice unless a blocker is discovered.
+- Icon strategy:
+  Replace reusable theme icons with inline SVG assets/components under `UI/src/design-system/icons/` so consumers can set icon colour directly in CSS without mask-based rendering.
 - Route-loading strategy:
   Keep the homepage and root shell eager, but treat secondary feature routes as lazy by default going forward.
 - Guardrail strategy:
@@ -125,11 +130,12 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
 
 1. Confirm the current payload baseline and the real hosting/path contract so the image, font, and localized-asset work all target the right constraints.
 2. Optimize the homepage hero image first because it is the clearest critical-path win and has minimal coupling to the other findings.
-3. Convert fonts to WOFF2 next, because the font files are also currently on the first-render path and may influence preload decisions.
+3. Convert fonts to the prepared WOFF2 assets next, because the font files are also currently on the first-render path and may influence preload decisions.
 4. Lock in route-loading guidance and any route-level cleanup after the asset changes, because that slice is already partially complete.
 5. Add budgets and CI asset-size checks once the optimized assets exist, so thresholds can be calibrated against the improved baseline rather than the current oversized files.
 6. Validate and fix the localized asset-path behavior before closing the plan, because it affects fonts, images, and icons together.
 7. Finish by deciding whether the low-priority theme-icon and inline-theme-script items need code changes or should remain intentionally minimal with explicit validation notes.
+8. Implement the icon remediation after the localized asset-path work so any remaining path concerns are resolved before consumers are switched to inline design-system assets.
 
 ### Suggested Implementation Slices
 
@@ -150,6 +156,7 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
    - verify localized build behavior
 5. Low-priority theme follow-up:
    - remove unnecessary `translateZ(0)` if justified
+   - move reusable theme icons into `UI/src/design-system/icons/` as inline SVGs
    - keep the inline theme script minimal and documented
 
 ## 9. Risks and Mitigations
@@ -159,7 +166,9 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
 - Risk: Font conversion introduces missing glyphs, incorrect weight behavior, or italic regressions.
   - Mitigation: verify the current glyph and weight needs before narrowing the font payload, and prefer a conservative full-glyph WOFF2 conversion if subsetting confidence is low.
 - Risk: Adding a new font-conversion or asset-checking dependency would change the repo's tooling surface unexpectedly.
-  - Mitigation: keep manual asset preparation as an allowed path and prefer lightweight repo-owned checks before adding new packages.
+  - Mitigation: use the already-added delivery assets and prefer lightweight repo-owned checks before adding new packages.
+- Risk: Converting icon delivery from masked background assets to inline SVGs could accidentally change sizing, alignment, or theming behaviour in existing controls.
+  - Mitigation: centralize reusable icon markup under `UI/src/design-system/icons/`, update consumers incrementally, and verify visual states for theme controls after the swap.
 - Risk: JS or asset-size thresholds become noisy and block useful work.
   - Mitigation: calibrate thresholds against the optimized baseline and keep the checks limited to the most meaningful bundles and assets.
 - Risk: Changing root-relative asset references could break current production hosting if the deploy contract already depends on them.
@@ -170,9 +179,7 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
 ## 10. Unknowns and Required Clarifications
 
 - No blocking clarification is required to draft this plan.
-- The main implementation-time checkpoint is how font conversion should be operationalized:
-  - safest default: manually prepare WOFF2 assets and check them into `UI/public/fonts/`
-  - optional future enhancement: add a documented repo-owned conversion workflow if the team wants repeatable automation
+- The font-delivery input is now settled for this slice because the WOFF2 assets already exist in `UI/public/fonts/`; only the runtime wiring and any preload narrowing remain to be validated during implementation.
 - If implementation shows the deploy environment already rewrites root-relative asset URLs safely for localized builds, document that evidence and downgrade the asset-path item rather than forcing an unnecessary code change.
 - If the team wants aggressive font subsetting rather than straightforward TTF-to-WOFF2 conversion, confirm the supported locale/glyph range before implementation narrows coverage.
 
@@ -184,7 +191,7 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
 - [ ] Route-loading guidance or tests are updated enough that the current lazy-loading improvement is preserved.
 - [ ] Issue 4 open finding is resolved by adding meaningful JS bundle guardrails plus a lightweight static-asset size check.
 - [ ] Issue 5 open finding is resolved by validating and, if needed, correcting localized asset URL behavior under the deployed base-href strategy.
-- [ ] Issue 6 open finding is either resolved through a justified theme-icon simplification or explicitly closed with evidence that the current tiny external assets are acceptable after higher-priority fixes land.
+- [ ] Issue 6 open finding is resolved by replacing masked external theme icon assets with reusable inline SVG design-system icons and direct CSS colour control.
 - [ ] Issue 7 open finding is either left intentionally minimal with explicit validation notes or improved without reintroducing a theme flash.
 - [ ] Any image, font, route, or build-configuration tests affected by the remediation are updated and passing.
 - [ ] `npm run format` has been run in `UI/` if implementation edits UI files.
