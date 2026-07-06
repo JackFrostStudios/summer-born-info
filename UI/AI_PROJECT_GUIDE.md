@@ -28,6 +28,7 @@ The UI is currently an Angular application with server-side rendering support, a
 - Put browser-facing UI work in `UI/src/app/` unless there is a clear reason to create a new top-level folder under `src/`.
 - Keep feature code close together: route definition, component, template, styles, and tests should stay near each other.
 - Treat `UI/src/app/app.routes.ts` as the canonical place to grow the route tree until a feature area is large enough to justify a route-specific substructure.
+- Keep the root shell and homepage route eager, but default future non-primary routes in `UI/src/app/app.routes.ts` to lazy loading so secondary feature growth does not silently inflate the initial JavaScript payload.
 - Keep route-owned page accessibility metadata beside the route tree by using `UI/src/app/app-route-accessibility.ts` for the shared contract and declaring each route's values directly in `app.routes.ts`.
 - Keep shell-only layout concerns in `UI/src/app/shell/` and keep feature-specific rendering out of the shell.
 - Add new routed user-facing areas under `UI/src/app/features/` so each feature keeps its component, template, styles, and tests together.

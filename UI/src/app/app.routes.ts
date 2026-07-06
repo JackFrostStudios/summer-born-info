@@ -38,6 +38,7 @@ export const routes: Routes = [
       },
       {
         path: 'under-construction',
+        // Keep secondary routes lazy-loaded by default so future route growth does not bloat the homepage entry bundle.
         loadComponent: async () => (await import('./features/under-construction/under-construction')).UnderConstruction,
         title: underConstructionRouteAccessibility.title,
         data: {

@@ -56,7 +56,7 @@ describe('app routes', () => {
     });
   });
 
-  it('keeps the under-construction route lazy-loaded while preserving its title and accessibility metadata', async () => {
+  it('keeps the secondary under-construction route lazy-loaded while preserving its title and accessibility metadata', async () => {
     const shellRoute = requireRoute(routes, '');
     const underConstructionRoute = requireRoute(shellRoute.children ?? [], 'under-construction');
     const metadata = requireAccessibilityMetadata(underConstructionRoute);

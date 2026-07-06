@@ -21,7 +21,7 @@ Resolve the actionable findings captured in `UI/review-findings/performance-expe
 1. Issue 1: Large unoptimized above-the-fold image payload - `Resolved`
 2. Issue 2: Font payload is large and served as TTF - `Resolved`
 3. Issue 3: Routes are eagerly imported, so future pages will inflate initial JS - `Partially Resolved`
-4. Issue 4: Asset budgets do not guard the real payload hotspots - `Open`
+4. Issue 4: Asset budgets do not guard the real payload hotspots - `Resolved`
 5. Issue 5: Localized build output uses root-relative asset URLs - `Open`
 6. Issue 6: Theme icons use CSS masks and multiple external icon requests - `Open`
 7. Issue 7: Inline theme script is small but parser-blocking - `Open`
@@ -33,7 +33,7 @@ Resolve the actionable findings captured in `UI/review-findings/performance-expe
 - Additional implementation input from 2026-07-06: treat the already-added delivery assets as the intended remediation inputs, specifically `UI/public/images/hero-child-playing.avif` for the homepage LCP image and the prepared WOFF2 files in `UI/public/fonts/`, rather than creating a new asset-generation workflow inside this plan.
 - Font delivery now points `UI/src/styles/_fonts.scss` at the prepared WOFF2 assets, with the declared variable range narrowed to the currently used `400 800` span instead of the previous TTF-backed `100 900` range.
 - The route-loading issue is no longer fully open because `under-construction` already uses `loadComponent` in `UI/src/app/app.routes.ts`, but the broader route-growth strategy still needs to be tightened and documented.
-- Existing production budgets cover only `initial` and `anyComponentStyle`, and the current UI CI workflow does not add image/font payload checks.
+- Production guardrails now cover `initial`, `allScript`, and `anyScript`, and UI CI now runs a repo-owned tracked-asset size check for `UI/public/images/` and `UI/public/fonts/`.
 - The localized output currently combines `<base href="/en-GB/">` with root-relative asset URLs like `/fonts/...`, `/images/...`, and `/icons/...`, so the deployment-path risk remains active until it is proven safe in a production-like host.
 - Theme icons should now be remediated by creating a reusable `UI/src/design-system/icons/` folder with inline SVG assets/components so icon colour can be controlled directly in CSS, eliminating the need for CSS background-mask delivery in the final implementation.
 - The theme boot script is intentionally tiny and acceptable today, so this plan treats it as a guardrail item rather than a refactor mandate.
@@ -153,6 +153,7 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
    - preserve current lazy-route pattern
    - add JS budgets
    - add asset-size CI checks
+   - status: delivered on 2026-07-06 by documenting the expectation that future non-primary routes stay lazy-loaded, adding `allScript` and `anyScript` production budgets in `UI/angular.json`, and wiring a repo-owned tracked-asset size check into UI CI for `UI/public/images/` and `UI/public/fonts/`
 4. Localized asset-path validation and cleanup:
    - confirm hosting contract
    - fix asset references or deploy configuration
@@ -191,8 +192,8 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
 - [x] Issue 1 open finding is resolved by replacing the current priority PNG delivery with a materially smaller production-ready hero asset strategy.
 - [x] Issue 2 open finding is resolved by serving WOFF2 font assets instead of TTF and keeping first-paint font loading intentional.
 - [x] Issue 3 remains explicitly tracked as `Partially Resolved`, with `under-construction` already lazy-loaded and future secondary routes expected to follow the same pattern.
-- [ ] Route-loading guidance or tests are updated enough that the current lazy-loading improvement is preserved.
-- [ ] Issue 4 open finding is resolved by adding meaningful JS bundle guardrails plus a lightweight static-asset size check.
+- [x] Route-loading guidance or tests are updated enough that the current lazy-loading improvement is preserved.
+- [x] Issue 4 open finding is resolved by adding meaningful JS bundle guardrails plus a lightweight static-asset size check.
 - [ ] Issue 5 open finding is resolved by validating and, if needed, correcting localized asset URL behavior under the deployed base-href strategy.
 - [ ] Issue 6 open finding is resolved by replacing masked external theme icon assets with reusable inline SVG design-system icons and direct CSS colour control.
 - [ ] Issue 7 open finding is either left intentionally minimal with explicit validation notes or improved without reintroducing a theme flash.
