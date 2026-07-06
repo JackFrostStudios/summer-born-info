@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build:localize": "ng build --configuration production,localized",
+    "check:asset-sizes": "node ./scripts/check-asset-sizes.mjs",
     "extract:i18n": "ng run summer-born-info:extract-i18n",
     "validate:i18n": "npm run extract:i18n && git diff --exit-code -- src/locale/messages.xlf && npm run build:localize",
     "watch": "ng build --watch --configuration development",
