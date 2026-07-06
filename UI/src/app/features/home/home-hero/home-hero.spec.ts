@@ -67,7 +67,9 @@ describe('HomeHero', () => {
     const heroImage = compiled.querySelector<HTMLImageElement>('.home__hero-art-image');
 
     expect(heroArt).not.toBeNull();
-    expect(heroImage?.getAttribute('src')).toContain('/images/hero-child-playing.png');
+    expect(heroImage?.getAttribute('src')).toContain('/images/hero-child-playing.avif');
+    expect(heroImage?.getAttribute('fetchpriority')).toBe('high');
+    expect(heroImage?.getAttribute('loading')).toBe('eager');
     expect(heroImage?.getAttribute('alt')).toBe('Young child playing with wooden blocks in a bright room.');
     expect(compiled.querySelector('.home__hero-art-badge')).toBeNull();
     expect(heroArt?.querySelector('figcaption')).toBeNull();

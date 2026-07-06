@@ -18,7 +18,7 @@ Resolve the actionable findings captured in `UI/review-findings/performance-expe
 
 ### Verified Review Status Snapshot
 
-1. Issue 1: Large unoptimized above-the-fold image payload - `Open`
+1. Issue 1: Large unoptimized above-the-fold image payload - `Resolved`
 2. Issue 2: Font payload is large and served as TTF - `Open`
 3. Issue 3: Routes are eagerly imported, so future pages will inflate initial JS - `Partially Resolved`
 4. Issue 4: Asset budgets do not guard the real payload hotspots - `Open`
@@ -28,8 +28,9 @@ Resolve the actionable findings captured in `UI/review-findings/performance-expe
 
 ### Current-State Notes That Shape The Plan
 
-- The homepage hero still uses a single priority PNG from `UI/public/images/hero-child-playing.png`, and the current source file remains large enough to stay on the critical path.
+- The homepage hero now uses the prepared AVIF asset at `UI/public/images/hero-child-playing.avif` as the canonical priority LCP image source, replacing the previously oversized PNG on the critical path.
 - Delivery-prepared replacement assets now exist in the repo: WOFF2 font files have been added under `UI/public/fonts/`, and an AVIF hero image has been added under `UI/public/images/`.
+- Additional implementation input from 2026-07-06: treat the already-added delivery assets as the intended remediation inputs, specifically `UI/public/images/hero-child-playing.avif` for the homepage LCP image and the prepared WOFF2 files in `UI/public/fonts/`, rather than creating a new asset-generation workflow inside this plan.
 - Font delivery is still backed by `Hanken Grotesk` variable TTF assets referenced from `UI/src/styles/_fonts.scss`; implementation should switch to the already-added WOFF2 assets rather than introducing a new conversion workflow in this slice.
 - The route-loading issue is no longer fully open because `under-construction` already uses `loadComponent` in `UI/src/app/app.routes.ts`, but the broader route-growth strategy still needs to be tightened and documented.
 - Existing production budgets cover only `initial` and `anyComponentStyle`, and the current UI CI workflow does not add image/font payload checks.
@@ -142,6 +143,7 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
 1. Homepage media optimization:
    - optimize hero asset delivery
    - update hero usage/tests
+   - status: delivered on 2026-07-06 using `UI/public/images/hero-child-playing.avif` as the canonical priority hero source, with homepage tests updated accordingly
 2. Font delivery modernization:
    - introduce WOFF2 assets
    - update font-face declarations
@@ -185,7 +187,7 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
 
 ## 11. Completion Checklist
 
-- [ ] Issue 1 open finding is resolved by replacing the current priority PNG delivery with a materially smaller production-ready hero asset strategy.
+- [x] Issue 1 open finding is resolved by replacing the current priority PNG delivery with a materially smaller production-ready hero asset strategy.
 - [ ] Issue 2 open finding is resolved by serving WOFF2 font assets instead of TTF and keeping first-paint font loading intentional.
 - [x] Issue 3 remains explicitly tracked as `Partially Resolved`, with `under-construction` already lazy-loaded and future secondary routes expected to follow the same pattern.
 - [ ] Route-loading guidance or tests are updated enough that the current lazy-loading improvement is preserved.
