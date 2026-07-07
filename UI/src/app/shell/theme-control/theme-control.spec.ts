@@ -1,96 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { ThemeControl } from './theme-control';
-
-const storageKey = 'sbi:colour-mode';
-const rootAttribute = 'data-sbi-colour-mode';
-
-type MatchMediaStub = MediaQueryList & {
-  setMatches(matches: boolean): void;
-};
-
-function installLocalStorageStub(): void {
-  const storedValues = new Map<string, string>();
-  const localStorageStub = {
-    get length() {
-      return storedValues.size;
-    },
-    clear: () => {
-      storedValues.clear();
-    },
-    getItem: (key: string) => storedValues.get(key) ?? null,
-    key: (index: number) => Array.from(storedValues.keys())[index] ?? null,
-    removeItem: (key: string) => {
-      storedValues.delete(key);
-    },
-    setItem: (key: string, value: string) => {
-      storedValues.set(key, value);
-    },
-  } satisfies Storage;
-
-  Object.defineProperty(globalThis, 'localStorage', {
-    configurable: true,
-    value: localStorageStub,
-  });
-}
-
-function installMatchMediaStub(initialMatches = false): MatchMediaStub {
-  let matches = initialMatches;
-  let listener: ((event: MediaQueryListEvent) => void) | { handleEvent(event: MediaQueryListEvent): void } | null =
-    null;
-
-  const mediaQuery = {
-    media: '(prefers-color-scheme: dark)',
-    onchange: null,
-    addEventListener: (_type: string, nextListener: EventListenerOrEventListenerObject | null) => {
-      if (typeof nextListener === 'function') {
-        listener = (event: MediaQueryListEvent) => {
-          nextListener(event);
-        };
-        return;
-      }
-
-      listener =
-        nextListener === null
-          ? null
-          : {
-              handleEvent: (event) => {
-                nextListener.handleEvent(event);
-              },
-            };
-    },
-    removeEventListener: () => {
-      listener = null;
-    },
-    addListener: (nextListener: ((event: MediaQueryListEvent) => void) | null) => {
-      listener = nextListener;
-    },
-    removeListener: () => {
-      listener = null;
-    },
-    dispatchEvent: () => true,
-    setMatches: (nextMatches: boolean) => {
-      matches = nextMatches;
-      if (typeof listener === 'function') {
-        listener({ matches: nextMatches } as MediaQueryListEvent);
-        return;
-      }
-
-      listener?.handleEvent({ matches: nextMatches } as MediaQueryListEvent);
-    },
-  } as unknown as MatchMediaStub;
-
-  Object.defineProperty(mediaQuery, 'matches', {
-    configurable: true,
-    get: () => matches,
-  });
-
-  Object.defineProperty(globalThis, 'matchMedia', {
-    configurable: true,
-    value: () => mediaQuery,
-  });
-
-  return mediaQuery;
-}
+import {
+  installLocalStorageStub,
+  installMatchMediaStub,
+  rootAttribute,
+  storageKey,
+} from './theme-control.test-helpers';
 
 function requireToggleHost(compiled: HTMLElement): HTMLElement {
   const toggleHost = compiled.querySelector<HTMLElement>('sbi-button.theme-control__toggle');

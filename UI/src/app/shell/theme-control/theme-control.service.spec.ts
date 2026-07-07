@@ -1,96 +1,12 @@
+import { EnvironmentInjector, PLATFORM_ID, createEnvironmentInjector, runInInjectionContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ThemeControlService } from './theme-control.service';
-
-const storageKey = 'sbi:colour-mode';
-const rootAttribute = 'data-sbi-colour-mode';
-
-type MatchMediaStub = MediaQueryList & {
-  setMatches(matches: boolean): void;
-};
-
-function installLocalStorageStub(): void {
-  const storedValues = new Map<string, string>();
-  const localStorageStub = {
-    get length() {
-      return storedValues.size;
-    },
-    clear: () => {
-      storedValues.clear();
-    },
-    getItem: (key: string) => storedValues.get(key) ?? null,
-    key: (index: number) => Array.from(storedValues.keys())[index] ?? null,
-    removeItem: (key: string) => {
-      storedValues.delete(key);
-    },
-    setItem: (key: string, value: string) => {
-      storedValues.set(key, value);
-    },
-  } satisfies Storage;
-
-  Object.defineProperty(globalThis, 'localStorage', {
-    configurable: true,
-    value: localStorageStub,
-  });
-}
-
-function installMatchMediaStub(initialMatches = false): MatchMediaStub {
-  let matches = initialMatches;
-  let listener: ((event: MediaQueryListEvent) => void) | { handleEvent(event: MediaQueryListEvent): void } | null =
-    null;
-
-  const mediaQuery = {
-    media: '(prefers-color-scheme: dark)',
-    onchange: null,
-    addEventListener: (_type: string, nextListener: EventListenerOrEventListenerObject | null) => {
-      if (typeof nextListener === 'function') {
-        listener = (event: MediaQueryListEvent) => {
-          nextListener(event);
-        };
-        return;
-      }
-
-      listener =
-        nextListener === null
-          ? null
-          : {
-              handleEvent: (event) => {
-                nextListener.handleEvent(event);
-              },
-            };
-    },
-    removeEventListener: () => {
-      listener = null;
-    },
-    addListener: (nextListener: ((event: MediaQueryListEvent) => void) | null) => {
-      listener = nextListener;
-    },
-    removeListener: () => {
-      listener = null;
-    },
-    dispatchEvent: () => true,
-    setMatches: (nextMatches: boolean) => {
-      matches = nextMatches;
-      if (typeof listener === 'function') {
-        listener({ matches: nextMatches } as MediaQueryListEvent);
-        return;
-      }
-
-      listener?.handleEvent({ matches: nextMatches } as MediaQueryListEvent);
-    },
-  } as unknown as MatchMediaStub;
-
-  Object.defineProperty(mediaQuery, 'matches', {
-    configurable: true,
-    get: () => matches,
-  });
-
-  Object.defineProperty(globalThis, 'matchMedia', {
-    configurable: true,
-    value: () => mediaQuery,
-  });
-
-  return mediaQuery;
-}
+import {
+  installLocalStorageStub,
+  installMatchMediaStub,
+  rootAttribute,
+  storageKey,
+} from './theme-control.test-helpers';
 
 describe('ThemeControlService', () => {
   beforeEach(() => {
@@ -141,6 +57,33 @@ describe('ThemeControlService', () => {
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('dark');
   });
 
+  it('discards an invalid persisted mode and falls back to the system preference', () => {
+    const localStorageStub = installLocalStorageStub({
+      initialValues: { [storageKey]: 'sepia' },
+    });
+
+    const service = TestBed.inject(ThemeControlService);
+
+    expect(service.$mode()).toBe('system');
+    expect(service.$effectiveMode()).toBe('light');
+    expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
+    expect(localStorageStub.removeItem).toHaveBeenCalledWith(storageKey);
+    expect(localStorageStub.read(storageKey)).toBeNull();
+  });
+
+  it('falls back to system mode when reading persisted storage throws', () => {
+    const localStorageStub = installLocalStorageStub({
+      getItemError: new Error('Storage unavailable'),
+    });
+
+    const service = TestBed.inject(ThemeControlService);
+
+    expect(service.$mode()).toBe('system');
+    expect(service.$effectiveMode()).toBe('light');
+    expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
+    expect(localStorageStub.getItem).toHaveBeenCalledWith(storageKey);
+  });
+
   it('toggles from the current effective system preference when no explicit mode is set', () => {
     installMatchMediaStub(true);
     const service = TestBed.inject(ThemeControlService);
@@ -167,5 +110,101 @@ describe('ThemeControlService', () => {
     expect(service.$mode()).toBe('system');
     expect(service.$effectiveMode()).toBe('dark');
     expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
+  });
+
+  it('keeps applying explicit modes when writing persisted storage throws', () => {
+    const localStorageStub = installLocalStorageStub({
+      setItemError: new Error('Storage unavailable'),
+    });
+    const service = TestBed.inject(ThemeControlService);
+
+    service.setMode('dark');
+
+    expect(service.$mode()).toBe('dark');
+    expect(service.$effectiveMode()).toBe('dark');
+    expect(document.documentElement.getAttribute(rootAttribute)).toBe('dark');
+    expect(localStorageStub.setItem).toHaveBeenCalledWith(storageKey, 'dark');
+    expect(localStorageStub.read(storageKey)).toBeNull();
+  });
+
+  it('clears the root attribute and persisted override when returning to system mode', () => {
+    const localStorageStub = installLocalStorageStub();
+    const service = TestBed.inject(ThemeControlService);
+
+    service.setMode('dark');
+    expect(document.documentElement.getAttribute(rootAttribute)).toBe('dark');
+    expect(localStorageStub.read(storageKey)).toBe('dark');
+
+    service.setMode('system');
+
+    expect(service.$mode()).toBe('system');
+    expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
+    expect(localStorageStub.removeItem).toHaveBeenLastCalledWith(storageKey);
+    expect(localStorageStub.read(storageKey)).toBeNull();
+  });
+
+  it('keeps applying system mode when clearing persisted storage throws', () => {
+    const localStorageStub = installLocalStorageStub({
+      initialValues: { [storageKey]: 'dark' },
+      removeItemError: new Error('Storage unavailable'),
+    });
+    const service = TestBed.inject(ThemeControlService);
+
+    service.setMode('system');
+
+    expect(service.$mode()).toBe('system');
+    expect(service.$effectiveMode()).toBe('light');
+    expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
+    expect(localStorageStub.removeItem).toHaveBeenCalledWith(storageKey);
+  });
+
+  it('uses browser guards on the server platform and falls back predictably', () => {
+    const localStorageStub = installLocalStorageStub();
+    const matchMediaStub = vi.fn();
+
+    Object.defineProperty(globalThis, 'matchMedia', {
+      configurable: true,
+      value: matchMediaStub,
+    });
+
+    TestBed.configureTestingModule({
+      providers: [{ provide: PLATFORM_ID, useValue: 'server' }],
+    });
+
+    const service = TestBed.inject(ThemeControlService);
+
+    expect(service.$mode()).toBe('system');
+    expect(service.$effectiveMode()).toBe('light');
+    expect(localStorageStub.getItem).not.toHaveBeenCalled();
+    expect(matchMediaStub).not.toHaveBeenCalled();
+    expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
+
+    service.setMode('dark');
+    expect(service.$mode()).toBe('dark');
+    expect(service.$effectiveMode()).toBe('dark');
+    expect(document.documentElement.getAttribute(rootAttribute)).toBe('dark');
+    expect(localStorageStub.setItem).not.toHaveBeenCalled();
+
+    service.setMode('system');
+    expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
+    expect(localStorageStub.removeItem).not.toHaveBeenCalled();
+  });
+
+  it('removes the system-preference listener on injector destruction', () => {
+    const matchMediaStub = installMatchMediaStub(false);
+    const parentInjector = TestBed.inject(EnvironmentInjector);
+    const injector = createEnvironmentInjector([], parentInjector);
+    const service = runInInjectionContext(injector, () => new ThemeControlService());
+
+    expect(service.$effectiveMode()).toBe('light');
+
+    injector.destroy();
+
+    expect(matchMediaStub.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function));
+
+    matchMediaStub.setMatches(true);
+
+    expect(service.$mode()).toBe('system');
+    expect(service.$effectiveMode()).toBe('light');
   });
 });
