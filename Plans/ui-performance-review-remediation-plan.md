@@ -159,6 +159,7 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
    - fix asset references or deploy configuration
    - verify localized build behavior
    - status: delivered on 2026-07-06 by confirming the current production-like contract is the SSR host in `UI/src/server.ts`, keeping the homepage hero image base-href-relative for localized HTML output, and adding localized root-asset aliases for `/fonts`, `/icons`, and `/images` so the remaining compiled CSS root-relative URLs resolve correctly from the locale build output
+   - review follow-up on 2026-07-07: add an automated production-like SSR smoke check that requests the localized page plus root asset aliases after `npm run build:localize`, so CI proves the runtime host behavior rather than only the emitted files
 5. Low-priority theme follow-up:
    - remove unnecessary `translateZ(0)` if justified
    - move reusable theme icons into `UI/src/design-system/icons/` as inline SVGs
@@ -203,4 +204,4 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
 - [x] `npm run format` has been run in `UI/` if implementation edits UI files.
 - [x] `npm run lint` has been run in `UI/`.
 - [x] `npm run test:run` has been run in `UI/` when component, route, or service behavior changes.
-- [ ] `npm run validate:i18n` has been run in `UI/` when localized asset or build-path behavior changes.
+- [x] `npm run validate:i18n` has been run in `UI/` when localized asset or build-path behavior changes.
