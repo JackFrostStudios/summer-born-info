@@ -24,6 +24,10 @@ Feature-specific layout and presentation should stay in component-scoped styles 
 `UI/src/app/`. Add a new global token only when the value is part of the shared visual language and
 is likely to be reused by more than one feature.
 
+The shared base layer no longer applies a readable-width cap to raw `p` or `li` elements. Use the
+`.sbi-readable` primitive or a component-local `max-inline-size` only on intentional long-form
+reading blocks so compact shells, cards, and grids can use their container width naturally.
+
 ## Shared Governance
 
 ### Surface Stack
@@ -105,6 +109,17 @@ Dedicated visual regression tooling is intentionally deferred for now. Revisit t
 the UI has multiple stable shared components, light/dark or forced-colors regressions become a
 meaningful recurring risk, or manual review of shared visual changes is no longer keeping pace with
 the component surface area.
+
+### Stylesheet Stack And Cascade Layers
+
+The current global stylesheet stack remains intentionally small: `UI/src/styles.scss` imports
+fonts, reset rules, tokens, base element defaults, and primitives in that order.
+
+Cascade layers are intentionally deferred as of 2026-07-07. The current shared CSS surface is still
+small enough that explicit import order is easy to reason about, and introducing `@layer` now would
+add migration churn without solving an active precedence problem. Revisit layers when the app gains
+another competing global source such as third-party CSS, multiple theme bundles, or a larger set of
+shared primitives whose override order is no longer obvious from `styles.scss`.
 
 ### Typography Tokens
 
