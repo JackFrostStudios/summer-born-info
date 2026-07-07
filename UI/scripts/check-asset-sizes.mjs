@@ -1,4 +1,4 @@
-import { statSync } from 'node:fs';
+import { existsSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 
@@ -11,11 +11,6 @@ const assetBudgets = [
     reason: 'The homepage LCP image should stay aggressively compressed.',
   },
   {
-    path: 'public/images/hero-child-playing.png',
-    maximumKiB: 320,
-    reason: 'The retained legacy hero source should not grow while it remains tracked.',
-  },
-  {
     path: 'public/fonts/HankenGrotesk-VariableFont_wght.woff2',
     maximumKiB: 64,
     reason: 'The delivered regular variable font should stay close to the optimized baseline.',
@@ -24,16 +19,6 @@ const assetBudgets = [
     path: 'public/fonts/HankenGrotesk-Italic-VariableFont_wght.woff2',
     maximumKiB: 64,
     reason: 'The delivered italic variable font should stay close to the optimized baseline.',
-  },
-  {
-    path: 'public/fonts/HankenGrotesk-VariableFont_wght.ttf',
-    maximumKiB: 160,
-    reason: 'The retained source TTF should not grow unexpectedly while it remains tracked.',
-  },
-  {
-    path: 'public/fonts/HankenGrotesk-Italic-VariableFont_wght.ttf',
-    maximumKiB: 160,
-    reason: 'The retained source italic TTF should not grow unexpectedly while it remains tracked.',
   },
 ];
 
@@ -50,6 +35,7 @@ function readTrackedAssets() {
   return output
     .split(/\r?\n/u)
     .map((line) => line.trim())
+    .filter((line) => existsSync(path.join(uiRoot, line)))
     .filter((line) => line.length > 0)
     .sort((left, right) => left.localeCompare(right));
 }

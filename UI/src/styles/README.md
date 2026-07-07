@@ -6,6 +6,7 @@ global stylesheet entry point and add shared concerns here when they are useful 
 ## Files
 
 - `_fonts.scss` registers the local Hanken Grotesk variable font files served from `UI/public/fonts/`.
+  The retained full-resolution source fonts live under `UI/full-resolution-assets/fonts/` and are not part of the runtime build.
 - `_reset.scss` contains the modern reset and browser-normalisation rules.
 - `_tokens.scss` defines design-system custom properties for colour, typography, spacing, borders,
   focus states, surfaces, shadows, and page width.
