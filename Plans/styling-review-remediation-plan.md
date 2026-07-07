@@ -179,7 +179,7 @@ cleanly, so no `messages.xlf` update was required.
 - Risk: Theme-control selector or geometry refactors can break dark-mode motion without obvious compile failures.
   - Mitigation: keep focused component tests green and include manual browser verification for explicit light, explicit dark, and system-theme modes.
 - Risk: Header and panel breakpoint changes can improve one screen width while regressing another.
-  - Mitigation: verify around the current `48rem` breakpoint and on narrow mobile widths with longer sample strings.
+  - Mitigation: verify around the current `56rem` hero and shared-panel breakpoints and on narrow mobile widths with longer sample strings.
 - Risk: Focus-style changes can create browser-specific regressions.
   - Mitigation: pair the CSS change with explicit accessibility smoke checks and document any intentionally supported fallback behavior.
 - Risk: Cascade layers could introduce unnecessary churn relative to the current stylesheet size.

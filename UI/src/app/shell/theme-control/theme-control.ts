@@ -9,11 +9,12 @@ import { ThemeControlService } from './theme-control.service';
   templateUrl: './theme-control.html',
   styleUrl: './theme-control.scss',
   host: {
-    '[attr.data-sbi-theme-control-mode]': '$effectiveMode()',
+    '[attr.data-sbi-theme-control-mode]': '$selectedMode()',
   },
 })
 export class ThemeControl {
   private readonly colourMode = inject(ThemeControlService);
+  protected readonly $selectedMode = this.colourMode.$mode;
   protected readonly $effectiveMode = this.colourMode.$effectiveMode;
   private readonly $isDarkMode = computed(() => this.$effectiveMode() === 'dark');
 
