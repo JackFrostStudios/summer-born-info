@@ -1,28 +1,38 @@
 :host {
   display: block;
+  min-block-size: 100%;
 }
 
 .not-found {
+  --not-found-section-padding: clamp(2rem, 6vw, 5rem);
+  --not-found-icon-size: clamp(6rem, 16vw, 9rem);
+  --not-found-glyph-size: clamp(3rem, 8vw, 4.5rem);
+
+  align-content: center;
   align-items: center;
   display: grid;
-  min-block-size: min(68dvh, 48rem);
-  padding-block: clamp(2rem, 6vw, 5rem);
+  min-block-size: 100%;
+  padding-block: var(--not-found-section-padding);
+}
+
+.not-found__panel {
+  inline-size: 100%;
 }
 
 .not-found__icon {
   align-self: start;
   background-color: var(--sbi-color-primary);
-  block-size: clamp(6rem, 16vw, 9rem);
+  block-size: var(--not-found-icon-size);
   border-radius: 50%;
   color: var(--sbi-color-on-primary);
   display: grid;
-  inline-size: clamp(6rem, 16vw, 9rem);
+  inline-size: var(--not-found-icon-size);
   place-items: center;
 }
 
 .not-found__icon::before {
   content: '?';
-  font-size: clamp(3rem, 8vw, 4.5rem);
+  font-size: var(--not-found-glyph-size);
   font-weight: var(--sbi-font-weight-extra-bold);
   line-height: 1;
 }

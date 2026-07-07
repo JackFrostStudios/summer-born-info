@@ -41,6 +41,7 @@ describe('NotFound', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const section = compiled.querySelector<HTMLElement>('section.not-found');
     const panel = compiled.querySelector<HTMLElement>('sbi-panel.not-found__panel');
+    const panelShell = compiled.querySelector<HTMLElement>('.sbi-panel');
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
     const icon = compiled.querySelector<HTMLElement>('.not-found__icon');
     const buttonHost = compiled.querySelector<HTMLElement>('sbi-button.not-found__home-button');
@@ -52,6 +53,7 @@ describe('NotFound', () => {
 
     expect(section?.getAttribute('aria-labelledby')).toBe('not-found-heading');
     expect(panel).not.toBeNull();
+    expect(panelShell?.classList.contains('sbi-panel--media-compact')).toBe(true);
     expect(compiled.querySelectorAll('h1')).toHaveLength(1);
     expect(heading.id).toBe('not-found-heading');
     expect(heading.textContent.trim()).toBe(`We can't find that page`);
