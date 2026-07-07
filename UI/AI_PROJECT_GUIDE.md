@@ -22,6 +22,8 @@ The UI is currently an Angular application with server-side rendering support, a
 - `UI/src/styles/` holds modular shared CSS concerns such as font registration, reset rules,
   tokens, base element defaults, and reusable primitives.
 - `UI/public/` holds static assets copied by the Angular build.
+- `UI/full-resolution-assets/` holds retained source images and fonts that are kept for future re-export work but
+  must not ship in runtime builds.
 
 ## Ownership And Placement Rules
 
@@ -40,6 +42,7 @@ The UI is currently an Angular application with server-side rendering support, a
 - Keep Angular localization artifacts owned by `UI/src/locale/`.
 - Treat `UI/src/locale/messages.xlf` as generated project state that should stay in sync with user-facing template text marked for translation.
 - Add shared static assets to `UI/public/`.
+- Keep archival source media that should not ship at runtime in `UI/full-resolution-assets/` instead of `UI/public/`.
 - If locale-specific static assets are introduced later, keep them under a locale-scoped folder in `UI/public/` such as `UI/public/i18n/<locale>/` instead of scattering them across feature folders.
 - Keep repository-level guidance in `UI/README.md` and `UI/AGENTS.md`; do not duplicate that detail inside feature files.
 - If the UI grows beyond the current baseline, prefer adding feature-focused subfolders under `UI/src/app/features/` rather than expanding `app.ts` or putting feature logic into `root-shell`.

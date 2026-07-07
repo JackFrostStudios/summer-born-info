@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { Icon } from './icon';
+import { Icon, type IconName } from './icon';
 
 @Component({
   selector: 'sbi-icon-test-host',
   imports: [Icon],
-  template:
-    '<sbi-icon class="icon-host" name="sun" [label]="label" /><sbi-icon class="icon-decorative" name="builder" />',
+  template: `<sbi-icon class="icon-host" [$name]="sunIconName" [$label]="label" />
+    <sbi-icon class="icon-decorative" [$name]="builderIconName" />`,
 })
 class TestHost {
+  protected readonly sunIconName: IconName = 'sun';
+  protected readonly builderIconName: IconName = 'builder';
   protected readonly label = 'Theme icon';
 }
 

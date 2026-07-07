@@ -17,16 +17,16 @@ external mask files or background-image delivery.
 
 ### Inputs
 
-- `name`: `'builder' | 'moon-stars' | 'sun'`
+- `$name`: `'builder' | 'moon-stars' | 'sun'`
   Selects which shared inline SVG to render.
-- `label`: `string | null`
+- `$label`: `string | null`
   Optional accessible name. Leave this unset for decorative icons so the component stays hidden from assistive
   technology.
 
 ## Accessibility And Behavior Expectations
 
-- Decorative icons should omit `label`, which causes `sbi-icon` to render with `aria-hidden="true"`.
-- Informative icons should provide `label`, which causes `sbi-icon` to expose `role="img"` with that accessible
+- Decorative icons should omit `$label`, which causes `sbi-icon` to render with `aria-hidden="true"`.
+- Informative icons should provide `$label`, which causes `sbi-icon` to expose `role="img"` with that accessible
   name.
 - Consumers should keep interactive semantics on the owning control or feature component rather than on the icon.
 
@@ -35,7 +35,7 @@ external mask files or background-image delivery.
 - Supported: size the icon from consumer CSS by styling the `sbi-icon` host element.
 - Supported: control the icon colour with the standard CSS `color` property; the inline SVG fills use
   `currentColor`.
-- Supported: reuse the documented icon names through `name`.
+- Supported: reuse the documented icon names through `$name`.
 - Not supported: depending on the component's internal `<svg>` markup shape as a consumer API.
 - Not supported: importing from implementation paths such as `@design-system/icons/icon`.
 

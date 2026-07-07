@@ -154,6 +154,7 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
    - add JS budgets
    - add asset-size CI checks
    - status: delivered on 2026-07-06 by documenting the expectation that future non-primary routes stay lazy-loaded, adding `allScript` and `anyScript` production budgets in `UI/angular.json`, and wiring a repo-owned tracked-asset size check into UI CI for `UI/public/images/` and `UI/public/fonts/`
+   - review follow-up on 2026-07-07: move retained source PNG and TTF assets out of `UI/public/` into `UI/full-resolution-assets/` so the runtime build and the tracked-asset size gate only cover shipped assets
 4. Localized asset-path validation and cleanup:
    - confirm hosting contract
    - fix asset references or deploy configuration
@@ -165,6 +166,7 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
    - move reusable theme icons into `UI/src/design-system/icons/` as inline SVGs
    - keep the inline theme script minimal and documented
    - status: delivered on 2026-07-07 by introducing a shared `UI/src/design-system/icons/` inline SVG component for the theme and under-construction consumers, removing the old mask-based icon styling and the no-longer-needed `translateZ(0)` workaround, and explicitly keeping the tiny inline theme boot script in `UI/src/index.html` unchanged because it still provides the intended flash-free early theme application with minimal parser-blocking code
+   - review follow-up on 2026-07-07: inline the SVG path data directly in `icon.html` and keep the component input names `$name` and `$label` so the public API stays aligned with the UI signal naming convention
 
 ## 9. Risks and Mitigations
 
