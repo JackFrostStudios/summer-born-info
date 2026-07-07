@@ -129,7 +129,7 @@ Given a visitor navigates to an unknown URL, when the router resolves the route,
 ### Execution Progress
 
 - [x] Theme-control test remediation completed in `UI/src/app/shell/theme-control/`, including malformed storage handling, storage failure resilience, explicit `system` reset coverage, server-platform guards, listener teardown assertions, and shared stub extraction.
-- [ ] Homepage ownership and historical negative-assertion cleanup is still pending.
+- [x] Homepage test remediation completed in `UI/src/app/features/home/`, narrowing `Home` to page composition and route accessibility ownership while keeping detailed hero content, image, and CTA assertions in `HomeHero`.
 - [ ] Shell semantics, button gaps, and footer-link contract coverage are still pending.
 - [ ] Final cross-suite validation and peer review are still pending.
 
@@ -160,8 +160,8 @@ Given a visitor navigates to an unknown URL, when the router resolves the route,
 - [x] Issue 3 open finding is resolved with listener teardown assertions tied to injector destruction.
 - [x] Issue 4 remains resolved: unknown-route behaviour is covered through the current not-found route tests.
 - [ ] Issue 5 open finding is resolved by replacing brittle structure/class assertions where semantics are the real contract.
-- [ ] Issue 6 open finding is resolved by narrowing `Home` versus `HomeHero` test ownership.
-- [ ] Issue 7 open finding is resolved by removing historical negative-copy assertions instead of preserving them.
+- [x] Issue 6 open finding is resolved by narrowing `Home` versus `HomeHero` test ownership.
+- [x] Issue 7 open finding is resolved by removing historical negative-copy assertions instead of preserving them.
 - [ ] Issue 8 open finding is resolved by strengthening semantic and accessible-name assertions in key specs.
 - [ ] Issue 9 open finding is resolved with null-ARIA attribute coverage in `Button` tests.
 - [ ] Issue 10 open finding is resolved with focused unsupported-variant protection coverage or another documented safeguard.
