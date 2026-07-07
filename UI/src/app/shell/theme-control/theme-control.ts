@@ -8,10 +8,13 @@ import { ThemeControlService } from './theme-control.service';
   imports: [Button, Icon],
   templateUrl: './theme-control.html',
   styleUrl: './theme-control.scss',
+  host: {
+    '[attr.data-sbi-theme-control-mode]': '$effectiveMode()',
+  },
 })
 export class ThemeControl {
   private readonly colourMode = inject(ThemeControlService);
-  private readonly $effectiveMode = this.colourMode.$effectiveMode;
+  protected readonly $effectiveMode = this.colourMode.$effectiveMode;
   private readonly $isDarkMode = computed(() => this.$effectiveMode() === 'dark');
 
   protected readonly sunIconName: IconName = 'sun';

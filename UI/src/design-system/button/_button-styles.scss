@@ -12,7 +12,8 @@
   justify-content: center;
   line-height: 1;
   min-block-size: 2.75rem;
-  padding: 0.75rem 1.25rem;
+  padding-block: var(--sbi-space-3);
+  padding-inline: calc(var(--sbi-space-4) + var(--sbi-space-1));
   position: relative;
   text-decoration: none;
   transition:

@@ -126,6 +126,37 @@ Given the homepage hero or shared placeholder-panel layouts cross their wide-scr
 6. Make an explicit keep-or-defer decision on cascade layers after the concrete remediation work is complete and the remaining stylesheet complexity is visible.
 7. Finish with formatting, linting, tests, and i18n validation.
 
+## 8a. Ordered Implementation Steps
+
+### Step 1. Shared Foundation And Shell Styling
+
+Status: Completed on 2026-07-07. Validation passed with `npm run format`, `npm run lint`, `npm run test:run`, `npm run extract:i18n`, `npm run build:localize`, and `npm run check:localized-ssr-assets`. `npm run validate:i18n` hit the expected extraction-drift guard before the extracted file was refreshed.
+
+- Remove the global `p, li` readable-width rule from `UI/src/styles/_base.scss`.
+- Apply explicit readable-width constraints only where long-form reading is intentional.
+- Replace hard-coded button base padding with spacing-token-based values.
+- Decide and implement the public-header letter-spacing direction, then add responsive safeguards for narrow or localized header content.
+- Refactor the theme control to use named geometry custom properties and one intentional colour-mode selector strategy.
+- Revisit the global focus reset so fallback focus visibility is preserved.
+- Add or update focused tests for shell-level and theme-control behavior where practical.
+
+### Step 2. Feature Surface And Responsive Layout Remediation
+
+- Resolve homepage hero shared-surface ownership so `.sbi-surface` owns the shared shell and feature styles own only the hero-specific treatment.
+- Make the underline motif deliberate and non-duplicative.
+- Review repeated raw `clamp()` formulas in the hero, header, and placeholder surfaces and extract only the semantic tokens or named local properties that represent true shared patterns.
+- Reduce breakpoint pressure in the homepage hero and the shared placeholder/panel layouts.
+- Reassess the under-construction viewport-height rhythm and move it to a more stable owner if the current feature-owned `dvh` strategy remains fragile.
+- Preserve the existing `sbi-panel` shared placeholder/status abstraction while aligning route-level styles to it cleanly.
+- Add or update focused tests and accessibility coverage where responsive layout behavior changes materially.
+
+### Step 3. Documentation, Architecture Decision, And Full Validation
+
+- Update styling or structure documentation if the supported shared styling contract changes.
+- Make an explicit cascade-layer decision and record the implementation outcome in this plan rather than leaving the finding implicit.
+- Run `npm run format`, `npm run lint`, `npm run test:run`, and `npm run validate:i18n` in `UI/`, plus `npm run extract:i18n` if extraction-relevant template metadata changed.
+- Update this plan's completion checklist to reflect the delivered state and any explicit deferral decision.
+
 ## 9. Risks and Mitigations
 
 - Risk: Removing the global readable-width rule could unintentionally widen copy in places that currently depend on it.
@@ -154,21 +185,21 @@ Given the homepage hero or shared placeholder-panel layouts cross their wide-scr
 - [x] Issue 3 remains resolved: the under-construction route no longer owns a one-off panel surface.
 - [ ] Issue 4 open finding is resolved by making the underline motif deliberate and non-duplicative.
 - [ ] Issue 5 open finding is resolved by reducing repeated raw geometry formulas where they represent shared patterns.
-- [ ] Issue 6 open finding is resolved by aligning public-header letter-spacing with either a named token or an intentional documented exception.
-- [ ] Issue 7 open finding is resolved by extracting theme-control geometry values into named custom properties.
-- [ ] Issue 8 open finding is resolved by replacing hard-coded button padding with spacing-token-based values.
-- [ ] Issue 9 open finding is resolved by using one intentional theme-control colour-mode selector strategy.
-- [ ] Issue 10 open finding is resolved by preserving robust focus visibility without the current global transparent-outline risk.
+- [x] Issue 6 open finding is resolved by aligning public-header letter-spacing with either a named token or an intentional documented exception.
+- [x] Issue 7 open finding is resolved by extracting theme-control geometry values into named custom properties.
+- [x] Issue 8 open finding is resolved by replacing hard-coded button padding with spacing-token-based values.
+- [x] Issue 9 open finding is resolved by using one intentional theme-control colour-mode selector strategy.
+- [x] Issue 10 open finding is resolved by preserving robust focus visibility without the current global transparent-outline risk.
 - [ ] Issue 11 cascade-layer finding is closed either by implementation or by an explicit documented deferral decision.
-- [ ] Issue 12 open finding is resolved by adding responsive safeguards to the public header.
+- [x] Issue 12 open finding is resolved by adding responsive safeguards to the public header.
 - [ ] Issue 13 open finding is resolved by reducing homepage hero breakpoint pressure.
 - [ ] Issue 14 open finding is resolved by reducing shared placeholder-panel breakpoint pressure for localized or expanded content.
 - [ ] Issue 15 open finding is resolved by confirming or revising the under-construction viewport-height strategy.
 - [x] Issue 16 remains resolved: `sbi-panel` is now the shared placeholder/status panel abstraction used across multiple routes.
 - [ ] Any affected documentation in `UI/src/styles/README.md`, `UI/AI_PROJECT_GUIDE.md`, or design-system component READMEs is updated if the supported styling contract changes.
 - [ ] Relevant UI tests and accessibility smoke coverage are updated or supplemented where behavior meaningfully changes.
-- [ ] `npm run format` has been run in `UI/`.
-- [ ] `npm run lint` has been run in `UI/`.
-- [ ] `npm run test:run` has been run in `UI/`.
-- [ ] `npm run extract:i18n` has been run in `UI/` if extraction-relevant template metadata changed.
+- [x] `npm run format` has been run in `UI/`.
+- [x] `npm run lint` has been run in `UI/`.
+- [x] `npm run test:run` has been run in `UI/`.
+- [x] `npm run extract:i18n` has been run in `UI/` if extraction-relevant template metadata changed.
 - [ ] `npm run validate:i18n` has been run in `UI/`.
