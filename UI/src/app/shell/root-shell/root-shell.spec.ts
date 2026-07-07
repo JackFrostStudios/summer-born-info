@@ -75,23 +75,23 @@ describe('RootShell', () => {
     const { fixture } = await renderShell('/');
     const compiled = fixture.nativeElement as HTMLElement;
 
-    const header = compiled.querySelector('sbi-public-header');
-    const main = compiled.querySelector('main.app-shell__main');
-    const footer = compiled.querySelector('sbi-public-footer');
-    const firstRouteContent = compiled.querySelector('.first-route-content');
+    const header = compiled.querySelector('header');
+    const main = compiled.querySelector('main');
+    const footer = compiled.querySelector('footer');
+    const firstRouteHeading = findHeadingByText(compiled, 'First route heading');
 
     expect(header).not.toBeNull();
     expect(main).not.toBeNull();
     expect(footer).not.toBeNull();
-    expect(firstRouteContent).not.toBeNull();
+    expect(firstRouteHeading).not.toBeNull();
 
-    if (header === null || main === null || footer === null || firstRouteContent === null) {
-      throw new Error('Expected the root shell header, main content, footer, and first route content to render.');
+    if (header === null || main === null || footer === null || firstRouteHeading === null) {
+      throw new Error('Expected the root shell landmarks and first route heading to render.');
     }
 
-    expect(main.contains(firstRouteContent)).toBe(true);
-    expect(header.contains(firstRouteContent)).toBe(false);
-    expect(footer.contains(firstRouteContent)).toBe(false);
+    expect(main.contains(firstRouteHeading)).toBe(true);
+    expect(header.contains(firstRouteHeading)).toBe(false);
+    expect(footer.contains(firstRouteHeading)).toBe(false);
   });
 
   it('sets the page title and aria announcement from the active route metadata after navigation', async () => {
@@ -109,7 +109,7 @@ describe('RootShell', () => {
 
     const announcement = getAnnouncementElement(fixture);
     const compiled = fixture.nativeElement as HTMLElement;
-    const secondRouteHeading = compiled.querySelector('#second-route-heading');
+    const secondRouteHeading = findHeadingByText(compiled, 'Second route heading');
 
     expect(secondRouteHeading).not.toBeNull();
     expect(document.title).toBe(secondRouteAccessibility.title);
@@ -251,11 +251,22 @@ async function activateLink(
 
 function getAnnouncementElement(fixture: ComponentFixture<RootShell>): HTMLElement {
   const compiled = fixture.nativeElement as HTMLElement;
-  const announcement = compiled.querySelector<HTMLElement>('.app-shell__route-announcement');
+  const announcement =
+    Array.from(compiled.querySelectorAll<HTMLElement>('[role="status"]')).find(
+      (element) => element.getAttribute('aria-live') === 'polite',
+    ) ?? null;
 
   if (announcement === null) {
     throw new Error('Expected the root shell route announcement to render.');
   }
 
   return announcement;
+}
+
+function findHeadingByText(root: ParentNode, text: string): HTMLHeadingElement | null {
+  return (
+    Array.from(root.querySelectorAll('h1, h2, h3, h4, h5, h6')).find(
+      (heading): heading is HTMLHeadingElement => heading.textContent.trim() === text,
+    ) ?? null
+  );
 }

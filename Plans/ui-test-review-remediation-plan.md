@@ -130,7 +130,7 @@ Given a visitor navigates to an unknown URL, when the router resolves the route,
 
 - [x] Theme-control test remediation completed in `UI/src/app/shell/theme-control/`, including malformed storage handling, storage failure resilience, explicit `system` reset coverage, server-platform guards, listener teardown assertions, and shared stub extraction.
 - [x] Homepage test remediation completed in `UI/src/app/features/home/`, narrowing `Home` to page composition and route accessibility ownership while keeping detailed hero content, image, and CTA assertions in `HomeHero`.
-- [ ] Shell semantics, button gaps, and footer-link contract coverage are still pending.
+- [x] Shell, button, and footer test remediation completed across `public-header`, `root-shell`, `public-footer`, and `design-system/button`, replacing brittle assertions with stronger semantic checks and documenting the current footer-link/button contracts.
 - [ ] Final cross-suite validation and peer review are still pending.
 
 ## 9. Risks and Mitigations
@@ -159,13 +159,13 @@ Given a visitor navigates to an unknown URL, when the router resolves the route,
 - [x] Issue 2 open finding is resolved with server-platform coverage for `ThemeControlService`.
 - [x] Issue 3 open finding is resolved with listener teardown assertions tied to injector destruction.
 - [x] Issue 4 remains resolved: unknown-route behaviour is covered through the current not-found route tests.
-- [ ] Issue 5 open finding is resolved by replacing brittle structure/class assertions where semantics are the real contract.
+- [x] Issue 5 open finding is resolved by replacing brittle structure/class assertions where semantics are the real contract.
 - [x] Issue 6 open finding is resolved by narrowing `Home` versus `HomeHero` test ownership.
 - [x] Issue 7 open finding is resolved by removing historical negative-copy assertions instead of preserving them.
-- [ ] Issue 8 open finding is resolved by strengthening semantic and accessible-name assertions in key specs.
-- [ ] Issue 9 open finding is resolved with null-ARIA attribute coverage in `Button` tests.
-- [ ] Issue 10 open finding is resolved with focused unsupported-variant protection coverage or another documented safeguard.
-- [ ] Issue 11 needs-decision finding is resolved with footer-link accessibility coverage plus a documented navigation-intent contract.
+- [x] Issue 8 open finding is resolved by strengthening semantic and accessible-name assertions in key specs.
+- [x] Issue 9 open finding is resolved with null-ARIA attribute coverage in `Button` tests.
+- [x] Issue 10 open finding is resolved with focused unsupported-variant protection coverage or another documented safeguard.
+- [x] Issue 11 needs-decision finding is resolved with footer-link accessibility coverage plus a documented navigation-intent contract.
 - [x] Issue 12 remains resolved: rendered `ThemeControl` updates on system-preference changes are already covered.
 - [x] Issue 13 remains resolved as obsolete: `UnderConstruction` no longer uses the reviewed `document.defaultView` path.
 - [x] Issue 14 open finding is resolved by extracting or otherwise reducing duplicated theme-test setup where the added coverage would make the duplication materially worse.

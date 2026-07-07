@@ -8,13 +8,13 @@ describe('PublicHeader', () => {
     }).compileComponents();
   });
 
-  it('renders only the requested brand and shell theme control structure', () => {
+  it('renders the public header landmark with the site brand and theme control', () => {
     const fixture = TestBed.createComponent(PublicHeader);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const header = compiled.querySelector('header.public-header');
-    const brand = compiled.querySelector('.public-header__brand');
+    const header = compiled.querySelector('header');
+    const brand = findParagraphByText(compiled, 'Summer-born Info');
     const themeControl = compiled.querySelector('sbi-theme-control');
 
     expect(compiled.getAttribute('data-shell-header')).toBe('public-header');
@@ -30,38 +30,48 @@ describe('PublicHeader', () => {
       throw new Error('Expected the public header brand to render.');
     }
 
-    expect(header.children.length).toBe(2);
     expect(brand.textContent.trim()).toBe('Summer-born Info');
+    expect(header.contains(brand)).toBe(true);
+    expect(header.contains(themeControl)).toBe(true);
   });
 
-  it('keeps the brand in the stronger prototype-inspired wordmark style', () => {
+  it('renders the site brand as visible text instead of the retired prototype name', () => {
     const fixture = TestBed.createComponent(PublicHeader);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const brand = compiled.querySelector('.public-header__brand');
+    const brand = findParagraphByText(compiled, 'Summer-born Info');
 
     if (brand === null) {
       throw new Error('Expected the public header brand to render.');
     }
 
     expect(brand.textContent).not.toContain('SummerBornTrust');
-    expect(brand.classList.contains('public-header__brand')).toBe(true);
   });
 
-  it('keeps the theme control beside the brand inside the shell header landmark', () => {
+  it('keeps the theme control inside the header landmark beside the brand text', () => {
     const fixture = TestBed.createComponent(PublicHeader);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const header = compiled.querySelector('header.public-header');
+    const header = compiled.querySelector('header');
+    const brand = findParagraphByText(compiled, 'Summer-born Info');
     const themeControl = compiled.querySelector('sbi-theme-control');
 
-    if (header === null || themeControl === null) {
-      throw new Error('Expected the shell header and theme control to render together.');
+    if (header === null || brand === null || themeControl === null) {
+      throw new Error('Expected the shell header, brand, and theme control to render together.');
     }
 
-    expect(header.contains(themeControl)).toBe(true);
+    expect(header.contains(brand)).toBe(true);
     expect(themeControl.parentElement).toBe(header);
+    expect(brand.nextElementSibling).toBe(themeControl);
   });
 });
+
+function findParagraphByText(root: ParentNode, text: string): HTMLParagraphElement | null {
+  return (
+    Array.from(root.querySelectorAll('p')).find(
+      (paragraph): paragraph is HTMLParagraphElement => paragraph.textContent.trim() === text,
+    ) ?? null
+  );
+}
