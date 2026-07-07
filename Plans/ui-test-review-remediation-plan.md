@@ -131,7 +131,7 @@ Given a visitor navigates to an unknown URL, when the router resolves the route,
 - [x] Theme-control test remediation completed in `UI/src/app/shell/theme-control/`, including malformed storage handling, storage failure resilience, explicit `system` reset coverage, server-platform guards, listener teardown assertions, and shared stub extraction.
 - [x] Homepage test remediation completed in `UI/src/app/features/home/`, narrowing `Home` to page composition and route accessibility ownership while keeping detailed hero content, image, and CTA assertions in `HomeHero`.
 - [x] Shell, button, and footer test remediation completed across `public-header`, `root-shell`, `public-footer`, and `design-system/button`, replacing brittle assertions with stronger semantic checks and documenting the current footer-link/button contracts.
-- [ ] Final cross-suite validation and peer review are still pending.
+- [x] Peer review completed with one `Home` spec ownership follow-up applied, and the final `UI/` validation pass (`npm run format`, `npm run lint`, `npm run test:run`) succeeded afterward.
 
 ## 9. Risks and Mitigations
 

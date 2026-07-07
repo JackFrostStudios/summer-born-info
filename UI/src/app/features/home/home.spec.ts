@@ -102,8 +102,5 @@ describe('Home', () => {
 
     expect(compiled.children).toHaveLength(1);
     expect(compiled.firstElementChild).toBe(article);
-    expect(article.querySelectorAll('header')).toHaveLength(1);
-    expect(article.querySelectorAll('button')).toHaveLength(1);
-    expect(article.querySelectorAll('img')).toHaveLength(1);
   });
 });
