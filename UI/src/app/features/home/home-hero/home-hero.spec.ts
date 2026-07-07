@@ -31,19 +31,21 @@ describe('HomeHero', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
+    const copy = compiled.querySelector<HTMLElement>('.home__hero-copy');
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
     const highlight = compiled.querySelector<HTMLElement>('.home__hero-highlight');
     const buttonHost = compiled.querySelector<HTMLElement>('sbi-button.home__cta-button');
     const button = requireSharedButton(compiled);
 
-    if (highlight === null || buttonHost === null) {
-      throw new Error('Expected the homepage hero highlight and shared CTA button to render.');
+    if (copy === null || highlight === null || buttonHost === null) {
+      throw new Error('Expected the homepage hero copy, highlight, and shared CTA button to render.');
     }
 
     const highlightText = highlight.textContent;
     const buttonText = button.textContent;
 
     expect(compiled.querySelector('header.home__hero')).not.toBeNull();
+    expect(copy.classList.contains('sbi-readable')).toBe(true);
     expect(heading?.id).toBe('home-heading');
     expect(heading?.textContent).toContain('Help your summer-born child start school at the right time for them.');
     expect(highlightText.trim()).toBe('right time for them');
@@ -67,6 +69,7 @@ describe('HomeHero', () => {
     const heroImage = compiled.querySelector<HTMLImageElement>('.home__hero-art-image');
 
     expect(heroArt).not.toBeNull();
+    expect(heroArt?.classList.contains('sbi-surface')).toBe(true);
     expect(heroImage?.getAttribute('src')).toContain('images/hero-child-playing.avif');
     expect(heroImage?.getAttribute('fetchpriority')).toBe('high');
     expect(heroImage?.getAttribute('loading')).toBe('eager');

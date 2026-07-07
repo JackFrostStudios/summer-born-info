@@ -68,6 +68,7 @@ describe('UnderConstruction', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const section = compiled.querySelector<HTMLElement>('section.under-construction');
     const panel = compiled.querySelector<HTMLElement>('sbi-panel.under-construction__panel');
+    const panelShell = compiled.querySelector<HTMLElement>('.sbi-panel');
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
     const icon = compiled.querySelector<HTMLElement>('sbi-icon.under-construction__icon');
     const iconSvg = icon?.querySelector('svg') ?? null;
@@ -87,6 +88,7 @@ describe('UnderConstruction', () => {
 
     expect(section?.getAttribute('aria-labelledby')).toBe('under-construction-heading');
     expect(panel).not.toBeNull();
+    expect(panelShell?.classList.contains('sbi-panel--media-compact')).toBe(false);
     expect(compiled.querySelectorAll('h1')).toHaveLength(1);
     expect(heading.id).toBe('under-construction-heading');
     expect(heading.textContent.trim()).toBe(`We're still working on this page`);

@@ -142,6 +142,8 @@ Status: Completed on 2026-07-07. Validation passed with `npm run format`, `npm r
 
 ### Step 2. Feature Surface And Responsive Layout Remediation
 
+Status: Completed on 2026-07-07. Validation passed with `npm run format`, `npm run lint`, `npm run test:run`, and `npm run validate:i18n`.
+
 - Resolve homepage hero shared-surface ownership so `.sbi-surface` owns the shared shell and feature styles own only the hero-specific treatment.
 - Make the underline motif deliberate and non-duplicative.
 - Review repeated raw `clamp()` formulas in the hero, header, and placeholder surfaces and extract only the semantic tokens or named local properties that represent true shared patterns.
@@ -181,10 +183,10 @@ Status: Completed on 2026-07-07. Validation passed with `npm run format`, `npm r
 ## 11. Completion Checklist
 
 - [ ] Issue 1 open finding is resolved by removing the global readable-width rule and applying readable-width constraints intentionally.
-- [ ] Issue 2 partial finding is resolved by clearly separating homepage hero shared-surface ownership from feature-specific styling.
+- [x] Issue 2 partial finding is resolved by clearly separating homepage hero shared-surface ownership from feature-specific styling.
 - [x] Issue 3 remains resolved: the under-construction route no longer owns a one-off panel surface.
-- [ ] Issue 4 open finding is resolved by making the underline motif deliberate and non-duplicative.
-- [ ] Issue 5 open finding is resolved by reducing repeated raw geometry formulas where they represent shared patterns.
+- [x] Issue 4 open finding is resolved by making the underline motif deliberate and non-duplicative.
+- [x] Issue 5 open finding is resolved by reducing repeated raw geometry formulas where they represent shared patterns.
 - [x] Issue 6 open finding is resolved by aligning public-header letter-spacing with either a named token or an intentional documented exception.
 - [x] Issue 7 open finding is resolved by extracting theme-control geometry values into named custom properties.
 - [x] Issue 8 open finding is resolved by replacing hard-coded button padding with spacing-token-based values.
@@ -192,14 +194,14 @@ Status: Completed on 2026-07-07. Validation passed with `npm run format`, `npm r
 - [x] Issue 10 open finding is resolved by preserving robust focus visibility without the current global transparent-outline risk.
 - [ ] Issue 11 cascade-layer finding is closed either by implementation or by an explicit documented deferral decision.
 - [x] Issue 12 open finding is resolved by adding responsive safeguards to the public header.
-- [ ] Issue 13 open finding is resolved by reducing homepage hero breakpoint pressure.
-- [ ] Issue 14 open finding is resolved by reducing shared placeholder-panel breakpoint pressure for localized or expanded content.
-- [ ] Issue 15 open finding is resolved by confirming or revising the under-construction viewport-height strategy.
+- [x] Issue 13 open finding is resolved by reducing homepage hero breakpoint pressure.
+- [x] Issue 14 open finding is resolved by reducing shared placeholder-panel breakpoint pressure for localized or expanded content.
+- [x] Issue 15 open finding is resolved by confirming or revising the under-construction viewport-height strategy.
 - [x] Issue 16 remains resolved: `sbi-panel` is now the shared placeholder/status panel abstraction used across multiple routes.
 - [ ] Any affected documentation in `UI/src/styles/README.md`, `UI/AI_PROJECT_GUIDE.md`, or design-system component READMEs is updated if the supported styling contract changes.
-- [ ] Relevant UI tests and accessibility smoke coverage are updated or supplemented where behavior meaningfully changes.
+- [x] Relevant UI tests and accessibility smoke coverage are updated or supplemented where behavior meaningfully changes.
 - [x] `npm run format` has been run in `UI/`.
 - [x] `npm run lint` has been run in `UI/`.
 - [x] `npm run test:run` has been run in `UI/`.
 - [x] `npm run extract:i18n` has been run in `UI/` if extraction-relevant template metadata changed.
-- [ ] `npm run validate:i18n` has been run in `UI/`.
+- [x] `npm run validate:i18n` has been run in `UI/`.

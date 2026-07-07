@@ -1,18 +1,27 @@
 :host {
   display: block;
+  min-block-size: 100%;
 }
 
 .under-construction {
+  --under-construction-section-padding: clamp(2rem, 6vw, 5rem);
+  --under-construction-icon-size: clamp(7rem, 20vw, 12rem);
+
+  align-content: center;
   align-items: center;
   display: grid;
-  min-block-size: min(68dvh, 48rem);
-  padding-block: clamp(2rem, 6vw, 5rem);
+  min-block-size: 100%;
+  padding-block: var(--under-construction-section-padding);
+}
+
+.under-construction__panel {
+  inline-size: 100%;
 }
 
 .under-construction__icon {
-  block-size: clamp(7rem, 20vw, 12rem);
+  block-size: var(--under-construction-icon-size);
   color: currentColor;
-  inline-size: clamp(7rem, 20vw, 12rem);
+  inline-size: var(--under-construction-icon-size);
 }
 
 .under-construction__eyebrow {
