@@ -84,9 +84,15 @@ The UI is currently an Angular application with server-side rendering support, a
   spacing, border, focus, surface, shadow, and page-width values.
 - Keep global primitives prefixed with `sbi-` and limited to reusable layout, surface, and
   interaction patterns that are useful across multiple features.
+- Treat readable line-length constraints as an explicit opt-in: use `.sbi-readable` or a
+  component-owned max width only on deliberate long-form reading blocks instead of relying on base
+  element selectors.
 - Prefer component-scoped styles for feature-specific presentation.
 - Build layouts with semantic HTML first, then layer styling on top.
 - Treat responsive behaviour, keyboard flow, and focus visibility as part of the feature, not polish to defer.
+- Keep the current shared stylesheet precedence simple through the import order in
+  `UI/src/styles.scss`; cascade layers are intentionally deferred until the global styling surface is
+  complex enough that import order stops being an obvious and sufficient contract.
 
 ### API Integration
 

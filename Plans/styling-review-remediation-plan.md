@@ -112,7 +112,10 @@ Given the homepage hero or shared placeholder-panel layouts cross their wide-scr
 - Focus styling:
   Treat keyboard-visible focus behavior as a supported accessibility contract, not a cosmetic preference.
 - Cascade layers:
-  This is a strategic CSS architecture decision. If implementation shows the current app is still too small for the added complexity, explicitly defer the change while still closing the higher-priority concrete findings.
+  Deferred on 2026-07-07 after the remediation pass. The current shared stylesheet stack is still
+  limited to a small ordered set of first-party imports in `UI/src/styles.scss`, so explicit import
+  order remains the clearest contract. Revisit `@layer` only when additional global sources or a
+  larger shared-style surface make precedence harder to reason about.
 - Validation:
   Reuse the existing UI validation workflow and extend automated coverage only where the styling changes introduce behavior that is likely to regress silently.
 
@@ -154,6 +157,14 @@ Status: Completed on 2026-07-07. Validation passed with `npm run format`, `npm r
 
 ### Step 3. Documentation, Architecture Decision, And Full Validation
 
+Status: Completed on 2026-07-07. Updated `UI/src/styles/README.md` and `UI/AI_PROJECT_GUIDE.md`
+to reflect intentional readable-width ownership and the current shared stylesheet contract. Cascade
+layers were explicitly deferred because the present `styles.scss` stack remains small and
+first-party-owned enough that plain import order is still easier to maintain than a new layer
+architecture. Validation passed with `npm run format`, `npm run lint`, `npm run test:run`, and
+`npm run validate:i18n` from `UI/`. `validate:i18n` reran extraction and localized-build checks
+cleanly, so no `messages.xlf` update was required.
+
 - Update styling or structure documentation if the supported shared styling contract changes.
 - Make an explicit cascade-layer decision and record the implementation outcome in this plan rather than leaving the finding implicit.
 - Run `npm run format`, `npm run lint`, `npm run test:run`, and `npm run validate:i18n` in `UI/`, plus `npm run extract:i18n` if extraction-relevant template metadata changed.
@@ -177,12 +188,13 @@ Status: Completed on 2026-07-07. Validation passed with `npm run format`, `npm r
 ## 10. Unknowns and Required Clarifications
 
 - No blocking product clarification is required to draft this plan.
-- The main implementation-time decision checkpoint is cascade layers: they should only be introduced if the remaining stylesheet complexity justifies the extra architecture.
+- Cascade layers were reviewed during implementation and are explicitly deferred for now because the
+  current global stylesheet order remains small, local, and easy to reason about.
 - The other notable decision checkpoint is hero-surface ownership: if the homepage gradient treatment is intended as a reusable pattern, it should become a documented shared variation rather than staying as an undocumented partial override.
 
 ## 11. Completion Checklist
 
-- [ ] Issue 1 open finding is resolved by removing the global readable-width rule and applying readable-width constraints intentionally.
+- [x] Issue 1 open finding is resolved by removing the global readable-width rule and applying readable-width constraints intentionally.
 - [x] Issue 2 partial finding is resolved by clearly separating homepage hero shared-surface ownership from feature-specific styling.
 - [x] Issue 3 remains resolved: the under-construction route no longer owns a one-off panel surface.
 - [x] Issue 4 open finding is resolved by making the underline motif deliberate and non-duplicative.
@@ -192,13 +204,13 @@ Status: Completed on 2026-07-07. Validation passed with `npm run format`, `npm r
 - [x] Issue 8 open finding is resolved by replacing hard-coded button padding with spacing-token-based values.
 - [x] Issue 9 open finding is resolved by using one intentional theme-control colour-mode selector strategy.
 - [x] Issue 10 open finding is resolved by preserving robust focus visibility without the current global transparent-outline risk.
-- [ ] Issue 11 cascade-layer finding is closed either by implementation or by an explicit documented deferral decision.
+- [x] Issue 11 cascade-layer finding is closed either by implementation or by an explicit documented deferral decision.
 - [x] Issue 12 open finding is resolved by adding responsive safeguards to the public header.
 - [x] Issue 13 open finding is resolved by reducing homepage hero breakpoint pressure.
 - [x] Issue 14 open finding is resolved by reducing shared placeholder-panel breakpoint pressure for localized or expanded content.
 - [x] Issue 15 open finding is resolved by confirming or revising the under-construction viewport-height strategy.
 - [x] Issue 16 remains resolved: `sbi-panel` is now the shared placeholder/status panel abstraction used across multiple routes.
-- [ ] Any affected documentation in `UI/src/styles/README.md`, `UI/AI_PROJECT_GUIDE.md`, or design-system component READMEs is updated if the supported styling contract changes.
+- [x] Any affected documentation in `UI/src/styles/README.md`, `UI/AI_PROJECT_GUIDE.md`, or design-system component READMEs is updated if the supported styling contract changes.
 - [x] Relevant UI tests and accessibility smoke coverage are updated or supplemented where behavior meaningfully changes.
 - [x] `npm run format` has been run in `UI/`.
 - [x] `npm run lint` has been run in `UI/`.
