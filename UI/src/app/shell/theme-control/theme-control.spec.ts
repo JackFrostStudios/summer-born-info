@@ -102,6 +102,10 @@ function requireToggleHost(compiled: HTMLElement): HTMLElement {
   return toggleHost;
 }
 
+function expectRenderedMode(compiled: HTMLElement, mode: 'system' | 'light' | 'dark'): void {
+  expect(compiled.getAttribute('data-sbi-theme-control-mode')).toBe(mode);
+}
+
 function requireToggleButton(toggleHost: ParentNode): HTMLButtonElement {
   const toggle = toggleHost.querySelector('button');
 
@@ -155,6 +159,7 @@ describe('ThemeControl', () => {
     expect(toggle.classList.contains('sbi-button')).toBe(true);
     expect(toggle.classList.contains('sbi-button--secondary')).toBe(true);
     expect(toggle.classList.contains('sbi-button--icon-only')).toBe(true);
+    expectRenderedMode(compiled, 'system');
     expectToggleSemantics(toggle, 'false');
     expect(toggle.textContent.trim()).toBe('');
     expect(toggleHost.classList.contains('theme-control__toggle')).toBe(true);
@@ -177,6 +182,7 @@ describe('ThemeControl', () => {
     toggle.click();
     fixture.detectChanges();
 
+    expectRenderedMode(compiled, 'dark');
     expectToggleSemantics(toggle, 'true');
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('dark');
     expect(localStorage.getItem(storageKey)).toBe('dark');
@@ -194,10 +200,12 @@ describe('ThemeControl', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const toggle = requireToggleButton(requireToggleHost(compiled));
 
+    expectRenderedMode(compiled, 'system');
     expectToggleSemantics(toggle, 'true');
 
     toggle.click();
     fixture.detectChanges();
+    expectRenderedMode(compiled, 'light');
     expectToggleSemantics(toggle, 'false');
     expect(document.documentElement.getAttribute(rootAttribute)).toBe('light');
     expect(localStorage.getItem(storageKey)).toBe('light');
@@ -217,6 +225,7 @@ describe('ThemeControl', () => {
     const toggleHost = requireToggleHost(compiled);
     const toggle = requireToggleButton(toggleHost);
 
+    expectRenderedMode(compiled, 'dark');
     expectToggleSemantics(toggle, 'true');
   });
 
@@ -237,6 +246,7 @@ describe('ThemeControl', () => {
     mediaQuery.setMatches(true);
     fixture.detectChanges();
 
+    expectRenderedMode(compiled, 'system');
     expectToggleSemantics(toggle, 'true');
     expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
     expect(localStorage.getItem(storageKey)).toBeNull();
