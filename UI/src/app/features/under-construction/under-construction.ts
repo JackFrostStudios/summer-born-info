@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { Navigation, Router } from '@angular/router';
+import { Navigation, PRIMARY_OUTLET, Router, UrlTree } from '@angular/router';
 import { Button } from '@design-system/button';
 import { Icon } from '@design-system/icons';
 import { Panel } from '@design-system/panel';
@@ -26,15 +26,20 @@ export class UnderConstruction {
 
     while (currentNavigation !== null) {
       const currentUrlTree = currentNavigation.finalUrl ?? currentNavigation.extractedUrl;
-      const currentUrl = this.router.serializeUrl(currentUrlTree);
 
-      if (!currentUrl.includes('under-construction')) {
-        return currentUrl;
+      if (!this.isUnderConstructionRoute(currentUrlTree)) {
+        return this.router.serializeUrl(currentUrlTree);
       }
 
       currentNavigation = currentNavigation.previousNavigation;
     }
 
     return null;
+  }
+
+  private isUnderConstructionRoute(urlTree: UrlTree): boolean {
+    const primarySegments = urlTree.root.children[PRIMARY_OUTLET]?.segments;
+
+    return primarySegments?.length === 1 && primarySegments[0]?.path === 'under-construction';
   }
 }

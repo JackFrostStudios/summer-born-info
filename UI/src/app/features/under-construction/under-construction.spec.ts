@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Router, type Navigation, type UrlTree } from '@angular/router';
+import { DefaultUrlSerializer, Router, type Navigation, type UrlTree } from '@angular/router';
 import {
   routeAccessibilityDataKey,
   type RouteAccessibilityData,
@@ -21,6 +21,7 @@ function requireUnderConstructionRouteAccessibility(): RouteAccessibilityMetadat
 }
 
 describe('UnderConstruction', () => {
+  const urlSerializer = new DefaultUrlSerializer();
   const router = {
     lastSuccessfulNavigation: vi.fn<() => Navigation | null>(),
     navigateByUrl: vi.fn().mockResolvedValue(true),
@@ -28,11 +29,13 @@ describe('UnderConstruction', () => {
   };
 
   function createNavigation(url: string, previousNavigation: Navigation | null = null): Navigation {
+    const urlTree = urlSerializer.parse(url);
+
     return {
       id: 1,
-      initialUrl: url as unknown as UrlTree,
-      extractedUrl: url as unknown as UrlTree,
-      finalUrl: url as unknown as UrlTree,
+      initialUrl: urlTree,
+      extractedUrl: urlTree,
+      finalUrl: urlTree,
       trigger: 'imperative',
       extras: {},
       previousNavigation,
@@ -44,7 +47,9 @@ describe('UnderConstruction', () => {
     router.lastSuccessfulNavigation.mockReset();
     router.lastSuccessfulNavigation.mockReturnValue(null);
     router.navigateByUrl.mockClear();
-    router.serializeUrl.mockImplementation((urlTree) => urlTree as string);
+    router.serializeUrl.mockImplementation((urlTree) =>
+      typeof urlTree === 'string' ? urlTree : urlSerializer.serialize(urlTree),
+    );
 
     await TestBed.configureTestingModule({
       imports: [UnderConstruction],
@@ -158,6 +163,52 @@ describe('UnderConstruction', () => {
     button.click();
 
     expect(router.navigateByUrl).toHaveBeenCalledWith('/admissions#summer-born');
+  });
+
+  it('does not skip a legitimate route whose path contains under-construction', () => {
+    router.lastSuccessfulNavigation.mockReturnValue(
+      createNavigation(
+        '/under-construction',
+        createNavigation('/guidance/under-construction-evidence#summary', createNavigation('/admissions')),
+      ),
+    );
+
+    const fixture = TestBed.createComponent(UnderConstruction);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const button = compiled.querySelector<HTMLButtonElement>('sbi-button.under-construction__back-button button');
+
+    if (button === null) {
+      throw new Error('Expected the back button to render.');
+    }
+
+    button.click();
+
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/guidance/under-construction-evidence#summary');
+  });
+
+  it('does not skip a legitimate route whose query contains under-construction', () => {
+    router.lastSuccessfulNavigation.mockReturnValue(
+      createNavigation(
+        '/under-construction',
+        createNavigation('/guidance?topic=under-construction#details', createNavigation('/admissions')),
+      ),
+    );
+
+    const fixture = TestBed.createComponent(UnderConstruction);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const button = compiled.querySelector<HTMLButtonElement>('sbi-button.under-construction__back-button button');
+
+    if (button === null) {
+      throw new Error('Expected the back button to render.');
+    }
+
+    button.click();
+
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/guidance?topic=under-construction#details');
   });
 
   it('falls back to the homepage when there is no prior non-under-construction route', () => {
