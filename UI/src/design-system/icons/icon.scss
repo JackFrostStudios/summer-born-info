@@ -1,0 +1,15 @@
+:host {
+  block-size: 1em;
+  color: inherit;
+  display: inline-block;
+  flex: none;
+  inline-size: 1em;
+  line-height: 0;
+}
+
+svg {
+  block-size: 100%;
+  display: block;
+  fill: currentColor;
+  inline-size: 100%;
+}

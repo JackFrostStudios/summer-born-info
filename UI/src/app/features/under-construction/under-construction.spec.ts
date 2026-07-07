@@ -64,11 +64,19 @@ describe('UnderConstruction', () => {
     const section = compiled.querySelector<HTMLElement>('section.under-construction');
     const panel = compiled.querySelector<HTMLElement>('sbi-panel.under-construction__panel');
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
-    const icon = compiled.querySelector<HTMLElement>('.under-construction__icon');
+    const icon = compiled.querySelector<HTMLElement>('sbi-icon.under-construction__icon');
+    const iconSvg = icon?.querySelector('svg') ?? null;
     const buttonHost = compiled.querySelector<HTMLElement>('sbi-button.under-construction__back-button');
     const button = buttonHost?.querySelector<HTMLButtonElement>('button') ?? null;
 
-    if (panel === null || heading === null || icon === null || buttonHost === null || button === null) {
+    if (
+      panel === null ||
+      heading === null ||
+      icon === null ||
+      iconSvg === null ||
+      buttonHost === null ||
+      button === null
+    ) {
       throw new Error('Expected the under-construction panel, content, icon, and back button to render.');
     }
 
@@ -86,6 +94,7 @@ describe('UnderConstruction', () => {
     expect(button.classList.contains('sbi-button')).toBe(true);
     expect(button.classList.contains('sbi-button--secondary')).toBe(false);
     expect(icon.getAttribute('aria-hidden')).toBe('true');
+    expect(iconSvg.tagName).toBe('svg');
   });
 
   it('matches the route accessibility contract for the focus target and skip-link destination', () => {

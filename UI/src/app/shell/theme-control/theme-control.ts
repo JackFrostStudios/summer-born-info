@@ -1,10 +1,11 @@
 import { Component, computed, inject } from '@angular/core';
 import { Button } from '@design-system/button';
+import { Icon } from '@design-system/icons';
 import { ThemeControlService } from './theme-control.service';
 
 @Component({
   selector: 'sbi-theme-control',
-  imports: [Button],
+  imports: [Button, Icon],
   templateUrl: './theme-control.html',
   styleUrl: './theme-control.scss',
 })

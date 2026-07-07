@@ -147,7 +147,8 @@ describe('ThemeControl', () => {
       throw new Error('Expected the toggle icon viewport to render.');
     }
 
-    const icons = toggle.querySelectorAll('.theme-control__icon');
+    const icons = toggle.querySelectorAll('sbi-icon.theme-control__icon');
+    const inlineSvgs = toggle.querySelectorAll('sbi-icon.theme-control__icon svg');
 
     expect(toggle.tagName).toBe('BUTTON');
     expect(toggle.type).toBe('button');
@@ -159,6 +160,7 @@ describe('ThemeControl', () => {
     expect(toggleHost.classList.contains('theme-control__toggle')).toBe(true);
     expect(viewport.getAttribute('aria-hidden')).toBe('true');
     expect(icons).toHaveLength(2);
+    expect(inlineSvgs).toHaveLength(2);
   });
 
   it('toggles to an explicit dark mode and persists the override when activated from light', () => {

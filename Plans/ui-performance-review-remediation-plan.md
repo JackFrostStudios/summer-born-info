@@ -23,8 +23,8 @@ Resolve the actionable findings captured in `UI/review-findings/performance-expe
 3. Issue 3: Routes are eagerly imported, so future pages will inflate initial JS - `Partially Resolved`
 4. Issue 4: Asset budgets do not guard the real payload hotspots - `Resolved`
 5. Issue 5: Localized build output uses root-relative asset URLs - `Resolved`
-6. Issue 6: Theme icons use CSS masks and multiple external icon requests - `Open`
-7. Issue 7: Inline theme script is small but parser-blocking - `Open`
+6. Issue 6: Theme icons use CSS masks and multiple external icon requests - `Resolved`
+7. Issue 7: Inline theme script is small but parser-blocking - `Resolved`
 
 ### Current-State Notes That Shape The Plan
 
@@ -35,8 +35,8 @@ Resolve the actionable findings captured in `UI/review-findings/performance-expe
 - The route-loading issue is no longer fully open because `under-construction` already uses `loadComponent` in `UI/src/app/app.routes.ts`, but the broader route-growth strategy still needs to be tightened and documented.
 - Production guardrails now cover `initial`, `allScript`, and `anyScript`, and UI CI now runs a repo-owned tracked-asset size check for `UI/public/images/` and `UI/public/fonts/`.
 - The localized asset-path risk has now been addressed by making the homepage hero image base-href-relative in localized HTML output and teaching the SSR host in `UI/src/server.ts` to serve `/fonts`, `/icons`, and `/images` from the localized browser output when those assets remain root-relative in compiled CSS.
-- Theme icons should now be remediated by creating a reusable `UI/src/design-system/icons/` folder with inline SVG assets/components so icon colour can be controlled directly in CSS, eliminating the need for CSS background-mask delivery in the final implementation.
-- The theme boot script is intentionally tiny and acceptable today, so this plan treats it as a guardrail item rather than a refactor mandate.
+- Theme icons are now remediated through the reusable `UI/src/design-system/icons/` folder, with inline SVG consumers styled via direct CSS colour rather than background-mask delivery.
+- The theme boot script remains intentionally tiny and unchanged in `UI/src/index.html`, with explicit validation notes confirming that it still delivers the intended flash-free early theme application without taking on extra complexity.
 
 ## 3. Scope
 
@@ -163,6 +163,7 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
    - remove unnecessary `translateZ(0)` if justified
    - move reusable theme icons into `UI/src/design-system/icons/` as inline SVGs
    - keep the inline theme script minimal and documented
+   - status: delivered on 2026-07-07 by introducing a shared `UI/src/design-system/icons/` inline SVG component for the theme and under-construction consumers, removing the old mask-based icon styling and the no-longer-needed `translateZ(0)` workaround, and explicitly keeping the tiny inline theme boot script in `UI/src/index.html` unchanged because it still provides the intended flash-free early theme application with minimal parser-blocking code
 
 ## 9. Risks and Mitigations
 
@@ -196,10 +197,10 @@ Given a visitor has previously chosen a colour mode, when the document starts pa
 - [x] Route-loading guidance or tests are updated enough that the current lazy-loading improvement is preserved.
 - [x] Issue 4 open finding is resolved by adding meaningful JS bundle guardrails plus a lightweight static-asset size check.
 - [x] Issue 5 open finding is resolved by validating and correcting localized asset URL behavior under the deployed base-href strategy.
-- [ ] Issue 6 open finding is resolved by replacing masked external theme icon assets with reusable inline SVG design-system icons and direct CSS colour control.
-- [ ] Issue 7 open finding is either left intentionally minimal with explicit validation notes or improved without reintroducing a theme flash.
-- [ ] Any image, font, route, or build-configuration tests affected by the remediation are updated and passing.
-- [ ] `npm run format` has been run in `UI/` if implementation edits UI files.
-- [ ] `npm run lint` has been run in `UI/`.
-- [ ] `npm run test:run` has been run in `UI/` when component, route, or service behavior changes.
+- [x] Issue 6 open finding is resolved by replacing masked external theme icon assets with reusable inline SVG design-system icons and direct CSS colour control.
+- [x] Issue 7 open finding is either left intentionally minimal with explicit validation notes or improved without reintroducing a theme flash.
+- [x] Any image, font, route, or build-configuration tests affected by the remediation are updated and passing.
+- [x] `npm run format` has been run in `UI/` if implementation edits UI files.
+- [x] `npm run lint` has been run in `UI/`.
+- [x] `npm run test:run` has been run in `UI/` when component, route, or service behavior changes.
 - [ ] `npm run validate:i18n` has been run in `UI/` when localized asset or build-path behavior changes.

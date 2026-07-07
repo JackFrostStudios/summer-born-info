@@ -1,0 +1,17 @@
+@switch ($name()) {
+  @case ('sun') {
+    <svg viewBox="0 0 24 24" focusable="false">
+      <path [attr.d]="paths.sun" />
+    </svg>
+  }
+  @case ('moon-stars') {
+    <svg viewBox="0 0 24 24" focusable="false">
+      <path [attr.d]="paths['moon-stars']" />
+    </svg>
+  }
+  @case ('builder') {
+    <svg viewBox="0 0 24 24" focusable="false">
+      <path [attr.d]="paths.builder" />
+    </svg>
+  }
+}

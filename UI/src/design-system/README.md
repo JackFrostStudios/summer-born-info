@@ -50,5 +50,7 @@ currently visible in DevTools or source.
 
 - [Button](./button/README.md): shared `sbi-button` component for primary and secondary button presentation,
   including the sanctioned icon-only toggle layout.
+- [Icons](./icons/README.md): shared `sbi-icon` component for reusable inline SVG assets that consumers colour
+  directly with CSS.
 - [Panel](./panel/README.md): shared `sbi-panel` component for repeated raised placeholder or status panel
   layouts with decorative media and stacked content.
