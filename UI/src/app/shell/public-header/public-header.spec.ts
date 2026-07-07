@@ -17,6 +17,7 @@ describe('PublicHeader', () => {
     const brand = compiled.querySelector('.public-header__brand');
     const themeControl = compiled.querySelector('sbi-theme-control');
 
+    expect(compiled.getAttribute('data-shell-header')).toBe('public-header');
     expect(header).not.toBeNull();
     expect(brand).not.toBeNull();
     expect(themeControl).not.toBeNull();
@@ -46,5 +47,21 @@ describe('PublicHeader', () => {
 
     expect(brand.textContent).not.toContain('SummerBornTrust');
     expect(brand.classList.contains('public-header__brand')).toBe(true);
+  });
+
+  it('keeps the theme control beside the brand inside the shell header landmark', () => {
+    const fixture = TestBed.createComponent(PublicHeader);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const header = compiled.querySelector('header.public-header');
+    const themeControl = compiled.querySelector('sbi-theme-control');
+
+    if (header === null || themeControl === null) {
+      throw new Error('Expected the shell header and theme control to render together.');
+    }
+
+    expect(header.contains(themeControl)).toBe(true);
+    expect(themeControl.parentElement).toBe(header);
   });
 });

@@ -1,10 +1,19 @@
+:host {
+  --sbi-theme-control-icon-size: 1.5rem;
+  --sbi-theme-control-reel-gap: var(--sbi-space-3);
+  --sbi-theme-control-reel-shift: calc(-1 * (var(--sbi-theme-control-icon-size) + var(--sbi-theme-control-reel-gap)));
+
+  display: inline-block;
+  min-inline-size: 0;
+}
+
 .theme-control {
   align-items: center;
   display: flex;
   flex-direction: column;
   gap: var(--sbi-space-1);
   justify-content: flex-end;
-  min-inline-size: 4.5rem;
+  min-inline-size: fit-content;
 }
 
 .theme-control__toggle {
@@ -13,35 +22,27 @@
 }
 
 .theme-control__viewport {
-  block-size: 1.5rem;
+  block-size: var(--sbi-theme-control-icon-size);
   display: block;
-  inline-size: 1.5rem;
+  inline-size: var(--sbi-theme-control-icon-size);
   overflow: hidden;
 }
 
 .theme-control__reel {
   display: grid;
-  gap: var(--sbi-space-3);
+  gap: var(--sbi-theme-control-reel-gap);
   transform: translateY(0);
   transition: transform 240ms ease;
 }
 
-html[data-sbi-colour-mode='dark'] .theme-control__reel,
-:host-context(html[data-sbi-colour-mode='dark']) .theme-control__reel {
-  transform: translateY(calc(-1 * (1.5rem + var(--sbi-space-3))));
-}
-
-@media (prefers-color-scheme: dark) {
-  html:not([data-sbi-colour-mode]) .theme-control__reel,
-  :host-context(html:not([data-sbi-colour-mode])) .theme-control__reel {
-    transform: translateY(calc(-1 * (1.5rem + var(--sbi-space-3))));
-  }
+:host([data-sbi-theme-control-mode='dark']) .theme-control__reel {
+  transform: translateY(var(--sbi-theme-control-reel-shift));
 }
 
 .theme-control__icon {
-  block-size: 1.5rem;
+  block-size: var(--sbi-theme-control-icon-size);
   color: var(--sbi-color-primary);
-  inline-size: 1.5rem;
+  inline-size: var(--sbi-theme-control-icon-size);
 }
 
 @media (prefers-reduced-motion: reduce) {

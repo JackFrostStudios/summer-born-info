@@ -21,7 +21,7 @@ body {
   color: var(--sbi-color-on-primary-container);
 }
 
-:focus {
+:focus:not(:focus-visible) {
   outline-color: transparent;
 }
 
@@ -55,11 +55,6 @@ h2 {
 
 h3 {
   font-size: var(--sbi-font-size-3);
-}
-
-p,
-li {
-  max-inline-size: var(--sbi-size-readable);
 }
 
 a {

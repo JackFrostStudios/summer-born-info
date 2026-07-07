@@ -220,6 +220,28 @@ describe('ThemeControl', () => {
     expectToggleSemantics(toggle, 'true');
   });
 
+  it('updates the rendered toggle state when the system preference changes without an explicit override', () => {
+    const mediaQuery = installMatchMediaStub(false);
+
+    TestBed.configureTestingModule({
+      imports: [ThemeControl],
+    });
+
+    const fixture = TestBed.createComponent(ThemeControl);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const toggle = requireToggleButton(requireToggleHost(compiled));
+
+    expectToggleSemantics(toggle, 'false');
+
+    mediaQuery.setMatches(true);
+    fixture.detectChanges();
+
+    expectToggleSemantics(toggle, 'true');
+    expect(document.documentElement.hasAttribute(rootAttribute)).toBe(false);
+    expect(localStorage.getItem(storageKey)).toBeNull();
+  });
+
   it('keeps the stable toggle semantics while the control has keyboard focus', () => {
     TestBed.configureTestingModule({
       imports: [ThemeControl],
