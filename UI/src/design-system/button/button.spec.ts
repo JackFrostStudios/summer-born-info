@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { Button } from './button';
+import { Button, type ButtonVariant } from './button';
 
 @Component({
   selector: 'sbi-button-test-host',
@@ -9,7 +9,7 @@ import { Button } from './button';
     '<span id="button-external-label" i18n="Button test host external label@@buttonTestHostExternalLabel">External button label</span><span id="button-external-description" i18n="Button test host external description@@buttonTestHostExternalDescription">External button description</span><sbi-button [$variant]="variant" [$layout]="layout" [$disabled]="disabled" [$ariaPressed]="ariaPressed" [$ariaLabel]="ariaLabel" [$ariaLabelledBy]="ariaLabelledBy" [$ariaDescribedBy]="ariaDescribedBy" [$testId]="testId" (pressed)="handlePressed($event)"><span class="projected-content" i18n="Button test host projected content@@buttonTestHostProjectedContent">Test action</span></sbi-button>',
 })
 class TestHostComponent {
-  variant: 'primary' | 'secondary' = 'primary';
+  variant: ButtonVariant = 'primary';
   layout: 'default' | 'icon-only' = 'default';
   disabled = false;
   ariaPressed: 'true' | 'false' | null = null;
@@ -132,6 +132,18 @@ describe('Button', () => {
     expect(button.getAttribute('aria-labelledby')).toBeNull();
   });
 
+  it('removes forwarded explicit naming and description attributes when their inputs are null', () => {
+    const fixture = TestBed.createComponent(TestHostComponent);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const button = requireButton(compiled);
+
+    expect(button.getAttribute('aria-label')).toBeNull();
+    expect(button.getAttribute('aria-labelledby')).toBeNull();
+    expect(button.getAttribute('aria-describedby')).toBeNull();
+  });
+
   it('warns in development mode and prefers aria-label when both explicit naming inputs are supplied', () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const fixture = TestBed.createComponent(TestHostComponent);
@@ -147,6 +159,10 @@ describe('Button', () => {
     expect(warnSpy).toHaveBeenCalledWith(
       'sbi-button received both ariaLabel and ariaLabelledBy. Provide only one explicit accessible-name input; ariaLabel takes precedence and ariaLabelledBy will not be forwarded.',
     );
+  });
+
+  it('keeps unsupported variants out of the public input contract at compile time', () => {
+    expectTypeOf<ButtonVariant>().toEqualTypeOf<'primary' | 'secondary'>();
   });
 
   it('re-emits the native click event through the pressed output', () => {
