@@ -60,7 +60,7 @@ jobs:
       - name: Install dotnet-coverage tool
         run: dotnet tool install -g dotnet-coverage
       - name: Restore solution
-        run: dotnet restore SummerBornInfo.sln
+        run: dotnet restore SummerBornInfo.sln --locked-mode
       - name: Build solution
         run: dotnet build SummerBornInfo.sln -c Release --no-restore
       - name: Run tests
