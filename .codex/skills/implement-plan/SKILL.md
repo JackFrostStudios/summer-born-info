@@ -1,6 +1,6 @@
 ---
 name: implement-plan
-description: Implement a delivery-ready plan from the Plans folder step by step using isolated sub-agents, sequential execution, plan progress updates, validation, and commit checkpoints. Use when Codex is asked to carry out an existing implementation plan in `Plans/`, keep the main thread context clean while executing each plan step, or drive a plan through final checklist and review completion.
+description: Orchestrate execution of a delivery-ready plan from the Plans folder in the top-level user-facing thread using isolated sub-agents, sequential execution, plan progress updates, validation, and commit checkpoints. Use only when Codex itself is responsible for coordinating the full end-to-end implementation of an existing plan in `Plans/`. Do not use for sub-agents implementing a single plan step, peer review pass, or targeted follow-up fix.
 ---
 
 # Implement Plan
@@ -9,12 +9,23 @@ description: Implement a delivery-ready plan from the Plans folder step by step 
 
 Use this skill to execute an existing implementation plan in `Plans/` without letting the main thread accumulate the detailed context of every code change. Treat the plan as the source of truth, execute one step at a time, and keep progress visible in the plan itself.
 
+This is an orchestration-only skill. It belongs in the main user-facing thread that owns the full plan run. Sub-agents spawned to implement a single step, perform review, or make a focused fix must not load or use this skill.
+
+## Agent Scope
+
+Before using this skill, confirm you are the top-level orchestration agent for the whole plan.
+
+- If you are the main thread coordinating the full plan, continue.
+- If you are a sub-agent asked to implement one step, review code, or apply a focused fix, do not use this skill. Execute the assigned task directly with the relevant surface-specific skills and instructions you were given.
+- If a parent agent tells you to use `implement-plan` for a single step, treat that as a handoff mistake and continue as a single-step worker instead of re-orchestrating the plan.
+
 This skill has strict execution rules:
 
 - You MUST execute every implementation step with a dedicated sub-agent.
 - You MUST execute implementation steps strictly one at a time.
 - You MUST NOT implement plan steps directly in the main thread except for narrow orchestration tasks called out below.
 - You MUST NOT begin the next implementation step until the current one is implemented, reviewed, validated, reflected in the plan, and committed.
+- You MUST NOT ask a step sub-agent, review sub-agent, or follow-up sub-agent to use `implement-plan`.
 
 If the plan is too broad to support strict step-by-step execution, refine the plan first instead of improvising a looser implementation flow.
 
@@ -31,6 +42,7 @@ If the plan is too broad to support strict step-by-step execution, refine the pl
 - MUST use exactly one implementation sub-agent for the active step.
 - MUST keep the main thread focused on orchestration, review, validation, plan updates, and commits.
 - MUST NOT perform implementation for an active plan step in the main thread.
+- MUST NOT load this skill in any sub-agent context.
 - MUST NOT run multiple implementation sub-agents in parallel for different plan steps.
 - MUST NOT implement one step locally while a sub-agent is implementing another step.
 - MUST NOT split or merge plan steps ad hoc during implementation just to make parallel execution easier.
@@ -79,6 +91,7 @@ For every plan step:
    - The minimum relevant files and constraints
    - The delivery instructions needed for that step
    - These additional instructions:
+     - Do not use `implement-plan`. You are implementing one assigned step, not orchestrating the plan.
      - Use the surface-specific architect skill for the step (`api-architect` for `API/` work or `ui-architect` for `UI/` work).
      - Use the surface-specific automated test skill for the step (`api-automated-test-developer` for `API/` work or `ui-automated-test-developer` for `UI/` work).
      - Follow the surface-specific `AGENTS.md` and README validation workflow for the files being changed.
@@ -152,6 +165,7 @@ Relevant context:
 <files, constraints, behaviour notes>
 
 Requirements:
+- Do not use `implement-plan`. You are a single-step worker, not the orchestration agent.
 - Use the surface-specific architect skill to design the implementation.
 - Use the surface-specific automated test skill to write tests.
 - Follow the surface-specific `AGENTS.md` and README validation workflow for the files you change.
@@ -164,6 +178,7 @@ Requirements:
 
 - Keep the main thread focused on orchestration, verification, and plan state.
 - Keep each sub-agent focused on one plan step or one targeted follow-up.
+- Ensure no sub-agent is asked to orchestrate the plan or reload this skill.
 - Prefer small, reviewable commits aligned to plan milestones.
 - Ensure the plan document remains an accurate record of what is complete.
 - Do not hand off with failing builds or failing tests unless the user explicitly accepts that risk.

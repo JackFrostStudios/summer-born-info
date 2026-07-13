@@ -1,13 +1,20 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { InMemoryScrollingOptions, provideRouter, withInMemoryScrolling } from '@angular/router';
+import { provideClientHydration, withEventReplay, withI18nSupport } from '@angular/platform-browser';
 
 import { routes } from './app.routes';
-import { provideClientHydration } from '@angular/platform-browser';
+
+export const appInMemoryScrollingOptions: InMemoryScrollingOptions = {
+  anchorScrolling: 'enabled',
+  scrollPositionRestoration: 'enabled',
+};
+
+export const appHydrationFeatures = [withI18nSupport(), withEventReplay()];
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
-    provideClientHydration(),
+    provideRouter(routes, withInMemoryScrolling(appInMemoryScrollingOptions)),
+    provideClientHydration(...appHydrationFeatures),
   ],
 };

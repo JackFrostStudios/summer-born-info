@@ -12,22 +12,37 @@ The UI is currently an Angular application with server-side rendering support, a
 - `UI/src/app/app.ts` is the root app host and should stay focused on the top-level router outlet.
 - `UI/src/app/app.config.ts` and `app.config.server.ts` hold browser and server configuration.
 - `UI/src/app/app.routes.ts` is the route entry point for browser routes, with `app.routes.server.ts` holding the server route definitions.
+- `UI/src/app/app-route-accessibility.ts` holds the shared route-level accessibility metadata contract consumed by route definitions and shell-level route accessibility orchestration.
 - `UI/src/app/shell/root-shell.*` owns shell-level layout and nested route composition.
-- `UI/src/app/features/home/home-placeholder.*` is the current baseline feature route rendered inside the shell.
+- `UI/src/app/shell/` can also hold focused shell-only subcomponents such as the public header and theme control when the root shell needs reusable structure without taking on feature logic.
+- `UI/src/app/features/home/home.*` is the current public homepage feature route rendered inside the shell.
+- `UI/src/design-system/` holds shared Angular UI components that are reused across multiple shell or feature consumers.
 - `UI/src/locale/messages.xlf` is the canonical extracted source-messages file for Angular i18n.
 - `UI/src/styles.scss` is the shared global stylesheet entry point.
+- `UI/src/styles/` holds modular shared CSS concerns such as font registration, reset rules,
+  tokens, base element defaults, and reusable primitives.
 - `UI/public/` holds static assets copied by the Angular build.
+- `UI/full-resolution-assets/` holds retained source images and fonts that are kept for future re-export work but
+  must not ship in runtime builds.
 
 ## Ownership And Placement Rules
 
 - Put browser-facing UI work in `UI/src/app/` unless there is a clear reason to create a new top-level folder under `src/`.
 - Keep feature code close together: route definition, component, template, styles, and tests should stay near each other.
 - Treat `UI/src/app/app.routes.ts` as the canonical place to grow the route tree until a feature area is large enough to justify a route-specific substructure.
+- Keep the root shell and homepage route eager, but default future non-primary routes in `UI/src/app/app.routes.ts` to lazy loading so secondary feature growth does not silently inflate the initial JavaScript payload.
+- Keep route-owned page accessibility metadata beside the route tree by using `UI/src/app/app-route-accessibility.ts` for the shared contract and declaring each route's values directly in `app.routes.ts`.
 - Keep shell-only layout concerns in `UI/src/app/shell/` and keep feature-specific rendering out of the shell.
 - Add new routed user-facing areas under `UI/src/app/features/` so each feature keeps its component, template, styles, and tests together.
+- Put shared standalone Angular UI components under `UI/src/design-system/` once at least two consumers justify the abstraction and the code is not owned by a single feature or the shell alone.
+- Prefer the shared `UI/src/design-system/panel/` component for repeated raised placeholder or status panel
+  shells instead of reimplementing the gradient-border-shadow recipe in feature styles.
+- Import shared design-system components through their folder-level public API, such as `@design-system/button`
+  or `@design-system/panel`, rather than through deep implementation paths.
 - Keep Angular localization artifacts owned by `UI/src/locale/`.
 - Treat `UI/src/locale/messages.xlf` as generated project state that should stay in sync with user-facing template text marked for translation.
 - Add shared static assets to `UI/public/`.
+- Keep archival source media that should not ship at runtime in `UI/full-resolution-assets/` instead of `UI/public/`.
 - If locale-specific static assets are introduced later, keep them under a locale-scoped folder in `UI/public/` such as `UI/public/i18n/<locale>/` instead of scattering them across feature folders.
 - Keep repository-level guidance in `UI/README.md` and `UI/AGENTS.md`; do not duplicate that detail inside feature files.
 - If the UI grows beyond the current baseline, prefer adding feature-focused subfolders under `UI/src/app/features/` rather than expanding `app.ts` or putting feature logic into `root-shell`.
@@ -42,6 +57,17 @@ The UI is currently an Angular application with server-side rendering support, a
 - Use the `sbi` prefix for Angular selectors and bootstrap tags across workspace configuration and existing components.
 - Prefer standalone Angular APIs and keep module-era patterns out unless an existing dependency requires them.
 - When adding a reusable abstraction, make sure at least two consumers justify it.
+- Keep shared component APIs and their canonical styling together in `UI/src/design-system/` instead of splitting ownership between feature templates and global primitives.
+- Treat each design-system folder `index.ts` as the supported TypeScript public boundary for that component.
+- Keep implementation files such as `button.ts`, `panel.ts`, component-internal classes, and Sass partials private
+  unless a future change intentionally documents and exposes additional surface area.
+
+### Signal Naming
+
+- Prefix signal-backed and computed fields and variables with `$`.
+- Apply the same `$` prefix to readonly signal views such as `.asReadonly()` results.
+- Apply the same `$` prefix to component inputs declared with `input()` so template-bound input signals follow the same naming convention.
+- Treat the `$` prefix as the standard way to signal signal-backed values that are meant to be invoked from Angular templates.
 
 ### Localization Ownership
 
@@ -52,10 +78,21 @@ The UI is currently an Angular application with server-side rendering support, a
 
 ### Styling And Layout
 
-- Keep global styling in `UI/src/styles.scss` minimal and intentional.
+- Keep `UI/src/styles.scss` as the shared stylesheet entry point and place reusable global concerns
+  in modular files under `UI/src/styles/`.
+- Use shared CSS custom properties from `UI/src/styles/_tokens.scss` for common colour, typography,
+  spacing, border, focus, surface, shadow, and page-width values.
+- Keep global primitives prefixed with `sbi-` and limited to reusable layout, surface, and
+  interaction patterns that are useful across multiple features.
+- Treat readable line-length constraints as an explicit opt-in: use `.sbi-readable` or a
+  component-owned max width only on deliberate long-form reading blocks instead of relying on base
+  element selectors.
 - Prefer component-scoped styles for feature-specific presentation.
 - Build layouts with semantic HTML first, then layer styling on top.
 - Treat responsive behaviour, keyboard flow, and focus visibility as part of the feature, not polish to defer.
+- Keep the current shared stylesheet precedence simple through the import order in
+  `UI/src/styles.scss`; cascade layers are intentionally deferred until the global styling surface is
+  complex enough that import order stops being an obvious and sufficient contract.
 
 ### API Integration
 

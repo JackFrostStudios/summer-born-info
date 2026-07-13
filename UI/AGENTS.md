@@ -26,6 +26,7 @@ Use this file when the requested change belongs to the Angular UI in `UI/`.
 
 - Use [AI_PROJECT_GUIDE.md](./AI_PROJECT_GUIDE.md) as the source of truth for UI structure, conventions, and testing/layout expectations.
 - Use [../AI_PROJECT_GUIDE.md](../AI_PROJECT_GUIDE.md) first if you need to confirm whether a change belongs in `UI/` or somewhere else in the repository.
+- For shared styling work, read [src/styles/README.md](./src/styles/README.md) before editing tokens, primitives, or reusable global styles, and follow its documented guidance for when each token or primitive should be used.
 
 ## Completion Commands
 
@@ -63,6 +64,7 @@ Use this file when the requested change belongs to the Angular UI in `UI/`.
 ### Components
 
 - Keep components small and focused on a single responsibility.
+- Prefer the shared styling tokens and primitives documented in [src/styles/README.md](./src/styles/README.md) over one-off colours, spacing, borders, shadows, or layout utilities when the shared option fits.
 - Use `input()` and `output()` functions instead of decorators.
 - Use `computed()` for derived state.
 - Prefer inline templates for small components.
@@ -76,6 +78,7 @@ Use this file when the requested change belongs to the Angular UI in `UI/`.
 
 - Use signals for local component state.
 - Use `computed()` for derived state.
+- Prefix signal-backed and computed fields and variables with `$` so their reactive nature is obvious and Angular template call sites stay lint-allowed.
 - Keep state transformations pure and predictable.
 - Do NOT use `mutate` on signals; use `update` or `set` instead.
 

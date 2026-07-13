@@ -2,19 +2,187 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
-      <trans-unit id="homePlaceholderHeading" datatype="html">
-        <source>Summer Born Info</source>
+      <trans-unit id="homeHeading" datatype="html">
+        <source> Help your summer-born child start school at the <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;home__hero-highlight&quot;&gt;"/>right time for them<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>. </source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/home/home-placeholder.html</context>
-          <context context-type="linenumber">2,3</context>
+          <context context-type="sourcefile">src/app/features/home/home-hero/home-hero.html</context>
+          <context context-type="linenumber">4,8</context>
         </context-group>
+        <note priority="1" from="description">Introduces the homepage purpose</note>
+        <note priority="1" from="meaning">Homepage main heading</note>
       </trans-unit>
-      <trans-unit id="homePlaceholderSummary" datatype="html">
-        <source>Application shell ready for upcoming UI work.</source>
+      <trans-unit id="homeIntro" datatype="html">
+        <source> If your child was born in the summer, you may be able to delay their start to Reception until the September after their fifth birthday. It&apos;s not about holding them back — it&apos;s about giving them the best possible start. </source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/home/home-placeholder.html</context>
-          <context context-type="linenumber">3,5</context>
+          <context context-type="sourcefile">src/app/features/home/home-hero/home-hero.html</context>
+          <context context-type="linenumber">11,16</context>
         </context-group>
+        <note priority="1" from="description">Reassures parents and high level outline of a delayed start</note>
+        <note priority="1" from="meaning">Homepage introduction</note>
+      </trans-unit>
+      <trans-unit id="homeComplexityNote" datatype="html">
+        <source> We&apos;ll help you understand your rights and make the case with confidence. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home-hero/home-hero.html</context>
+          <context context-type="linenumber">18,22</context>
+        </context-group>
+        <note priority="1" from="description">Promise to support parents in the summer-born journey</note>
+        <note priority="1" from="meaning">Homepage help note</note>
+      </trans-unit>
+      <trans-unit id="homeCtaButton" datatype="html">
+        <source> Take the first step </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home-hero/home-hero.html</context>
+          <context context-type="linenumber">25,31</context>
+        </context-group>
+        <note priority="1" from="description">Encourages parents to begin the journey</note>
+        <note priority="1" from="meaning">Homepage call to action</note>
+      </trans-unit>
+      <trans-unit id="homeHeroImageSource" datatype="html">
+        <source>images/hero-child-playing.avif</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home-hero/home-hero.html</context>
+          <context context-type="linenumber">32,33</context>
+        </context-group>
+        <note priority="1" from="description">References the local hero image asset</note>
+        <note priority="1" from="meaning">Homepage hero image source</note>
+      </trans-unit>
+      <trans-unit id="homeHeroImageAlt" datatype="html">
+        <source>Young child playing with wooden blocks in a bright room.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home-hero/home-hero.html</context>
+          <context context-type="linenumber">37,38</context>
+        </context-group>
+        <note priority="1" from="description">Describes the hero image showing a child playing</note>
+        <note priority="1" from="meaning">Homepage hero image alt</note>
+      </trans-unit>
+      <trans-unit id="notFoundEyebrow" datatype="html">
+        <source> Page not found </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/not-found/not-found.html</context>
+          <context context-type="linenumber">6,9</context>
+        </context-group>
+        <note priority="1" from="description">Introduces the missing page state</note>
+        <note priority="1" from="meaning">Not-found eyebrow</note>
+      </trans-unit>
+      <trans-unit id="notFoundHeading" datatype="html">
+        <source> We can&apos;t find that page </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/not-found/not-found.html</context>
+          <context context-type="linenumber">13,18</context>
+        </context-group>
+        <note priority="1" from="description">Explains that the requested page could not be found</note>
+        <note priority="1" from="meaning">Not-found heading</note>
+      </trans-unit>
+      <trans-unit id="notFoundBody" datatype="html">
+        <source> The page you were looking for may have moved, or the address may be wrong. You can return to the homepage and keep exploring from there. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/not-found/not-found.html</context>
+          <context context-type="linenumber">21,26</context>
+        </context-group>
+        <note priority="1" from="description">Explains that the destination does not exist and invites the visitor back to the
+        homepage</note>
+        <note priority="1" from="meaning">Not-found body</note>
+      </trans-unit>
+      <trans-unit id="notFoundHomeButton" datatype="html">
+        <source> Go to the homepage </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/not-found/not-found.html</context>
+          <context context-type="linenumber">29,33</context>
+        </context-group>
+        <note priority="1" from="description">Takes the visitor back to the homepage</note>
+        <note priority="1" from="meaning">Not-found home button</note>
+      </trans-unit>
+      <trans-unit id="underConstructionEyebrow" datatype="html">
+        <source> Coming soon </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
+          <context context-type="linenumber">9,12</context>
+        </context-group>
+        <note priority="1" from="description">Introduces the temporary placeholder page</note>
+        <note priority="1" from="meaning">Under-construction eyebrow</note>
+      </trans-unit>
+      <trans-unit id="underConstructionHeading" datatype="html">
+        <source> We&apos;re still working on this page </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
+          <context context-type="linenumber">16,21</context>
+        </context-group>
+        <note priority="1" from="description">Explains that the destination page is not ready yet</note>
+        <note priority="1" from="meaning">Under-construction heading</note>
+      </trans-unit>
+      <trans-unit id="underConstructionBody" datatype="html">
+        <source> This part of the site isn&apos;t ready yet, but the rest of our guidance on delayed starts is. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
+          <context context-type="linenumber">24,28</context>
+        </context-group>
+        <note priority="1" from="description">Reassures visitors and prompts them to return to the previous
+        page</note>
+        <note priority="1" from="meaning">Under-construction body</note>
+      </trans-unit>
+      <trans-unit id="underConstructionBackButton" datatype="html">
+        <source> Back to where you were </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/under-construction/under-construction.html</context>
+          <context context-type="linenumber">31,35</context>
+        </context-group>
+        <note priority="1" from="description">Navigates the visitor back to the previous page</note>
+        <note priority="1" from="meaning">Under-construction back button</note>
+      </trans-unit>
+      <trans-unit id="appFooterBrand" datatype="html">
+        <source> Summer-born Info </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shell/public-footer/public-footer.html</context>
+          <context context-type="linenumber">5,7</context>
+        </context-group>
+        <note priority="1" from="description">Displays the project name</note>
+        <note priority="1" from="meaning">Application footer brand</note>
+      </trans-unit>
+      <trans-unit id="appFooterSummary" datatype="html">
+        <source> A developing guide for parents and carers of summer-born children. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shell/public-footer/public-footer.html</context>
+          <context context-type="linenumber">8,14</context>
+        </context-group>
+        <note priority="1" from="description">Summarises the project purpose in the footer</note>
+        <note priority="1" from="meaning">Application footer summary</note>
+      </trans-unit>
+      <trans-unit id="appFooterIconAttribution" datatype="html">
+        <source> Uicons by <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://www.flaticon.com/uicons&quot;&gt;"/>Flaticon<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shell/public-footer/public-footer.html</context>
+          <context context-type="linenumber">17,19</context>
+        </context-group>
+        <note priority="1" from="description">Credits the source of the theme icons in the
+        footer</note>
+        <note priority="1" from="meaning">Application footer icon attribution</note>
+      </trans-unit>
+      <trans-unit id="appHeaderBrand" datatype="html">
+        <source> Summer-born Info </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shell/public-header/public-header.html</context>
+          <context context-type="linenumber">6,11</context>
+        </context-group>
+        <note priority="1" from="description">Identifies the site in the shell header</note>
+        <note priority="1" from="meaning">Application header brand</note>
+      </trans-unit>
+      <trans-unit id="rootShellRouteAnnouncementAriaLive" datatype="html">
+        <source>polite</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shell/root-shell/root-shell.html</context>
+          <context context-type="linenumber">7,8</context>
+        </context-group>
+        <note priority="1" from="description">Route change announcement politeness</note>
+      </trans-unit>
+      <trans-unit id="themeToggleLabel" datatype="html">
+        <source>Dark mode</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shell/theme-control/theme-control.ts</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+        <note priority="1" from="description">Names the toggle that enables or disables dark mode</note>
+        <note priority="1" from="meaning">Theme toggle button label</note>
       </trans-unit>
     </body>
   </file>

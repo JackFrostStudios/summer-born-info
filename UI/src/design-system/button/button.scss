@@ -1,0 +1,30 @@
+@use './button-styles' as buttonStyles;
+
+.sbi-button {
+  @include buttonStyles.button-base;
+
+  &:focus-visible {
+    outline: var(--sbi-focus-ring-width) solid var(--sbi-color-primary);
+    outline-offset: var(--sbi-focus-ring-offset);
+  }
+}
+
+.sbi-button--secondary {
+  @include buttonStyles.button-secondary;
+}
+
+.sbi-button--icon-only {
+  @include buttonStyles.button-icon-only;
+}
+
+@media (forced-colors: active) {
+  .sbi-button {
+    @include buttonStyles.button-forced-colors;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sbi-button {
+    transition: none;
+  }
+}

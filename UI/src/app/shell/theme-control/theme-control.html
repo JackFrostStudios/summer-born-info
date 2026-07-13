@@ -1,0 +1,17 @@
+<div class="theme-control">
+  <sbi-button
+    class="theme-control__toggle"
+    [$variant]="variant"
+    [$layout]="layout"
+    [$ariaLabel]="ariaLabel"
+    [$ariaPressed]="$ariaPressed()"
+    (pressed)="toggleColourMode()"
+  >
+    <span class="theme-control__viewport" aria-hidden="true">
+      <span class="theme-control__reel">
+        <sbi-icon class="theme-control__icon" [$name]="sunIconName" />
+        <sbi-icon class="theme-control__icon" [$name]="moonStarsIconName" />
+      </span>
+    </span>
+  </sbi-button>
+</div>

@@ -1,0 +1,45 @@
+:host {
+  display: block;
+  min-block-size: 100%;
+}
+
+.under-construction {
+  --under-construction-section-padding: clamp(2rem, 6vw, 5rem);
+  --under-construction-icon-size: clamp(7rem, 20vw, 12rem);
+
+  align-content: center;
+  align-items: center;
+  display: grid;
+  min-block-size: 100%;
+  padding-block: var(--under-construction-section-padding);
+}
+
+.under-construction__panel {
+  inline-size: 100%;
+}
+
+.under-construction__icon {
+  block-size: var(--under-construction-icon-size);
+  color: currentColor;
+  inline-size: var(--under-construction-icon-size);
+}
+
+.under-construction__eyebrow {
+  color: var(--sbi-color-primary);
+  margin: 0;
+}
+
+.under-construction :is(h1, p) {
+  margin: 0;
+}
+
+.under-construction__body {
+  color: var(--sbi-color-text-muted);
+  font-size: var(--sbi-font-size-2);
+  line-height: var(--sbi-line-height-body);
+}
+
+.under-construction__back-button {
+  inline-size: fit-content;
+  margin-block-start: var(--sbi-space-2);
+}

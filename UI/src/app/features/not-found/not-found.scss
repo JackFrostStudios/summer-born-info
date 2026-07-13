@@ -1,0 +1,58 @@
+:host {
+  display: block;
+  min-block-size: 100%;
+}
+
+.not-found {
+  --not-found-section-padding: clamp(2rem, 6vw, 5rem);
+  --not-found-icon-size: clamp(6rem, 16vw, 9rem);
+  --not-found-glyph-size: clamp(3rem, 8vw, 4.5rem);
+
+  align-content: center;
+  align-items: center;
+  display: grid;
+  min-block-size: 100%;
+  padding-block: var(--not-found-section-padding);
+}
+
+.not-found__panel {
+  inline-size: 100%;
+}
+
+.not-found__icon {
+  align-self: start;
+  background-color: var(--sbi-color-primary);
+  block-size: var(--not-found-icon-size);
+  border-radius: 50%;
+  color: var(--sbi-color-on-primary);
+  display: grid;
+  inline-size: var(--not-found-icon-size);
+  place-items: center;
+}
+
+.not-found__icon::before {
+  content: '?';
+  font-size: var(--not-found-glyph-size);
+  font-weight: var(--sbi-font-weight-extra-bold);
+  line-height: 1;
+}
+
+.not-found__eyebrow {
+  color: var(--sbi-color-primary);
+  margin: 0;
+}
+
+.not-found :is(h1, p) {
+  margin: 0;
+}
+
+.not-found__body {
+  color: var(--sbi-color-text-muted);
+  font-size: var(--sbi-font-size-2);
+  line-height: var(--sbi-line-height-body);
+}
+
+.not-found__home-button {
+  inline-size: fit-content;
+  margin-block-start: var(--sbi-space-2);
+}

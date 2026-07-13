@@ -1,0 +1,21 @@
+<div class="app-shell">
+  <sbi-skip-links [$links]="$skipLinks()" />
+
+  <p
+    aria-atomic="true"
+    aria-live="polite"
+    class="app-shell__route-announcement"
+    i18n-aria-live="Route change announcement politeness@@rootShellRouteAnnouncementAriaLive"
+    role="status"
+  >
+    {{ $navigationAnnouncement() }}
+  </p>
+
+  <sbi-public-header />
+
+  <main class="app-shell__main">
+    <router-outlet />
+  </main>
+
+  <sbi-public-footer />
+</div>

@@ -1,8 +1,8 @@
-# Initial API Roadmap for Summer Born Information
+# Initial API Roadmap for Summer-born Info
 
 ## Overview
 
-This roadmap defines the remaining API capability needed to support the initial Summer Born Information experience and establish a stable contract for a follow-on UI project.
+This roadmap defines the remaining API capability needed to support the initial Summer-born Info experience and establish a stable contract for a follow-on UI project.
 
 The primary delivery outcome for this roadmap is an API contract that is complete enough for UI development to begin with confidence. The roadmap focuses on the API surface, the supporting domain and persistence behaviour behind that contract, and the minimum operational safeguards needed for public submissions and volunteer administration.
 
