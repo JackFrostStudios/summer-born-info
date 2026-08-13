@@ -6,7 +6,7 @@ import { Button, type ButtonVariant } from './button';
   selector: 'sbi-button-test-host',
   imports: [Button],
   template:
-    '<span id="button-external-label" i18n="Button test host external label@@buttonTestHostExternalLabel">External button label</span><span id="button-external-description" i18n="Button test host external description@@buttonTestHostExternalDescription">External button description</span><sbi-button [$variant]="variant" [$layout]="layout" [$disabled]="disabled" [$ariaPressed]="ariaPressed" [$ariaLabel]="ariaLabel" [$ariaLabelledBy]="ariaLabelledBy" [$ariaDescribedBy]="ariaDescribedBy" [$testId]="testId" (pressed)="handlePressed($event)"><span class="projected-content" i18n="Button test host projected content@@buttonTestHostProjectedContent">Test action</span></sbi-button>',
+    '<span id="button-external-label" i18n="Button test host external label@@buttonTestHostExternalLabel">External button label</span><span id="button-external-description" i18n="Button test host external description@@buttonTestHostExternalDescription">External button description</span><sbi-button [$variant]="variant" [$layout]="layout" [$disabled]="disabled" [$ariaPressed]="ariaPressed" [$ariaLabel]="ariaLabel" [$ariaLabelledBy]="ariaLabelledBy" [$ariaDescribedBy]="ariaDescribedBy" (pressed)="handlePressed($event)"><span class="projected-content" i18n="Button test host projected content@@buttonTestHostProjectedContent">Test action</span></sbi-button>',
 })
 class TestHostComponent {
   variant: ButtonVariant = 'primary';
@@ -16,7 +16,6 @@ class TestHostComponent {
   ariaLabel: string | null = null;
   ariaLabelledBy: string | null = null;
   ariaDescribedBy: string | null = null;
-  testId: string | null = null;
   lastPressedEvent: MouseEvent | null = null;
 
   handlePressed(event: MouseEvent): void {
@@ -89,13 +88,12 @@ describe('Button', () => {
     expect(button.classList.contains('sbi-button--icon-only')).toBe(true);
   });
 
-  it('forwards disabled, aria-label, aria-describedby, and test-hook inputs to the native button', () => {
+  it('forwards disabled, aria-label, and aria-describedby inputs to the native button', () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     fixture.componentInstance.disabled = true;
     fixture.componentInstance.ariaPressed = 'true';
     fixture.componentInstance.ariaLabel = 'Toggle theme';
     fixture.componentInstance.ariaDescribedBy = 'button-external-description';
-    fixture.componentInstance.testId = 'theme-toggle';
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
@@ -106,7 +104,6 @@ describe('Button', () => {
     expect(button.getAttribute('aria-label')).toBe('Toggle theme');
     expect(button.getAttribute('aria-labelledby')).toBeNull();
     expect(button.getAttribute('aria-describedby')).toBe('button-external-description');
-    expect(button.getAttribute('data-testid')).toBe('theme-toggle');
   });
 
   it('forwards aria-labelledby when it is the only explicit accessible-name input', () => {

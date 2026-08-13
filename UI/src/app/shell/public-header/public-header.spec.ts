@@ -17,7 +17,6 @@ describe('PublicHeader', () => {
     const brand = findParagraphByText(compiled, 'Summer-born Info');
     const themeControl = compiled.querySelector('sbi-theme-control');
 
-    expect(compiled.getAttribute('data-shell-header')).toBe('public-header');
     expect(header).not.toBeNull();
     expect(brand).not.toBeNull();
     expect(themeControl).not.toBeNull();

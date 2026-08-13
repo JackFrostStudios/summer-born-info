@@ -6,10 +6,5 @@ import { ThemeControl } from '../theme-control/theme-control';
   imports: [ThemeControl],
   templateUrl: './public-header.html',
   styleUrl: './public-header.scss',
-  host: {
-    '[attr.data-shell-header]': 'componentId',
-  },
 })
-export class PublicHeader {
-  protected readonly componentId = 'public-header';
-}
+export class PublicHeader {}

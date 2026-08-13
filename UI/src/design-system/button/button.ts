@@ -16,7 +16,6 @@ export class Button {
   readonly $ariaLabel = input<string | null>(null);
   readonly $ariaLabelledBy = input<string | null>(null);
   readonly $ariaDescribedBy = input<string | null>(null);
-  readonly $testId = input<string | null>(null);
   readonly pressed = output<MouseEvent>();
   protected readonly $forwardedAriaLabel = computed(() => this.normaliseAriaReference(this.$ariaLabel()));
   protected readonly $forwardedAriaLabelledBy = computed(() => {

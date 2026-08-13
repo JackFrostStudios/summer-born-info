@@ -32,8 +32,6 @@ while preserving native button semantics.
   Accessible-name reference when the visible label lives outside the button.
 - `$ariaDescribedBy`: `string | null`
   Accessible-description reference.
-- `$testId`: `string | null`
-  Testing hook forwarded to `data-testid`.
 
 ### Outputs
 
