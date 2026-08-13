@@ -97,15 +97,20 @@ const heroImage = requireFile(
   (name) => name.endsWith('.avif'),
   'an AVIF hero image',
 );
-const fontAsset = requireFile(
+const normalFontAsset = requireFile(
   join(localizedOutputDirectory, 'fonts'),
   (name) => name === 'HankenGrotesk-VariableFont_wght.woff2',
   'the normal WOFF2 font asset',
 );
-const iconAsset = requireFile(
-  join(localizedOutputDirectory, 'icons'),
-  (name) => name.endsWith('.svg'),
-  'an icon asset',
+const italicFontAsset = requireFile(
+  join(localizedOutputDirectory, 'fonts'),
+  (name) => name === 'HankenGrotesk-Italic-VariableFont_wght.woff2',
+  'the italic WOFF2 font asset',
+);
+const faviconAsset = requireFile(
+  localizedOutputDirectory,
+  (name) => name === 'favicon.ico',
+  'the favicon asset',
 );
 
 const serverProcess = spawn(process.execPath, [serverEntry], {
@@ -134,8 +139,9 @@ try {
   }
 
   await assertOkResponse(`${origin}/images/${heroImage}`, 'image/');
-  await assertOkResponse(`${origin}/fonts/${fontAsset}`, 'font/');
-  await assertOkResponse(`${origin}/icons/${iconAsset}`, 'image/svg+xml');
+  await assertOkResponse(`${origin}/fonts/${normalFontAsset}`, 'font/');
+  await assertOkResponse(`${origin}/fonts/${italicFontAsset}`, 'font/');
+  await assertOkResponse(`${origin}/${locale}/${faviconAsset}`, 'image/');
 } catch (error) {
   const details = stderr.trim();
 
