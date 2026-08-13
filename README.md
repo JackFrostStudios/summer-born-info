@@ -1,4 +1,4 @@
-# Summer-born Infor
+# Summer-born Info
 
 This repository contains the Summer-born Info platform split into separate API and UI services.
 

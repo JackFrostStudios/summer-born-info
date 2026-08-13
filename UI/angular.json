@@ -129,6 +129,7 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "buildTarget": "summer-born-info:build:development",
+            "runnerConfig": "vitest-base.config.mjs",
             "include": ["src/**/*.a11y-spec.ts"],
             "setupFiles": ["src/testing/a11y/a11y-browser.setup.ts"],
             "browsers": ["ChromiumHeadless"],

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
+import { A11yStylesHost, a11yColourModes, applyA11yColourMode, expectNoA11yViolations } from '@a11y-test-helpers';
 import {
   NavigationEnd,
   provideRouter,
@@ -11,12 +12,6 @@ import {
 import { filter, firstValueFrom } from 'rxjs';
 import { describe, it } from 'vitest';
 import { defineRouteAccessibility, routeAccessibilityDataKey } from '../../app-route-accessibility';
-import {
-  A11yStylesHost,
-  a11yColourModes,
-  applyA11yColourMode,
-  expectNoA11yViolations,
-} from '../../../testing/a11y/a11y-test-helpers';
 import { RootShell } from './root-shell';
 
 const shellA11yMetadata = defineRouteAccessibility({

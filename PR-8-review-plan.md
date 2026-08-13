@@ -115,8 +115,8 @@ The following comments remain intentionally deferred and require separate decisi
 
 ## 11. Completion Checklist
 
-- [ ] `README.md` header typo is corrected.
-- [ ] `@a11y-test-helpers` is configured and every current accessibility-test/setup importer uses it.
+- [x] `README.md` header typo is corrected.
+- [x] `@a11y-test-helpers` is configured and every current accessibility-test/setup importer uses it.
 - [ ] App, home, hero, not-found, under-construction, public-header, and theme-control tests assert public behaviour/semantics without the flagged class, DOM-order, or prototype assertions.
 - [ ] Theme-control fixed values are inline and no longer stored as fields.
 - [ ] Header/footer host test hooks and all button `$testId` API, bindings, tests, and documentation are removed with no remaining consumers.

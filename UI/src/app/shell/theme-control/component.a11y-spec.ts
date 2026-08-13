@@ -1,10 +1,5 @@
+import { a11yColourModes, applyA11yColourMode, expectNoA11yViolations, renderFixtureForA11y } from '@a11y-test-helpers';
 import { describe, it } from 'vitest';
-import {
-  a11yColourModes,
-  applyA11yColourMode,
-  expectNoA11yViolations,
-  renderFixtureForA11y,
-} from '../../../testing/a11y/a11y-test-helpers';
 import { ThemeControl } from './theme-control';
 
 describe('ThemeControl accessibility smoke', () => {

@@ -15,6 +15,7 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "paths": {
+      "@a11y-test-helpers": ["./src/testing/a11y/a11y-test-helpers"],
       "@design-system/*": ["./src/design-system/*"]
     },
     "target": "ES2022",
