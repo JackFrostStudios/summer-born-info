@@ -1,19 +1,18 @@
 import { Component, inject } from '@angular/core';
 import { Navigation, PRIMARY_OUTLET, Router, UrlTree } from '@angular/router';
 import { Button } from '@design-system/button';
-import { Icon, type IconName } from '@design-system/icons';
+import { BuilderIcon } from '@design-system/icons';
 import { Panel } from '@design-system/panel';
 
 @Component({
   selector: 'sbi-under-construction',
-  imports: [Button, Icon, Panel],
+  imports: [BuilderIcon, Button, Panel],
   templateUrl: './under-construction.html',
   styleUrl: './under-construction.scss',
 })
 export class UnderConstruction {
   private readonly router = inject(Router);
 
-  protected readonly builderIconName: IconName = 'builder';
   protected readonly headingId = 'under-construction-heading';
 
   protected goBack(): void {

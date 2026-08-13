@@ -1,7 +1,5 @@
 import { Component, input } from '@angular/core';
 
-export type IconName = 'builder' | 'moon-stars' | 'sun';
-
 @Component({
   selector: 'sbi-icon',
   templateUrl: './icon.html',
@@ -14,6 +12,5 @@ export type IconName = 'builder' | 'moon-stars' | 'sun';
   },
 })
 export class Icon {
-  readonly $name = input.required<IconName>();
   readonly $label = input<string | null>(null);
 }

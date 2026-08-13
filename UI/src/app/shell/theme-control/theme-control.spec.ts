@@ -66,8 +66,10 @@ describe('ThemeControl', () => {
       throw new Error('Expected the toggle icon viewport to render.');
     }
 
-    const icons = toggle.querySelectorAll('sbi-icon.theme-control__icon');
-    const inlineSvgs = toggle.querySelectorAll('sbi-icon.theme-control__icon svg');
+    const icons = toggle.querySelectorAll('sbi-sun-icon.theme-control__icon, sbi-moon-stars-icon.theme-control__icon');
+    const inlineSvgs = toggle.querySelectorAll(
+      'sbi-sun-icon.theme-control__icon svg, sbi-moon-stars-icon.theme-control__icon svg',
+    );
 
     expect(toggle.tagName).toBe('BUTTON');
     expect(toggle.type).toBe('button');

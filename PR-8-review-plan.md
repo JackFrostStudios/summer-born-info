@@ -120,8 +120,8 @@ The following comments remain intentionally deferred and require separate decisi
 - [ ] App, home, hero, not-found, under-construction, public-header, and theme-control tests assert public behaviour/semantics without the flagged class, DOM-order, or prototype assertions.
 - [ ] Theme-control fixed values are inline and no longer stored as fields.
 - [x] Header/footer host test hooks and all button `$testId` API, bindings, tests, and documentation are removed with no remaining consumers.
-- [ ] `sbi-icon` is a content-projecting base component and separate sun, moon-stars, and builder components provide the existing inline SVG artwork.
-- [ ] All icon consumers, exports, documentation, and tests use the new concrete icon API and retain current accessibility behaviour.
+- [x] `sbi-icon` is a content-projecting base component and separate sun, moon-stars, and builder components provide the existing inline SVG artwork.
+- [x] All icon consumers, exports, documentation, and tests use the new concrete icon API and retain current accessibility behaviour.
 - [ ] `npm run format`, `npm run lint`, `npm run test:run`, and `npm run test:a11y` pass from `UI/`.
 - [ ] `npm run validate:i18n` passes from `UI/`, including no unintended `messages.xlf` drift.
 - [ ] No open-question item is changed unless its decision explicitly requires the included removal work.

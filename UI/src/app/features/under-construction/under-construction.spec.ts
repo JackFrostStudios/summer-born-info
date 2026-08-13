@@ -70,7 +70,8 @@ describe('UnderConstruction', () => {
     const panel = compiled.querySelector<HTMLElement>('sbi-panel.under-construction__panel');
     const panelShell = compiled.querySelector<HTMLElement>('.sbi-panel');
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
-    const icon = compiled.querySelector<HTMLElement>('sbi-icon.under-construction__icon');
+    const icon = compiled.querySelector<HTMLElement>('sbi-builder-icon.under-construction__icon');
+    const baseIcon = icon?.querySelector<HTMLElement>('sbi-icon') ?? null;
     const iconSvg = icon?.querySelector('svg') ?? null;
     const buttonHost = compiled.querySelector<HTMLElement>('sbi-button.under-construction__back-button');
     const button = buttonHost?.querySelector<HTMLButtonElement>('button') ?? null;
@@ -79,6 +80,7 @@ describe('UnderConstruction', () => {
       panel === null ||
       heading === null ||
       icon === null ||
+      baseIcon === null ||
       iconSvg === null ||
       buttonHost === null ||
       button === null
@@ -100,7 +102,7 @@ describe('UnderConstruction', () => {
     expect(button.type).toBe('button');
     expect(button.classList.contains('sbi-button')).toBe(true);
     expect(button.classList.contains('sbi-button--secondary')).toBe(false);
-    expect(icon.getAttribute('aria-hidden')).toBe('true');
+    expect(baseIcon.getAttribute('aria-hidden')).toBe('true');
     expect(iconSvg.tagName).toBe('svg');
   });
 

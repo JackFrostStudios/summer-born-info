@@ -1,41 +1,49 @@
 # Icons
 
-This folder owns the shared Angular `sbi-icon` component and the reusable inline SVG assets it exposes.
+This folder owns the shared Angular `sbi-icon` base component and the reusable concrete inline SVG icon
+components it supports.
 
 ## Purpose
 
-Use `sbi-icon` when more than one shell or feature consumer needs the same icon artwork and should be able to
-style the icon colour directly with CSS. The component keeps the SVG markup inline so consumers do not depend on
-external mask files or background-image delivery.
+Use the selector-specific icon components when more than one shell or feature consumer needs the same icon artwork
+and should be able to style the icon colour directly with CSS. The components keep the SVG markup inline so
+consumers do not depend on external mask files or background-image delivery.
+
+Use `sbi-icon` directly only as the base accessibility and styling wrapper for projected icon artwork.
 
 ## Supported Public Contract
 
 ### Selector And Import
 
-- selector: `sbi-icon`
-- import: `import { Icon, type IconName } from '@design-system/icons'`
+- base selector: `sbi-icon`
+- concrete selectors: `sbi-builder-icon`, `sbi-moon-stars-icon`, `sbi-sun-icon`
+- import: `import { BuilderIcon, Icon, MoonStarsIcon, SunIcon } from '@design-system/icons'`
 
 ### Inputs
 
-- `$name`: `'builder' | 'moon-stars' | 'sun'`
-  Selects which shared inline SVG to render.
 - `$label`: `string | null`
-  Optional accessible name. Leave this unset for decorative icons so the component stays hidden from assistive
-  technology.
+  Optional accessible name on the base and concrete icon components. Leave this unset for decorative icons so the
+  base icon stays hidden from assistive technology.
+
+### Content Projection
+
+- `sbi-icon` renders projected content with `ng-content`.
+- Concrete icon components import `Icon` and project their own inline SVG artwork into it.
 
 ## Accessibility And Behavior Expectations
 
-- Decorative icons should omit `$label`, which causes `sbi-icon` to render with `aria-hidden="true"`.
-- Informative icons should provide `$label`, which causes `sbi-icon` to expose `role="img"` with that accessible
-  name.
+- Decorative icons should omit `$label`, which causes the base `sbi-icon` to render with `aria-hidden="true"`.
+- Informative icons should provide `$label`, which causes the base `sbi-icon` to expose `role="img"` with that
+  accessible name.
 - Consumers should keep interactive semantics on the owning control or feature component rather than on the icon.
 
 ## Styling Contract
 
-- Supported: size the icon from consumer CSS by styling the `sbi-icon` host element.
+- Supported: size concrete icons from consumer CSS by styling the selector-specific icon host element.
+- Supported: size projected base-icon artwork by styling the `sbi-icon` host element.
 - Supported: control the icon colour with the standard CSS `color` property; the inline SVG fills use
   `currentColor`.
-- Supported: reuse the documented icon names through `$name`.
+- Supported: use documented concrete selectors rather than passing icon-name strings.
 - Not supported: depending on the component's internal `<svg>` markup shape as a consumer API.
 - Not supported: importing from implementation paths such as `@design-system/icons/icon`.
 
