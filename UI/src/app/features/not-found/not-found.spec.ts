@@ -39,12 +39,11 @@ describe('NotFound', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const section = compiled.querySelector<HTMLElement>('section.not-found');
-    const panel = compiled.querySelector<HTMLElement>('sbi-panel.not-found__panel');
-    const panelShell = compiled.querySelector<HTMLElement>('.sbi-panel');
+    const section = compiled.querySelector<HTMLElement>('section');
+    const panel = compiled.querySelector<HTMLElement>('sbi-panel');
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
-    const icon = compiled.querySelector<HTMLElement>('.not-found__icon');
-    const buttonHost = compiled.querySelector<HTMLElement>('sbi-button.not-found__home-button');
+    const icon = compiled.querySelector<HTMLElement>('[panelMedia][aria-hidden="true"]');
+    const buttonHost = compiled.querySelector<HTMLElement>('sbi-button');
     const button = buttonHost?.querySelector<HTMLButtonElement>('button') ?? null;
 
     if (panel === null || heading === null || icon === null || buttonHost === null || button === null) {
@@ -53,7 +52,6 @@ describe('NotFound', () => {
 
     expect(section?.getAttribute('aria-labelledby')).toBe('not-found-heading');
     expect(panel).not.toBeNull();
-    expect(panelShell?.classList.contains('sbi-panel--media-compact')).toBe(true);
     expect(compiled.querySelectorAll('h1')).toHaveLength(1);
     expect(heading.id).toBe('not-found-heading');
     expect(heading.textContent.trim()).toBe(`We can't find that page`);
@@ -63,8 +61,6 @@ describe('NotFound', () => {
     );
     expect(button.textContent.trim()).toBe('Go to the homepage');
     expect(button.type).toBe('button');
-    expect(button.classList.contains('sbi-button')).toBe(true);
-    expect(button.classList.contains('sbi-button--secondary')).toBe(false);
     expect(icon.getAttribute('aria-hidden')).toBe('true');
   });
 
@@ -73,7 +69,7 @@ describe('NotFound', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const section = compiled.querySelector<HTMLElement>('section.not-found');
+    const section = compiled.querySelector<HTMLElement>('section');
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
     const metadata = requireNotFoundRouteAccessibility();
     const [skipLink] = metadata.skipLinks;
@@ -93,7 +89,7 @@ describe('NotFound', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const button = compiled.querySelector<HTMLButtonElement>('sbi-button.not-found__home-button button');
+    const button = compiled.querySelector<HTMLButtonElement>('sbi-button button');
 
     if (button === null) {
       throw new Error('Expected the homepage button to render.');

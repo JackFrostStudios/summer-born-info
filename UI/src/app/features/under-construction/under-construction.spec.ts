@@ -66,14 +66,13 @@ describe('UnderConstruction', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const section = compiled.querySelector<HTMLElement>('section.under-construction');
-    const panel = compiled.querySelector<HTMLElement>('sbi-panel.under-construction__panel');
-    const panelShell = compiled.querySelector<HTMLElement>('.sbi-panel');
+    const section = compiled.querySelector<HTMLElement>('section');
+    const panel = compiled.querySelector<HTMLElement>('sbi-panel');
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
-    const icon = compiled.querySelector<HTMLElement>('sbi-builder-icon.under-construction__icon');
+    const icon = compiled.querySelector<HTMLElement>('sbi-builder-icon');
     const baseIcon = icon?.querySelector<HTMLElement>('sbi-icon') ?? null;
     const iconSvg = icon?.querySelector('svg') ?? null;
-    const buttonHost = compiled.querySelector<HTMLElement>('sbi-button.under-construction__back-button');
+    const buttonHost = compiled.querySelector<HTMLElement>('sbi-button');
     const button = buttonHost?.querySelector<HTMLButtonElement>('button') ?? null;
 
     if (
@@ -90,7 +89,6 @@ describe('UnderConstruction', () => {
 
     expect(section?.getAttribute('aria-labelledby')).toBe('under-construction-heading');
     expect(panel).not.toBeNull();
-    expect(panelShell?.classList.contains('sbi-panel--media-compact')).toBe(false);
     expect(compiled.querySelectorAll('h1')).toHaveLength(1);
     expect(heading.id).toBe('under-construction-heading');
     expect(heading.textContent.trim()).toBe(`We're still working on this page`);
@@ -100,8 +98,6 @@ describe('UnderConstruction', () => {
     );
     expect(button.textContent.trim()).toBe('Back to where you were');
     expect(button.type).toBe('button');
-    expect(button.classList.contains('sbi-button')).toBe(true);
-    expect(button.classList.contains('sbi-button--secondary')).toBe(false);
     expect(baseIcon.getAttribute('aria-hidden')).toBe('true');
     expect(iconSvg.tagName).toBe('svg');
   });
@@ -111,7 +107,7 @@ describe('UnderConstruction', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const section = compiled.querySelector<HTMLElement>('section.under-construction');
+    const section = compiled.querySelector<HTMLElement>('section');
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
     const metadata = requireUnderConstructionRouteAccessibility();
     const [skipLink] = metadata.skipLinks;
@@ -135,7 +131,7 @@ describe('UnderConstruction', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const button = compiled.querySelector<HTMLButtonElement>('sbi-button.under-construction__back-button button');
+    const button = compiled.querySelector<HTMLButtonElement>('sbi-button button');
 
     if (button === null) {
       throw new Error('Expected the back button to render.');
@@ -158,7 +154,7 @@ describe('UnderConstruction', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const button = compiled.querySelector<HTMLButtonElement>('sbi-button.under-construction__back-button button');
+    const button = compiled.querySelector<HTMLButtonElement>('sbi-button button');
 
     if (button === null) {
       throw new Error('Expected the back button to render.');
@@ -181,7 +177,7 @@ describe('UnderConstruction', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const button = compiled.querySelector<HTMLButtonElement>('sbi-button.under-construction__back-button button');
+    const button = compiled.querySelector<HTMLButtonElement>('sbi-button button');
 
     if (button === null) {
       throw new Error('Expected the back button to render.');
@@ -204,7 +200,7 @@ describe('UnderConstruction', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const button = compiled.querySelector<HTMLButtonElement>('sbi-button.under-construction__back-button button');
+    const button = compiled.querySelector<HTMLButtonElement>('sbi-button button');
 
     if (button === null) {
       throw new Error('Expected the back button to render.');
@@ -224,7 +220,7 @@ describe('UnderConstruction', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const button = compiled.querySelector<HTMLButtonElement>('sbi-button.under-construction__back-button button');
+    const button = compiled.querySelector<HTMLButtonElement>('sbi-button button');
 
     if (button === null) {
       throw new Error('Expected the back button to render.');

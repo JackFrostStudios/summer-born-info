@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { HomeHero } from './home-hero';
 
 function requireCallToActionButton(host: ParentNode): HTMLButtonElement {
-  const button = host.querySelector('sbi-button.home__cta-button button');
+  const button = host.querySelector('sbi-button button');
 
   if (!(button instanceof HTMLButtonElement)) {
     throw new Error('Expected the homepage hero shared CTA to render a native button.');
@@ -46,29 +46,20 @@ describe('HomeHero', () => {
     }).compileComponents();
   });
 
-  it('renders the approved homepage hero copy, heading treatment, and cta', () => {
+  it('renders the approved homepage hero copy and cta', () => {
     const fixture = TestBed.createComponent(HomeHero);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
     const header = requireHeroHeader(compiled);
-    const copy = compiled.querySelector<HTMLElement>('.home__hero-copy');
     const heading = requireHeading(compiled);
-    const highlight = compiled.querySelector<HTMLElement>('.home__hero-highlight');
     const button = requireCallToActionButton(compiled);
 
-    if (copy === null || highlight === null) {
-      throw new Error('Expected the homepage hero copy and highlighted heading text to render.');
-    }
-
-    const highlightText = highlight.textContent;
     const buttonText = button.textContent;
 
-    expect(header.classList.contains('home__hero')).toBe(true);
-    expect(copy).toBe(header.querySelector('.home__hero-copy'));
+    expect(header.contains(heading)).toBe(true);
     expect(heading.id).toBe('home-heading');
     expect(heading.textContent).toContain('Help your summer-born child start school at the right time for them.');
-    expect(highlightText.trim()).toBe('right time for them');
     expect(compiled.textContent).toContain(
       `If your child was born in the summer, you may be able to delay their start to Reception until the September after their fifth birthday. It's not about holding them back \u2014 it's about giving them the best possible start.`,
     );
@@ -84,16 +75,15 @@ describe('HomeHero', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const heroArt = compiled.querySelector<HTMLElement>('.home__hero-art');
-    const heroImage = compiled.querySelector<HTMLImageElement>('.home__hero-art-image');
+    const heroImage = compiled.querySelector<HTMLImageElement>(
+      'img[alt="Young child playing with wooden blocks in a bright room."]',
+    );
 
-    expect(heroArt).not.toBeNull();
     expect(heroImage?.getAttribute('src')).toContain('images/hero-child-playing.avif');
     expect(heroImage?.getAttribute('fetchpriority')).toBe('high');
     expect(heroImage?.getAttribute('loading')).toBe('eager');
     expect(heroImage?.getAttribute('alt')).toBe('Young child playing with wooden blocks in a bright room.');
-    expect(compiled.querySelector('.home__hero-art-badge')).toBeNull();
-    expect(heroArt?.querySelector('figcaption')).toBeNull();
+    expect(heroImage?.closest('figure')).not.toBeNull();
   });
 
   it('routes the call to action to the under-construction page', () => {

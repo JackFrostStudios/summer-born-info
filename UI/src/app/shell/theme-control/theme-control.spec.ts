@@ -58,29 +58,14 @@ describe('ThemeControl', () => {
     const toggleHost = requireToggleHost(compiled);
     const toggle = requireToggleButton(toggleHost);
 
-    expect(compiled.querySelector('.theme-control__reset')).toBeNull();
-
-    const viewport = toggle.querySelector('.theme-control__viewport');
-
-    if (viewport === null) {
-      throw new Error('Expected the toggle icon viewport to render.');
-    }
-
-    const icons = toggle.querySelectorAll('sbi-sun-icon.theme-control__icon, sbi-moon-stars-icon.theme-control__icon');
-    const inlineSvgs = toggle.querySelectorAll(
-      'sbi-sun-icon.theme-control__icon svg, sbi-moon-stars-icon.theme-control__icon svg',
-    );
+    const icons = toggle.querySelectorAll('sbi-sun-icon, sbi-moon-stars-icon');
+    const inlineSvgs = toggle.querySelectorAll('sbi-sun-icon svg, sbi-moon-stars-icon svg');
 
     expect(toggle.tagName).toBe('BUTTON');
     expect(toggle.type).toBe('button');
-    expect(toggle.classList.contains('sbi-button')).toBe(true);
-    expect(toggle.classList.contains('sbi-button--secondary')).toBe(true);
-    expect(toggle.classList.contains('sbi-button--icon-only')).toBe(true);
     expectRenderedMode(compiled, 'system');
     expectToggleSemantics(toggle, 'false');
     expect(toggle.textContent.trim()).toBe('');
-    expect(toggleHost.classList.contains('theme-control__toggle')).toBe(true);
-    expect(viewport.getAttribute('aria-hidden')).toBe('true');
     expect(icons).toHaveLength(2);
     expect(inlineSvgs).toHaveLength(2);
   });

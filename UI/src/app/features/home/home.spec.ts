@@ -54,7 +54,7 @@ describe('Home', () => {
     }).compileComponents();
   });
 
-  it('composes the homepage as a single labelled article around the hero', () => {
+  it('labels the homepage article with the hero heading', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
 
@@ -64,8 +64,6 @@ describe('Home', () => {
     const heading = requireHeading(article);
 
     expect(hero).not.toBeNull();
-    expect(article.childElementCount).toBe(1);
-    expect(article.firstElementChild).toBe(hero);
     expect(article.getAttribute('aria-labelledby')).toBe(heading.id);
     expect(article.hasAttribute('i18n-aria-labelledby')).toBe(false);
     expect(heading.id).toBe('home-heading');
@@ -91,16 +89,5 @@ describe('Home', () => {
     expect(heading.id).toBe(metadata.focusTargetId);
     expect(skipLink.targetId).toBe(metadata.focusTargetId);
     expect(skipLink.label).toBe('Skip to main content');
-  });
-
-  it('keeps the homepage page structure intentionally limited to the hero article', () => {
-    const fixture = TestBed.createComponent(Home);
-    fixture.detectChanges();
-
-    const compiled = fixture.nativeElement as HTMLElement;
-    const article = requireArticle(compiled);
-
-    expect(compiled.children).toHaveLength(1);
-    expect(compiled.firstElementChild).toBe(article);
   });
 });

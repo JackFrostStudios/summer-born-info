@@ -1,8 +1,9 @@
+<!-- eslint-disable @angular-eslint/template/prefer-static-string-properties -->
 <div class="theme-control">
   <sbi-button
     class="theme-control__toggle"
-    [$variant]="variant"
-    [$layout]="layout"
+    [$variant]="'secondary'"
+    [$layout]="'icon-only'"
     [$ariaLabel]="ariaLabel"
     [$ariaPressed]="$ariaPressed()"
     (pressed)="toggleColourMode()"

@@ -33,38 +33,6 @@ describe('PublicHeader', () => {
     expect(header.contains(brand)).toBe(true);
     expect(header.contains(themeControl)).toBe(true);
   });
-
-  it('renders the site brand as visible text instead of the retired prototype name', () => {
-    const fixture = TestBed.createComponent(PublicHeader);
-    fixture.detectChanges();
-
-    const compiled = fixture.nativeElement as HTMLElement;
-    const brand = findParagraphByText(compiled, 'Summer-born Info');
-
-    if (brand === null) {
-      throw new Error('Expected the public header brand to render.');
-    }
-
-    expect(brand.textContent).not.toContain('SummerBornTrust');
-  });
-
-  it('keeps the theme control inside the header landmark beside the brand text', () => {
-    const fixture = TestBed.createComponent(PublicHeader);
-    fixture.detectChanges();
-
-    const compiled = fixture.nativeElement as HTMLElement;
-    const header = compiled.querySelector('header');
-    const brand = findParagraphByText(compiled, 'Summer-born Info');
-    const themeControl = compiled.querySelector('sbi-theme-control');
-
-    if (header === null || brand === null || themeControl === null) {
-      throw new Error('Expected the shell header, brand, and theme control to render together.');
-    }
-
-    expect(header.contains(brand)).toBe(true);
-    expect(themeControl.parentElement).toBe(header);
-    expect(brand.nextElementSibling).toBe(themeControl);
-  });
 });
 
 function findParagraphByText(root: ParentNode, text: string): HTMLParagraphElement | null {

@@ -117,8 +117,8 @@ The following comments remain intentionally deferred and require separate decisi
 
 - [x] `README.md` header typo is corrected.
 - [x] `@a11y-test-helpers` is configured and every current accessibility-test/setup importer uses it.
-- [ ] App, home, hero, not-found, under-construction, public-header, and theme-control tests assert public behaviour/semantics without the flagged class, DOM-order, or prototype assertions.
-- [ ] Theme-control fixed values are inline and no longer stored as fields.
+- [x] App, home, hero, not-found, under-construction, public-header, and theme-control tests assert public behaviour/semantics without the flagged class, DOM-order, or prototype assertions.
+- [x] Theme-control fixed values are inline and no longer stored as fields.
 - [x] Header/footer host test hooks and all button `$testId` API, bindings, tests, and documentation are removed with no remaining consumers.
 - [x] `sbi-icon` is a content-projecting base component and separate sun, moon-stars, and builder components provide the existing inline SVG artwork.
 - [x] All icon consumers, exports, documentation, and tests use the new concrete icon API and retain current accessibility behaviour.
