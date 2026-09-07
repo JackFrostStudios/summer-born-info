@@ -34,7 +34,7 @@ describe('NotFound', () => {
     }).compileComponents();
   });
 
-  it('renders the missing-page copy with a single main heading and a homepage action', () => {
+  it('renders the missing-page copy with a single main heading and a decorative not-found image', () => {
     const fixture = TestBed.createComponent(NotFound);
     fixture.detectChanges();
 
@@ -42,11 +42,21 @@ describe('NotFound', () => {
     const section = compiled.querySelector<HTMLElement>('section');
     const panel = compiled.querySelector<HTMLElement>('sbi-panel');
     const heading = compiled.querySelector<HTMLHeadingElement>('h1');
-    const icon = compiled.querySelector<HTMLElement>('[panelMedia][aria-hidden="true"]');
+    const icon = compiled.querySelector<HTMLElement>('sbi-not-found-icon');
+    const baseIcon = icon?.querySelector<HTMLElement>('sbi-icon') ?? null;
+    const iconSvg = icon?.querySelector('svg') ?? null;
     const buttonHost = compiled.querySelector<HTMLElement>('sbi-button');
     const button = buttonHost?.querySelector<HTMLButtonElement>('button') ?? null;
 
-    if (panel === null || heading === null || icon === null || buttonHost === null || button === null) {
+    if (
+      panel === null ||
+      heading === null ||
+      icon === null ||
+      baseIcon === null ||
+      iconSvg === null ||
+      buttonHost === null ||
+      button === null
+    ) {
       throw new Error('Expected the not-found panel, content, icon, and homepage button to render.');
     }
 
@@ -54,14 +64,15 @@ describe('NotFound', () => {
     expect(panel).not.toBeNull();
     expect(compiled.querySelectorAll('h1')).toHaveLength(1);
     expect(heading.id).toBe('not-found-heading');
-    expect(heading.textContent.trim()).toBe(`We can't find that page`);
+    expect(heading.textContent.trim()).toBe(`We can't find this page`);
     expect(compiled.textContent).toContain('Page not found');
     expect(compiled.textContent).toContain(
-      'The page you were looking for may have moved, or the address may be wrong. You can return to the homepage and keep exploring from there.',
+      'The link may be out of date, or the address may have a typo. You can go back to the homepage and keep using the guidance from there.',
     );
     expect(button.textContent.trim()).toBe('Go to the homepage');
     expect(button.type).toBe('button');
-    expect(icon.getAttribute('aria-hidden')).toBe('true');
+    expect(baseIcon.getAttribute('aria-hidden')).toBe('true');
+    expect(iconSvg.tagName).toBe('svg');
   });
 
   it('matches the route accessibility contract for the focus target and skip-link destination', () => {

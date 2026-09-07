@@ -5,8 +5,7 @@
 
 .not-found {
   --not-found-section-padding: clamp(2rem, 6vw, 5rem);
-  --not-found-icon-size: clamp(6rem, 16vw, 9rem);
-  --not-found-glyph-size: clamp(3rem, 8vw, 4.5rem);
+  --not-found-icon-size: clamp(7rem, 20vw, 12rem);
 
   align-content: center;
   align-items: center;
@@ -20,21 +19,9 @@
 }
 
 .not-found__icon {
-  align-self: start;
-  background-color: var(--sbi-color-primary);
   block-size: var(--not-found-icon-size);
-  border-radius: 50%;
-  color: var(--sbi-color-on-primary);
-  display: grid;
+  color: currentColor;
   inline-size: var(--not-found-icon-size);
-  place-items: center;
-}
-
-.not-found__icon::before {
-  content: '?';
-  font-size: var(--not-found-glyph-size);
-  font-weight: var(--sbi-font-weight-extra-bold);
-  line-height: 1;
 }
 
 .not-found__eyebrow {

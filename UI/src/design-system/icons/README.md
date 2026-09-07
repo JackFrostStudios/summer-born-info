@@ -16,8 +16,8 @@ Use `sbi-icon` directly only as the base accessibility and styling wrapper for p
 ### Selector And Import
 
 - base selector: `sbi-icon`
-- concrete selectors: `sbi-builder-icon`, `sbi-moon-stars-icon`, `sbi-sun-icon`
-- import: `import { BuilderIcon, Icon, MoonStarsIcon, SunIcon } from '@design-system/icons'`
+- concrete selectors: `sbi-builder-icon`, `sbi-moon-stars-icon`, `sbi-not-found-icon`, `sbi-sun-icon`
+- import: `import { BuilderIcon, Icon, MoonStarsIcon, NotFoundIcon, SunIcon } from '@design-system/icons'`
 
 ### Inputs
 

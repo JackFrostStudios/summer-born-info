@@ -66,7 +66,7 @@
         <note priority="1" from="meaning">Not-found eyebrow</note>
       </trans-unit>
       <trans-unit id="notFoundHeading" datatype="html">
-        <source> We can&apos;t find that page </source>
+        <source> We can&apos;t find this page </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/not-found/not-found.html</context>
           <context context-type="linenumber">13,18</context>
@@ -75,7 +75,7 @@
         <note priority="1" from="meaning">Not-found heading</note>
       </trans-unit>
       <trans-unit id="notFoundBody" datatype="html">
-        <source> The page you were looking for may have moved, or the address may be wrong. You can return to the homepage and keep exploring from there. </source>
+        <source> The link may be out of date, or the address may have a typo. You can go back to the homepage and keep using the guidance from there. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/not-found/not-found.html</context>
           <context context-type="linenumber">21,26</context>
