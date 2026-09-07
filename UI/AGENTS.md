@@ -6,6 +6,7 @@ Use this file when the requested change belongs to the Angular UI in `UI/`.
 
 - Use the `ui-architect` sub-agent for UI code layout, feature placement, and project pattern questions inside `UI/`.
 - Use the `ui-automated-test-developer` sub-agent for UI test design and implementation inside `UI/`.
+- Use the `ui-copywriter` sub-agent when adding or changing parent-facing UI copy, including headings, cards, calls to action, empty states, and microcopy.
 
 ## Delivery Rules
 
