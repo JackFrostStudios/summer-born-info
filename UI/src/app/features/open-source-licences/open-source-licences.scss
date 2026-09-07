@@ -1,0 +1,46 @@
+:host {
+  display: block;
+  min-block-size: 100%;
+}
+
+.open-source-licences {
+  align-content: start;
+  display: grid;
+  gap: var(--sbi-space-5);
+  padding-block: clamp(2rem, 6vw, 5rem);
+}
+
+.open-source-licences__header,
+.open-source-licences__content {
+  display: grid;
+  gap: var(--sbi-space-3);
+}
+
+.open-source-licences__eyebrow,
+.open-source-licences :is(h1, p) {
+  margin: 0;
+}
+
+.open-source-licences__eyebrow {
+  color: var(--sbi-color-primary);
+}
+
+.open-source-licences__content {
+  color: var(--sbi-color-text-muted);
+  font-size: var(--sbi-font-size-2);
+  line-height: var(--sbi-line-height-body);
+}
+
+.open-source-licences a {
+  color: var(--sbi-color-primary);
+  font-weight: var(--sbi-font-weight-bold);
+}
+
+.open-source-licences a:hover,
+.open-source-licences a:focus-visible {
+  color: var(--sbi-color-text);
+}
+
+.open-source-licences__notice-link {
+  display: inline-block;
+}

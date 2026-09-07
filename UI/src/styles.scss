@@ -1,15 +1,5 @@
-html {
-  box-sizing: border-box;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: inherit;
-}
-
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  line-height: 1.5;
-}
+@use './styles/fonts';
+@use './styles/reset';
+@use './styles/tokens';
+@use './styles/base';
+@use './styles/primitives';

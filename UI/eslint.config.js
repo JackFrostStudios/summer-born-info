@@ -42,11 +42,74 @@ module.exports = defineConfig([
       '@angular-eslint/directive-class-suffix': 'off',
       '@angular-eslint/no-developer-preview': 'off',
       '@angular-eslint/no-experimental': 'off',
+      '@typescript-eslint/no-extraneous-class': [
+        'error',
+        {
+          allowEmpty: true,
+        },
+      ],
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@design-system/*/*'],
+              message:
+                "Import design-system components through their folder public API, such as '@design-system/button', instead of deep implementation paths.",
+            },
+          ],
+        },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            "PropertyDefinition[key.type='Identifier']:not([key.name=/^\\$/])[value.type='CallExpression'][value.callee.type='Identifier'][value.callee.name=/^(signal|computed|linkedSignal|model)$/]",
+          message:
+            "Prefix signal-backed and computed class fields with '$' so they can be called from templates under the Angular ESLint allowPrefix convention.",
+        },
+        {
+          selector:
+            "PropertyDefinition[key.type='Identifier']:not([key.name=/^\\$/])[value.type='CallExpression'][value.callee.type='Identifier'][value.callee.name='input']",
+          message:
+            "Prefix signal-backed input class fields with '$' so input() declarations follow the same template-safe naming convention as other signal-backed values.",
+        },
+        {
+          selector:
+            "PropertyDefinition[key.type='Identifier']:not([key.name=/^\\$/])[value.type='CallExpression'][value.callee.type='MemberExpression'][value.callee.object.type='Identifier'][value.callee.object.name='input'][value.callee.property.name='required']",
+          message:
+            "Prefix signal-backed input class fields with '$' so input() declarations follow the same template-safe naming convention as other signal-backed values.",
+        },
+        {
+          selector:
+            "PropertyDefinition[key.type='Identifier']:not([key.name=/^\\$/])[value.type='CallExpression'][value.callee.type='MemberExpression'][value.callee.property.name='asReadonly']",
+          message: "Prefix readonly signal views with '$' so their signal nature stays obvious and template-safe.",
+        },
+        {
+          selector:
+            "VariableDeclarator[id.type='Identifier']:not([id.name=/^\\$/])[init.type='CallExpression'][init.callee.type='Identifier'][init.callee.name=/^(signal|computed|linkedSignal|model)$/]",
+          message:
+            "Prefix signal-backed and computed variables with '$' so they are easy to spot and safe to call from templates.",
+        },
+        {
+          selector:
+            "VariableDeclarator[id.type='Identifier']:not([id.name=/^\\$/])[init.type='CallExpression'][init.callee.type='MemberExpression'][init.callee.property.name='asReadonly']",
+          message: "Prefix readonly signal views with '$' so their signal nature stays obvious and template-safe.",
+        },
+      ],
     },
   },
   {
-    files: ['src/app/**/*.html'],
+    files: ['src/**/*.html'],
+    ignores: ['src/index.html'],
     extends: [angular.configs.templateAll, angular.configs.templateAccessibility],
-    rules: {},
+    rules: {
+      '@angular-eslint/template/no-call-expression': [
+        'error',
+        {
+          allowPrefix: '$',
+        },
+      ],
+    },
   },
 ]);

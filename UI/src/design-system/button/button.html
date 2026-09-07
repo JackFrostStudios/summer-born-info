@@ -1,0 +1,14 @@
+<button
+  class="sbi-button"
+  type="button"
+  [class.sbi-button--secondary]="$variant() === 'secondary'"
+  [class.sbi-button--icon-only]="$layout() === 'icon-only'"
+  [disabled]="$disabled()"
+  [attr.aria-pressed]="$ariaPressed()"
+  [attr.aria-label]="$forwardedAriaLabel()"
+  [attr.aria-labelledby]="$forwardedAriaLabelledBy()"
+  [attr.aria-describedby]="$ariaDescribedBy()"
+  (click)="handleClick($event)"
+>
+  <ng-content />
+</button>

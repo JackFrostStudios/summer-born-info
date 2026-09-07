@@ -1,13 +1,24 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GB">
   <head>
     <meta charset="utf-8" />
-    <title>SummerBornInfo</title>
+    <title>Summer-born Info</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      try {
+        const storedColourMode = globalThis.localStorage?.getItem('sbi:colour-mode');
+
+        if (storedColourMode === 'light' || storedColourMode === 'dark') {
+          document.documentElement.dataset.sbiColourMode = storedColourMode;
+        }
+      } catch {
+        // Storage access can fail in restricted browser contexts; fall back to system theme.
+      }
+    </script>
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
   </head>
-  <body>
+  <body tabindex="-1">
     <sbi-root></sbi-root>
   </body>
 </html>

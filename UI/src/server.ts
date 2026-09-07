@@ -5,9 +5,18 @@ import {
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
 import express from 'express';
+import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
+const applicationDistFolder = join(import.meta.dirname, '..');
 const browserDistFolder = join(import.meta.dirname, '../browser');
+const thirdPartyLicencesPath = join(applicationDistFolder, '3rdpartylicenses.txt');
+const localizedBrowserAssetRoot = existsSync(browserDistFolder)
+  ? readdirSync(browserDistFolder, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => join(browserDistFolder, entry.name))
+      .find((directory) => existsSync(join(directory, 'index.html')))
+  : undefined;
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
@@ -23,6 +32,37 @@ const angularApp = new AngularNodeAppEngine();
  * });
  * ```
  */
+
+/**
+ * When a localized build emits shared static assets under a locale folder such as /en-GB/,
+ * keep the existing root-relative CSS asset URLs working in the production SSR host.
+ */
+for (const assetFolder of ['fonts', 'icons', 'images']) {
+  if (localizedBrowserAssetRoot !== undefined && existsSync(join(localizedBrowserAssetRoot, assetFolder))) {
+    app.use(
+      `/${assetFolder}`,
+      express.static(join(localizedBrowserAssetRoot, assetFolder), {
+        maxAge: '1y',
+        index: false,
+        redirect: false,
+      }),
+    );
+  }
+}
+
+/**
+ * Serve the Angular production build's bundled third-party licence notices from the application output root.
+ */
+app.get('/3rdpartylicenses.txt', (_req, res, next) => {
+  if (!existsSync(thirdPartyLicencesPath)) {
+    next();
+    return;
+  }
+
+  res.sendFile(thirdPartyLicencesPath, {
+    maxAge: '1y',
+  });
+});
 
 /**
  * Serve static files from /browser

@@ -1,0 +1,9 @@
+<div class="sbi-panel" [class.sbi-panel--media-compact]="$mediaWidth() === 'compact'">
+  <div class="sbi-panel__media">
+    <ng-content select="[panelMedia]" />
+  </div>
+
+  <div class="sbi-panel__content sbi-stack">
+    <ng-content />
+  </div>
+</div>

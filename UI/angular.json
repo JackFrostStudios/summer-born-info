@@ -38,7 +38,7 @@
             "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {
-              "allowedHosts": []
+              "allowedHosts": ["localhost"]
             },
             "ssr": {
               "entry": "src/server.ts"
@@ -51,6 +51,16 @@
                   "type": "initial",
                   "maximumWarning": "500kB",
                   "maximumError": "1MB"
+                },
+                {
+                  "type": "allScript",
+                  "maximumWarning": "325kB",
+                  "maximumError": "350kB"
+                },
+                {
+                  "type": "anyScript",
+                  "maximumWarning": "300kB",
+                  "maximumError": "325kB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -87,6 +97,7 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
+            "exclude": ["src/**/*.a11y-spec.ts"],
             "coverageReporters": [
               "text-summary",
               "html",
@@ -112,6 +123,18 @@
               ],
               ["json", { "outputFile": "test-results/results.json" }]
             ]
+          }
+        },
+        "test-a11y": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "buildTarget": "summer-born-info:build:development",
+            "runnerConfig": "vitest-base.config.mjs",
+            "include": ["src/**/*.a11y-spec.ts"],
+            "setupFiles": ["src/testing/a11y/a11y-browser.setup.ts"],
+            "browsers": ["ChromiumHeadless"],
+            "browserViewport": "1440x1080",
+            "watch": false
           }
         },
         "extract-i18n": {

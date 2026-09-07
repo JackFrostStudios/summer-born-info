@@ -17,21 +17,45 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render the cleaned app shell', async () => {
-    const fixture = TestBed.createComponent(App);
-    const router = TestBed.inject(Router);
+  it('should register the homepage route inside the shared app shell', async () => {
+    const compiled = await renderRoute('/');
 
-    router.initialNavigation();
-    await router.navigateByUrl('/');
-    fixture.detectChanges();
-    await fixture.whenStable();
-    fixture.detectChanges();
+    expectSharedShell(compiled);
+    expect(compiled.querySelector('sbi-home')).not.toBeNull();
+  });
 
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('main')).not.toBeNull();
-    expect(compiled.querySelector('h1')?.textContent).toContain('Summer Born Info');
-    expect(compiled.querySelector('p')?.textContent).toContain(
-      'Application shell ready for upcoming UI work.',
-    );
+  it('should register the under-construction route inside the shared app shell', async () => {
+    const compiled = await renderRoute('/under-construction');
+
+    expectSharedShell(compiled);
+    expect(compiled.querySelector('sbi-under-construction')).not.toBeNull();
+  });
+
+  it('should register the not-found route inside the shared app shell when the URL is unmatched', async () => {
+    const compiled = await renderRoute('/missing-page');
+
+    expectSharedShell(compiled);
+    expect(compiled.querySelector('sbi-not-found')).not.toBeNull();
   });
 });
+
+async function renderRoute(url: string): Promise<HTMLElement> {
+  const fixture = TestBed.createComponent(App);
+  const router = TestBed.inject(Router);
+
+  router.initialNavigation();
+  await router.navigateByUrl(url);
+  fixture.detectChanges();
+  await fixture.whenStable();
+  fixture.detectChanges();
+
+  return fixture.nativeElement as HTMLElement;
+}
+
+function expectSharedShell(compiled: HTMLElement): void {
+  expect(compiled.querySelector('sbi-public-header')).not.toBeNull();
+  expect(compiled.querySelector('main')).not.toBeNull();
+  expect(compiled.querySelector('footer')?.textContent).toContain(
+    'A developing guide for parents and carers of summer-born children.',
+  );
+}

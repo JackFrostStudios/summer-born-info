@@ -1,0 +1,41 @@
+<header class="home__hero sbi-container">
+  <div class="home__hero-copy sbi-readable sbi-stack">
+    <h1 i18n="Homepage main heading|Introduces the homepage purpose@@homeHeading" id="home-heading" tabindex="-1">
+      Help your summer-born child start school at the
+      <span class="home__hero-highlight">right time for them</span>.
+    </h1>
+    <p
+      class="home__intro"
+      i18n="Homepage introduction|Reassures parents and high level outline of a delayed start@@homeIntro"
+    >
+      If your child was born in the summer, you may be able to delay their start to Reception until the September after
+      their fifth birthday. It's not about holding them back &#8212; it's about giving them the best possible start.
+    </p>
+    <p
+      class="home__intro"
+      i18n="Homepage help note|Promise to support parents in the summer-born journey@@homeComplexityNote"
+    >
+      We'll help you understand your rights and make the case with confidence.
+    </p>
+    <sbi-button
+      class="home__cta-button"
+      i18n="Homepage call to action|Encourages parents to begin the journey@@homeCtaButton"
+      (pressed)="goToUnderConstruction()"
+    >
+      Take the first step
+    </sbi-button>
+  </div>
+
+  <figure class="home__hero-art sbi-surface">
+    <img
+      class="home__hero-art-image"
+      ngSrc="images/hero-child-playing.avif"
+      i18n-ngSrc="Homepage hero image source|References the local hero image asset@@homeHeroImageSource"
+      width="512"
+      height="512"
+      priority
+      alt="Young child playing with wooden blocks in a bright room."
+      i18n-alt="Homepage hero image alt|Describes the hero image showing a child playing@@homeHeroImageAlt"
+    />
+  </figure>
+</header>

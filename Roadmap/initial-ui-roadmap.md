@@ -1,8 +1,8 @@
-# Initial UI Roadmap for Summer Born Information
+# Initial UI Roadmap for Summer-born Info
 
 ## Overview
 
-This roadmap defines the initial Angular UI delivery needed to turn the Summer Born Information platform into a usable browser experience for public visitors and volunteer administrators.
+This roadmap defines the initial Angular UI delivery needed to turn the Summer-born Info platform into a usable browser experience for public visitors and volunteer administrators.
 
 The primary delivery outcome for this roadmap is a working Angular application with an intentional visual foundation, a public homepage experience, and the first admin workflows needed to sign in and begin managing school data through bulk import.
 

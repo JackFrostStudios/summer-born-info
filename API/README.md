@@ -1,13 +1,13 @@
 # API
 
-This folder contains the Summer Born Information API solution and supporting projects.
+This folder contains the Summer-born Info API solution and supporting projects.
 
 ## Project Aims
 
-The API exists to support the initial Summer Born Information platform for UK parents and guardians of summer born children.
+The API exists to support the initial Summer-born Info platform for UK parents and guardians of summer-born children.
 
 - Provide a stable backend for school discovery and delayed-start information experiences.
-- Support the first user-facing journeys around finding schools and understanding summer born admissions choices.
+- Support the first user-facing journeys around finding schools and understanding summer-born admissions choices.
 - Provide secure admin capabilities for privileged operations such as school data import and moderation workflows.
 - Give the follow-on UI project a dependable API contract, local development environment, and testable architecture.
 

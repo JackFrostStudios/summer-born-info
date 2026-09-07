@@ -1,0 +1,7 @@
+interface:
+  display_name: "UI Copywriter"
+  short_description: "Parent-facing UI copy and microcopy"
+  default_prompt: "Use $ui-copywriter to write or review Summer-born Info UI copy against the repo writing style guide."
+
+policy:
+  allow_implicit_invocation: true

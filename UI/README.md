@@ -1,10 +1,10 @@
 # UI
 
-This folder contains the Summer Born Information Angular frontend application.
+This folder contains the Summer-born Info Angular frontend application.
 
 ## Project Aims
 
-The UI is the browser-facing surface for the Summer Born Information platform.
+The UI is the browser-facing surface for the Summer-born Info platform.
 
 - Present user journeys for parents and guardians.
 - Consume backend API capabilities once those contracts are wired into the frontend.
@@ -75,7 +75,7 @@ For example:
 
 ```html
 <h1 i18n="Home page heading|Introduces the page to parents and guardians@@homePageHeading">
-  Find summer born information
+  Find Summer-born Info
 </h1>
 ```
 
@@ -119,11 +119,13 @@ For single-pass local validation commands:
 
 ```bash
 npm run test:run
+npm run test:a11y
 npm run test:coverage
 npm run test:ci
 ```
 
 - `npm run test:run` runs the unit tests once without watch mode.
+- `npm run test:a11y` validates a local Google Chrome executable, then runs the dedicated Playwright-driven Chromium accessibility smoke suite once with the real shared application styles loaded.
 - `npm run test:coverage` runs the unit tests once with coverage and report output.
 - `npm run test:ci` is the CI-facing alias and currently matches `npm run test:coverage`.
 
@@ -156,6 +158,14 @@ Recommended local loop from the `UI` folder:
    npm run test:run
    ```
 
+   Run the dedicated accessibility smoke suite when you change semantics, accessibility behaviour, or the browser a11y harness.
+
+   ```bash
+   npm run test:a11y
+   ```
+
+   The command prefers an existing `CHROME_BIN` override and otherwise searches common Google Chrome install locations, including `C:\Program Files (x86)\Google\Chrome\Application\chrome.exe` on Windows. If Chrome is installed elsewhere, set `CHROME_BIN` before running the command.
+
 4. Check formatting before you commit. If Prettier reports changes, rerun the fix-up command.
 
    ```bash
@@ -186,9 +196,10 @@ npm run lint
 npm run build
 npm run validate:i18n
 npm run test:ci
+npm run test:a11y
 ```
 
-This sequence checks formatting, linting, strict Angular compilation, localized build validation, and the coverage-producing test run that `ui-ci` expects.
+This sequence checks formatting, linting, strict Angular compilation, localized build validation, the coverage-producing unit test run that `ui-ci` expects, and the dedicated browser accessibility smoke suite.
 
 Coverage output is written locally under `UI/coverage/summer-born-info/`, and the workflow uploads the full `UI/coverage/` directory as the `ui-coverage` artifact for pull request review.
 

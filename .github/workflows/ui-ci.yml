@@ -67,6 +67,8 @@ jobs:
         run: npm run lint
       - name: Build
         run: npm run build
+      - name: Check tracked asset sizes
+        run: npm run check:asset-sizes
       - name: Validate i18n extraction and localized build
         run: npm run validate:i18n
       - name: Run tests with coverage
