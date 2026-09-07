@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { defineRouteAccessibility, routeAccessibilityDataKey } from './app-route-accessibility';
 import { Home } from './features/home/home';
-import { NotFound } from './features/not-found/not-found';
 import { RootShell } from './shell/root-shell/root-shell';
 
 const homeRouteAccessibility = defineRouteAccessibility({
@@ -47,7 +46,7 @@ export const routes: Routes = [
       },
       {
         path: '**',
-        component: NotFound,
+        loadComponent: async () => (await import('./features/not-found/not-found')).NotFound,
         title: notFoundRouteAccessibility.title,
         data: {
           [routeAccessibilityDataKey]: notFoundRouteAccessibility,

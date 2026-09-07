@@ -72,12 +72,14 @@ describe('app routes', () => {
     });
   });
 
-  it('registers the final wildcard route inside the shared shell with a title and accessibility metadata', () => {
+  it('keeps the final wildcard route lazy-loaded while preserving its title and accessibility metadata', async () => {
     const shellRoute = requireRoute(routes, '');
     const notFoundRoute = requireRoute(shellRoute.children ?? [], '**');
     const metadata = requireAccessibilityMetadata(notFoundRoute);
 
-    expect(notFoundRoute.component).toBe(NotFound);
+    expect(notFoundRoute.component).toBeUndefined();
+    expect(notFoundRoute.loadComponent).toBeDefined();
+    await expect(notFoundRoute.loadComponent?.()).resolves.toBe(NotFound);
     expect(notFoundRoute.title).toBe('Summer-born Info - Page not found');
     expect(metadata).toEqual({
       title: 'Summer-born Info - Page not found',
