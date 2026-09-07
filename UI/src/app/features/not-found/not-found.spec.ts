@@ -64,10 +64,10 @@ describe('NotFound', () => {
     expect(panel).not.toBeNull();
     expect(compiled.querySelectorAll('h1')).toHaveLength(1);
     expect(heading.id).toBe('not-found-heading');
-    expect(heading.textContent.trim()).toBe(`We can't find this page`);
+    expect(heading.textContent.trim()).toBe(`We can't find that page`);
     expect(compiled.textContent).toContain('Page not found');
     expect(compiled.textContent).toContain(
-      'The link may be out of date, or the address may have a typo. You can go back to the homepage and keep using the guidance from there.',
+      'The link may be out of date, or the address may have a typo. Everything else on the site is working as normal.',
     );
     expect(button.textContent.trim()).toBe('Go to the homepage');
     expect(button.type).toBe('button');
