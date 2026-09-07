@@ -107,11 +107,7 @@ const italicFontAsset = requireFile(
   (name) => name === 'HankenGrotesk-Italic-VariableFont_wght.woff2',
   'the italic WOFF2 font asset',
 );
-const faviconAsset = requireFile(
-  localizedOutputDirectory,
-  (name) => name === 'favicon.ico',
-  'the favicon asset',
-);
+const faviconAsset = requireFile(localizedOutputDirectory, (name) => name === 'favicon.ico', 'the favicon asset');
 
 const serverProcess = spawn(process.execPath, [serverEntry], {
   cwd: uiRoot,

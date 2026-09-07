@@ -22,6 +22,9 @@ export class ThemeControl {
 
   protected readonly $ariaPressed = computed(() => (this.$isDarkMode() ? 'true' : 'false'));
 
+  protected readonly iconVariant = 'secondary';
+  protected readonly iconLayout = 'icon-only';
+
   protected toggleColourMode(): void {
     this.colourMode.toggleMode();
   }
