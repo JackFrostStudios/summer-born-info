@@ -8,7 +8,9 @@ import express from 'express';
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
+const applicationDistFolder = join(import.meta.dirname, '..');
 const browserDistFolder = join(import.meta.dirname, '../browser');
+const thirdPartyLicencesPath = join(applicationDistFolder, '3rdpartylicenses.txt');
 const localizedBrowserAssetRoot = existsSync(browserDistFolder)
   ? readdirSync(browserDistFolder, { withFileTypes: true })
       .filter((entry) => entry.isDirectory())
@@ -47,6 +49,20 @@ for (const assetFolder of ['fonts', 'icons', 'images']) {
     );
   }
 }
+
+/**
+ * Serve the Angular production build's bundled third-party licence notices from the application output root.
+ */
+app.get('/3rdpartylicenses.txt', (_req, res, next) => {
+  if (!existsSync(thirdPartyLicencesPath)) {
+    next();
+    return;
+  }
+
+  res.sendFile(thirdPartyLicencesPath, {
+    maxAge: '1y',
+  });
+});
 
 /**
  * Serve static files from /browser

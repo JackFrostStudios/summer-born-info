@@ -1,14 +1,16 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { PublicFooter } from './public-footer';
 
 describe('PublicFooter', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PublicFooter],
+      providers: [provideRouter([])],
     }).compileComponents();
   });
 
-  it('renders the shared project summary and icon attribution', () => {
+  it('renders the shared project summary and open source link', () => {
     const fixture = TestBed.createComponent(PublicFooter);
     fixture.detectChanges();
 
@@ -16,30 +18,27 @@ describe('PublicFooter', () => {
     const footer = compiled.querySelector('footer');
     const brand = findParagraphByText(compiled, 'Summer-born Info');
     const summary = findParagraphByText(compiled, 'A developing guide for parents and carers of summer-born children.');
-    const attribution = compiled.querySelector<HTMLElement>('.public-footer__attribution');
+    const openSourceLink = findLinkByText(compiled, 'Open source licences');
+
+    if (footer === null || brand === null || summary === null || openSourceLink === null) {
+      throw new Error('Expected the shared footer brand, summary, and open source link to render.');
+    }
 
     expect(footer).not.toBeNull();
-
-    if (brand === null || summary === null || attribution === null) {
-      throw new Error('Expected the shared footer brand, summary, and attribution to render.');
-    }
-
-    const attributionLink = attribution.querySelector<HTMLAnchorElement>('a');
-
     expect(brand.textContent.trim()).toBe('Summer-born Info');
     expect(summary.textContent.trim()).toBe('A developing guide for parents and carers of summer-born children.');
-    expect(attribution.textContent.replace(/\s+/g, ' ').trim()).toBe('Uicons by Flaticon');
-
-    if (attributionLink === null) {
-      throw new Error('Expected the footer attribution link to render.');
-    }
-
-    expect(attributionLink.textContent.trim()).toBe('Flaticon');
-    expect(attributionLink.getAttribute('href')).toBe('https://www.flaticon.com/uicons');
-    expect(attributionLink.getAttribute('target')).toBeNull();
-    expect(attributionLink.getAttribute('rel')).toBeNull();
+    expect(openSourceLink.getAttribute('href')).toBe('/open-source-licences');
+    expect(compiled.textContent).not.toContain('Uicons by');
   });
 });
+
+function findLinkByText(root: ParentNode, text: string): HTMLAnchorElement | null {
+  return (
+    Array.from(root.querySelectorAll('a')).find(
+      (link): link is HTMLAnchorElement => link.textContent.trim() === text,
+    ) ?? null
+  );
+}
 
 function findParagraphByText(root: ParentNode, text: string): HTMLParagraphElement | null {
   return (

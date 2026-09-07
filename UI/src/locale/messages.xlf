@@ -93,6 +93,54 @@
         <note priority="1" from="description">Takes the visitor back to the homepage</note>
         <note priority="1" from="meaning">Not-found home button</note>
       </trans-unit>
+      <trans-unit id="openSourceLicencesEyebrow" datatype="html">
+        <source> Site notices </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/open-source-licences/open-source-licences.html</context>
+          <context context-type="linenumber">7,10</context>
+        </context-group>
+        <note priority="1" from="description">Introduces the licensing information page</note>
+        <note priority="1" from="meaning">Open-source licences eyebrow</note>
+      </trans-unit>
+      <trans-unit id="openSourceLicencesHeading" datatype="html">
+        <source> Open source licences </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/open-source-licences/open-source-licences.html</context>
+          <context context-type="linenumber">14,21</context>
+        </context-group>
+        <note priority="1" from="description">Names the open source licensing information page</note>
+        <note priority="1" from="meaning">Open-source licences heading</note>
+      </trans-unit>
+      <trans-unit id="openSourceLicencesPackageNotice" datatype="html">
+        <source> This site is built using open source software. Below is a list of the third-party packages we use and their licence notices. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/open-source-licences/open-source-licences.html</context>
+          <context context-type="linenumber">24,33</context>
+        </context-group>
+        <note priority="1" from="description">Explains that the UI publishes bundled third-party package
+        notices</note>
+        <note priority="1" from="meaning">Open-source licences package notice</note>
+      </trans-unit>
+      <trans-unit id="openSourceLicencesGeneratedNoticesLink" datatype="html">
+        <source> View the third-party licence notices </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/open-source-licences/open-source-licences.html</context>
+          <context context-type="linenumber">36,43</context>
+        </context-group>
+        <note priority="1" from="description">Opens the generated third-party licence notices text
+          file</note>
+        <note priority="1" from="meaning">Open-source licences generated notices link</note>
+      </trans-unit>
+      <trans-unit id="openSourceLicencesIconAttribution" datatype="html">
+        <source> Uicons by <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://www.flaticon.com/uicons&quot;&gt;"/>Flaticon<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/open-source-licences/open-source-licences.html</context>
+          <context context-type="linenumber">46,48</context>
+        </context-group>
+        <note priority="1" from="description">Credits the source of the theme icons on the open source licences
+        page</note>
+        <note priority="1" from="meaning">Open-source licences icon attribution</note>
+      </trans-unit>
       <trans-unit id="underConstructionEyebrow" datatype="html">
         <source> Coming soon </source>
         <context-group purpose="location">
@@ -143,20 +191,20 @@
         <source> A developing guide for parents and carers of summer-born children. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shell/public-footer/public-footer.html</context>
-          <context context-type="linenumber">8,14</context>
+          <context context-type="linenumber">8,13</context>
         </context-group>
         <note priority="1" from="description">Summarises the project purpose in the footer</note>
         <note priority="1" from="meaning">Application footer summary</note>
       </trans-unit>
-      <trans-unit id="appFooterIconAttribution" datatype="html">
-        <source> Uicons by <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://www.flaticon.com/uicons&quot;&gt;"/>Flaticon<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
+      <trans-unit id="appFooterOpenSourceLicencesLink" datatype="html">
+        <source> Open source licences </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shell/public-footer/public-footer.html</context>
-          <context context-type="linenumber">17,19</context>
+          <context context-type="linenumber">18,23</context>
         </context-group>
-        <note priority="1" from="description">Credits the source of the theme icons in the
-        footer</note>
-        <note priority="1" from="meaning">Application footer icon attribution</note>
+        <note priority="1" from="description">Links to open source and attribution
+          notices</note>
+        <note priority="1" from="meaning">Application footer open source licences link</note>
       </trans-unit>
       <trans-unit id="appHeaderBrand" datatype="html">
         <source> Summer-born Info </source>

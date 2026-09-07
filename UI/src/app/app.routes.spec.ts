@@ -7,6 +7,7 @@ import {
 import { routes } from './app.routes';
 import { Home } from './features/home/home';
 import { NotFound } from './features/not-found/not-found';
+import { OpenSourceLicences } from './features/open-source-licences/open-source-licences';
 import { UnderConstruction } from './features/under-construction/under-construction';
 import { RootShell } from './shell/root-shell/root-shell';
 
@@ -69,6 +70,22 @@ describe('app routes', () => {
       title: 'Summer-born Info - Page coming soon',
       focusTargetId: 'under-construction-heading',
       skipLinks: [{ label: 'Skip to main content', targetId: 'under-construction-heading' }],
+    });
+  });
+
+  it('keeps the open source licences route lazy-loaded while preserving its title and accessibility metadata', async () => {
+    const shellRoute = requireRoute(routes, '');
+    const openSourceLicencesRoute = requireRoute(shellRoute.children ?? [], 'open-source-licences');
+    const metadata = requireAccessibilityMetadata(openSourceLicencesRoute);
+
+    expect(openSourceLicencesRoute.component).toBeUndefined();
+    expect(openSourceLicencesRoute.loadComponent).toBeDefined();
+    await expect(openSourceLicencesRoute.loadComponent?.()).resolves.toBe(OpenSourceLicences);
+    expect(openSourceLicencesRoute.title).toBe('Summer-born Info - Open source licences');
+    expect(metadata).toEqual({
+      title: 'Summer-born Info - Open source licences',
+      focusTargetId: 'open-source-licences-heading',
+      skipLinks: [{ label: 'Skip to main content', targetId: 'open-source-licences-heading' }],
     });
   });
 

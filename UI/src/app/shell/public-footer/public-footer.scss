@@ -21,8 +21,14 @@
   gap: var(--sbi-space-2);
 }
 
-.public-footer__copy p,
-.public-footer__attribution {
+.public-footer__links {
+  align-items: end;
+  display: grid;
+  gap: var(--sbi-space-2);
+  justify-items: end;
+}
+
+.public-footer__copy p {
   color: var(--sbi-color-text-muted);
   margin: 0;
 }
@@ -33,17 +39,12 @@
   font-weight: var(--sbi-font-weight-extra-bold);
 }
 
-.public-footer__attribution {
-  font-size: var(--sbi-font-size-0);
-  line-height: var(--sbi-line-height-body);
-  text-align: end;
-}
-
-.public-footer__attribution a {
+.public-footer__links a {
   color: inherit;
+  font-size: var(--sbi-font-size-0);
 }
 
-.public-footer__attribution a:hover,
-.public-footer__attribution a:focus-visible {
+.public-footer__links a:hover,
+.public-footer__links a:focus-visible {
   color: var(--sbi-color-text);
 }

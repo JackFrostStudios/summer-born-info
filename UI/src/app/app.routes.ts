@@ -15,6 +15,12 @@ const underConstructionRouteAccessibility = defineRouteAccessibility({
   skipLinks: [{ label: 'Skip to main content', targetId: 'under-construction-heading' }],
 });
 
+const openSourceLicencesRouteAccessibility = defineRouteAccessibility({
+  title: 'Summer-born Info - Open source licences',
+  focusTargetId: 'open-source-licences-heading',
+  skipLinks: [{ label: 'Skip to main content', targetId: 'open-source-licences-heading' }],
+});
+
 const notFoundRouteAccessibility = defineRouteAccessibility({
   title: 'Summer-born Info - Page not found',
   focusTargetId: 'not-found-heading',
@@ -42,6 +48,15 @@ export const routes: Routes = [
         title: underConstructionRouteAccessibility.title,
         data: {
           [routeAccessibilityDataKey]: underConstructionRouteAccessibility,
+        },
+      },
+      {
+        path: 'open-source-licences',
+        loadComponent: async () =>
+          (await import('./features/open-source-licences/open-source-licences')).OpenSourceLicences,
+        title: openSourceLicencesRouteAccessibility.title,
+        data: {
+          [routeAccessibilityDataKey]: openSourceLicencesRouteAccessibility,
         },
       },
       {
