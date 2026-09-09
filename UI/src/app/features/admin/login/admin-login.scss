@@ -1,0 +1,121 @@
+:host {
+  display: block;
+  min-block-size: 100%;
+}
+
+.admin-login {
+  align-content: center;
+  display: grid;
+  min-block-size: 100%;
+  padding-block: clamp(2rem, 6vw, 5rem);
+}
+
+.admin-login__panel {
+  background: var(--sbi-color-surface-lowest);
+  border: var(--sbi-border-strong);
+  border-radius: var(--sbi-radius-lg);
+  box-shadow: var(--sbi-shadow-hard-lg);
+  display: grid;
+  gap: var(--sbi-space-6);
+  inline-size: min(100%, 36rem);
+  margin-inline: auto;
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.admin-login__intro,
+.admin-login__form,
+.admin-login__field {
+  display: grid;
+}
+
+.admin-login__intro {
+  gap: var(--sbi-space-3);
+}
+
+.admin-login__form {
+  gap: var(--sbi-space-5);
+}
+
+.admin-login__field {
+  gap: var(--sbi-space-2);
+}
+
+.admin-login :is(h1, p) {
+  margin: 0;
+}
+
+.admin-login h1 {
+  font-size: var(--sbi-font-size-4);
+  line-height: var(--sbi-line-height-heading);
+}
+
+.admin-login__eyebrow {
+  color: var(--sbi-color-primary);
+}
+
+.admin-login__body {
+  color: var(--sbi-color-text-muted);
+  font-size: var(--sbi-font-size-2);
+  line-height: var(--sbi-line-height-body);
+}
+
+.admin-login label {
+  font-weight: var(--sbi-font-weight-bold);
+}
+
+.admin-login input {
+  background: var(--sbi-color-surface);
+  border: var(--sbi-border);
+  border-radius: var(--sbi-radius-md);
+  color: var(--sbi-color-text);
+  font: inherit;
+  inline-size: 100%;
+  min-block-size: 3rem;
+  padding: var(--sbi-space-3) var(--sbi-space-4);
+}
+
+.admin-login input:focus-visible,
+.admin-login__submit:focus-visible,
+.admin-login__error:focus-visible {
+  outline: var(--sbi-focus-ring-width) solid var(--sbi-color-primary);
+  outline-offset: var(--sbi-focus-ring-offset);
+}
+
+.admin-login__error {
+  background: var(--sbi-color-error);
+  border-radius: var(--sbi-radius-md);
+  color: var(--sbi-color-on-error);
+  line-height: var(--sbi-line-height-body);
+  padding: var(--sbi-space-4);
+}
+
+.admin-login__submit {
+  background: var(--sbi-color-primary);
+  border: var(--sbi-border-strong);
+  border-radius: var(--sbi-radius-lg);
+  box-shadow: var(--sbi-shadow-hard);
+  color: var(--sbi-color-on-primary);
+  cursor: pointer;
+  font: inherit;
+  font-weight: var(--sbi-font-weight-bold);
+  min-block-size: 3rem;
+  padding: var(--sbi-space-3) var(--sbi-space-5);
+}
+
+.admin-login__submit:disabled {
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+@media (forced-colors: active) {
+  .admin-login__submit {
+    border-color: ButtonText;
+  }
+
+  .admin-login__submit:disabled {
+    border-color: GrayText;
+    color: GrayText;
+    opacity: 1;
+  }
+}

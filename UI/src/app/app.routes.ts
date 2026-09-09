@@ -21,6 +21,12 @@ const openSourceLicencesRouteAccessibility = defineRouteAccessibility({
   skipLinks: [{ label: 'Skip to main content', targetId: 'open-source-licences-heading' }],
 });
 
+const adminLoginRouteAccessibility = defineRouteAccessibility({
+  title: 'Summer-born Info - Admin sign in',
+  focusTargetId: 'admin-login-heading',
+  skipLinks: [{ label: 'Skip to main content', targetId: 'admin-login-heading' }],
+});
+
 const notFoundRouteAccessibility = defineRouteAccessibility({
   title: 'Summer-born Info - Page not found',
   focusTargetId: 'not-found-heading',
@@ -57,6 +63,14 @@ export const routes: Routes = [
         title: openSourceLicencesRouteAccessibility.title,
         data: {
           [routeAccessibilityDataKey]: openSourceLicencesRouteAccessibility,
+        },
+      },
+      {
+        path: 'admin/login',
+        loadComponent: async () => (await import('./features/admin/login/admin-login')).AdminLogin,
+        title: adminLoginRouteAccessibility.title,
+        data: {
+          [routeAccessibilityDataKey]: adminLoginRouteAccessibility,
         },
       },
       {

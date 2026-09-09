@@ -1,0 +1,81 @@
+<section class="admin-login sbi-container" [attr.aria-labelledby]="headingId">
+  <div class="admin-login__panel">
+    <div class="admin-login__intro">
+      <p
+        class="sbi-label admin-login__eyebrow"
+        i18n="Admin login eyebrow|Identifies the page as for volunteer administrators@@adminLoginEyebrow"
+      >
+        Volunteer admin
+      </p>
+      <h1
+        i18n="Admin login heading|Main heading for the admin sign-in page@@adminLoginHeading"
+        tabindex="-1"
+        [id]="headingId"
+      >
+        Sign in to admin tools
+      </h1>
+      <p
+        class="admin-login__body"
+        i18n="Admin login body|Explains who should use the admin sign-in page@@adminLoginBody"
+      >
+        Use this page if you help manage Summer-born Info. Your sign-in is only kept for this browser session.
+      </p>
+    </div>
+
+    <form class="admin-login__form" novalidate (submit)="submit($event)">
+      @if ($errorMessage(); as errorMessage) {
+        <p #errorSummary class="admin-login__error" id="admin-login-error" role="alert" tabindex="-1">
+          {{ errorMessage }}
+        </p>
+      }
+
+      <div class="admin-login__field">
+        <label
+          for="admin-login-email"
+          i18n="Admin login email label|Label for the admin email address field@@adminLoginEmailLabel"
+        >
+          Email address
+        </label>
+        <input
+          id="admin-login-email"
+          type="email"
+          autocomplete="username"
+          required
+          [value]="$email()"
+          [attr.aria-describedby]="$errorMessage() ? 'admin-login-error' : null"
+          (input)="updateEmail($event)"
+        />
+      </div>
+
+      <div class="admin-login__field">
+        <label
+          for="admin-login-password"
+          i18n="Admin login password label|Label for the admin password field@@adminLoginPasswordLabel"
+        >
+          Password
+        </label>
+        <input
+          id="admin-login-password"
+          type="password"
+          autocomplete="current-password"
+          required
+          [value]="$password()"
+          [attr.aria-describedby]="$errorMessage() ? 'admin-login-error' : null"
+          (input)="updatePassword($event)"
+        />
+      </div>
+
+      <button class="admin-login__submit" type="submit" [disabled]="!$canSubmit()" [attr.aria-busy]="$isSubmitting()">
+        @if ($isSubmitting()) {
+          <span
+            i18n="Admin login pending submit button|Button text while sign-in is in progress@@adminLoginPendingSubmit"
+          >
+            Signing in...
+          </span>
+        } @else {
+          <span i18n="Admin login submit button|Submits the admin login form@@adminLoginSubmit">Sign in</span>
+        }
+      </button>
+    </form>
+  </div>
+</section>

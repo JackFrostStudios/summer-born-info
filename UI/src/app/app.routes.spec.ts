@@ -5,6 +5,7 @@ import {
   type RouteAccessibilityMetadata,
 } from './app-route-accessibility';
 import { routes } from './app.routes';
+import { AdminLogin } from './features/admin/login/admin-login';
 import { Home } from './features/home/home';
 import { NotFound } from './features/not-found/not-found';
 import { OpenSourceLicences } from './features/open-source-licences/open-source-licences';
@@ -86,6 +87,22 @@ describe('app routes', () => {
       title: 'Summer-born Info - Open source licences',
       focusTargetId: 'open-source-licences-heading',
       skipLinks: [{ label: 'Skip to main content', targetId: 'open-source-licences-heading' }],
+    });
+  });
+
+  it('keeps the admin login route lazy-loaded while preserving its title and accessibility metadata', async () => {
+    const shellRoute = requireRoute(routes, '');
+    const adminLoginRoute = requireRoute(shellRoute.children ?? [], 'admin/login');
+    const metadata = requireAccessibilityMetadata(adminLoginRoute);
+
+    expect(adminLoginRoute.component).toBeUndefined();
+    expect(adminLoginRoute.loadComponent).toBeDefined();
+    await expect(adminLoginRoute.loadComponent?.()).resolves.toBe(AdminLogin);
+    expect(adminLoginRoute.title).toBe('Summer-born Info - Admin sign in');
+    expect(metadata).toEqual({
+      title: 'Summer-born Info - Admin sign in',
+      focusTargetId: 'admin-login-heading',
+      skipLinks: [{ label: 'Skip to main content', targetId: 'admin-login-heading' }],
     });
   });
 
