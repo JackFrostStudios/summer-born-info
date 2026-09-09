@@ -1,4 +1,5 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
 import { InMemoryScrollingOptions, provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideClientHydration, withEventReplay, withI18nSupport } from '@angular/platform-browser';
 
@@ -14,6 +15,7 @@ export const appHydrationFeatures = [withI18nSupport(), withEventReplay()];
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    provideHttpClient(),
     provideRouter(routes, withInMemoryScrolling(appInMemoryScrollingOptions)),
     provideClientHydration(...appHydrationFeatures),
   ],

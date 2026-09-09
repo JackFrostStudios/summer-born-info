@@ -261,6 +261,12 @@ Acceptance conditions:
   - Documented the convention in `UI/AI_PROJECT_GUIDE.md` and the local `ng serve` limitation in `UI/README.md`.
   - Validation: `npm run format:check` passed from `UI/`.
   - No helper or API client code was added because no auth call sites exist yet and the documented convention is sufficient for the next step.
+- Step 3 completed by sub-agent `01a087eb-cc2b-7383-a5ca-c1e8e84ba74a`.
+  - Added `AdminAuthService` under `UI/src/app/features/admin/auth/` with root-provided Angular `HttpClient` integration, same-origin `/api/admin/auth/*` calls, cookie credentials, signal-backed in-memory auth state, typed sign-in/sign-out outcomes, and `markUnauthenticated()` for future protected API `401` handling.
+  - Added focused service tests covering successful sign-in, `401` invalid credentials, `403` non-admin access, network and unexpected failures, sign-out success and failure, pending/auth signals, and explicit auth-state clearing.
+  - Added `provideHttpClient()` to the application config.
+  - Validation: `npm run format`, `npm run lint`, `npm run test:run -- --include=src/app/features/admin/auth/admin-auth.service.spec.ts`, and `npm run test:run -- --include=src/app/app.config.spec.ts` passed from `UI/`.
+  - Residual risk: the service has not been exercised against a live co-hosted API; route guard, login component, and sign-out UI remain later plan steps.
 
 ## 10. Risks and Mitigations
 
@@ -297,10 +303,10 @@ The remaining unknowns do not block implementation, but service and guard work s
 
 - [ ] `/admin/login` route exists, lazy-loads, and has route accessibility metadata.
 - [ ] `/admin` route exists, is protected, lazy-loads, and has route accessibility metadata.
-- [ ] Auth service can sign in, sign out, expose signal-backed auth state, and clear state after later `401` handling.
-- [ ] Sign-in posts `{ email, password }` to `/api/admin/auth/sign-in` with cookies included.
-- [ ] Sign-out posts to `/api/admin/auth/sign-out` with cookies included.
-- [ ] `204`, `401`, `403`, network failure, and unexpected failure outcomes produce distinct typed client results.
+- [x] Auth service can sign in, sign out, expose signal-backed auth state, and clear state after later `401` handling.
+- [x] Sign-in posts `{ email, password }` to `/api/admin/auth/sign-in` with cookies included.
+- [x] Sign-out posts to `/api/admin/auth/sign-out` with cookies included.
+- [x] `204`, `401`, `403`, network failure, and unexpected failure outcomes produce distinct typed client results.
 - [ ] Invalid-credential and non-admin messages are accessible, clear, and do not expose sensitive details.
 - [ ] Password values are never persisted to browser storage.
 - [ ] Guard redirects unknown sessions to `/admin/login` and preserves the requested protected destination.
@@ -311,8 +317,8 @@ The remaining unknowns do not block implementation, but service and guard work s
 - [ ] New visible template strings are marked for Angular i18n.
 - [ ] `UI/src/locale/messages.xlf` is refreshed.
 - [ ] Focused service, guard, component, and accessibility tests cover the in-scope behaviours.
-- [ ] `npm run format` has been run from `UI/`.
-- [ ] `npm run lint` has been run from `UI/`.
+- [x] `npm run format` has been run from `UI/`.
+- [x] `npm run lint` has been run from `UI/`.
 - [ ] `npm run build` has been run from `UI/`.
 - [ ] `npm run validate:i18n` has been run from `UI/`.
 - [ ] `npm run test:run` has been run from `UI/`.
