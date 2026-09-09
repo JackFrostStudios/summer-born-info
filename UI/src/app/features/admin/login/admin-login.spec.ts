@@ -124,6 +124,7 @@ describe('AdminLogin', () => {
     await submitForm('admin@example.test', 'secret');
 
     expect(navigateByUrl).toHaveBeenCalledWith('/admin');
+    expect(getPasswordInput().value).toBe('');
   });
 
   it('redirects successful sign-in to a safe app-relative return URL', async () => {

@@ -247,7 +247,7 @@ Acceptance conditions:
 5. [x] Add `/admin/login` route and component.
 6. [x] Add protected `/admin` landing route and sign-out action.
 7. [x] Wire route accessibility metadata, header or admin navigation affordances, and post-login return URL handling.
-8. Add component, guard, service, and accessibility tests.
+8. [x] Add component, guard, service, and accessibility tests.
 9. Run formatting, linting, build, i18n validation, unit tests, and accessibility smoke tests from `UI/`.
 
 ## 9. Implementation Progress
@@ -297,6 +297,15 @@ Acceptance conditions:
   - No UI code or copy changes were needed.
   - Validation: focused route, login, admin-home, and guard tests were rerun from `UI/`; `git diff --check` passed.
   - Residual risk: live browser/API return URL and sign-out behavior has not been exercised against a co-hosted backend in this step.
+- Step 8 completed by sub-agent `01a08812-bd27-7300-89bf-874a35c1ec9e` after auditing the existing admin auth, guard, login, admin landing, route metadata, and accessibility specs against the plan scenarios.
+  - Confirmed `AdminAuthService` tests cover typed sign-in/sign-out outcomes, cookie-backed API requests, pending/auth signals, sign-out failure state retention, and the reusable `markUnauthenticated()` path for future protected API `401` handling.
+  - Confirmed `adminAuthGuard` and real route-tree tests cover allow/deny behaviour, protected-content suppression before redirect, and preserved protected return URLs with query strings and fragments.
+  - Confirmed `AdminLogin` tests cover required-field blocking, successful redirect to `/admin` and safe return URLs, unsafe return URL fallback, already-authenticated redirect, invalid credentials, non-admin access, network/unexpected failures, pending duplicate prevention, and password clearing after success or invalid credentials.
+  - Confirmed `AdminHome` tests cover minimal protected landing content, sign-out success redirect, sign-out network/unexpected failure messaging, retained authenticated state on failed sign-out, focused error feedback, and pending duplicate prevention.
+  - Confirmed `app.routes.spec.ts` covers `/admin/login` and `/admin` lazy loading plus route accessibility metadata, and the dedicated accessibility smoke specs cover login and admin landing pages.
+  - Added one focused success-path login assertion for password clearing; no production code changes were needed.
+  - Validation: focused admin auth, guard, login, admin-home, route metadata, and accessibility specs were rerun from `UI/`; `npm run lint` and `git diff --check` passed.
+  - Residual risk: live browser/API auth and sign-out behaviour remains unexercised against a co-hosted backend in this step.
 
 ## 10. Risks and Mitigations
 
