@@ -205,13 +205,13 @@ Coverage output is written locally under `UI/coverage/summer-born-info/`, and th
 
 ## Current API Relationship
 
-The UI and API live in the same repository, but they are not yet wired into a documented end-to-end local startup flow.
+The UI and API live in the same repository. Frontend API requests use same-origin root-relative `/api/...` URLs, matching the assumption that deployed UI and API traffic share an origin.
 
 - There is no shared root command that starts both services together.
-- The UI does not yet define a repository-standard API client, proxy, or environment-based backend URL convention.
-- Treat current frontend-to-backend integration as a gap to be implemented explicitly when UI features begin consuming live API endpoints.
+- There is no Angular dev proxy checked in yet.
+- Do not add an environment-based backend origin for Milestone 9 admin auth calls.
 
-Until that wiring exists, document and build UI changes as a standalone Angular application and describe any new API assumptions in the related plan or feature change.
+Plain `ng serve` at `http://localhost:4200/` can validate Angular routes, rendering, forms, and mocked or unit-tested API behaviour, but live `/api/...` browser calls will only work when the Angular app is co-hosted with the API or run behind a local proxy that serves the API on the same origin. Add and document that proxy only when a feature change actually needs live local end-to-end browser validation.
 
 ## Architecture And Workflow Guidance
 

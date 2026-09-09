@@ -96,9 +96,12 @@ The UI is currently an Angular application with server-side rendering support, a
 
 ### API Integration
 
-- The repository does not yet define a canonical frontend API client or local proxy setup.
-- If you introduce UI-to-API integration, place the first concrete pattern where future features can reuse it and document the convention in this file.
-- Do not invent environment or endpoint conventions silently; document them in the same change that introduces them.
+- Use same-origin API paths for UI-to-API requests. Build calls as root-relative `/api/...` URLs, such as `/api/admin/auth/sign-in`, so the browser targets the same scheme, host, and port that served the Angular app.
+- Do not introduce an environment-based API origin or a third-party API client dependency for Milestone 9 auth work. Any future cross-origin backend decision must be documented here before code starts depending on it.
+- Keep API URL construction minimal and reusable under `UI/src/app/` when auth service work begins. A tiny helper is acceptable if it prevents repeated string conventions, but a broader API client abstraction should wait until multiple consumers justify it.
+- Cookie-backed authenticated calls must include browser credentials, for example by using Angular `HttpClient` with `withCredentials: true` or `fetch` with `credentials: 'include'`.
+- The UI currently has no local Angular dev proxy. Plain `ng serve` does not make same-origin `/api/...` calls reach the ASP.NET Core API unless the app is served through a host or proxy that also provides `/api`.
+- Until an authenticated-session probe endpoint exists, admin auth state is in-memory UI state only; a browser refresh may require signing in again even if the server cookie is still valid.
 
 ## Testing Expectations
 

@@ -43,7 +43,8 @@ Current UI context:
 - Secondary routes should lazy-load by default.
 - Route accessibility metadata is declared alongside routes through `defineRouteAccessibility`.
 - Feature code belongs under `UI/src/app/features/`.
-- The UI does not yet define a canonical API client, proxy, or environment-based backend URL convention.
+- The UI API URL convention is same-origin root-relative `/api/...` requests, documented in `UI/AI_PROJECT_GUIDE.md`.
+- The UI does not currently include a local Angular dev proxy; plain `ng serve` does not provide live same-origin API calls unless co-hosted or proxied.
 - User-facing template text must use Angular i18n metadata and refresh `UI/src/locale/messages.xlf`.
 
 ## 3. Scope
@@ -240,7 +241,7 @@ Acceptance conditions:
 ## 8. Dependencies and Sequencing
 
 1. [x] Confirm current API auth endpoints still match `API/API_REFERENCE.md` and `API/SummerBornInfo.Web/API/Admin/Auth/AdminAuthEndpoints.cs`.
-2. Decide and document the UI API URL convention before coding auth calls.
+2. [x] Decide and document the UI API URL convention before coding auth calls.
 3. Build the auth service and typed result mapping.
 4. Add route guard tests before or alongside guard implementation.
 5. Add `/admin/login` route and component.
@@ -255,12 +256,17 @@ Acceptance conditions:
   - Confirmed `API/API_REFERENCE.md`, `API/SummerBornInfo.Web/API/Admin/Auth/AdminAuthEndpoints.cs`, `API/SummerBornInfo.Web/Program.cs`, and focused authentication/OpenAPI tests match the admin auth contract in this plan.
   - Validation: `dotnet test .\SummerBornInfo.Web.Tests\SummerBornInfo.Web.Tests.csproj -- --filter-class "*Authentication*" --filter-class "*OpenApiSecurityDocumentTests"` passed with 14 tests.
   - Residual risk: the API was not manually exercised over HTTP outside the integration test harness.
+- Step 2 completed by sub-agent `01a087e9-bdfb-7622-b67d-49ba03adf924`.
+  - Decision: Milestone 9 UI auth calls will use same-origin root-relative `/api/...` URLs, with cookies included on authenticated requests.
+  - Documented the convention in `UI/AI_PROJECT_GUIDE.md` and the local `ng serve` limitation in `UI/README.md`.
+  - Validation: `npm run format:check` passed from `UI/`.
+  - No helper or API client code was added because no auth call sites exist yet and the documented convention is sufficient for the next step.
 
 ## 10. Risks and Mitigations
 
 - API/UI local-origin mismatch:
   - Risk: same-origin `/api/...` calls fail during local Angular development if the API runs on a different origin.
-  - Mitigation: explicitly choose same-origin deployment plus Angular dev proxy, or an environment-based API origin, before implementation.
+  - Mitigation: use same-origin `/api/...` URLs for Milestone 9 and validate live browser/API calls only when the UI is co-hosted with the API or served behind a local proxy that provides `/api` on the Angular origin.
 - No session probe endpoint:
   - Risk: after a browser refresh, the cookie may still be valid but the UI cannot know that before rendering protected routes.
   - Mitigation: treat in-memory auth as the Milestone 9 baseline and document a future `/api/admin/auth/session` or equivalent if persistent refresh recognition becomes required.
@@ -277,7 +283,7 @@ Acceptance conditions:
 ## 11. Unknowns and Required Clarifications
 
 - API URL convention:
-  - Required before implementation. Decide whether the UI will call same-origin `/api/...` with a dev proxy, or use an environment-configured API origin for local development.
+  - Resolved for Milestone 9: the UI will call same-origin root-relative `/api/...` endpoints. No environment-configured API origin or proxy file is introduced in this step.
 - Session refresh behaviour:
   - Assumption for this plan: client auth state is in-memory only, so a browser refresh returns the user to login unless a later API session probe is added.
 - Login discoverability:
@@ -285,7 +291,7 @@ Acceptance conditions:
 - Post-login destination:
   - Assumption for this plan: a guarded route redirect stores a return URL and successful login returns there; direct login navigations default to `/admin`.
 
-These unknowns do not block creating the plan, but the API URL convention must be settled at the start of implementation because it affects service code, documentation, and local validation.
+The remaining unknowns do not block implementation, but service and guard work should keep the refresh limitation visible until a session probe endpoint exists.
 
 ## 12. Completion Checklist
 
@@ -301,7 +307,7 @@ These unknowns do not block creating the plan, but the API URL convention must b
 - [ ] Successful sign-in redirects to the requested destination or `/admin`.
 - [ ] Sign-out clears client state and returns to `/admin/login`.
 - [ ] Browser refresh/session-probe limitation is documented if no API session endpoint is added.
-- [ ] UI API integration convention is documented in `UI/AI_PROJECT_GUIDE.md`; `UI/README.md` is updated if local setup changes.
+- [x] UI API integration convention is documented in `UI/AI_PROJECT_GUIDE.md`; `UI/README.md` is updated if local setup changes.
 - [ ] New visible template strings are marked for Angular i18n.
 - [ ] `UI/src/locale/messages.xlf` is refreshed.
 - [ ] Focused service, guard, component, and accessibility tests cover the in-scope behaviours.
