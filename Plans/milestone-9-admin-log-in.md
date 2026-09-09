@@ -242,8 +242,8 @@ Acceptance conditions:
 
 1. [x] Confirm current API auth endpoints still match `API/API_REFERENCE.md` and `API/SummerBornInfo.Web/API/Admin/Auth/AdminAuthEndpoints.cs`.
 2. [x] Decide and document the UI API URL convention before coding auth calls.
-3. Build the auth service and typed result mapping.
-4. Add route guard tests before or alongside guard implementation.
+3. [x] Build the auth service and typed result mapping.
+4. [x] Add route guard tests before or alongside guard implementation.
 5. Add `/admin/login` route and component.
 6. Add protected `/admin` landing route and sign-out action.
 7. Wire route accessibility metadata, header or admin navigation affordances, and post-login return URL handling.
@@ -267,6 +267,11 @@ Acceptance conditions:
   - Added `provideHttpClient()` to the application config.
   - Validation: `npm run format`, `npm run lint`, `npm run test:run -- --include=src/app/features/admin/auth/admin-auth.service.spec.ts`, and `npm run test:run -- --include=src/app/app.config.spec.ts` passed from `UI/`.
   - Residual risk: the service has not been exercised against a live co-hosted API; route guard, login component, and sign-out UI remain later plan steps.
+- Step 4 completed by sub-agent `01a087f1-f28a-7b43-a1c5-4898504553a6`.
+  - Added reusable `adminAuthGuard` under `UI/src/app/features/admin/auth/` beside the admin auth service.
+  - Added focused router-level guard tests covering authenticated activation, unauthenticated redirect to `/admin/login`, preserved `returnUrl` values for protected URLs with query and fragment, and prevention of protected component construction before redirect.
+  - Validation: `npm run format`, `npm run lint`, and `npm run test:run -- --include=src/app/features/admin/auth/admin-auth.guard.spec.ts` passed from `UI/`.
+  - Residual risk: the guard is validated against spec-only routes until later steps add the real `/admin` and `/admin/login` route tree.
 
 ## 10. Risks and Mitigations
 
@@ -309,7 +314,7 @@ The remaining unknowns do not block implementation, but service and guard work s
 - [x] `204`, `401`, `403`, network failure, and unexpected failure outcomes produce distinct typed client results.
 - [ ] Invalid-credential and non-admin messages are accessible, clear, and do not expose sensitive details.
 - [ ] Password values are never persisted to browser storage.
-- [ ] Guard redirects unknown sessions to `/admin/login` and preserves the requested protected destination.
+- [x] Guard redirects unknown sessions to `/admin/login` and preserves the requested protected destination.
 - [ ] Successful sign-in redirects to the requested destination or `/admin`.
 - [ ] Sign-out clears client state and returns to `/admin/login`.
 - [ ] Browser refresh/session-probe limitation is documented if no API session endpoint is added.
