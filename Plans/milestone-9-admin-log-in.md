@@ -239,7 +239,7 @@ Acceptance conditions:
 
 ## 8. Dependencies and Sequencing
 
-1. Confirm current API auth endpoints still match `API/API_REFERENCE.md` and `API/SummerBornInfo.Web/API/Admin/Auth/AdminAuthEndpoints.cs`.
+1. [x] Confirm current API auth endpoints still match `API/API_REFERENCE.md` and `API/SummerBornInfo.Web/API/Admin/Auth/AdminAuthEndpoints.cs`.
 2. Decide and document the UI API URL convention before coding auth calls.
 3. Build the auth service and typed result mapping.
 4. Add route guard tests before or alongside guard implementation.
@@ -249,7 +249,14 @@ Acceptance conditions:
 8. Add component, guard, service, and accessibility tests.
 9. Run formatting, linting, build, i18n validation, unit tests, and accessibility smoke tests from `UI/`.
 
-## 9. Risks and Mitigations
+## 9. Implementation Progress
+
+- Step 1 completed by sub-agent `01a087e5-a409-7081-99b5-a17efa1af3f6`.
+  - Confirmed `API/API_REFERENCE.md`, `API/SummerBornInfo.Web/API/Admin/Auth/AdminAuthEndpoints.cs`, `API/SummerBornInfo.Web/Program.cs`, and focused authentication/OpenAPI tests match the admin auth contract in this plan.
+  - Validation: `dotnet test .\SummerBornInfo.Web.Tests\SummerBornInfo.Web.Tests.csproj -- --filter-class "*Authentication*" --filter-class "*OpenApiSecurityDocumentTests"` passed with 14 tests.
+  - Residual risk: the API was not manually exercised over HTTP outside the integration test harness.
+
+## 10. Risks and Mitigations
 
 - API/UI local-origin mismatch:
   - Risk: same-origin `/api/...` calls fail during local Angular development if the API runs on a different origin.
@@ -267,7 +274,7 @@ Acceptance conditions:
   - Risk: Milestone 9 expands into Milestone 10 or later admin workflows.
   - Mitigation: keep `/admin` to route protection, session controls, and a minimal landing surface.
 
-## 10. Unknowns and Required Clarifications
+## 11. Unknowns and Required Clarifications
 
 - API URL convention:
   - Required before implementation. Decide whether the UI will call same-origin `/api/...` with a dev proxy, or use an environment-configured API origin for local development.
@@ -280,7 +287,7 @@ Acceptance conditions:
 
 These unknowns do not block creating the plan, but the API URL convention must be settled at the start of implementation because it affects service code, documentation, and local validation.
 
-## 11. Completion Checklist
+## 12. Completion Checklist
 
 - [ ] `/admin/login` route exists, lazy-loads, and has route accessibility metadata.
 - [ ] `/admin` route exists, is protected, lazy-loads, and has route accessibility metadata.
