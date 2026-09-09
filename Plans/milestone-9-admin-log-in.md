@@ -246,7 +246,7 @@ Acceptance conditions:
 4. [x] Add route guard tests before or alongside guard implementation.
 5. [x] Add `/admin/login` route and component.
 6. [x] Add protected `/admin` landing route and sign-out action.
-7. Wire route accessibility metadata, header or admin navigation affordances, and post-login return URL handling.
+7. [x] Wire route accessibility metadata, header or admin navigation affordances, and post-login return URL handling.
 8. Add component, guard, service, and accessibility tests.
 9. Run formatting, linting, build, i18n validation, unit tests, and accessibility smoke tests from `UI/`.
 
@@ -289,6 +289,14 @@ Acceptance conditions:
   - Refreshed `UI/src/locale/messages.xlf` for the new admin landing and sign-out copy.
   - Validation: `npm run format`, `npm run lint`, `npm run test:run -- --include=src/app/features/admin/admin-home/admin-home.spec.ts --include=src/app/app.routes.spec.ts`, `npm run test:run -- --include=src/app/features/admin/admin-home/component.a11y-spec.ts`, `npm run extract:i18n`, and `npm run test:a11y` passed from `UI/`.
   - Residual risk: live browser/API sign-out has not been exercised against a co-hosted backend in this step.
+- Step 7 completed by sub-agent `01a08810-d34d-79e0-a9ac-50ce1746bc6f` after inspection confirmed steps 5 and 6 already satisfied the route, navigation, and return URL requirements.
+  - Confirmed `/admin/login` and `/admin` declare route accessibility metadata in `UI/src/app/app.routes.ts` and are covered by `UI/src/app/app.routes.spec.ts`.
+  - Confirmed `adminAuthGuard` preserves guarded destinations by redirecting unknown sessions to `/admin/login?returnUrl=...`, with coverage for protected URLs that include query strings and fragments.
+  - Confirmed `AdminLogin` redirects successful sign-in to the preserved safe app-relative `returnUrl` or `/admin`, and rejects unsafe, external, relative, and login-loop return URLs.
+  - Confirmed `AdminHome` provides the authenticated admin navigation affordance for leaving admin space through its visible sign-out action, without adding broad public navigation or admin-specific logic to `RootShell`.
+  - No UI code or copy changes were needed.
+  - Validation: focused route, login, admin-home, and guard tests were rerun from `UI/`; `git diff --check` passed.
+  - Residual risk: live browser/API return URL and sign-out behavior has not been exercised against a co-hosted backend in this step.
 
 ## 10. Risks and Mitigations
 
