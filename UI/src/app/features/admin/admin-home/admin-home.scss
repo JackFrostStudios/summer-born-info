@@ -1,0 +1,108 @@
+:host {
+  display: block;
+  min-block-size: 100%;
+}
+
+.admin-home {
+  display: grid;
+  gap: var(--sbi-space-6);
+  padding-block: clamp(2rem, 6vw, 5rem);
+}
+
+.admin-home__header {
+  align-items: start;
+  display: flex;
+  gap: var(--sbi-space-5);
+  justify-content: space-between;
+}
+
+.admin-home__intro {
+  display: grid;
+  gap: var(--sbi-space-3);
+  max-inline-size: var(--sbi-size-readable);
+}
+
+.admin-home :is(h1, p) {
+  margin: 0;
+}
+
+.admin-home h1 {
+  font-size: var(--sbi-font-size-4);
+  line-height: var(--sbi-line-height-heading);
+}
+
+.admin-home__eyebrow {
+  color: var(--sbi-color-primary);
+}
+
+.admin-home__body {
+  color: var(--sbi-color-text-muted);
+  font-size: var(--sbi-font-size-2);
+  line-height: var(--sbi-line-height-body);
+}
+
+.admin-home__sign-out {
+  background: var(--sbi-color-primary);
+  border: var(--sbi-border-strong);
+  border-radius: var(--sbi-radius-lg);
+  box-shadow: var(--sbi-shadow-hard);
+  color: var(--sbi-color-on-primary);
+  cursor: pointer;
+  flex: 0 0 auto;
+  font: inherit;
+  font-weight: var(--sbi-font-weight-bold);
+  min-block-size: 3rem;
+  padding: var(--sbi-space-3) var(--sbi-space-5);
+}
+
+.admin-home__sign-out:disabled {
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.admin-home__sign-out:focus-visible,
+.admin-home__error:focus-visible {
+  outline: var(--sbi-focus-ring-width) solid var(--sbi-color-primary);
+  outline-offset: var(--sbi-focus-ring-offset);
+}
+
+.admin-home__error {
+  background: var(--sbi-color-error);
+  border-radius: var(--sbi-radius-md);
+  color: var(--sbi-color-on-error);
+  line-height: var(--sbi-line-height-body);
+  padding: var(--sbi-space-4);
+}
+
+.admin-home__placeholder {
+  background: var(--sbi-color-surface-lowest);
+  border: var(--sbi-border);
+  border-radius: var(--sbi-radius-lg);
+  color: var(--sbi-color-text-muted);
+  line-height: var(--sbi-line-height-body);
+  padding: var(--sbi-space-6);
+}
+
+@media (max-width: 42rem) {
+  .admin-home__header {
+    align-items: stretch;
+    display: grid;
+  }
+
+  .admin-home__sign-out {
+    inline-size: 100%;
+  }
+}
+
+@media (forced-colors: active) {
+  .admin-home__sign-out {
+    border-color: ButtonText;
+  }
+
+  .admin-home__sign-out:disabled {
+    border-color: GrayText;
+    color: GrayText;
+    opacity: 1;
+  }
+}

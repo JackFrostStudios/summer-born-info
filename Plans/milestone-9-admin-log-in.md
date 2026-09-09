@@ -245,7 +245,7 @@ Acceptance conditions:
 3. [x] Build the auth service and typed result mapping.
 4. [x] Add route guard tests before or alongside guard implementation.
 5. [x] Add `/admin/login` route and component.
-6. Add protected `/admin` landing route and sign-out action.
+6. [x] Add protected `/admin` landing route and sign-out action.
 7. Wire route accessibility metadata, header or admin navigation affordances, and post-login return URL handling.
 8. Add component, guard, service, and accessibility tests.
 9. Run formatting, linting, build, i18n validation, unit tests, and accessibility smoke tests from `UI/`.
@@ -281,6 +281,14 @@ Acceptance conditions:
   - Validation: `npm run test:run -- --include=src/app/features/admin/login/admin-login.spec.ts --include=src/app/app.routes.spec.ts`, `npm run test:run -- --include=src/app/features/admin/login/component.a11y-spec.ts`, `npm run test:run`, `npm run format`, `npm run lint`, `npm run extract:i18n`, `npm run build`, `npm run build:localize`, `npm run check:localized-ssr-assets`, and `npm run test:a11y` passed from `UI/`.
   - `npm run validate:i18n` was attempted, but it stops at the expected `git diff --exit-code -- src/locale/messages.xlf` gate because this step intentionally adds uncommitted extracted messages. The underlying extraction, localized build, and localized SSR asset checks were run separately and passed.
   - Residual risk: the login redirects to `/admin`, but the protected landing route remains a later step, so direct browser success-path validation depends on Step 6 adding that route.
+- Step 6 completed by sub-agent `01a08808-c538-72f2-8e74-aa4a262505ed`.
+  - Added lazy protected `/admin` routing under `RootShell` with `adminAuthGuard` and route accessibility metadata for title, focus target, and skip-link target.
+  - Added `UI/src/app/features/admin/admin-home/` with a standalone minimal protected admin landing page, authenticated-access confirmation copy, reserved follow-on workflow space, visible sign-out action, pending duplicate-submit prevention, and accessible recoverable sign-out failure messages.
+  - Sign-out success uses `AdminAuthService.signOut()` and redirects to `/admin/login`; failed sign-out leaves the admin on `/admin` and relies on the service behaviour that only clears client auth state after a `signed-out` outcome.
+  - Added focused component, route metadata, real route-tree protection, sign-out success/failure, pending duplicate-prevention, minimal-content, and accessibility smoke tests for the admin landing page.
+  - Refreshed `UI/src/locale/messages.xlf` for the new admin landing and sign-out copy.
+  - Validation: `npm run format`, `npm run lint`, `npm run test:run -- --include=src/app/features/admin/admin-home/admin-home.spec.ts --include=src/app/app.routes.spec.ts`, `npm run test:run -- --include=src/app/features/admin/admin-home/component.a11y-spec.ts`, `npm run extract:i18n`, and `npm run test:a11y` passed from `UI/`.
+  - Residual risk: live browser/API sign-out has not been exercised against a co-hosted backend in this step.
 
 ## 10. Risks and Mitigations
 
@@ -316,7 +324,7 @@ The remaining unknowns do not block implementation, but service and guard work s
 ## 12. Completion Checklist
 
 - [x] `/admin/login` route exists, lazy-loads, and has route accessibility metadata.
-- [ ] `/admin` route exists, is protected, lazy-loads, and has route accessibility metadata.
+- [x] `/admin` route exists, is protected, lazy-loads, and has route accessibility metadata.
 - [x] Auth service can sign in, sign out, expose signal-backed auth state, and clear state after later `401` handling.
 - [x] Sign-in posts `{ email, password }` to `/api/admin/auth/sign-in` with cookies included.
 - [x] Sign-out posts to `/api/admin/auth/sign-out` with cookies included.
@@ -325,8 +333,8 @@ The remaining unknowns do not block implementation, but service and guard work s
 - [x] Password values are never persisted to browser storage.
 - [x] Guard redirects unknown sessions to `/admin/login` and preserves the requested protected destination.
 - [x] Successful sign-in redirects to the requested destination or `/admin`.
-- [ ] Sign-out clears client state and returns to `/admin/login`.
-- [ ] Browser refresh/session-probe limitation is documented if no API session endpoint is added.
+- [x] Sign-out clears client state and returns to `/admin/login`.
+- [x] Browser refresh/session-probe limitation is documented if no API session endpoint is added.
 - [x] UI API integration convention is documented in `UI/AI_PROJECT_GUIDE.md`; `UI/README.md` is updated if local setup changes.
 - [x] New visible template strings are marked for Angular i18n.
 - [x] `UI/src/locale/messages.xlf` is refreshed.

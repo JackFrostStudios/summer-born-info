@@ -5,6 +5,8 @@ import {
   type RouteAccessibilityMetadata,
 } from './app-route-accessibility';
 import { routes } from './app.routes';
+import { AdminHome } from './features/admin/admin-home/admin-home';
+import { adminAuthGuard } from './features/admin/auth/admin-auth.guard';
 import { AdminLogin } from './features/admin/login/admin-login';
 import { Home } from './features/home/home';
 import { NotFound } from './features/not-found/not-found';
@@ -103,6 +105,23 @@ describe('app routes', () => {
       title: 'Summer-born Info - Admin sign in',
       focusTargetId: 'admin-login-heading',
       skipLinks: [{ label: 'Skip to main content', targetId: 'admin-login-heading' }],
+    });
+  });
+
+  it('keeps the protected admin route lazy-loaded while preserving its title and accessibility metadata', async () => {
+    const shellRoute = requireRoute(routes, '');
+    const adminRoute = requireRoute(shellRoute.children ?? [], 'admin');
+    const metadata = requireAccessibilityMetadata(adminRoute);
+
+    expect(adminRoute.component).toBeUndefined();
+    expect(adminRoute.canActivate).toEqual([adminAuthGuard]);
+    expect(adminRoute.loadComponent).toBeDefined();
+    await expect(adminRoute.loadComponent?.()).resolves.toBe(AdminHome);
+    expect(adminRoute.title).toBe('Summer-born Info - Admin tools');
+    expect(metadata).toEqual({
+      title: 'Summer-born Info - Admin tools',
+      focusTargetId: 'admin-home-heading',
+      skipLinks: [{ label: 'Skip to main content', targetId: 'admin-home-heading' }],
     });
   });
 

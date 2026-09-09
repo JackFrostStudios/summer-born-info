@@ -2,6 +2,79 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
+      <trans-unit id="adminHomeEyebrow" datatype="html">
+        <source> Admin area </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.html</context>
+          <context context-type="linenumber">8,11</context>
+        </context-group>
+        <note priority="1" from="description">Identifies the protected admin area</note>
+        <note priority="1" from="meaning">Admin home eyebrow</note>
+      </trans-unit>
+      <trans-unit id="adminHomeHeading" datatype="html">
+        <source> Admin tools </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.html</context>
+          <context context-type="linenumber">15,17</context>
+        </context-group>
+        <note priority="1" from="description">Main heading for the protected admin landing page</note>
+        <note priority="1" from="meaning">Admin home heading</note>
+      </trans-unit>
+      <trans-unit id="adminHomeBody" datatype="html">
+        <source> You&apos;re signed in. Admin workflows will appear here as they become available. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.html</context>
+          <context context-type="linenumber">18,24</context>
+        </context-group>
+        <note priority="1" from="description">Confirms authenticated admin access</note>
+        <note priority="1" from="meaning">Admin home body</note>
+      </trans-unit>
+      <trans-unit id="adminHomePendingSignOut" datatype="html">
+        <source> Signing out... </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.html</context>
+          <context context-type="linenumber">33,36</context>
+        </context-group>
+        <note priority="1" from="description">Button text while sign-out is in progress</note>
+        <note priority="1" from="meaning">Admin home pending sign out button</note>
+      </trans-unit>
+      <trans-unit id="adminHomeSignOut" datatype="html">
+        <source>Sign out</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.html</context>
+          <context context-type="linenumber">36,42</context>
+        </context-group>
+        <note priority="1" from="description">Signs the current admin out</note>
+        <note priority="1" from="meaning">Admin home sign out button</note>
+      </trans-unit>
+      <trans-unit id="adminHomePlaceholder" datatype="html">
+        <source> Protected admin access is ready. The next tools will be added here when they are available. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.html</context>
+          <context context-type="linenumber">54,57</context>
+        </context-group>
+        <note priority="1" from="description">Reserves space for future admin workflows without exposing unfinished
+      controls</note>
+        <note priority="1" from="meaning">Admin home placeholder</note>
+      </trans-unit>
+      <trans-unit id="adminHomeSignOutNetworkFailureError" datatype="html">
+        <source>We could not reach the sign-out service. Stay signed in here and try again.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.ts</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+        <note priority="1" from="description">Shown when sign-out cannot reach the server and the admin remains on the protected page</note>
+        <note priority="1" from="meaning">Admin home sign out network failure error</note>
+      </trans-unit>
+      <trans-unit id="adminHomeSignOutUnexpectedFailureError" datatype="html">
+        <source>Something went wrong while signing you out. Stay signed in here and try again.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.ts</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+        <note priority="1" from="description">Shown when sign-out fails in an unexpected recoverable way and the admin remains on the protected page</note>
+        <note priority="1" from="meaning">Admin home sign out unexpected failure error</note>
+      </trans-unit>
       <trans-unit id="adminLoginEyebrow" datatype="html">
         <source> Volunteer admin </source>
         <context-group purpose="location">
@@ -69,7 +142,7 @@
         <source>We could not sign you in with those details. Check your email and password, then try again.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
-          <context context-type="linenumber">91</context>
+          <context context-type="linenumber">93</context>
         </context-group>
         <note priority="1" from="description">Shown when admin sign-in credentials are rejected</note>
         <note priority="1" from="meaning">Admin login invalid credentials error</note>
@@ -78,7 +151,7 @@
         <source>That account does not have access to the admin tools. Use an admin account, or ask the site owner to check your access.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
-          <context context-type="linenumber">93</context>
+          <context context-type="linenumber">95</context>
         </context-group>
         <note priority="1" from="description">Shown when a non-admin account tries to access admin tools</note>
         <note priority="1" from="meaning">Admin login not admin error</note>
@@ -87,7 +160,7 @@
         <source>We could not reach the sign-in service. Check your connection and try again.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
-          <context context-type="linenumber">95</context>
+          <context context-type="linenumber">97</context>
         </context-group>
         <note priority="1" from="description">Shown when the sign-in request cannot reach the server</note>
         <note priority="1" from="meaning">Admin login network failure error</note>
@@ -96,7 +169,7 @@
         <source>Something went wrong while signing you in. Please try again.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
-          <context context-type="linenumber">97</context>
+          <context context-type="linenumber">99</context>
         </context-group>
         <note priority="1" from="description">Shown when sign-in fails in an unexpected recoverable way</note>
         <note priority="1" from="meaning">Admin login unexpected failure error</note>

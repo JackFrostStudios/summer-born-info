@@ -144,19 +144,16 @@ describe('AdminLogin', () => {
     ['/admin/login'],
     ['/admin/login?returnUrl=%2Fadmin%2Fimports'],
     ['/admin/login#admin-login-heading'],
-  ])(
-    'falls back to /admin when the return URL is unsafe or would keep the user on login: %s',
-    async (returnUrl) => {
-      TestBed.resetTestingModule();
-      await configureWithReturnUrl(returnUrl);
-      const router = TestBed.inject(Router);
-      const navigateByUrl = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+  ])('falls back to /admin when the return URL is unsafe or would keep the user on login: %s', async (returnUrl) => {
+    TestBed.resetTestingModule();
+    await configureWithReturnUrl(returnUrl);
+    const router = TestBed.inject(Router);
+    const navigateByUrl = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
 
-      await submitForm('admin@example.test', 'secret');
+    await submitForm('admin@example.test', 'secret');
 
-      expect(navigateByUrl).toHaveBeenCalledWith('/admin');
-    },
-  );
+    expect(navigateByUrl).toHaveBeenCalledWith('/admin');
+  });
 
   it('redirects away from the login page when the current runtime is already authenticated', async () => {
     TestBed.resetTestingModule();
