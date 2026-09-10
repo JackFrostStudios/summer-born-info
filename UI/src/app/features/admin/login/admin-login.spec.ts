@@ -117,6 +117,34 @@ describe('AdminLogin', () => {
     expect(signIn).toHaveBeenCalledWith({ email: 'admin@example.test', password: 'secret' });
   });
 
+  it('shows accessible field-level required errors after empty fields are visited', async () => {
+    const email = getEmailInput();
+    const password = getPasswordInput();
+
+    email.dispatchEvent(new Event('blur'));
+    password.dispatchEvent(new Event('blur'));
+    await settle();
+
+    const emailError = requireElement('#admin-login-email-error');
+    const passwordError = requireElement('#admin-login-password-error');
+
+    expect(emailError.textContent.trim()).toBe('Enter your email address.');
+    expect(passwordError.textContent.trim()).toBe('Enter your password.');
+    expect(email.getAttribute('aria-invalid')).toBe('true');
+    expect(password.getAttribute('aria-invalid')).toBe('true');
+    expect(email.getAttribute('aria-describedby')).toBe('admin-login-email-error');
+    expect(password.getAttribute('aria-describedby')).toBe('admin-login-password-error');
+
+    setInputValue(email, 'admin@example.test');
+    setInputValue(password, 'secret');
+    await settle();
+
+    expect(compiled.querySelector('#admin-login-email-error')).toBeNull();
+    expect(compiled.querySelector('#admin-login-password-error')).toBeNull();
+    expect(email.getAttribute('aria-invalid')).toBe('false');
+    expect(password.getAttribute('aria-invalid')).toBe('false');
+  });
+
   it('redirects successful sign-in to /admin when no safe return URL is present', async () => {
     const router = TestBed.inject(Router);
     const navigateByUrl = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);

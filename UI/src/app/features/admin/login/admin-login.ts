@@ -15,6 +15,8 @@ export class AdminLogin implements OnInit {
   private readonly router = inject(Router);
   private readonly $error = signal<AdminLoginErrorKind | null>(null);
   private readonly $errorSummary = viewChild<ElementRef<HTMLElement>>('errorSummary');
+  protected readonly $emailTouched = signal(false);
+  protected readonly $passwordTouched = signal(false);
 
   protected readonly headingId = 'admin-login-heading';
   protected readonly $email = signal('');
@@ -24,6 +26,12 @@ export class AdminLogin implements OnInit {
     () => this.$email().trim().length > 0 && this.$password().length > 0 && !this.$isSubmitting(),
   );
   protected readonly $errorMessage = computed(() => this.getErrorMessage(this.$error()));
+  protected readonly $showEmailRequiredError = computed(
+    () => this.$emailTouched() && this.$email().trim().length === 0,
+  );
+  protected readonly $showPasswordRequiredError = computed(
+    () => this.$passwordTouched() && this.$password().length === 0,
+  );
 
   ngOnInit(): void {
     if (this.adminAuthService.$isAuthenticated()) {
@@ -39,6 +47,14 @@ export class AdminLogin implements OnInit {
   protected updatePassword(event: Event): void {
     this.$password.set(this.getInputValue(event));
     this.$error.set(null);
+  }
+
+  protected markEmailTouched(): void {
+    this.$emailTouched.set(true);
+  }
+
+  protected markPasswordTouched(): void {
+    this.$passwordTouched.set(true);
   }
 
   protected async submit(event: Event): Promise<void> {

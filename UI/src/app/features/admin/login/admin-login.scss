@@ -89,6 +89,14 @@
   padding: var(--sbi-space-4);
 }
 
+.admin-login__field-error {
+  color: var(--sbi-color-error);
+  font-size: var(--sbi-font-size-0);
+  font-weight: var(--sbi-font-weight-bold);
+  line-height: var(--sbi-line-height-body);
+  margin: 0;
+}
+
 .admin-login__submit {
   background: var(--sbi-color-primary);
   border: var(--sbi-border-strong);

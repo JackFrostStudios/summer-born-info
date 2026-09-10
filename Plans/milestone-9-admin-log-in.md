@@ -316,6 +316,13 @@ Acceptance conditions:
   - Raised the `allScript` production error threshold from `365kB` to `367kB` while retaining the `350kB` warning threshold, because the full localized validation measured total scripts at `366.17kB`.
   - Refreshed `UI/src/locale/messages.xlf` line metadata through the i18n extraction workflow.
   - Residual risk: live browser/API auth and sign-out behaviour remains unexercised against a co-hosted backend; Milestone 9 uses unit, route, build, i18n, and accessibility validation only.
+- Peer review completed by sub-agent `01a08cdf-88c6-7753-aec1-2c27b38356c3`.
+  - Finding addressed: the login form had form-level API failure handling but did not yet show field-level required messages or invalid field states.
+  - Added visited-field required messages for email and password, connected each message with `aria-describedby`, and set `aria-invalid` when the empty field-level error is visible.
+  - Added focused login tests for the field-level validation behaviour and refreshed `UI/src/locale/messages.xlf` to 46 extracted messages.
+  - Raised the `allScript` production error threshold from `367kB` to `368kB` while retaining the `350kB` warning threshold, because the localized build measured total scripts at `367.69kB` after the review fix.
+  - Validation after the fix: `npm run format`, `npm run lint`, `npm run test:run -- --include=src/app/features/admin/login/admin-login.spec.ts`, `npm run test:run -- --include=src/app/features/admin/login/component.a11y-spec.ts`, `npm run build`, `npm run validate:i18n`, `npm run test:run`, and `npm run test:a11y` passed from `UI/`.
+  - Residual risk: live browser/API auth and sign-out behaviour remains unexercised against a co-hosted backend.
 
 ## 10. Risks and Mitigations
 

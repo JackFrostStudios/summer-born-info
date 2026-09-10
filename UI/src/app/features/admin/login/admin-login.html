@@ -42,9 +42,24 @@
           autocomplete="username"
           required
           [value]="$email()"
-          [attr.aria-describedby]="$errorMessage() ? 'admin-login-error' : null"
+          [attr.aria-describedby]="
+            $showEmailRequiredError() ? 'admin-login-email-error' : $errorMessage() ? 'admin-login-error' : null
+          "
+          [attr.aria-invalid]="$showEmailRequiredError()"
+          (blur)="markEmailTouched()"
           (input)="updateEmail($event)"
         />
+        @if ($showEmailRequiredError()) {
+          <p
+            class="admin-login__field-error"
+            id="admin-login-email-error"
+            i18n="
+              Admin login email required error|Shown when the admin email field is left
+              empty@@adminLoginEmailRequiredError"
+          >
+            Enter your email address.
+          </p>
+        }
       </div>
 
       <div class="admin-login__field">
@@ -60,9 +75,24 @@
           autocomplete="current-password"
           required
           [value]="$password()"
-          [attr.aria-describedby]="$errorMessage() ? 'admin-login-error' : null"
+          [attr.aria-describedby]="
+            $showPasswordRequiredError() ? 'admin-login-password-error' : $errorMessage() ? 'admin-login-error' : null
+          "
+          [attr.aria-invalid]="$showPasswordRequiredError()"
+          (blur)="markPasswordTouched()"
           (input)="updatePassword($event)"
         />
+        @if ($showPasswordRequiredError()) {
+          <p
+            class="admin-login__field-error"
+            id="admin-login-password-error"
+            i18n="
+              Admin login password required error|Shown when the admin password field is left
+              empty@@adminLoginPasswordRequiredError"
+          >
+            Enter your password.
+          </p>
+        }
       </div>
 
       <button class="admin-login__submit" type="submit" [disabled]="!$canSubmit()" [attr.aria-busy]="$isSubmitting()">
