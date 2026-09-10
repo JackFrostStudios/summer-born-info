@@ -44,7 +44,7 @@ Current UI context:
 - Route accessibility metadata is declared alongside routes through `defineRouteAccessibility`.
 - Feature code belongs under `UI/src/app/features/`.
 - The UI API URL convention is same-origin root-relative `/api/...` requests, documented in `UI/AI_PROJECT_GUIDE.md`.
-- The UI does not currently include a local Angular dev proxy; plain `ng serve` does not provide live same-origin API calls unless co-hosted or proxied.
+- The UI now includes a local Angular dev proxy for `/api/...` requests, pointing at the Aspire-launched API on `http://localhost:5119`.
 - User-facing template text must use Angular i18n metadata and refresh `UI/src/locale/messages.xlf`.
 
 ## 3. Scope
@@ -323,12 +323,18 @@ Acceptance conditions:
   - Raised the `allScript` production error threshold from `367kB` to `368kB` while retaining the `350kB` warning threshold, because the localized build measured total scripts at `367.69kB` after the review fix.
   - Validation after the fix: `npm run format`, `npm run lint`, `npm run test:run -- --include=src/app/features/admin/login/admin-login.spec.ts`, `npm run test:run -- --include=src/app/features/admin/login/component.a11y-spec.ts`, `npm run build`, `npm run validate:i18n`, `npm run test:run`, and `npm run test:a11y` passed from `UI/`.
   - Residual risk: live browser/API auth and sign-out behaviour remains unexercised against a co-hosted backend.
+- Local API proxy follow-up completed in the top-level thread.
+  - Added `UI/proxy.conf.json` and wired the Angular `serve` target to proxy `/api/...` requests to the Aspire-launched API at `http://localhost:5119`.
+  - Updated `UI/README.md` with the local end-to-end startup sequence: run the Aspire app host from `API`, then run the Angular development server from `UI`.
+  - Updated `UI/AI_PROJECT_GUIDE.md` so the local proxy is part of the documented same-origin API convention.
+  - Corrected the AppHost command in `API/README.md` to use the current `SummerBornInfo.AppHost/SummerBornInfo.AppHost.csproj` path.
+  - Validation: `npm run format`, `npm run lint`, and `npx ng serve --port 4211 --host 127.0.0.1` passed from `UI`; the dev server was stopped after it accepted the proxy config and completed its initial build.
 
 ## 10. Risks and Mitigations
 
 - API/UI local-origin mismatch:
-  - Risk: same-origin `/api/...` calls fail during local Angular development if the API runs on a different origin.
-  - Mitigation: use same-origin `/api/...` URLs for Milestone 9 and validate live browser/API calls only when the UI is co-hosted with the API or served behind a local proxy that provides `/api` on the Angular origin.
+  - Risk: same-origin `/api/...` calls fail during local Angular development if the API endpoint changes from the configured proxy target.
+  - Mitigation: run the API through the Aspire app host and keep `UI/proxy.conf.json` aligned with the local web API endpoint shown by Aspire.
 - No session probe endpoint:
   - Risk: after a browser refresh, the cookie may still be valid but the UI cannot know that before rendering protected routes.
   - Mitigation: treat in-memory auth as the Milestone 9 baseline and document a future `/api/admin/auth/session` or equivalent if persistent refresh recognition becomes required.
@@ -345,7 +351,7 @@ Acceptance conditions:
 ## 11. Unknowns and Required Clarifications
 
 - API URL convention:
-  - Resolved for Milestone 9: the UI will call same-origin root-relative `/api/...` endpoints. No environment-configured API origin or proxy file is introduced in this step.
+  - Resolved for Milestone 9: the UI calls same-origin root-relative `/api/...` endpoints. Local Angular development now uses `UI/proxy.conf.json` instead of an environment-configured API origin.
 - Session refresh behaviour:
   - Assumption for this plan: client auth state is in-memory only, so a browser refresh returns the user to login unless a later API session probe is added.
 - Login discoverability:

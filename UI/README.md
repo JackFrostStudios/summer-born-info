@@ -33,6 +33,8 @@ npm start
 
 This runs `ng serve` with the development configuration from `angular.json`. By default the app is available at `http://localhost:4200/`.
 
+The Angular development server also loads `proxy.conf.json`, which forwards same-origin `/api/...` browser requests to the local API at `http://localhost:5119`.
+
 To run the generated SSR output after a build:
 
 ```bash
@@ -152,6 +154,12 @@ Recommended local loop from the `UI` folder:
    npm start
    ```
 
+   Keep the API running separately from the `API` folder when a browser journey needs live backend calls:
+
+   ```bash
+   dotnet run --project SummerBornInfo.AppHost/SummerBornInfo.AppHost.csproj
+   ```
+
 3. Run the unit tests while you work or before you hand changes over.
 
    ```bash
@@ -208,10 +216,22 @@ Coverage output is written locally under `UI/coverage/summer-born-info/`, and th
 The UI and API live in the same repository. Frontend API requests use same-origin root-relative `/api/...` URLs, matching the assumption that deployed UI and API traffic share an origin.
 
 - There is no shared root command that starts both services together.
-- There is no Angular dev proxy checked in yet.
+- The Angular development server proxies `/api/...` requests to the locally running API at `http://localhost:5119`.
 - Do not add an environment-based backend origin for Milestone 9 admin auth calls.
 
-Plain `ng serve` at `http://localhost:4200/` can validate Angular routes, rendering, forms, and mocked or unit-tested API behaviour, but live `/api/...` browser calls will only work when the Angular app is co-hosted with the API or run behind a local proxy that serves the API on the same origin. Add and document that proxy only when a feature change actually needs live local end-to-end browser validation.
+For local end-to-end browser testing, start the API through the Aspire app host from the `API` folder:
+
+```bash
+dotnet run --project SummerBornInfo.AppHost/SummerBornInfo.AppHost.csproj
+```
+
+Then start the Angular dev server from the `UI` folder:
+
+```bash
+npm start
+```
+
+Browse to `http://localhost:4200/`. Requests from the UI to `/api/...`, including `/api/admin/auth/sign-in`, stay same-origin in the browser and are forwarded by the Angular dev server to the Aspire-launched API. If the API launch profile changes from `http://localhost:5119`, update `proxy.conf.json` to match the web API endpoint shown by Aspire.
 
 ## Architecture And Workflow Guidance
 
