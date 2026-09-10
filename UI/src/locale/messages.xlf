@@ -51,7 +51,7 @@
         <source> Protected admin access is ready. The next tools will be added here when they are available. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.html</context>
-          <context context-type="linenumber">54,57</context>
+          <context context-type="linenumber">53,56</context>
         </context-group>
         <note priority="1" from="description">Reserves space for future admin workflows without exposing unfinished
       controls</note>
