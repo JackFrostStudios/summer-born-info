@@ -5,7 +5,7 @@ public sealed class PostgreSqlDockerImageVersionTests
     [Fact]
     public void GivenSharedDockerfile_WhenReadingVersion_ThenReturnsConfiguredVersion()
     {
-        Assert.Equal("1.0.0", SummerbornInfo.PostgresDockerImage.PostgreSqlDockerImageVersion.Version);
+        Assert.Equal("1.0.0", PostgreSqlDockerImageVersion.Version);
     }
 
     [Theory]
@@ -15,7 +15,7 @@ public sealed class PostgreSqlDockerImageVersionTests
         string expectedMessageFragment)
     {
         var exception = Assert.Throws<InvalidOperationException>(
-            () => SummerbornInfo.PostgresDockerImage.PostgreSqlDockerImageVersion.ParseVersion(dockerfileContents));
+            () => PostgreSqlDockerImageVersion.ParseVersion(dockerfileContents));
 
         Assert.Contains(expectedMessageFragment, exception.Message, StringComparison.Ordinal);
     }
@@ -26,7 +26,7 @@ public sealed class PostgreSqlDockerImageVersionTests
         const string dockerfileContents = "FROM postgres:18\nLABEL org.opencontainers.image.version=\"1.0.0\"\nLABEL org.opencontainers.image.version";
 
         var exception = Assert.Throws<InvalidOperationException>(
-            () => SummerbornInfo.PostgresDockerImage.PostgreSqlDockerImageVersion.ParseVersion(dockerfileContents));
+            () => PostgreSqlDockerImageVersion.ParseVersion(dockerfileContents));
 
         Assert.Contains("to use the format", exception.Message, StringComparison.Ordinal);
     }

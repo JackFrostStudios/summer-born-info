@@ -190,8 +190,8 @@ public sealed class GetAllSchoolsQueryHandlerTests(
     {
         for (var index = 1; index <= count; index++)
         {
-            var indexText = index.ToString("D12", System.Globalization.CultureInfo.InvariantCulture);
-            var nameText = index.ToString("D3", System.Globalization.CultureInfo.InvariantCulture);
+            var indexText = index.ToString("D12", CultureInfo.InvariantCulture);
+            var nameText = index.ToString("D3", CultureInfo.InvariantCulture);
             yield return CreateSchool(
                 id: new Guid($"00000000-0000-0000-0000-{indexText}"),
                 urn: 100000 + index,
@@ -202,7 +202,7 @@ public sealed class GetAllSchoolsQueryHandlerTests(
 
     private static School CreateSchool(Guid id, int urn, int establishmentNumber, string name)
     {
-        var urnText = urn.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var urnText = urn.ToString(CultureInfo.InvariantCulture);
 
         return new School
         {
@@ -219,7 +219,7 @@ public sealed class GetAllSchoolsQueryHandlerTests(
                 Town = "Leeds",
                 County = "West Yorkshire",
                 PostCode = string.Create(
-                    System.Globalization.CultureInfo.InvariantCulture,
+                    CultureInfo.InvariantCulture,
                     $"LS1 {urn % 10}AA"),
             },
             OpenDate = new DateOnly(2010, 9, 1),

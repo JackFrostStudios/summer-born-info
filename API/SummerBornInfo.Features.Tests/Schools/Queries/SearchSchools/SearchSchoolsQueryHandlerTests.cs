@@ -212,7 +212,7 @@ public sealed class SearchSchoolsQueryHandlerTests(
         string? county,
         string postCode)
     {
-        var urnText = urn.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var urnText = urn.ToString(CultureInfo.InvariantCulture);
 
         return new School
         {

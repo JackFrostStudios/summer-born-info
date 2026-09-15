@@ -51,7 +51,7 @@ internal static class AnonymousPublicEndpointAbuseControlServiceCollectionExtens
             client.BaseAddress = new Uri("https://challenges.cloudflare.com/");
         });
 
-        _ = services.AddScoped<IAnonymousBotVerifier>(CreateAnonymousBotVerifier);
+        _ = services.AddScoped(CreateAnonymousBotVerifier);
     }
 
     private static bool HasValidRateLimitingConfiguration(AnonymousPublicEndpointAbuseControlOptions options)
