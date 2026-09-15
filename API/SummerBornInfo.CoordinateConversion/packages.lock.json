@@ -4,31 +4,31 @@
     "net10.0": {
       "MaxRev.Gdal.Core": {
         "type": "Direct",
-        "requested": "[3.13.1.534, )",
-        "resolved": "3.13.1.534",
-        "contentHash": "xWqp+3Gj4J+3lSUSP5n028Gwgj4pUPtb5GrCteZUCZSxjyBgWsXpYvugv4r+CdueQf1MEeYq3zaqY+J30DpOkw=="
+        "requested": "[3.13.3.557, )",
+        "resolved": "3.13.3.557",
+        "contentHash": "iMVctjJbUb/IDFP8ubz3JilZWcVMJghvsqgYcIStYNmtRHureOUDY7IzOhQIiWLYFeLh0/YneDWOPnsO1fMmeQ=="
       },
       "MaxRev.Gdal.LinuxRuntime.Minimal": {
         "type": "Direct",
-        "requested": "[3.13.1.534, )",
-        "resolved": "3.13.1.534",
-        "contentHash": "i+ues6v4kK+lQt2VvX/2ARRlOaYj2vtpZPxA7qKGKh/26DjxzBzN4MEDdyVBwK7idgbC65f+inteKMDuzFSnkA==",
+        "requested": "[3.13.3.557, )",
+        "resolved": "3.13.3.557",
+        "contentHash": "bvHlYNiYgXkqd6Fo1HiNmBe+Z8k60e3l9N60tKI9jCwPj6om5Ji/e+dWcvShRYDrn/Jehh0HKTYGjWfNa1Z9eg==",
         "dependencies": {
-          "MaxRev.Gdal.LinuxRuntime.Minimal.arm64": "3.13.1.534",
-          "MaxRev.Gdal.LinuxRuntime.Minimal.x64": "3.13.1.534"
+          "MaxRev.Gdal.LinuxRuntime.Minimal.arm64": "3.13.3.557",
+          "MaxRev.Gdal.LinuxRuntime.Minimal.x64": "3.13.3.557"
         }
       },
       "MaxRev.Gdal.WindowsRuntime.Minimal": {
         "type": "Direct",
-        "requested": "[3.13.1.534, )",
-        "resolved": "3.13.1.534",
-        "contentHash": "NLbrsIRN1mWjjqBP9kS1uPnWHWjnyElVdO4P+dWfgSjmeO7m2u0ALlhBh9JJkismEyirZ0fjsvkZ/kXFnW14ew=="
+        "requested": "[3.13.3.557, )",
+        "resolved": "3.13.3.557",
+        "contentHash": "jWHmB3XhrC86Nqz+2BCCPaB04pA1KfYX7SD2J3TeQsFBomzSD+SqM+DGtb6mJKiQDdb13mflZlUL2+JtTgBzVw=="
       },
       "Meziantou.Analyzer": {
         "type": "Direct",
-        "requested": "[3.0.103, )",
-        "resolved": "3.0.103",
-        "contentHash": "gOrfBIHMhpHUMao98VIC0n4gjj15fBX/kl2BMtHyEtFTZSmMks8smN/gScahNccMDOccdSWxIBUdz2hZVhhibA=="
+        "requested": "[3.0.258, )",
+        "resolved": "3.0.258",
+        "contentHash": "1Woi+EqYRjvHh/bySi4OAf7Dwe8+jwGSEkoSroBgxnXb78bd+OfsLgM7fE9HvfSmoz6W47OwWFWztul5RoKrwg=="
       },
       "NetTopologySuite": {
         "type": "Direct",
@@ -38,85 +38,85 @@
       },
       "MaxRev.Gdal.LinuxRuntime.Minimal.arm64": {
         "type": "Transitive",
-        "resolved": "3.13.1.534",
-        "contentHash": "qWTWCpA45iWfdAUsGkYcc/t8Mm4Fbsv012NihyrvXQrF06g+SHyOdmh/W021e6vnQsDuaDdy7pU5xevzXGZIbA=="
+        "resolved": "3.13.3.557",
+        "contentHash": "bS+c02oojvFPokNtEf/BjXr8DTmxc9BIC75MHKNYVZgQkZaclo5IvZW0Azi5M5EbKC7ZO8o8ZmJ0om/45X/HtA=="
       },
       "MaxRev.Gdal.LinuxRuntime.Minimal.x64": {
         "type": "Transitive",
-        "resolved": "3.13.1.534",
-        "contentHash": "qn99xu9hJRLCUcq9kIRiW94042ELJpIEltu82atglQBtGFVSuLfc2o2A9ZZSjmUqlm5AZguAIB/FJTQLksJ//A=="
+        "resolved": "3.13.3.557",
+        "contentHash": "vtrt0G5IvzJItiEWpz299rS0JRKa1fpW2PLHk0tFAPj/OinRCBjRUAHGdtMYCXFrtBm4SCFat8KIxhXblJpd1Q=="
       }
     },
     "net10.0/linux-arm64": {
       "MaxRev.Gdal.Core": {
         "type": "Direct",
-        "requested": "[3.13.1.534, )",
-        "resolved": "3.13.1.534",
-        "contentHash": "xWqp+3Gj4J+3lSUSP5n028Gwgj4pUPtb5GrCteZUCZSxjyBgWsXpYvugv4r+CdueQf1MEeYq3zaqY+J30DpOkw=="
+        "requested": "[3.13.3.557, )",
+        "resolved": "3.13.3.557",
+        "contentHash": "iMVctjJbUb/IDFP8ubz3JilZWcVMJghvsqgYcIStYNmtRHureOUDY7IzOhQIiWLYFeLh0/YneDWOPnsO1fMmeQ=="
       },
       "MaxRev.Gdal.WindowsRuntime.Minimal": {
         "type": "Direct",
-        "requested": "[3.13.1.534, )",
-        "resolved": "3.13.1.534",
-        "contentHash": "NLbrsIRN1mWjjqBP9kS1uPnWHWjnyElVdO4P+dWfgSjmeO7m2u0ALlhBh9JJkismEyirZ0fjsvkZ/kXFnW14ew=="
+        "requested": "[3.13.3.557, )",
+        "resolved": "3.13.3.557",
+        "contentHash": "jWHmB3XhrC86Nqz+2BCCPaB04pA1KfYX7SD2J3TeQsFBomzSD+SqM+DGtb6mJKiQDdb13mflZlUL2+JtTgBzVw=="
       },
       "MaxRev.Gdal.LinuxRuntime.Minimal.arm64": {
         "type": "Transitive",
-        "resolved": "3.13.1.534",
-        "contentHash": "qWTWCpA45iWfdAUsGkYcc/t8Mm4Fbsv012NihyrvXQrF06g+SHyOdmh/W021e6vnQsDuaDdy7pU5xevzXGZIbA=="
+        "resolved": "3.13.3.557",
+        "contentHash": "bS+c02oojvFPokNtEf/BjXr8DTmxc9BIC75MHKNYVZgQkZaclo5IvZW0Azi5M5EbKC7ZO8o8ZmJ0om/45X/HtA=="
       },
       "MaxRev.Gdal.LinuxRuntime.Minimal.x64": {
         "type": "Transitive",
-        "resolved": "3.13.1.534",
-        "contentHash": "qn99xu9hJRLCUcq9kIRiW94042ELJpIEltu82atglQBtGFVSuLfc2o2A9ZZSjmUqlm5AZguAIB/FJTQLksJ//A=="
+        "resolved": "3.13.3.557",
+        "contentHash": "vtrt0G5IvzJItiEWpz299rS0JRKa1fpW2PLHk0tFAPj/OinRCBjRUAHGdtMYCXFrtBm4SCFat8KIxhXblJpd1Q=="
       }
     },
     "net10.0/linux-x64": {
       "MaxRev.Gdal.Core": {
         "type": "Direct",
-        "requested": "[3.13.1.534, )",
-        "resolved": "3.13.1.534",
-        "contentHash": "xWqp+3Gj4J+3lSUSP5n028Gwgj4pUPtb5GrCteZUCZSxjyBgWsXpYvugv4r+CdueQf1MEeYq3zaqY+J30DpOkw=="
+        "requested": "[3.13.3.557, )",
+        "resolved": "3.13.3.557",
+        "contentHash": "iMVctjJbUb/IDFP8ubz3JilZWcVMJghvsqgYcIStYNmtRHureOUDY7IzOhQIiWLYFeLh0/YneDWOPnsO1fMmeQ=="
       },
       "MaxRev.Gdal.WindowsRuntime.Minimal": {
         "type": "Direct",
-        "requested": "[3.13.1.534, )",
-        "resolved": "3.13.1.534",
-        "contentHash": "NLbrsIRN1mWjjqBP9kS1uPnWHWjnyElVdO4P+dWfgSjmeO7m2u0ALlhBh9JJkismEyirZ0fjsvkZ/kXFnW14ew=="
+        "requested": "[3.13.3.557, )",
+        "resolved": "3.13.3.557",
+        "contentHash": "jWHmB3XhrC86Nqz+2BCCPaB04pA1KfYX7SD2J3TeQsFBomzSD+SqM+DGtb6mJKiQDdb13mflZlUL2+JtTgBzVw=="
       },
       "MaxRev.Gdal.LinuxRuntime.Minimal.arm64": {
         "type": "Transitive",
-        "resolved": "3.13.1.534",
-        "contentHash": "qWTWCpA45iWfdAUsGkYcc/t8Mm4Fbsv012NihyrvXQrF06g+SHyOdmh/W021e6vnQsDuaDdy7pU5xevzXGZIbA=="
+        "resolved": "3.13.3.557",
+        "contentHash": "bS+c02oojvFPokNtEf/BjXr8DTmxc9BIC75MHKNYVZgQkZaclo5IvZW0Azi5M5EbKC7ZO8o8ZmJ0om/45X/HtA=="
       },
       "MaxRev.Gdal.LinuxRuntime.Minimal.x64": {
         "type": "Transitive",
-        "resolved": "3.13.1.534",
-        "contentHash": "qn99xu9hJRLCUcq9kIRiW94042ELJpIEltu82atglQBtGFVSuLfc2o2A9ZZSjmUqlm5AZguAIB/FJTQLksJ//A=="
+        "resolved": "3.13.3.557",
+        "contentHash": "vtrt0G5IvzJItiEWpz299rS0JRKa1fpW2PLHk0tFAPj/OinRCBjRUAHGdtMYCXFrtBm4SCFat8KIxhXblJpd1Q=="
       }
     },
     "net10.0/win-x64": {
       "MaxRev.Gdal.Core": {
         "type": "Direct",
-        "requested": "[3.13.1.534, )",
-        "resolved": "3.13.1.534",
-        "contentHash": "xWqp+3Gj4J+3lSUSP5n028Gwgj4pUPtb5GrCteZUCZSxjyBgWsXpYvugv4r+CdueQf1MEeYq3zaqY+J30DpOkw=="
+        "requested": "[3.13.3.557, )",
+        "resolved": "3.13.3.557",
+        "contentHash": "iMVctjJbUb/IDFP8ubz3JilZWcVMJghvsqgYcIStYNmtRHureOUDY7IzOhQIiWLYFeLh0/YneDWOPnsO1fMmeQ=="
       },
       "MaxRev.Gdal.WindowsRuntime.Minimal": {
         "type": "Direct",
-        "requested": "[3.13.1.534, )",
-        "resolved": "3.13.1.534",
-        "contentHash": "NLbrsIRN1mWjjqBP9kS1uPnWHWjnyElVdO4P+dWfgSjmeO7m2u0ALlhBh9JJkismEyirZ0fjsvkZ/kXFnW14ew=="
+        "requested": "[3.13.3.557, )",
+        "resolved": "3.13.3.557",
+        "contentHash": "jWHmB3XhrC86Nqz+2BCCPaB04pA1KfYX7SD2J3TeQsFBomzSD+SqM+DGtb6mJKiQDdb13mflZlUL2+JtTgBzVw=="
       },
       "MaxRev.Gdal.LinuxRuntime.Minimal.arm64": {
         "type": "Transitive",
-        "resolved": "3.13.1.534",
-        "contentHash": "qWTWCpA45iWfdAUsGkYcc/t8Mm4Fbsv012NihyrvXQrF06g+SHyOdmh/W021e6vnQsDuaDdy7pU5xevzXGZIbA=="
+        "resolved": "3.13.3.557",
+        "contentHash": "bS+c02oojvFPokNtEf/BjXr8DTmxc9BIC75MHKNYVZgQkZaclo5IvZW0Azi5M5EbKC7ZO8o8ZmJ0om/45X/HtA=="
       },
       "MaxRev.Gdal.LinuxRuntime.Minimal.x64": {
         "type": "Transitive",
-        "resolved": "3.13.1.534",
-        "contentHash": "qn99xu9hJRLCUcq9kIRiW94042ELJpIEltu82atglQBtGFVSuLfc2o2A9ZZSjmUqlm5AZguAIB/FJTQLksJ//A=="
+        "resolved": "3.13.3.557",
+        "contentHash": "vtrt0G5IvzJItiEWpz299rS0JRKa1fpW2PLHk0tFAPj/OinRCBjRUAHGdtMYCXFrtBm4SCFat8KIxhXblJpd1Q=="
       }
     }
   }

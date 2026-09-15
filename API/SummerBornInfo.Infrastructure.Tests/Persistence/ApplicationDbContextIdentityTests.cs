@@ -39,7 +39,7 @@ public sealed class ApplicationDbContextIdentityTests(IntegrationTestDatabaseSer
         }
 
         // Assert
-        Assert.Equal(ExpectedIdentityAndDomainTableNames, tableNames);
+        Assert.Equal(ExpectedIdentityAndDomainTableNames, tableNames, StringComparer.Ordinal);
     }
 
     [Fact]

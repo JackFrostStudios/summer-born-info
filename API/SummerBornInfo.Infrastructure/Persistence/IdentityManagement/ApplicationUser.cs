@@ -1,5 +1,3 @@
 namespace SummerBornInfo.Infrastructure.Persistence.IdentityManagement;
 
-public sealed class ApplicationUser : IdentityUser<Guid>
-{
-}
+public sealed class ApplicationUser : IdentityUser<Guid>;
