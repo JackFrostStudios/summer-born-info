@@ -5,23 +5,13 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <SkipAddAspireDefaultReferences>true</SkipAddAspireDefaultReferences>
+    <AspireUseCliBundle>true</AspireUseCliBundle>
+    <AspireCliInvocationMode>DnxPinned</AspireCliInvocationMode>
     <UserSecretsId>f5bf050a-3f4f-4b5a-984c-35e9f5c6fb74</UserSecretsId>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <AspireDashboardDir Condition="$([MSBuild]::IsOsPlatform('Windows'))">$([MSBuild]::NormalizeDirectory('$(PkgAspire_Dashboard_Sdk_win-x64)', 'tools'))</AspireDashboardDir>
-    <AspireDashboardDir Condition="$([MSBuild]::IsOsPlatform('Linux'))">$([MSBuild]::NormalizeDirectory('$(PkgAspire_Dashboard_Sdk_linux-x64)', 'tools'))</AspireDashboardDir>
-    <DcpDir Condition="$([MSBuild]::IsOsPlatform('Windows'))">$([MSBuild]::NormalizeDirectory('$(PkgAspire_Hosting_Orchestration_win-x64)', 'tools'))</DcpDir>
-    <DcpDir Condition="$([MSBuild]::IsOsPlatform('Linux'))">$([MSBuild]::NormalizeDirectory('$(PkgAspire_Hosting_Orchestration_linux-x64)', 'tools'))</DcpDir>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Aspire.Dashboard.Sdk.linux-x64" GeneratePathProperty="true" />
-    <PackageReference Include="Aspire.Dashboard.Sdk.win-x64" GeneratePathProperty="true" />
     <PackageReference Include="Aspire.Hosting.AppHost" />
-    <PackageReference Include="Aspire.Hosting.Orchestration.linux-x64" GeneratePathProperty="true" />
-    <PackageReference Include="Aspire.Hosting.Orchestration.win-x64" GeneratePathProperty="true" />
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />
     <PackageReference Include="MessagePack" />
   </ItemGroup>

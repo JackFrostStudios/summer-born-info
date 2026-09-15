@@ -2,18 +2,6 @@
   "version": 2,
   "dependencies": {
     "net10.0": {
-      "Aspire.Dashboard.Sdk.linux-x64": {
-        "type": "Direct",
-        "requested": "[13.5.3, )",
-        "resolved": "13.5.3",
-        "contentHash": "2mIgiPb05AcBKgmINQ79vl5ETrHifPbwZ5c701dzrLFY7rhXetBmGnio4UkVFc/rsy4F5w1zLvsOSK2kuuMBHQ=="
-      },
-      "Aspire.Dashboard.Sdk.win-x64": {
-        "type": "Direct",
-        "requested": "[13.5.3, )",
-        "resolved": "13.5.3",
-        "contentHash": "6AhmBiDsENiPegvxCtv5c1p42f+IIUZD6TReq7Ks1+kHHIXmqQuTtTgRY6C8kJFtjzyZ2crBKJy+elph6nHqfg=="
-      },
       "Aspire.Hosting.AppHost": {
         "type": "Direct",
         "requested": "[13.5.3, )",
@@ -52,18 +40,6 @@
           "System.IO.Hashing": "10.0.8",
           "YamlDotNet": "16.3.0"
         }
-      },
-      "Aspire.Hosting.Orchestration.linux-x64": {
-        "type": "Direct",
-        "requested": "[13.5.3, )",
-        "resolved": "13.5.3",
-        "contentHash": "V2N93XPRLB2BYQVxQp4fQSpiAX2sBJfRIYaZX+B77L271t+pNHl7WpbnOrlXxIF1k+CqMTDfpE9TBH4o3+E16g=="
-      },
-      "Aspire.Hosting.Orchestration.win-x64": {
-        "type": "Direct",
-        "requested": "[13.5.3, )",
-        "resolved": "13.5.3",
-        "contentHash": "3fXcjcpWyyXYQg4nxYYHr06IqUxII3AAYbHouYTOytAQFz5ZwBlYkJBLepI5a3cHGC9XMP/xztHTV0OW35bYuQ=="
       },
       "Aspire.Hosting.PostgreSQL": {
         "type": "Direct",

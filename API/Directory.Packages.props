@@ -9,12 +9,8 @@
     <NetCoreSdkVersion>10.0.0</NetCoreSdkVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Aspire.Dashboard.Sdk.linux-x64" Version="13.5.3" />
-    <PackageVersion Include="Aspire.Dashboard.Sdk.win-x64" Version="13.5.3" />
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.5.3" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.5.3" />
-    <PackageVersion Include="Aspire.Hosting.Orchestration.linux-x64" Version="13.5.3" />
-    <PackageVersion Include="Aspire.Hosting.Orchestration.win-x64" Version="13.5.3" />
     <PackageVersion Include="Bogus" Version="35.6.5" />
     <PackageVersion Include="coverlet.MTP" Version="10.0.1" />
     <PackageVersion Include="MaxRev.Gdal.Core" Version="3.13.3.557" />

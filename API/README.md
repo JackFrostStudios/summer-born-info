@@ -15,9 +15,11 @@ The API exists to support the initial Summer-born Info platform for UK parents a
 
 ### Prerequisites
 
-- .NET 10.0
+- .NET SDK 10.0 with `dnx` available on `PATH`
 - Visual Studio with Aspire support
 - Docker Desktop, or another compatible container runtime
+
+The AppHost uses the Aspire CLI bundle pinned by `Aspire.AppHost.Sdk` through `AspireCliInvocationMode=DnxPinned`, so a global `aspire` CLI install is optional for this repository's normal AppHost path.
 
 ### Getting Started
 
@@ -30,8 +32,13 @@ The Aspire app host starts the local PostgreSQL environment and the `SummerBornI
 If you prefer the command line, run the app host from the `API` folder:
 
 ```bash
-dotnet run --project SummerBornInfo.AppHost/SummerBornInfo.AppHost.AppHost/SummerBornInfo.AppHost.csproj
+dotnet run --project SummerBornInfo.AppHost/SummerBornInfo.AppHost.csproj
 ```
+
+### Aspire CLI Bundle Troubleshooting
+
+- `ASPIRE009` usually means the Aspire CLI bundle could not be resolved or prepared. Restore from the `API` folder and confirm NuGet sources can provide the SDK-paired Aspire CLI package.
+- `ASPIRE011` usually means `dnx` could not be found. Install or repair the .NET SDK 10.0 tooling and make sure `dnx` is available on `PATH`.
 
 ### Local Configuration
 
