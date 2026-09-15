@@ -33,7 +33,7 @@ npm start
 
 This runs `ng serve` with the development configuration from `angular.json`. By default the app is available at `http://localhost:4200/`.
 
-The Angular development server also loads `proxy.conf.json`, which forwards same-origin `/api/...` browser requests to the local API at `http://localhost:5119`.
+The Angular development server also loads `proxy.conf.json`, which forwards same-origin `/api/...` browser requests to the local HTTPS API endpoint at `https://localhost:7003`.
 
 To run the generated SSR output after a build:
 
@@ -216,7 +216,7 @@ Coverage output is written locally under `UI/coverage/summer-born-info/`, and th
 The UI and API live in the same repository. Frontend API requests use same-origin root-relative `/api/...` URLs, matching the assumption that deployed UI and API traffic share an origin.
 
 - There is no shared root command that starts both services together.
-- The Angular development server proxies `/api/...` requests to the locally running API at `http://localhost:5119`.
+- The Angular development server proxies `/api/...` requests to the locally running HTTPS API at `https://localhost:7003`.
 - Do not add an environment-based backend origin for Milestone 9 admin auth calls.
 
 For local end-to-end browser testing, start the API through the Aspire app host from the `API` folder:
@@ -231,7 +231,7 @@ Then start the Angular dev server from the `UI` folder:
 npm start
 ```
 
-Browse to `http://localhost:4200/`. Requests from the UI to `/api/...`, including `/api/admin/auth/sign-in`, stay same-origin in the browser and are forwarded by the Angular dev server to the Aspire-launched API. If the API launch profile changes from `http://localhost:5119`, update `proxy.conf.json` to match the web API endpoint shown by Aspire.
+Browse to `http://localhost:4200/`. Requests from the UI to `/api/...`, including `/api/admin/auth/sign-in`, stay same-origin in the browser and are forwarded by the Angular dev server to the Aspire-launched API. The proxy targets the API's HTTPS endpoint so ASP.NET Core HTTPS redirection does not send the browser directly to the API origin. If the API launch profile changes from `https://localhost:7003`, update `proxy.conf.json` to match the web API endpoint shown by Aspire.
 
 ## Architecture And Workflow Guidance
 
