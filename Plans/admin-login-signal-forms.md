@@ -120,6 +120,7 @@ No backend or roadmap work blocks this slice. Existing auth service and route co
 
 - Step 1 completed by `model_step`: added the typed model, trim-aware schema, localized messages, and Angular submission action. Legacy template/state remain temporarily for a compiling checkpoint and will be removed in step 2. Formatting, lint, extraction (48 messages), production build, and all 125 existing unit tests passed. The intermediate build measured 405.72 kB total scripts; only the total-script error limit changed to 420 kB. Extraction's duplicate-ID whitespace warnings are intermediate and must disappear when step 2 removes template-owned required messages.
 - Step 2 completed by `binding_step`: native inputs use `FormField`, all custom value/touched/error state and input/blur handlers are removed, Angular submission handles validation and pending state, and retry clearing plus render-safe summary focus are wired. Formatting, lint, extraction (46 messages, no duplicate-ID warnings), production build, and all 125 unit tests passed. The complete binding measured 436.79 kB total scripts; the error limit is now 440 kB. Native required attributes are supplied by the schema through `FormField`.
+- Step 3 completed by `tests_step`: regression tests cover quiet initial errors, trim-aware validation, invalid-submit focus, pending state independent of service flags, error clearing, and unchanged-value retries preserving touched/dirty state. Formatting, format check, lint, extraction (46 messages), all 136 unit tests (29 login), all 26 browser axe tests (12 login states), localized build, and localized SSR asset checks passed. The localized build measured 437.20 kB total scripts, below the 440 kB error limit. Refreshed XLF source locations are included; the full localization drift command will run against this committed artifact in step 4.
 
 ## 9. Risks and mitigations
 
@@ -144,9 +145,9 @@ The implementation must verify retry clearing against the installed Angular vers
 - [x] Native controls use `FormField`; manual value/input/blur handling is removed.
 - [x] Angular `submit()` owns touching, validation gating, pending state, and duplicate protection.
 - [x] Root form errors replace the independent sign-in error signal.
-- [ ] Same-credential retries work without bypassing credential validation or resetting interaction state.
-- [ ] Password clearing, credential retention, summary clearing, and focus behaviour match the scenarios.
+- [x] Same-credential retries work without bypassing credential validation or resetting interaction state.
+- [x] Password clearing, credential retention, summary clearing, and focus behaviour match the scenarios.
 - [x] Existing successful navigation and safe-return-URL cases remain covered.
-- [ ] Component and axe tests cover the changed form and error states.
+- [x] Component and axe tests cover the changed form and error states.
 - [ ] Formatting, lint, localization extraction, unit tests, axe tests, and localized validation pass or specific limitations are recorded.
 - [ ] Final diff contains no unrelated API, routing, styling, or dependency changes; the scoped total-script budget adjustment is supported by measured build output.

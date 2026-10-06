@@ -32,14 +32,12 @@ describe('AdminLogin', () => {
   let fixture: ComponentFixture<AdminLogin>;
   let compiled: HTMLElement;
   let $isAuthenticated: ReturnType<typeof signal<boolean>>;
-  let $isSigningIn: ReturnType<typeof signal<boolean>>;
   let signIn: ReturnType<
     typeof vi.fn<(credentials: { email: string; password: string }) => Promise<AdminSignInResult>>
   >;
 
   beforeEach(async () => {
     $isAuthenticated = signal(false);
-    $isSigningIn = signal(false);
     signIn = vi.fn().mockResolvedValue({ kind: 'signed-in' });
 
     await TestBed.configureTestingModule({
@@ -58,7 +56,6 @@ describe('AdminLogin', () => {
           provide: AdminAuthService,
           useValue: {
             $isAuthenticated: () => $isAuthenticated(),
-            $isSigningIn: () => $isSigningIn(),
             signIn: (credentials: { email: string; password: string }) => signIn(credentials),
           },
         },
@@ -143,6 +140,159 @@ describe('AdminLogin', () => {
     expect(compiled.querySelector('#admin-login-password-error')).toBeNull();
     expect(email.getAttribute('aria-invalid')).toBe('false');
     expect(password.getAttribute('aria-invalid')).toBe('false');
+  });
+
+  it('keeps initial errors quiet and fields untouched', () => {
+    expect(compiled.querySelector('.admin-login__field-error')).toBeNull();
+    expect(compiled.querySelector('#admin-login-error')).toBeNull();
+    expect(getEmailInput().getAttribute('aria-invalid')).toBe('false');
+    expect(getPasswordInput().getAttribute('aria-invalid')).toBe('false');
+    expect(getEmailInput().getAttribute('aria-describedby')).toBeNull();
+    expect(getPasswordInput().getAttribute('aria-describedby')).toBeNull();
+    expect(getSubmitButton().disabled).toBe(true);
+    expect(
+      (
+        fixture.componentInstance as unknown as {
+          $form: import('@angular/forms/signals').FieldTree<{ email: string; password: string }>;
+        }
+      ).$form
+        .email()
+        .touched(),
+    ).toBe(false);
+    expect(
+      (
+        fixture.componentInstance as unknown as {
+          $form: import('@angular/forms/signals').FieldTree<{ email: string; password: string }>;
+        }
+      ).$form
+        .password()
+        .touched(),
+    ).toBe(false);
+  });
+
+  it('rejects whitespace-only email through the schema', async () => {
+    getEmailInput().type = 'text';
+    setInputValue(getEmailInput(), '   ');
+    setInputValue(getPasswordInput(), 'secret');
+    getEmailInput().dispatchEvent(new Event('blur'));
+    await settle();
+    expect(getSubmitButton().disabled).toBe(true);
+    expect(requireElement('#admin-login-email-error').textContent.trim()).toBe('Enter your email address.');
+    submitLoginForm();
+    await settle();
+    expect(signIn).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(getEmailInput());
+  });
+
+  it.each([
+    ['  admin@example.test  ', 'admin@example.test'],
+    ['not-an-email', 'not-an-email'],
+  ])('submits nonblank email %s with trimmed email and unchanged password', async (email, expectedEmail) => {
+    await submitForm(email, '  secret  ');
+    expect(signIn).toHaveBeenCalledWith({ email: expectedEmail, password: '  secret  ' });
+  });
+
+  it('touches both fields and focuses the first invalid control after direct native submit', async () => {
+    const event = new Event('submit', { bubbles: true, cancelable: true });
+    getForm().dispatchEvent(event);
+    await settle();
+    expect(event.defaultPrevented).toBe(true);
+    expect(signIn).not.toHaveBeenCalled();
+    expect(requireElement('#admin-login-email-error').textContent.trim()).toBe('Enter your email address.');
+    expect(requireElement('#admin-login-password-error').textContent.trim()).toBe('Enter your password.');
+    expect(document.activeElement).toBe(getEmailInput());
+    setInputValue(getEmailInput(), 'admin@example.test');
+    await settle();
+    submitLoginForm();
+    await settle();
+    expect(document.activeElement).toBe(getPasswordInput());
+    expect(signIn).not.toHaveBeenCalled();
+  });
+
+  it.each(['email', 'password'] as const)('clears the server summary when %s is edited', async (field) => {
+    signIn.mockResolvedValue({ kind: 'network-failure' });
+    await submitForm('admin@example.test', 'secret');
+    expect(getErrorSummary()).toBeDefined();
+    setInputValue(
+      field === 'email' ? getEmailInput() : getPasswordInput(),
+      field === 'email' ? 'other@example.test' : '',
+    );
+    await settle();
+    expect(compiled.querySelector('#admin-login-error')).toBeNull();
+    if (field === 'password') {
+      expect(requireElement('#admin-login-password-error').textContent.trim()).toBe('Enter your password.');
+      expect(getSubmitButton().disabled).toBe(true);
+    }
+  });
+
+  it.each(['not-admin', 'network-failure', 'unexpected-failure'] as const)(
+    'retries unchanged credentials after repeated %s responses while preserving interaction state',
+    async (kind) => {
+      const navigateByUrl = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+      signIn
+        .mockResolvedValueOnce({ kind })
+        .mockResolvedValueOnce({ kind })
+        .mockResolvedValueOnce({ kind: 'signed-in' });
+      await submitForm('admin@example.test', 'secret');
+      const $form = (
+        fixture.componentInstance as unknown as {
+          $form: import('@angular/forms/signals').FieldTree<{ email: string; password: string }>;
+        }
+      ).$form;
+      expect($form.email().touched()).toBe(true);
+      expect($form.password().touched()).toBe(true);
+      expect($form.email().dirty()).toBe(true);
+      expect($form.password().dirty()).toBe(true);
+      expect(document.activeElement).toBe(getErrorSummary());
+      expect(navigateByUrl).not.toHaveBeenCalled();
+      getEmailInput().focus();
+      submitLoginForm();
+      await settle();
+      expect(signIn).toHaveBeenCalledTimes(2);
+      expect(getEmailInput().value).toBe('admin@example.test');
+      expect(getPasswordInput().value).toBe('secret');
+      expect(getSubmitButton().disabled).toBe(false);
+      expect(document.activeElement).toBe(getErrorSummary());
+      expect($form.email().touched()).toBe(true);
+      expect($form.password().touched()).toBe(true);
+      expect($form.email().dirty()).toBe(true);
+      expect($form.password().dirty()).toBe(true);
+      expect(navigateByUrl).not.toHaveBeenCalled();
+      submitLoginForm();
+      await settle();
+      expect(signIn).toHaveBeenCalledTimes(3);
+      expect(signIn.mock.calls.map(([credentials]) => credentials)).toEqual([
+        { email: 'admin@example.test', password: 'secret' },
+        { email: 'admin@example.test', password: 'secret' },
+        { email: 'admin@example.test', password: 'secret' },
+      ]);
+      expect(compiled.querySelector('#admin-login-error')).toBeNull();
+      expect(getPasswordInput().value).toBe('');
+      expect(navigateByUrl).toHaveBeenCalledExactlyOnceWith('/admin');
+    },
+  );
+
+  it('retains the invalid-credentials summary after clearing password and requires password before retry', async () => {
+    const navigateByUrl = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+    signIn.mockResolvedValueOnce({ kind: 'invalid-credentials' }).mockResolvedValueOnce({ kind: 'signed-in' });
+    await submitForm('admin@example.test', 'wrong');
+    expect(getErrorSummary()).toBeDefined();
+    expect(getEmailInput().value).toBe('admin@example.test');
+    expect(getPasswordInput().value).toBe('');
+    expect(requireElement('#admin-login-password-error').textContent.trim()).toBe('Enter your password.');
+    expect(getSubmitButton().disabled).toBe(true);
+    expect(navigateByUrl).not.toHaveBeenCalled();
+    submitLoginForm();
+    await settle();
+    expect(signIn).toHaveBeenCalledTimes(1);
+    expect(document.activeElement).toBe(getPasswordInput());
+    setInputValue(getPasswordInput(), 'correct');
+    await settle();
+    expect(compiled.querySelector('#admin-login-error')).toBeNull();
+    submitLoginForm();
+    await settle();
+    expect(signIn).toHaveBeenLastCalledWith({ email: 'admin@example.test', password: 'correct' });
+    expect(navigateByUrl).toHaveBeenCalledExactlyOnceWith('/admin');
   });
 
   it('redirects successful sign-in to /admin when no safe return URL is present', async () => {
@@ -237,25 +387,23 @@ describe('AdminLogin', () => {
     const submit = getSubmitButton();
 
     await submitForm('admin@example.test', 'secret', false);
-    $isSigningIn.set(true);
     fixture.detectChanges();
 
     expect(submit.textContent.trim()).toBe('Signing in...');
     expect(submit.disabled).toBe(true);
     expect(submit.getAttribute('aria-busy')).toBe('true');
 
-    submit.click();
-    await settle();
+    submitLoginForm();
+    fixture.detectChanges();
+    await Promise.resolve();
     expect(signIn).toHaveBeenCalledTimes(1);
 
     pendingSignIn.resolve({ kind: 'signed-in' });
-    $isSigningIn.set(false);
     await settle();
   });
 
   async function configureWithReturnUrl(returnUrl: string, isAuthenticated = false): Promise<void> {
     $isAuthenticated = signal(isAuthenticated);
-    $isSigningIn = signal(false);
     signIn = vi.fn().mockResolvedValue({ kind: 'signed-in' });
 
     await TestBed.configureTestingModule({
@@ -277,7 +425,6 @@ describe('AdminLogin', () => {
           provide: AdminAuthService,
           useValue: {
             $isAuthenticated: () => $isAuthenticated(),
-            $isSigningIn: () => $isSigningIn(),
             signIn: (credentials: { email: string; password: string }) => signIn(credentials),
           },
         },

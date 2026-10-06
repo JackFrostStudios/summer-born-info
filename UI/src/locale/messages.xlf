@@ -106,7 +106,7 @@
         <source> Email address </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.html</context>
-          <context context-type="linenumber">37,41</context>
+          <context context-type="linenumber">37,42</context>
         </context-group>
         <note priority="1" from="description">Label for the admin email address field</note>
         <note priority="1" from="meaning">Admin login email label</note>
@@ -160,7 +160,7 @@
         <source>We could not sign you in with those details. Check your email and password, then try again.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
-          <context context-type="linenumber">151</context>
+          <context context-type="linenumber">149</context>
         </context-group>
         <note priority="1" from="description">Shown when admin sign-in credentials are rejected</note>
         <note priority="1" from="meaning">Admin login invalid credentials error</note>
@@ -169,7 +169,7 @@
         <source>That account does not have access to the admin tools. Use an admin account, or ask the site owner to check your access.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
-          <context context-type="linenumber">153</context>
+          <context context-type="linenumber">151</context>
         </context-group>
         <note priority="1" from="description">Shown when a non-admin account tries to access admin tools</note>
         <note priority="1" from="meaning">Admin login not admin error</note>
@@ -178,7 +178,7 @@
         <source>We could not reach the sign-in service. Check your connection and try again.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
-          <context context-type="linenumber">155</context>
+          <context context-type="linenumber">153</context>
         </context-group>
         <note priority="1" from="description">Shown when the sign-in request cannot reach the server</note>
         <note priority="1" from="meaning">Admin login network failure error</note>
@@ -187,7 +187,7 @@
         <source>Something went wrong while signing you in. Please try again.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
-          <context context-type="linenumber">157</context>
+          <context context-type="linenumber">155</context>
         </context-group>
         <note priority="1" from="description">Shown when sign-in fails in an unexpected recoverable way</note>
         <note priority="1" from="meaning">Admin login unexpected failure error</note>
