@@ -1,8 +1,14 @@
 import { Component, ElementRef, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { form, required, validate } from '@angular/forms/signals';
 import { AdminAuthService, type AdminSignInResult } from '../auth/admin-auth.service';
 
 type AdminLoginErrorKind = Exclude<AdminSignInResult['kind'], 'signed-in'>;
+
+interface AdminLoginModel {
+  email: string;
+  password: string;
+}
 
 @Component({
   selector: 'sbi-admin-login',
@@ -15,6 +21,41 @@ export class AdminLogin implements OnInit {
   private readonly router = inject(Router);
   private readonly $error = signal<AdminLoginErrorKind | null>(null);
   private readonly $errorSummary = viewChild<ElementRef<HTMLElement>>('errorSummary');
+  protected readonly $model = signal<AdminLoginModel>({ email: '', password: '' });
+  protected readonly $form = form(
+    this.$model,
+    (schema) => {
+      const emailRequiredMessage = $localize`:Admin login email required error|Shown when the admin email field is left empty@@adminLoginEmailRequiredError:Enter your email address.`;
+      required(schema.email, { message: emailRequiredMessage });
+      validate(schema.email, ({ value }) =>
+        value().length > 0 && value().trim().length === 0
+          ? { kind: 'required', message: emailRequiredMessage }
+          : undefined,
+      );
+      required(schema.password, {
+        message: $localize`:Admin login password required error|Shown when the admin password field is left empty@@adminLoginPasswordRequiredError:Enter your password.`,
+      });
+    },
+    {
+      submission: {
+        action: async () => {
+          const { email, password } = this.$model();
+          const result = await this.adminAuthService.signIn({ email: email.trim(), password });
+
+          if (result.kind === 'signed-in' || result.kind === 'invalid-credentials') {
+            this.$model.update((model) => ({ ...model, password: '' }));
+          }
+
+          if (result.kind === 'signed-in') {
+            await this.router.navigateByUrl(this.getSafeReturnUrl());
+            return undefined;
+          }
+
+          return { kind: result.kind, message: this.getErrorMessage(result.kind) };
+        },
+      },
+    },
+  );
   protected readonly $emailTouched = signal(false);
   protected readonly $passwordTouched = signal(false);
 
@@ -103,6 +144,8 @@ export class AdminLogin implements OnInit {
     return returnUrl;
   }
 
+  private getErrorMessage(error: AdminLoginErrorKind): string;
+  private getErrorMessage(error: AdminLoginErrorKind | null): string | null;
   private getErrorMessage(error: AdminLoginErrorKind | null): string | null {
     switch (error) {
       case 'invalid-credentials':
