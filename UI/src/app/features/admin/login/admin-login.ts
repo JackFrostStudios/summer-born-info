@@ -1,6 +1,6 @@
-import { Component, ElementRef, OnInit, computed, inject, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, afterRenderEffect, computed, inject, signal, viewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { form, required, validate } from '@angular/forms/signals';
+import { FormField, form, required, submit, validate } from '@angular/forms/signals';
 import { AdminAuthService, type AdminSignInResult } from '../auth/admin-auth.service';
 
 type AdminLoginErrorKind = Exclude<AdminSignInResult['kind'], 'signed-in'>;
@@ -12,6 +12,7 @@ interface AdminLoginModel {
 
 @Component({
   selector: 'sbi-admin-login',
+  imports: [FormField],
   templateUrl: './admin-login.html',
   styleUrl: './admin-login.scss',
 })
@@ -19,7 +20,6 @@ export class AdminLogin implements OnInit {
   private readonly adminAuthService = inject(AdminAuthService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly $error = signal<AdminLoginErrorKind | null>(null);
   private readonly $errorSummary = viewChild<ElementRef<HTMLElement>>('errorSummary');
   protected readonly $model = signal<AdminLoginModel>({ email: '', password: '' });
   protected readonly $form = form(
@@ -38,6 +38,7 @@ export class AdminLogin implements OnInit {
     },
     {
       submission: {
+        onInvalid: (field) => field().errorSummary()[0]?.fieldTree().focusBoundControl(),
         action: async () => {
           const { email, password } = this.$model();
           const result = await this.adminAuthService.signIn({ email: email.trim(), password });
@@ -56,23 +57,52 @@ export class AdminLogin implements OnInit {
       },
     },
   );
-  protected readonly $emailTouched = signal(false);
-  protected readonly $passwordTouched = signal(false);
-
   protected readonly headingId = 'admin-login-heading';
-  protected readonly $email = signal('');
-  protected readonly $password = signal('');
-  protected readonly $isSubmitting = computed(() => this.adminAuthService.$isSigningIn());
+  protected readonly $isSubmitting = computed(() => this.$form().submitting());
   protected readonly $canSubmit = computed(
-    () => this.$email().trim().length > 0 && this.$password().length > 0 && !this.$isSubmitting(),
+    () => this.$form.email().valid() && this.$form.password().valid() && !this.$isSubmitting(),
   );
-  protected readonly $errorMessage = computed(() => this.getErrorMessage(this.$error()));
+  protected readonly $errorMessage = computed(
+    () =>
+      this.$form()
+        .errors()
+        .find(
+          (error) =>
+            error.kind === 'invalid-credentials' ||
+            error.kind === 'not-admin' ||
+            error.kind === 'network-failure' ||
+            error.kind === 'unexpected-failure',
+        )?.message ?? null,
+  );
   protected readonly $showEmailRequiredError = computed(
-    () => this.$emailTouched() && this.$email().trim().length === 0,
+    () => this.$form.email().touched() && this.$form.email().invalid(),
   );
   protected readonly $showPasswordRequiredError = computed(
-    () => this.$passwordTouched() && this.$password().length === 0,
+    () => this.$form.password().touched() && this.$form.password().invalid(),
   );
+
+  protected readonly $emailErrorMessage = computed(() =>
+    this.$form
+      .email()
+      .errors()
+      .map((error) => error.message)
+      .join(' '),
+  );
+  protected readonly $passwordErrorMessage = computed(() =>
+    this.$form
+      .password()
+      .errors()
+      .map((error) => error.message)
+      .join(' '),
+  );
+
+  constructor() {
+    afterRenderEffect(() => {
+      if (this.$errorMessage()) {
+        this.$errorSummary()?.nativeElement.focus();
+      }
+    });
+  }
 
   ngOnInit(): void {
     if (this.adminAuthService.$isAuthenticated()) {
@@ -80,50 +110,19 @@ export class AdminLogin implements OnInit {
     }
   }
 
-  protected updateEmail(event: Event): void {
-    this.$email.set(this.getInputValue(event));
-    this.$error.set(null);
-  }
-
-  protected updatePassword(event: Event): void {
-    this.$password.set(this.getInputValue(event));
-    this.$error.set(null);
-  }
-
-  protected markEmailTouched(): void {
-    this.$emailTouched.set(true);
-  }
-
-  protected markPasswordTouched(): void {
-    this.$passwordTouched.set(true);
-  }
-
   protected async submit(event: Event): Promise<void> {
     event.preventDefault();
 
-    if (!this.$canSubmit()) {
+    if (this.$isSubmitting()) {
       return;
     }
 
-    this.$error.set(null);
-
-    const result = await this.adminAuthService.signIn({
-      email: this.$email().trim(),
-      password: this.$password(),
-    });
-
-    if (result.kind === 'signed-in') {
-      this.$password.set('');
-      await this.router.navigateByUrl(this.getSafeReturnUrl());
-      return;
+    if (this.$errorMessage()) {
+      // A fresh root value clears submission errors even when retrying unchanged credentials.
+      this.$model.update((model) => ({ ...model }));
     }
 
-    if (result.kind === 'invalid-credentials') {
-      this.$password.set('');
-    }
-
-    this.$error.set(result.kind);
-    setTimeout(() => this.$errorSummary()?.nativeElement.focus());
+    await submit(this.$form);
   }
 
   private getSafeReturnUrl(): string {
@@ -144,9 +143,7 @@ export class AdminLogin implements OnInit {
     return returnUrl;
   }
 
-  private getErrorMessage(error: AdminLoginErrorKind): string;
-  private getErrorMessage(error: AdminLoginErrorKind | null): string | null;
-  private getErrorMessage(error: AdminLoginErrorKind | null): string | null {
+  private getErrorMessage(error: AdminLoginErrorKind): string {
     switch (error) {
       case 'invalid-credentials':
         return $localize`:Admin login invalid credentials error|Shown when admin sign-in credentials are rejected@@adminLoginInvalidCredentialsError:We could not sign you in with those details. Check your email and password, then try again.`;
@@ -156,12 +153,6 @@ export class AdminLogin implements OnInit {
         return $localize`:Admin login network failure error|Shown when the sign-in request cannot reach the server@@adminLoginNetworkFailureError:We could not reach the sign-in service. Check your connection and try again.`;
       case 'unexpected-failure':
         return $localize`:Admin login unexpected failure error|Shown when sign-in fails in an unexpected recoverable way@@adminLoginUnexpectedFailureError:Something went wrong while signing you in. Please try again.`;
-      case null:
-        return null;
     }
-  }
-
-  private getInputValue(event: Event): string {
-    return event.target instanceof HTMLInputElement ? event.target.value : '';
   }
 }

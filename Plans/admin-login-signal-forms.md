@@ -119,6 +119,7 @@ No backend or roadmap work blocks this slice. Existing auth service and route co
 ### Execution record
 
 - Step 1 completed by `model_step`: added the typed model, trim-aware schema, localized messages, and Angular submission action. Legacy template/state remain temporarily for a compiling checkpoint and will be removed in step 2. Formatting, lint, extraction (48 messages), production build, and all 125 existing unit tests passed. The intermediate build measured 405.72 kB total scripts; only the total-script error limit changed to 420 kB. Extraction's duplicate-ID whitespace warnings are intermediate and must disappear when step 2 removes template-owned required messages.
+- Step 2 completed by `binding_step`: native inputs use `FormField`, all custom value/touched/error state and input/blur handlers are removed, Angular submission handles validation and pending state, and retry clearing plus render-safe summary focus are wired. Formatting, lint, extraction (46 messages, no duplicate-ID warnings), production build, and all 125 unit tests passed. The complete binding measured 436.79 kB total scripts; the error limit is now 440 kB. Native required attributes are supplied by the schema through `FormField`.
 
 ## 9. Risks and mitigations
 
@@ -128,7 +129,7 @@ No backend or roadmap work blocks this slice. Existing auth service and route co
 - **Conflicting submit handlers:** use exactly one native submit adapter and Angular `submit()`, without `FormRoot` on the same form.
 - **Localization drift:** retain message IDs, extract moved `$localize` messages, and validate localized output.
 - **Accessibility regressions:** prove touched/error/ARIA agreement, summary focus, invalid-field focus, and axe checks on error states.
-- **Total script budget:** the first production build with the Signal Forms model measured 405.72 kB against the existing 368 kB error limit. Set the total-script error limit to 420 kB while retaining the 350 kB warning, verify the final localized size, and leave initial/per-script budgets intact. The existing admin login plan records the same measured-budget approach for the lazy login route.
+- **Total script budget:** the first production build with the Signal Forms model measured 405.72 kB against the existing 368 kB error limit; binding the inputs through `FormField` measured 436.79 kB (358.78 kB initial; 68.83 kB lazy login chunk). Set the total-script error limit to 440 kB while retaining the 350 kB warning, verify the final localized size, and leave initial/per-script budgets intact. The existing admin login plan records the same measured-budget approach for the lazy login route.
 
 ## 10. Unknowns and required clarifications
 
@@ -138,14 +139,14 @@ The implementation must verify retry clearing against the installed Angular vers
 
 ## 11. Completion checklist
 
-- [ ] Typed `$model` and `$form` replace separate credential and touched signals.
-- [ ] Angular schema owns required validation and localized error messages, including whitespace-only email.
-- [ ] Native controls use `FormField`; manual value/input/blur handling is removed.
-- [ ] Angular `submit()` owns touching, validation gating, pending state, and duplicate protection.
-- [ ] Root form errors replace the independent sign-in error signal.
+- [x] Typed `$model` and `$form` replace separate credential and touched signals.
+- [x] Angular schema owns required validation and localized error messages, including whitespace-only email.
+- [x] Native controls use `FormField`; manual value/input/blur handling is removed.
+- [x] Angular `submit()` owns touching, validation gating, pending state, and duplicate protection.
+- [x] Root form errors replace the independent sign-in error signal.
 - [ ] Same-credential retries work without bypassing credential validation or resetting interaction state.
 - [ ] Password clearing, credential retention, summary clearing, and focus behaviour match the scenarios.
-- [ ] Existing successful navigation and safe-return-URL cases remain covered.
+- [x] Existing successful navigation and safe-return-URL cases remain covered.
 - [ ] Component and axe tests cover the changed form and error states.
 - [ ] Formatting, lint, localization extraction, unit tests, axe tests, and localized validation pass or specific limitations are recorded.
 - [ ] Final diff contains no unrelated API, routing, styling, or dependency changes; the scoped total-script budget adjustment is supported by measured build output.
