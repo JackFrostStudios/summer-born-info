@@ -79,6 +79,7 @@ describe('AdminLogin', () => {
     const submit = getSubmitButton();
 
     expect(form).not.toBeNull();
+    expect(form?.noValidate).toBe(true);
     expect(compiled.querySelector('section')?.getAttribute('aria-labelledby')).toBe('admin-login-heading');
     expect(heading?.id).toBe('admin-login-heading');
     expect(heading?.textContent.trim()).toBe('Sign in to admin tools');
@@ -214,12 +215,18 @@ describe('AdminLogin', () => {
     signIn.mockResolvedValue({ kind: 'network-failure' });
     await submitForm('admin@example.test', 'secret');
     expect(getErrorSummary()).toBeDefined();
+    expect(getEmailInput().getAttribute('aria-describedby')).toBe('admin-login-error');
+    expect(getPasswordInput().getAttribute('aria-describedby')).toBe('admin-login-error');
     setInputValue(
       field === 'email' ? getEmailInput() : getPasswordInput(),
       field === 'email' ? 'other@example.test' : '',
     );
     await settle();
     expect(compiled.querySelector('#admin-login-error')).toBeNull();
+    expect(getEmailInput().getAttribute('aria-describedby')).toBeNull();
+    expect(getPasswordInput().getAttribute('aria-describedby')).toBe(
+      field === 'password' ? 'admin-login-password-error' : null,
+    );
     if (field === 'password') {
       expect(requireElement('#admin-login-password-error').textContent.trim()).toBe('Enter your password.');
       expect(getSubmitButton().disabled).toBe(true);
@@ -278,6 +285,10 @@ describe('AdminLogin', () => {
     signIn.mockResolvedValueOnce({ kind: 'invalid-credentials' }).mockResolvedValueOnce({ kind: 'signed-in' });
     await submitForm('admin@example.test', 'wrong');
     expect(getErrorSummary()).toBeDefined();
+    expect(getEmailInput().getAttribute('aria-describedby')).toBe('admin-login-error');
+    expect(getPasswordInput().getAttribute('aria-describedby')).toBe('admin-login-password-error');
+    expect(getEmailInput().getAttribute('aria-invalid')).toBe('false');
+    expect(getPasswordInput().getAttribute('aria-invalid')).toBe('true');
     expect(getEmailInput().value).toBe('admin@example.test');
     expect(getPasswordInput().value).toBe('');
     expect(requireElement('#admin-login-password-error').textContent.trim()).toBe('Enter your password.');

@@ -42,6 +42,13 @@ describe('AdminLogin accessibility smoke', () => {
         });
 
         const compiled = fixture.nativeElement as HTMLElement;
+        const email = compiled.querySelector<HTMLInputElement>('#admin-login-email');
+        const password = compiled.querySelector<HTMLInputElement>('#admin-login-password');
+        expect(compiled.querySelector('form')?.noValidate).toBe(true);
+        expect(email?.type).toBe('email');
+        expect(email?.autocomplete).toBe('username');
+        expect(password?.type).toBe('password');
+        expect(password?.autocomplete).toBe('current-password');
         if (state !== 'initial') {
           if (state !== 'required-errors') {
             for (const [selector, value] of [
@@ -68,11 +75,17 @@ describe('AdminLogin accessibility smoke', () => {
             expect(compiled.querySelector('#admin-login-password-error')?.textContent.trim()).toBe(
               'Enter your password.',
             );
-            expect(document.activeElement).toBe(compiled.querySelector('#admin-login-email'));
+            expect(document.activeElement).toBe(email);
+            expect(email?.getAttribute('aria-describedby')).toBe('admin-login-email-error');
+            expect(password?.getAttribute('aria-describedby')).toBe('admin-login-password-error');
           } else {
             const summary = compiled.querySelector('#admin-login-error');
             expect(summary).not.toBeNull();
             expect(document.activeElement).toBe(summary);
+            expect(email?.getAttribute('aria-describedby')).toBe('admin-login-error');
+            expect(password?.getAttribute('aria-describedby')).toBe(
+              state === 'invalid-credentials' ? 'admin-login-password-error' : 'admin-login-error',
+            );
           }
         }
         await expectNoA11yViolations(compiled);
