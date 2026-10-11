@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-Status: In progress. Steps 1–4 completed; step 5 pending.
+Status: All five implementation steps completed; final peer review pending.
 
 Extract the labels, native inputs, field feedback, and field styling from admin login into `UI/src/design-system/forms/`, with `text-input` and `password-input` components. Each accepts an Angular Signal Forms string field and automatically presents its configured validation messages. Each consuming form retains ownership of its model, schema, validators, localized messages, submission, and form-level errors.
 
@@ -188,7 +188,7 @@ Run from `UI/` after implementation:
 2. [x] Build both components, private styles, public barrel, READMEs, and focused tests.
 3. [x] Adopt in login; remove migrated markup/styles/imports; update lint and ownership docs in the same compiling slice.
 4. [x] Adapt login selectors, verify native focus/summary descriptions, and add shared axe coverage.
-5. Refresh localization, complete validation, review diff/build sizes, and update checklist.
+5. [x] Refresh localization, complete validation, review diff/build sizes, and update checklist.
 
 No backend, route, or roadmap dependency blocks this slice. Existing schema messages, tokens, and test helpers suffice.
 
@@ -219,8 +219,8 @@ Native focus and metadata behaviour require implementation verification against 
 - [x] Shared styles own field presentation; login retains page/form/summary/button styling.
 - [x] Ownership docs and narrow lint allowances reflect the forms section.
 - [x] Component/login tests and browser axe checks pass; layout/focus review is recorded.
-- [ ] Localization and formatting/lint/unit/axe/localized-build/SSR checks pass or precise limitations are recorded.
-- [ ] Final diff respects existing work and contains no unrelated API, route, dependency, copy, or budget changes.
+- [x] Localization and formatting/lint/unit/axe/localized-build/SSR checks pass or precise limitations are recorded.
+- [x] Final diff respects existing work and contains no unrelated API, route, dependency, copy, or budget changes.
 
 ## 12. Execution record
 
@@ -231,3 +231,5 @@ Native focus and metadata behaviour require implementation verification against 
 - Step 3 — dedicated agent `login_adoption` adopted the inputs, removed migrated field markup/styles, refreshed ownership docs, and minimally adapted old field-class assertions. Authentication/model/schema/submission logic and all 46 localized messages remain unchanged. To satisfy the unchanged 440 kB error budget, shared one private computed feedback helper (no model state) and simplified scoped CSS, relying on equivalent existing global font/text-colour reset declarations. Component templates now need no Signal Forms accessor exceptions; login permits only `submitting`. Bound literal inputs retain a narrow static-string lint exception because dollar-prefixed static attributes fail native SSR serialization. Formatting/check, lint, all 158 unit tests, all 26 existing browser axe tests, production build (439.57 kB scripts), localized build (439.99 kB), SSR asset checks, and stable repeated extraction passed. XLF changes are source locations only; full drift validation follows the checkpoint. Remaining script-budget headroom is extremely small; no budget was increased. Commit: `refactor(login): adopt shared form inputs (step 3)`.
 
 - Step 4 — dedicated agent `accessibility_regressions` expanded login summary-description/local-feedback precedence assertions and added 13 shared browser cases. All 158 unit tests, all 39 browser accessibility tests, formatting/check, lint, production build, and full i18n/localized/SSR validation passed. Browser evidence: native label clicks and `focusBoundControl()` target internal controls; forward/reverse tab order is correct, disabled controls are skipped, readonly prevents edits, and password attributes/whitespace are retained. Both colour modes fit a 320 px viewport without overflow. Actual login browser review confirmed email → password → submit at desktop width; its narrow native inputs measured 244 px within 320 px document width. Focus rings were visible (3 px outline/offset) and uncut in light/dark and forced colours; screenshots showed readable label/error spacing without clipping. Ignored screenshots: `UI/test-results/forms-visual-review/`. No runtime code changed. Commit: `test(forms): verify accessibility and login regressions (step 4)`.
+
+- Step 5 — dedicated agent `completion_audit` verified all checklist items and final scope with read-only architecture/test review. Full `validate:i18n` passed: all 46 messages retained, zero extraction drift, localized production build and SSR asset checks green. Localized prerender and two served login responses had five unique page IDs, no duplicate host ID, correct native label associations/projected labels, email/password/autocomplete/required/`novalidate` metadata, quiet initial ARIA/feedback, and stable IDs. Prior unchanged-code evidence remains 158 unit and 39 browser accessibility tests plus formatting/lint and production build. No API/routes/dependencies/copy/budget changes. Exact Angular localized script budget measurement before locale inlining is 439,993 bytes against 440,000 bytes (7 bytes headroom); delivered en-GB script files total 437,422 bytes. Existing warning remains; future runtime growth may hit the error budget. Commit: `docs(forms): record completed validation audit (step 5)`.
