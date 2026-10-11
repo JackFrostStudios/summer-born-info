@@ -22,6 +22,11 @@
       </p>
     </div>
 
+    @let $email = $form.email();
+    @let $password = $form.password();
+    @let $showEmailError = $email.touched() && $email.invalid();
+    @let $showPasswordError = $password.touched() && $password.invalid();
+
     <form class="admin-login__form" novalidate (submit)="submit($event)">
       @if ($errorMessage(); as errorMessage) {
         <p #errorSummary class="admin-login__error" id="admin-login-error" role="alert" tabindex="-1">
@@ -42,13 +47,13 @@
           autocomplete="username"
           [formField]="$form.email"
           [attr.aria-describedby]="
-            $showEmailRequiredError() ? 'admin-login-email-error' : $errorMessage() ? 'admin-login-error' : null
+            $showEmailError ? 'admin-login-email-error' : $errorMessage() ? 'admin-login-error' : null
           "
-          [attr.aria-invalid]="$showEmailRequiredError()"
+          [attr.aria-invalid]="$showEmailError"
         />
-        @if ($showEmailRequiredError()) {
+        @if ($showEmailError) {
           <p class="admin-login__field-error" id="admin-login-email-error">
-            {{ $emailErrorMessage() }}
+            {{ $email.errors()[0]?.message }}
           </p>
         }
       </div>
@@ -66,19 +71,24 @@
           autocomplete="current-password"
           [formField]="$form.password"
           [attr.aria-describedby]="
-            $showPasswordRequiredError() ? 'admin-login-password-error' : $errorMessage() ? 'admin-login-error' : null
+            $showPasswordError ? 'admin-login-password-error' : $errorMessage() ? 'admin-login-error' : null
           "
-          [attr.aria-invalid]="$showPasswordRequiredError()"
+          [attr.aria-invalid]="$showPasswordError"
         />
-        @if ($showPasswordRequiredError()) {
+        @if ($showPasswordError) {
           <p class="admin-login__field-error" id="admin-login-password-error">
-            {{ $passwordErrorMessage() }}
+            {{ $password.errors()[0]?.message }}
           </p>
         }
       </div>
 
-      <button class="admin-login__submit" type="submit" [disabled]="!$canSubmit()" [attr.aria-busy]="$isSubmitting()">
-        @if ($isSubmitting()) {
+      <button
+        class="admin-login__submit"
+        type="submit"
+        [disabled]="!$canSubmit()"
+        [attr.aria-busy]="$form().submitting()"
+      >
+        @if ($form().submitting()) {
           <span
             i18n="Admin login pending submit button|Button text while sign-in is in progress@@adminLoginPendingSubmit"
           >

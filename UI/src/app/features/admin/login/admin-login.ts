@@ -58,9 +58,8 @@ export class AdminLogin implements OnInit {
     },
   );
   protected readonly headingId = 'admin-login-heading';
-  protected readonly $isSubmitting = computed(() => this.$form().submitting());
   protected readonly $canSubmit = computed(
-    () => this.$form.email().valid() && this.$form.password().valid() && !this.$isSubmitting(),
+    () => this.$form.email().valid() && this.$form.password().valid() && !this.$form().submitting(),
   );
   protected readonly $errorMessage = computed(
     () =>
@@ -74,28 +73,6 @@ export class AdminLogin implements OnInit {
             error.kind === 'unexpected-failure',
         )?.message ?? null,
   );
-  protected readonly $showEmailRequiredError = computed(
-    () => this.$form.email().touched() && this.$form.email().invalid(),
-  );
-  protected readonly $showPasswordRequiredError = computed(
-    () => this.$form.password().touched() && this.$form.password().invalid(),
-  );
-
-  protected readonly $emailErrorMessage = computed(() =>
-    this.$form
-      .email()
-      .errors()
-      .map((error) => error.message)
-      .join(' '),
-  );
-  protected readonly $passwordErrorMessage = computed(() =>
-    this.$form
-      .password()
-      .errors()
-      .map((error) => error.message)
-      .join(' '),
-  );
-
   constructor() {
     afterRenderEffect(() => {
       if (this.$errorMessage()) {
@@ -113,7 +90,7 @@ export class AdminLogin implements OnInit {
   protected async submit(event: Event): Promise<void> {
     event.preventDefault();
 
-    if (this.$isSubmitting()) {
+    if (this.$form().submitting()) {
       return;
     }
 

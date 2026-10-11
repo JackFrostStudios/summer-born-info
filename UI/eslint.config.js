@@ -112,4 +112,17 @@ module.exports = defineConfig([
       ],
     },
   },
+  {
+    files: ['src/app/features/admin/login/admin-login.html'],
+    rules: {
+      // Signal Forms state accessors do not use the component's $ naming convention.
+      '@angular-eslint/template/no-call-expression': [
+        'error',
+        {
+          allowPrefix: '$',
+          allowList: ['email', 'password', 'touched', 'invalid', 'errors', 'submitting'],
+        },
+      ],
+    },
+  },
 ]);

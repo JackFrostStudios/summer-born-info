@@ -153,3 +153,9 @@ Retry clearing has now been verified against the installed Angular version by co
 - [x] Component and axe tests cover the changed form and error states.
 - [x] Formatting, lint, localization extraction, unit tests, axe tests, and localized validation pass or specific limitations are recorded.
 - [x] Final diff contains no unrelated API, routing, styling, or dependency changes; the scoped total-script budget adjustment is supported by measured build output.
+
+## Follow-up: simplify presentation state
+
+- Completed the user-requested simplification: field state and error visibility are template-local `@let` values, required messages read each field's first error directly, and submitting state reads the form directly. Removed five forwarding/presentation computed properties; retained `$canSubmit` and `$errorMessage` for retry policy and authentication-error handling.
+- Added a login-template-only lint allowlist for Signal Forms accessors and refreshed localization source locations without changing copy.
+- Validation: formatting and lint passed; all 136 unit tests passed before the final single-error rendering simplification, then all 29 login tests and all 26 browser accessibility tests passed on the final template. Localized production build and SSR asset checks passed. Repeated extraction produced identical content. Used these constituent localization checks instead of `validate:i18n`, whose Git drift check rejects intentionally uncommitted source-location updates. Existing total-script warning remains (437.24 kB, below the 440 kB error limit).
