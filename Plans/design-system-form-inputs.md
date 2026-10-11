@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-Status: In progress. Step 1 completed; steps 2–5 pending.
+Status: In progress. Steps 1–2 completed; steps 3–5 pending.
 
 Extract the labels, native inputs, field feedback, and field styling from admin login into `UI/src/design-system/forms/`, with `text-input` and `password-input` components. Each accepts an Angular Signal Forms string field and automatically presents its configured validation messages. Each consuming form retains ownership of its model, schema, validators, localized messages, submission, and form-level errors.
 
@@ -185,7 +185,7 @@ Run from `UI/` after implementation:
 ## 8. Dependencies and sequencing
 
 1. [x] Reconcile current login baseline and intervening user edits; retain migration contracts.
-2. Build both components, private styles, public barrel, READMEs, and focused tests.
+2. [x] Build both components, private styles, public barrel, READMEs, and focused tests.
 3. Adopt in login; remove migrated markup/styles/imports; update lint and ownership docs in the same compiling slice.
 4. Adapt login selectors, verify native focus/summary descriptions, and add shared axe coverage.
 5. Refresh localization, complete validation, review diff/build sizes, and update checklist.
@@ -211,10 +211,10 @@ Native focus and metadata behaviour require implementation verification against 
 
 ## 11. Completion checklist
 
-- [ ] Forms section contains both components with narrow public exports and documented APIs.
-- [ ] Typed string field inputs bind native controls through `FormField` without duplicate model/state.
-- [ ] Native labels, type/autocomplete, unique IDs, descriptions, focus, and schema metadata behave correctly.
-- [ ] Automatic touched-field feedback displays supplied messages, including multiple errors, with correct ARIA updates.
+- [x] Forms section contains both components with narrow public exports and documented APIs.
+- [x] Typed string field inputs bind native controls through `FormField` without duplicate model/state.
+- [x] Native labels, type/autocomplete, unique IDs, descriptions, focus, and schema metadata behave correctly.
+- [x] Automatic touched-field feedback displays supplied messages, including multiple errors, with correct ARIA updates.
 - [ ] Login uses both components while retaining schema/copy/submission/retry/summary/navigation behaviour.
 - [ ] Shared styles own field presentation; login retains page/form/summary/button styling.
 - [ ] Ownership docs and narrow lint allowances reflect the forms section.
@@ -225,3 +225,5 @@ Native focus and metadata behaviour require implementation verification against 
 ## 12. Execution record
 
 - Step 1 — dedicated agent `baseline` audited and preserved the existing Signal Forms presentation simplification. No prerequisite fixes were needed. Formatting, lint, all 136 unit tests, stable i18n extraction, localized production build, and localized SSR asset checks passed. Existing total-script warning: 437.24 kB, below the 440 kB error budget. Full localization validation will run after its reviewed extraction checkpoint. Commit: `chore(forms): preserve verified login baseline (step 1)`.
+
+- Step 2 — dedicated agent `forms_components` delivered both controls and real host-form tests, with architecture/test delegation. Review confirmed native binding, filtered text feedback, local-description precedence, and private styles. Formatting, lint, 22 focused tests, all 158 unit tests, production build, and full i18n validation passed. Localization remained unchanged; localized scripts retained the 437.24 kB warning. Browser axe/layout review remains step 4. Commit: `feat(forms): add native signal form inputs (step 2)`.

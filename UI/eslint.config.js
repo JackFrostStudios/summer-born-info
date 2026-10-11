@@ -113,6 +113,22 @@ module.exports = defineConfig([
     },
   },
   {
+    files: [
+      'src/design-system/forms/text-input/text-input.html',
+      'src/design-system/forms/password-input/password-input.html',
+    ],
+    rules: {
+      // Native Signal Forms state accessors retain Angular's public names.
+      '@angular-eslint/template/no-call-expression': [
+        'error',
+        {
+          allowPrefix: '$',
+          allowList: ['touched', 'invalid'],
+        },
+      ],
+    },
+  },
+  {
     files: ['src/app/features/admin/login/admin-login.html'],
     rules: {
       // Signal Forms state accessors do not use the component's $ naming convention.

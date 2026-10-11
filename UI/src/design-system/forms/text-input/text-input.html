@@ -1,0 +1,21 @@
+@let $node = $field();
+@let $state = $node();
+@let $showError = $state.touched() && $state.invalid();
+@let $feedback = $messages();
+
+<label [for]="$inputId()"><ng-content /></label>
+<input
+  [id]="$inputId()"
+  [type]="$type()"
+  [attr.autocomplete]="$autocomplete()"
+  [formField]="$field()"
+  [attr.aria-invalid]="$showError"
+  [attr.aria-describedby]="$showError && $feedback.length ? `${$inputId()}-error` : $externalDescription()"
+/>
+@if ($showError && $feedback.length) {
+  <div class="input-errors" [id]="`${$inputId()}-error`">
+    @for (message of $feedback; track $index) {
+      <p>{{ message }}</p>
+    }
+  </div>
+}
