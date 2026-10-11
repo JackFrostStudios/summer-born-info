@@ -35,10 +35,13 @@ The UI is currently an Angular application with server-side rendering support, a
 - Keep shell-only layout concerns in `UI/src/app/shell/` and keep feature-specific rendering out of the shell.
 - Add new routed user-facing areas under `UI/src/app/features/` so each feature keeps its component, template, styles, and tests together.
 - Put shared standalone Angular UI components under `UI/src/design-system/` once at least two consumers justify the abstraction and the code is not owned by a single feature or the shell alone.
+- The explicitly requested extraction of admin login fields into `UI/src/design-system/forms/` is an exception to the two-consumer threshold; no additional feature consumer is required.
 - Prefer the shared `UI/src/design-system/panel/` component for repeated raised placeholder or status panel
   shells instead of reimplementing the gradient-border-shadow recipe in feature styles.
 - Import shared design-system components through their folder-level public API, such as `@design-system/button`
   or `@design-system/panel`, rather than through deep implementation paths.
+- Import `TextInput` and `PasswordInput` through `@design-system/forms`. The forms section owns field structure, styling, native label/input associations, and automatic field feedback; consumers own models, schemas, validators, localized labels/messages, submission, form-level errors, and focus decisions.
+- Pass writable Signal Forms string field nodes to the form inputs. Each component binds `FormField` exactly once on its internal native input so Angular owns value synchronization, touch/dirty state, schema metadata, and `focusBoundControl()` behavior.
 - Keep Angular localization artifacts owned by `UI/src/locale/`.
 - Treat `UI/src/locale/messages.xlf` as generated project state that should stay in sync with user-facing template text marked for translation.
 - Add shared static assets to `UI/public/`.
@@ -56,7 +59,7 @@ The UI is currently an Angular application with server-side rendering support, a
 - Put feature-specific behaviour in feature components, routes, and services rather than in `App` or the root shell.
 - Use the `sbi` prefix for Angular selectors and bootstrap tags across workspace configuration and existing components.
 - Prefer standalone Angular APIs and keep module-era patterns out unless an existing dependency requires them.
-- When adding a reusable abstraction, make sure at least two consumers justify it.
+- When adding a reusable abstraction, make sure at least two consumers justify it unless an explicit exception is recorded above.
 - Keep shared component APIs and their canonical styling together in `UI/src/design-system/` instead of splitting ownership between feature templates and global primitives.
 - Treat each design-system folder `index.ts` as the supported TypeScript public boundary for that component.
 - Keep implementation files such as `button.ts`, `panel.ts`, component-internal classes, and Sass partials private

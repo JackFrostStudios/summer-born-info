@@ -1,5 +1,6 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormField, type FieldTree } from '@angular/forms/signals';
+import { createInputFeedback } from '../input-feedback';
 
 @Component({
   selector: 'sbi-text-input',
@@ -14,16 +15,5 @@ export class TextInput {
   readonly $ariaDescribedBy = input<string | null>(null);
   readonly $type = input<'text' | 'email'>('text');
 
-  protected readonly $messages = computed(() =>
-    this.$field()()
-      .errors()
-      .flatMap(({ message }) => (message?.trim() ? [message] : [])),
-  );
-  protected readonly $externalDescription = computed(() => {
-    const description = this.$ariaDescribedBy()?.trim();
-    if (!description) {
-      return null;
-    }
-    return description;
-  });
+  protected readonly $view = createInputFeedback(this.$field, this.$inputId, this.$ariaDescribedBy);
 }

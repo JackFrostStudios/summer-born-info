@@ -70,10 +70,14 @@ readonly controls remain focusable.
 
 ## Styling and limits
 
+A private computed presentation helper derives feedback from the caller field without storing
+another model or control state. Both controls retain their own native templates.
+
 Both controls own the field grid, label, input, feedback, and focus styling using existing
 tokens. Their host fits a form grid, and input width can shrink with narrow containers.
 Disabled styling retains readable text; readonly uses the normal readable treatment.
-Tokens provide light/dark colours, and forced-colors focus uses system colours.
+Tokens provide light/dark colours, and forced-colors focus uses system colours. Native font
+inheritance and default text colour use the existing global reset/base rules.
 
 Consumers may lay out the component host and style their own projected label content.
 Internal markup, CSS classes and `_input-styles.scss` are private and must not be overridden

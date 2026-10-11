@@ -1,5 +1,6 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormField, type FieldTree } from '@angular/forms/signals';
+import { createInputFeedback } from '../input-feedback';
 
 @Component({
   selector: 'sbi-password-input',
@@ -13,16 +14,5 @@ export class PasswordInput {
   readonly $autocomplete = input<string | null>(null);
   readonly $ariaDescribedBy = input<string | null>(null);
 
-  protected readonly $messages = computed(() =>
-    this.$field()()
-      .errors()
-      .flatMap(({ message }) => (message?.trim() ? [message] : [])),
-  );
-  protected readonly $externalDescription = computed(() => {
-    const description = this.$ariaDescribedBy()?.trim();
-    if (!description) {
-      return null;
-    }
-    return description;
-  });
+  protected readonly $view = createInputFeedback(this.$field, this.$inputId, this.$ariaDescribedBy);
 }

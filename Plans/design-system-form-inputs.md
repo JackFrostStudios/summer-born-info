@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-Status: In progress. Steps 1–2 completed; steps 3–5 pending.
+Status: In progress. Steps 1–3 completed; steps 4–5 pending.
 
 Extract the labels, native inputs, field feedback, and field styling from admin login into `UI/src/design-system/forms/`, with `text-input` and `password-input` components. Each accepts an Angular Signal Forms string field and automatically presents its configured validation messages. Each consuming form retains ownership of its model, schema, validators, localized messages, submission, and form-level errors.
 
@@ -186,7 +186,7 @@ Run from `UI/` after implementation:
 
 1. [x] Reconcile current login baseline and intervening user edits; retain migration contracts.
 2. [x] Build both components, private styles, public barrel, READMEs, and focused tests.
-3. Adopt in login; remove migrated markup/styles/imports; update lint and ownership docs in the same compiling slice.
+3. [x] Adopt in login; remove migrated markup/styles/imports; update lint and ownership docs in the same compiling slice.
 4. Adapt login selectors, verify native focus/summary descriptions, and add shared axe coverage.
 5. Refresh localization, complete validation, review diff/build sizes, and update checklist.
 
@@ -215,9 +215,9 @@ Native focus and metadata behaviour require implementation verification against 
 - [x] Typed string field inputs bind native controls through `FormField` without duplicate model/state.
 - [x] Native labels, type/autocomplete, unique IDs, descriptions, focus, and schema metadata behave correctly.
 - [x] Automatic touched-field feedback displays supplied messages, including multiple errors, with correct ARIA updates.
-- [ ] Login uses both components while retaining schema/copy/submission/retry/summary/navigation behaviour.
-- [ ] Shared styles own field presentation; login retains page/form/summary/button styling.
-- [ ] Ownership docs and narrow lint allowances reflect the forms section.
+- [x] Login uses both components while retaining schema/copy/submission/retry/summary/navigation behaviour.
+- [x] Shared styles own field presentation; login retains page/form/summary/button styling.
+- [x] Ownership docs and narrow lint allowances reflect the forms section.
 - [ ] Component/login tests and browser axe checks pass; layout/focus review is recorded.
 - [ ] Localization and formatting/lint/unit/axe/localized-build/SSR checks pass or precise limitations are recorded.
 - [ ] Final diff respects existing work and contains no unrelated API, route, dependency, copy, or budget changes.
@@ -227,3 +227,5 @@ Native focus and metadata behaviour require implementation verification against 
 - Step 1 — dedicated agent `baseline` audited and preserved the existing Signal Forms presentation simplification. No prerequisite fixes were needed. Formatting, lint, all 136 unit tests, stable i18n extraction, localized production build, and localized SSR asset checks passed. Existing total-script warning: 437.24 kB, below the 440 kB error budget. Full localization validation will run after its reviewed extraction checkpoint. Commit: `chore(forms): preserve verified login baseline (step 1)`.
 
 - Step 2 — dedicated agent `forms_components` delivered both controls and real host-form tests, with architecture/test delegation. Review confirmed native binding, filtered text feedback, local-description precedence, and private styles. Formatting, lint, 22 focused tests, all 158 unit tests, production build, and full i18n validation passed. Localization remained unchanged; localized scripts retained the 437.24 kB warning. Browser axe/layout review remains step 4. Commit: `feat(forms): add native signal form inputs (step 2)`.
+
+- Step 3 — dedicated agent `login_adoption` adopted the inputs, removed migrated field markup/styles, refreshed ownership docs, and minimally adapted old field-class assertions. Authentication/model/schema/submission logic and all 46 localized messages remain unchanged. To satisfy the unchanged 440 kB error budget, shared one private computed feedback helper (no model state) and simplified scoped CSS, relying on equivalent existing global font/text-colour reset declarations. Component templates now need no Signal Forms accessor exceptions; login permits only `submitting`. Bound literal inputs retain a narrow static-string lint exception because dollar-prefixed static attributes fail native SSR serialization. Formatting/check, lint, all 158 unit tests, all 26 existing browser axe tests, production build (439.57 kB scripts), localized build (439.99 kB), SSR asset checks, and stable repeated extraction passed. XLF changes are source locations only; full drift validation follows the checkpoint. Remaining script-budget headroom is extremely small; no budget was increased. Commit: `refactor(login): adopt shared form inputs (step 3)`.

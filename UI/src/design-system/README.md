@@ -6,7 +6,8 @@ splitting ownership across feature styles or global primitives.
 
 ## Ownership
 
-- Add a component to `UI/src/design-system/` only when at least two consumers justify a shared abstraction.
+- Add a component to `UI/src/design-system/` when at least two consumers justify a shared abstraction.
+- The explicitly requested forms extraction from admin login is an exception to this threshold; no second feature consumer is required.
 - Keep feature-owned presentation in `UI/src/app/` when it is specific to one route, screen, or shell concern.
 - Prefer component-scoped styles here over new global primitives unless the abstraction is truly structure-free.
 
@@ -32,7 +33,7 @@ currently visible in DevTools or source.
 ## Import And Usage Conventions
 
 - Import shared components through their folder-level public API, such as `@design-system/button` or
-  `@design-system/panel`.
+  `@design-system/panel` or `@design-system/forms`.
 - Keep each component folder's `index.ts` narrow and limited to the supported Angular component class and
   intentionally public types.
 - Do not import from implementation paths such as `@design-system/button/button` or expose Sass partials,
@@ -54,3 +55,5 @@ currently visible in DevTools or source.
   consumers colour directly with CSS.
 - [Panel](./panel/README.md): shared `sbi-panel` component for repeated raised placeholder or status panel
   layouts with decorative media and stacked content.
+- [Forms](./forms/README.md): shared `sbi-text-input` and `sbi-password-input` controls that bind native inputs
+  to caller-owned Signal Forms fields, with projected labels and automatic validation feedback.

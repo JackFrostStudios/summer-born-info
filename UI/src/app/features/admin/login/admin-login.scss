@@ -23,8 +23,7 @@
 }
 
 .admin-login__intro,
-.admin-login__form,
-.admin-login__field {
+.admin-login__form {
   display: grid;
 }
 
@@ -34,10 +33,6 @@
 
 .admin-login__form {
   gap: var(--sbi-space-5);
-}
-
-.admin-login__field {
-  gap: var(--sbi-space-2);
 }
 
 .admin-login :is(h1, p) {
@@ -59,22 +54,6 @@
   line-height: var(--sbi-line-height-body);
 }
 
-.admin-login label {
-  font-weight: var(--sbi-font-weight-bold);
-}
-
-.admin-login input {
-  background: var(--sbi-color-surface);
-  border: var(--sbi-border);
-  border-radius: var(--sbi-radius-md);
-  color: var(--sbi-color-text);
-  font: inherit;
-  inline-size: 100%;
-  min-block-size: 3rem;
-  padding: var(--sbi-space-3) var(--sbi-space-4);
-}
-
-.admin-login input:focus-visible,
 .admin-login__submit:focus-visible,
 .admin-login__error:focus-visible {
   outline: var(--sbi-focus-ring-width) solid var(--sbi-color-primary);
@@ -87,14 +66,6 @@
   color: var(--sbi-color-on-error);
   line-height: var(--sbi-line-height-body);
   padding: var(--sbi-space-4);
-}
-
-.admin-login__field-error {
-  color: var(--sbi-color-error);
-  font-size: var(--sbi-font-size-0);
-  font-weight: var(--sbi-font-weight-bold);
-  line-height: var(--sbi-line-height-body);
-  margin: 0;
 }
 
 .admin-login__submit {

@@ -22,11 +22,6 @@
       </p>
     </div>
 
-    @let $email = $form.email();
-    @let $password = $form.password();
-    @let $showEmailError = $email.touched() && $email.invalid();
-    @let $showPasswordError = $password.touched() && $password.invalid();
-
     <form class="admin-login__form" novalidate (submit)="submit($event)">
       @if ($errorMessage(); as errorMessage) {
         <p #errorSummary class="admin-login__error" id="admin-login-error" role="alert" tabindex="-1">
@@ -34,53 +29,28 @@
         </p>
       }
 
-      <div class="admin-login__field">
-        <label
-          for="admin-login-email"
-          i18n="Admin login email label|Label for the admin email address field@@adminLoginEmailLabel"
-        >
+      <sbi-text-input
+        [$field]="$form.email"
+        [$inputId]="'admin-login-email'"
+        [$type]="'email'"
+        [$autocomplete]="'username'"
+        [$ariaDescribedBy]="$errorMessage() ? 'admin-login-error' : null"
+      >
+        <span i18n="Admin login email label|Label for the admin email address field@@adminLoginEmailLabel">
           Email address
-        </label>
-        <input
-          id="admin-login-email"
-          type="email"
-          autocomplete="username"
-          [formField]="$form.email"
-          [attr.aria-describedby]="
-            $showEmailError ? 'admin-login-email-error' : $errorMessage() ? 'admin-login-error' : null
-          "
-          [attr.aria-invalid]="$showEmailError"
-        />
-        @if ($showEmailError) {
-          <p class="admin-login__field-error" id="admin-login-email-error">
-            {{ $email.errors()[0]?.message }}
-          </p>
-        }
-      </div>
+        </span>
+      </sbi-text-input>
 
-      <div class="admin-login__field">
-        <label
-          for="admin-login-password"
-          i18n="Admin login password label|Label for the admin password field@@adminLoginPasswordLabel"
-        >
+      <sbi-password-input
+        [$field]="$form.password"
+        [$inputId]="'admin-login-password'"
+        [$autocomplete]="'current-password'"
+        [$ariaDescribedBy]="$errorMessage() ? 'admin-login-error' : null"
+      >
+        <span i18n="Admin login password label|Label for the admin password field@@adminLoginPasswordLabel">
           Password
-        </label>
-        <input
-          id="admin-login-password"
-          type="password"
-          autocomplete="current-password"
-          [formField]="$form.password"
-          [attr.aria-describedby]="
-            $showPasswordError ? 'admin-login-password-error' : $errorMessage() ? 'admin-login-error' : null
-          "
-          [attr.aria-invalid]="$showPasswordError"
-        />
-        @if ($showPasswordError) {
-          <p class="admin-login__field-error" id="admin-login-password-error">
-            {{ $password.errors()[0]?.message }}
-          </p>
-        }
-      </div>
+        </span>
+      </sbi-password-input>
 
       <button
         class="admin-login__submit"

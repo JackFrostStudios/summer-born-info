@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, afterRenderEffect, computed, inject, signal, viewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormField, form, required, submit, validate } from '@angular/forms/signals';
+import { form, required, submit, validate } from '@angular/forms/signals';
+import { TextInput, PasswordInput } from '@design-system/forms';
 import { AdminAuthService, type AdminSignInResult } from '../auth/admin-auth.service';
 
 type AdminLoginErrorKind = Exclude<AdminSignInResult['kind'], 'signed-in'>;
@@ -12,7 +13,7 @@ interface AdminLoginModel {
 
 @Component({
   selector: 'sbi-admin-login',
-  imports: [FormField],
+  imports: [TextInput, PasswordInput],
   templateUrl: './admin-login.html',
   styleUrl: './admin-login.scss',
 })

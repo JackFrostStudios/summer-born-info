@@ -1,7 +1,11 @@
 @mixin input-field {
-  :host {
+  :host,
+  div {
     display: grid;
     gap: var(--sbi-space-2);
+  }
+
+  :host {
     min-inline-size: 0;
   }
 
@@ -14,8 +18,6 @@
     background: var(--sbi-color-surface);
     border: var(--sbi-border);
     border-radius: var(--sbi-radius-md);
-    color: var(--sbi-color-text);
-    font: inherit;
     inline-size: 100%;
     min-block-size: 3rem;
     min-inline-size: 0;
@@ -32,17 +34,14 @@
     cursor: not-allowed;
   }
 
-  .input-errors {
+  div {
     color: var(--sbi-color-error);
-    display: grid;
     font-size: var(--sbi-font-size-0);
     font-weight: var(--sbi-font-weight-bold);
-    gap: var(--sbi-space-2);
     line-height: var(--sbi-line-height-body);
-    margin: 0;
   }
 
-  .input-errors p {
+  p {
     margin: 0;
   }
 

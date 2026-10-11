@@ -97,7 +97,7 @@
         <source> Use this page if you help manage Summer-born Info. Your sign-in is only kept for this browser session. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.html</context>
-          <context context-type="linenumber">21,26</context>
+          <context context-type="linenumber">21,25</context>
         </context-group>
         <note priority="1" from="description">Explains who should use the admin sign-in page</note>
         <note priority="1" from="meaning">Admin login body</note>
@@ -106,7 +106,7 @@
         <source> Email address </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.html</context>
-          <context context-type="linenumber">42,47</context>
+          <context context-type="linenumber">40,45</context>
         </context-group>
         <note priority="1" from="description">Label for the admin email address field</note>
         <note priority="1" from="meaning">Admin login email label</note>
@@ -115,7 +115,7 @@
         <source> Password </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.html</context>
-          <context context-type="linenumber">66,70</context>
+          <context context-type="linenumber">51,56</context>
         </context-group>
         <note priority="1" from="description">Label for the admin password field</note>
         <note priority="1" from="meaning">Admin login password label</note>
@@ -124,7 +124,7 @@
         <source> Signing in... </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.html</context>
-          <context context-type="linenumber">95,98</context>
+          <context context-type="linenumber">65,68</context>
         </context-group>
         <note priority="1" from="description">Button text while sign-in is in progress</note>
         <note priority="1" from="meaning">Admin login pending submit button</note>
@@ -133,7 +133,7 @@
         <source>Sign in</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.html</context>
-          <context context-type="linenumber">98,104</context>
+          <context context-type="linenumber">68,74</context>
         </context-group>
         <note priority="1" from="description">Submits the admin login form</note>
         <note priority="1" from="meaning">Admin login submit button</note>
@@ -142,7 +142,7 @@
         <source>Enter your email address.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="linenumber">29</context>
         </context-group>
         <note priority="1" from="description">Shown when the admin email field is left empty</note>
         <note priority="1" from="meaning">Admin login email required error</note>
@@ -151,7 +151,7 @@
         <source>Enter your password.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
-          <context context-type="linenumber">36</context>
+          <context context-type="linenumber">37</context>
         </context-group>
         <note priority="1" from="description">Shown when the admin password field is left empty</note>
         <note priority="1" from="meaning">Admin login password required error</note>
@@ -160,7 +160,7 @@
         <source>We could not sign you in with those details. Check your email and password, then try again.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
-          <context context-type="linenumber">126</context>
+          <context context-type="linenumber">127</context>
         </context-group>
         <note priority="1" from="description">Shown when admin sign-in credentials are rejected</note>
         <note priority="1" from="meaning">Admin login invalid credentials error</note>
@@ -169,7 +169,7 @@
         <source>That account does not have access to the admin tools. Use an admin account, or ask the site owner to check your access.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
-          <context context-type="linenumber">128</context>
+          <context context-type="linenumber">129</context>
         </context-group>
         <note priority="1" from="description">Shown when a non-admin account tries to access admin tools</note>
         <note priority="1" from="meaning">Admin login not admin error</note>
@@ -178,7 +178,7 @@
         <source>We could not reach the sign-in service. Check your connection and try again.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
-          <context context-type="linenumber">130</context>
+          <context context-type="linenumber">131</context>
         </context-group>
         <note priority="1" from="description">Shown when the sign-in request cannot reach the server</note>
         <note priority="1" from="meaning">Admin login network failure error</note>
@@ -187,7 +187,7 @@
         <source>Something went wrong while signing you in. Please try again.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
-          <context context-type="linenumber">132</context>
+          <context context-type="linenumber">133</context>
         </context-group>
         <note priority="1" from="description">Shown when sign-in fails in an unexpected recoverable way</note>
         <note priority="1" from="meaning">Admin login unexpected failure error</note>

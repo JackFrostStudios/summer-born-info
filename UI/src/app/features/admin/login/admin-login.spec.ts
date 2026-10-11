@@ -143,7 +143,8 @@ describe('AdminLogin', () => {
   });
 
   it('keeps initial errors quiet and fields untouched', () => {
-    expect(compiled.querySelector('.admin-login__field-error')).toBeNull();
+    expect(compiled.querySelector('#admin-login-email-error')).toBeNull();
+    expect(compiled.querySelector('#admin-login-password-error')).toBeNull();
     expect(compiled.querySelector('#admin-login-error')).toBeNull();
     expect(getEmailInput().getAttribute('aria-invalid')).toBe('false');
     expect(getPasswordInput().getAttribute('aria-invalid')).toBe('false');

@@ -62,7 +62,12 @@ describe('AdminLogin accessibility smoke', () => {
           await new Promise<void>((resolve) => setTimeout(resolve));
           fixture.detectChanges();
           if (state === 'required-errors') {
-            expect(compiled.querySelectorAll('.admin-login__field-error')).toHaveLength(2);
+            expect(compiled.querySelector('#admin-login-email-error')?.textContent.trim()).toBe(
+              'Enter your email address.',
+            );
+            expect(compiled.querySelector('#admin-login-password-error')?.textContent.trim()).toBe(
+              'Enter your password.',
+            );
             expect(document.activeElement).toBe(compiled.querySelector('#admin-login-email'));
           } else {
             const summary = compiled.querySelector('#admin-login-error');
