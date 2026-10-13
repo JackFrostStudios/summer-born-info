@@ -2,6 +2,196 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
+      <trans-unit id="adminHomeEyebrow" datatype="html">
+        <source> Admin area </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.html</context>
+          <context context-type="linenumber">8,11</context>
+        </context-group>
+        <note priority="1" from="description">Identifies the protected admin area</note>
+        <note priority="1" from="meaning">Admin home eyebrow</note>
+      </trans-unit>
+      <trans-unit id="adminHomeHeading" datatype="html">
+        <source> Admin tools </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.html</context>
+          <context context-type="linenumber">15,17</context>
+        </context-group>
+        <note priority="1" from="description">Main heading for the protected admin landing page</note>
+        <note priority="1" from="meaning">Admin home heading</note>
+      </trans-unit>
+      <trans-unit id="adminHomeBody" datatype="html">
+        <source> You&apos;re signed in. Admin workflows will appear here as they become available. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.html</context>
+          <context context-type="linenumber">18,24</context>
+        </context-group>
+        <note priority="1" from="description">Confirms authenticated admin access</note>
+        <note priority="1" from="meaning">Admin home body</note>
+      </trans-unit>
+      <trans-unit id="adminHomePendingSignOut" datatype="html">
+        <source> Signing out... </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.html</context>
+          <context context-type="linenumber">33,36</context>
+        </context-group>
+        <note priority="1" from="description">Button text while sign-out is in progress</note>
+        <note priority="1" from="meaning">Admin home pending sign out button</note>
+      </trans-unit>
+      <trans-unit id="adminHomeSignOut" datatype="html">
+        <source>Sign out</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.html</context>
+          <context context-type="linenumber">36,42</context>
+        </context-group>
+        <note priority="1" from="description">Signs the current admin out</note>
+        <note priority="1" from="meaning">Admin home sign out button</note>
+      </trans-unit>
+      <trans-unit id="adminHomePlaceholder" datatype="html">
+        <source> Protected admin access is ready. The next tools will be added here when they are available. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.html</context>
+          <context context-type="linenumber">53,56</context>
+        </context-group>
+        <note priority="1" from="description">Reserves space for future admin workflows without exposing unfinished
+      controls</note>
+        <note priority="1" from="meaning">Admin home placeholder</note>
+      </trans-unit>
+      <trans-unit id="adminHomeSignOutNetworkFailureError" datatype="html">
+        <source>We could not reach the sign-out service. Stay signed in here and try again.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.ts</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+        <note priority="1" from="description">Shown when sign-out cannot reach the server and the admin remains on the protected page</note>
+        <note priority="1" from="meaning">Admin home sign out network failure error</note>
+      </trans-unit>
+      <trans-unit id="adminHomeSignOutUnexpectedFailureError" datatype="html">
+        <source>Something went wrong while signing you out. Stay signed in here and try again.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/admin-home/admin-home.ts</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+        <note priority="1" from="description">Shown when sign-out fails in an unexpected recoverable way and the admin remains on the protected page</note>
+        <note priority="1" from="meaning">Admin home sign out unexpected failure error</note>
+      </trans-unit>
+      <trans-unit id="adminLoginEyebrow" datatype="html">
+        <source> Volunteer admin </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/login/admin-login.html</context>
+          <context context-type="linenumber">8,11</context>
+        </context-group>
+        <note priority="1" from="description">Identifies the page as for volunteer administrators</note>
+        <note priority="1" from="meaning">Admin login eyebrow</note>
+      </trans-unit>
+      <trans-unit id="adminLoginHeading" datatype="html">
+        <source> Sign in to admin tools </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/login/admin-login.html</context>
+          <context context-type="linenumber">15,19</context>
+        </context-group>
+        <note priority="1" from="description">Main heading for the admin sign-in page</note>
+        <note priority="1" from="meaning">Admin login heading</note>
+      </trans-unit>
+      <trans-unit id="adminLoginBody" datatype="html">
+        <source> Use this page if you help manage Summer-born Info. Your sign-in is only kept for this browser session. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/login/admin-login.html</context>
+          <context context-type="linenumber">21,25</context>
+        </context-group>
+        <note priority="1" from="description">Explains who should use the admin sign-in page</note>
+        <note priority="1" from="meaning">Admin login body</note>
+      </trans-unit>
+      <trans-unit id="adminLoginEmailLabel" datatype="html">
+        <source> Email address </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/login/admin-login.html</context>
+          <context context-type="linenumber">40,45</context>
+        </context-group>
+        <note priority="1" from="description">Label for the admin email address field</note>
+        <note priority="1" from="meaning">Admin login email label</note>
+      </trans-unit>
+      <trans-unit id="adminLoginPasswordLabel" datatype="html">
+        <source> Password </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/login/admin-login.html</context>
+          <context context-type="linenumber">51,56</context>
+        </context-group>
+        <note priority="1" from="description">Label for the admin password field</note>
+        <note priority="1" from="meaning">Admin login password label</note>
+      </trans-unit>
+      <trans-unit id="adminLoginPendingSubmit" datatype="html">
+        <source> Signing in... </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/login/admin-login.html</context>
+          <context context-type="linenumber">65,68</context>
+        </context-group>
+        <note priority="1" from="description">Button text while sign-in is in progress</note>
+        <note priority="1" from="meaning">Admin login pending submit button</note>
+      </trans-unit>
+      <trans-unit id="adminLoginSubmit" datatype="html">
+        <source>Sign in</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/login/admin-login.html</context>
+          <context context-type="linenumber">68,74</context>
+        </context-group>
+        <note priority="1" from="description">Submits the admin login form</note>
+        <note priority="1" from="meaning">Admin login submit button</note>
+      </trans-unit>
+      <trans-unit id="adminLoginEmailRequiredError" datatype="html">
+        <source>Enter your email address.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <note priority="1" from="description">Shown when the admin email field is left empty</note>
+        <note priority="1" from="meaning">Admin login email required error</note>
+      </trans-unit>
+      <trans-unit id="adminLoginPasswordRequiredError" datatype="html">
+        <source>Enter your password.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+        <note priority="1" from="description">Shown when the admin password field is left empty</note>
+        <note priority="1" from="meaning">Admin login password required error</note>
+      </trans-unit>
+      <trans-unit id="adminLoginInvalidCredentialsError" datatype="html">
+        <source>We could not sign you in with those details. Check your email and password, then try again.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
+          <context context-type="linenumber">127</context>
+        </context-group>
+        <note priority="1" from="description">Shown when admin sign-in credentials are rejected</note>
+        <note priority="1" from="meaning">Admin login invalid credentials error</note>
+      </trans-unit>
+      <trans-unit id="adminLoginNotAdminError" datatype="html">
+        <source>That account does not have access to the admin tools. Use an admin account, or ask the site owner to check your access.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
+          <context context-type="linenumber">129</context>
+        </context-group>
+        <note priority="1" from="description">Shown when a non-admin account tries to access admin tools</note>
+        <note priority="1" from="meaning">Admin login not admin error</note>
+      </trans-unit>
+      <trans-unit id="adminLoginNetworkFailureError" datatype="html">
+        <source>We could not reach the sign-in service. Check your connection and try again.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
+          <context context-type="linenumber">131</context>
+        </context-group>
+        <note priority="1" from="description">Shown when the sign-in request cannot reach the server</note>
+        <note priority="1" from="meaning">Admin login network failure error</note>
+      </trans-unit>
+      <trans-unit id="adminLoginUnexpectedFailureError" datatype="html">
+        <source>Something went wrong while signing you in. Please try again.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/login/admin-login.ts</context>
+          <context context-type="linenumber">133</context>
+        </context-group>
+        <note priority="1" from="description">Shown when sign-in fails in an unexpected recoverable way</note>
+        <note priority="1" from="meaning">Admin login unexpected failure error</note>
+      </trans-unit>
       <trans-unit id="homeHeading" datatype="html">
         <source> Help your summer-born child start school at the <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;home__hero-highlight&quot;&gt;"/>right time for them<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>. </source>
         <context-group purpose="location">

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { defineRouteAccessibility, routeAccessibilityDataKey } from './app-route-accessibility';
+import { adminAuthGuard } from './features/admin/auth/admin-auth.guard';
 import { Home } from './features/home/home';
 import { RootShell } from './shell/root-shell/root-shell';
 
@@ -19,6 +20,18 @@ const openSourceLicencesRouteAccessibility = defineRouteAccessibility({
   title: 'Summer-born Info - Open source licences',
   focusTargetId: 'open-source-licences-heading',
   skipLinks: [{ label: 'Skip to main content', targetId: 'open-source-licences-heading' }],
+});
+
+const adminLoginRouteAccessibility = defineRouteAccessibility({
+  title: 'Summer-born Info - Admin sign in',
+  focusTargetId: 'admin-login-heading',
+  skipLinks: [{ label: 'Skip to main content', targetId: 'admin-login-heading' }],
+});
+
+const adminHomeRouteAccessibility = defineRouteAccessibility({
+  title: 'Summer-born Info - Admin tools',
+  focusTargetId: 'admin-home-heading',
+  skipLinks: [{ label: 'Skip to main content', targetId: 'admin-home-heading' }],
 });
 
 const notFoundRouteAccessibility = defineRouteAccessibility({
@@ -57,6 +70,23 @@ export const routes: Routes = [
         title: openSourceLicencesRouteAccessibility.title,
         data: {
           [routeAccessibilityDataKey]: openSourceLicencesRouteAccessibility,
+        },
+      },
+      {
+        path: 'admin/login',
+        loadComponent: async () => (await import('./features/admin/login/admin-login')).AdminLogin,
+        title: adminLoginRouteAccessibility.title,
+        data: {
+          [routeAccessibilityDataKey]: adminLoginRouteAccessibility,
+        },
+      },
+      {
+        path: 'admin',
+        canActivate: [adminAuthGuard],
+        loadComponent: async () => (await import('./features/admin/admin-home/admin-home')).AdminHome,
+        title: adminHomeRouteAccessibility.title,
+        data: {
+          [routeAccessibilityDataKey]: adminHomeRouteAccessibility,
         },
       },
       {

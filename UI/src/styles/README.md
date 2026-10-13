@@ -65,13 +65,16 @@ component has a clear product reason that the current token set does not express
 
 ### Minimum Form Baseline
 
-The application does not yet provide shared field primitives or form components. Global form-control
-rules in `_base.scss` are intentionally limited to reset-level defaults so plain `input`, `select`,
-and `textarea` elements remain readable without implying that labels, hint text, validation,
-disabled messaging, spacing, or error presentation are already part of a shared form system.
+Global form-control rules in `_base.scss` remain limited to reset-level defaults so plain
+`input`, `select`, and `textarea` elements stay readable. Shared field presentation belongs in
+[the forms components](../design-system/forms/README.md), imported through `@design-system/forms`.
+They own label/input/feedback layout, surfaces, borders, sizing, typography, and focus treatment
+using the existing tokens; do not add competing global field selectors or override private styles.
 
-When the first substantial form feature lands, it should define the real shared contract for field
-structure and validation states rather than extending these base rules ad hoc.
+The forms extraction from admin login is an explicitly requested exception to the usual
+two-consumer promotion threshold. Consuming features retain models, schemas, localized labels
+and validation messages, submission, form-level errors, and page/form layout. These controls do
+not establish a shared presentation contract for `select`, `textarea`, hints, or form-level errors.
 
 ### Interaction-State Model
 

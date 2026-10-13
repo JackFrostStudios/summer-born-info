@@ -112,4 +112,22 @@ module.exports = defineConfig([
       ],
     },
   },
+  {
+    files: ['src/app/features/admin/login/admin-login.html'],
+    rules: {
+      // Dollar-prefixed inputs must stay bound: static attributes fail native SSR serialization.
+      '@angular-eslint/template/prefer-static-string-properties': [
+        'error',
+        { ignore: ['$inputId', '$type', '$autocomplete'] },
+      ],
+      // Signal Forms state accessors do not use the component's $ naming convention.
+      '@angular-eslint/template/no-call-expression': [
+        'error',
+        {
+          allowPrefix: '$',
+          allowList: ['submitting'],
+        },
+      ],
+    },
+  },
 ]);

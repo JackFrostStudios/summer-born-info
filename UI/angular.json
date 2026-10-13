@@ -54,8 +54,8 @@
                 },
                 {
                   "type": "allScript",
-                  "maximumWarning": "325kB",
-                  "maximumError": "350kB"
+                  "maximumWarning": "350kB",
+                  "maximumError": "440kB"
                 },
                 {
                   "type": "anyScript",
@@ -84,6 +84,9 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          },
           "configurations": {
             "production": {
               "buildTarget": "summer-born-info:build:production"
